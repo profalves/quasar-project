@@ -77,7 +77,7 @@
         </q-item>
         <q-item>
           <q-item-side icon="exit_to_app" />
-          <q-side-link to="/">
+          <q-side-link to="/login">
                 <q-item-main label="Sair" />
           </q-side-link>
         </q-item>  

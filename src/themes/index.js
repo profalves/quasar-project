@@ -34,7 +34,17 @@ import {
   QSpinnerRadio,
   QSpinnerHourglass,
   QSpinnerFacebook,
-  QSpinnerGears
+  QSpinnerGears,
+  QCheckbox,
+  QSlider,
+  QTooltip,
+  QDataTable,
+  QFab,
+  QFabAction,
+  QFixedPosition,
+  Dialog,
+  Toast,
+  clone
 } from 'quasar'
 
 const imports = {
@@ -72,7 +82,17 @@ const imports = {
   QSpinnerRadio,
   QSpinnerHourglass,
   QSpinnerFacebook,
-  QSpinnerGears
+  QSpinnerGears,
+  QCheckbox,
+  QSlider,
+  QTooltip,
+  QDataTable,
+  QFab,
+  QFabAction,
+  QFixedPosition,
+  Dialog,
+  Toast,
+  clone
 }
 
 Object.keys(imports).forEach(component => {

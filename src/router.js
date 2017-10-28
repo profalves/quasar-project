@@ -25,11 +25,14 @@ export default new VueRouter({
     { path: '/', component: load('Home') },
     { path: '/hello', component: load('Hello') },
     { path: '/clientes', component: load('Clientes') },
+    { path: '/cadcliente', component: load('cadCliente') },
     { path: '/produtos', component: load('Produtos') },
+    { path: '/cadproduto', component: load('cadProdutos') },
     { path: '/contas', component: load('Contas') },
     { path: '/entradanfe', component: load('EntradasNFe') },
     { path: '/relatorios', component: load('Relatorios') },
     { path: '/usuarios', component: load('Usuarios') },
+    { path: '/login', component: load('Login') },
 
     // Always leave this last one
     { path: '*', component: load('Error404') }, // Not found

@@ -51,12 +51,12 @@
     
     <div class="col-6">
         <router-link to="/entradanfe">
-            <q-card color="primary" class="col-sm-6">
+            <q-card color="info" class="col-sm-6">
               <q-card-title></q-card-title>
               <q-card-main>
                 <center id="card">
                     <i class="fa fa-file-text-o fa-5x center"></i><br>
-                    <p>Entradas de Notas</p>
+                    <p>Notas</p>
                 </center>
               </q-card-main>
             </q-card>
@@ -66,7 +66,7 @@
     
     <div class="col">
         <router-link to="/relatorios">
-            <q-card color="primary" class="col-sm-6">
+            <q-card color="positive" class="col-sm-6">
               <q-card-title></q-card-title>
               <q-card-main>
                 <center id="card">
@@ -81,7 +81,7 @@
     
     <div class="col">
         <router-link to="/usuarios">
-            <q-card color="primary" class="col-sm-6">
+            <q-card color="tertiary" class="col-sm-6">
               <q-card-title></q-card-title>
               <q-card-main>
                 <center id="card">
