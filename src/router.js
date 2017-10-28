@@ -22,8 +22,14 @@ export default new VueRouter({
    */
 
   routes: [
-    { path: '/', component: load('Hello') },
-    { path: '/repos', component: load('Repos') },
+    { path: '/', component: load('Home') },
+    { path: '/hello', component: load('Hello') },
+    { path: '/clientes', component: load('Clientes') },
+    { path: '/produtos', component: load('Produtos') },
+    { path: '/contas', component: load('Contas') },
+    { path: '/entradanfe', component: load('EntradasNFe') },
+    { path: '/relatorios', component: load('Relatorios') },
+    { path: '/usuarios', component: load('Usuarios') },
 
     // Always leave this last one
     { path: '*', component: load('Error404') }, // Not found

@@ -11,7 +11,30 @@ import {
   QItem,
   QItemSide,
   QItemMain,
-  QSideLink
+  QSideLink,
+  QField,
+  QToggle,
+  QDatetime,
+  QOptionGroup,
+  QInput,
+  QSelect,
+  QChipsInput,
+  QRating,
+  QCard,
+  QCardTitle,
+  QCardMedia,
+  QCardActions,
+  QCardSeparator,
+  QCardMain,
+  QItemTile,
+  QCollapsible,
+  QParallax,
+  QPopover,
+  QVideo,
+  QSpinnerRadio,
+  QSpinnerHourglass,
+  QSpinnerFacebook,
+  QSpinnerGears
 } from 'quasar'
 
 const imports = {
@@ -26,7 +49,30 @@ const imports = {
   QItem,
   QItemSide,
   QItemMain,
-  QSideLink
+  QSideLink,
+  QField,
+  QToggle,
+  QDatetime,
+  QOptionGroup,
+  QInput,
+  QSelect,
+  QChipsInput,
+  QRating,
+  QCard,
+  QCardTitle,
+  QCardMedia,
+  QCardActions,
+  QCardSeparator,
+  QCardMain,
+  QItemTile,
+  QCollapsible,
+  QParallax,
+  QPopover,
+  QVideo,
+  QSpinnerRadio,
+  QSpinnerHourglass,
+  QSpinnerFacebook,
+  QSpinnerGears
 }
 
 Object.keys(imports).forEach(component => {

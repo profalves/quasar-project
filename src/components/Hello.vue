@@ -1,12 +1,12 @@
 <template>
    
     <div class="layout-padding no-pointer-events">
-      <h1>Bem vindo ao meu App</h1>
-      <q-btn
+      <h1>Home</h1>
+      <!--<q-btn
          color="primary"
          push
          to="/repos">Ver
-      </q-btn>    
+      </q-btn>  -->  
     </div>
 
 </template>

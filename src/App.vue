@@ -17,8 +17,8 @@
       </q-btn>
 
       <q-toolbar-title>
-        Prof. Alves - Github
-        <div slot="subtitle">Running on Quasar v{{$q.version}}</div>
+        Retaguarda Web
+        <div slot="subtitle">7Virtual</div>
       </q-toolbar-title>
     </q-toolbar>
 
@@ -32,33 +32,77 @@
       <q-list no-border link inset-delimiter>
         <q-list-header>Menu</q-list-header>
         <q-item>
+          <q-item-side icon="star" />
+          <q-side-link to="/">
+              Inicio
+          </q-side-link>
+        </q-item>
+        <q-item>
+          <q-item-side icon="people" />
+          <q-side-link to="/clientes">
+              <q-item-main label="Pessoas" sublabel="Cadastros de clientes, fornecedores, etc." />
+          </q-side-link>
+        </q-item>
+        <q-item>
+          <q-item-side icon="assignment_turned_in" />
+          <q-side-link to="/produtos">
+               <q-item-main label="Produtos" sublabel="Cadastros de Produtos" />
+          </q-side-link>
+        </q-item>
+        <q-item>
+          <q-item-side icon="account_balance_wallet" />
+          <q-side-link to="/contas">
+               <q-item-main label="Contas" sublabel="Cadastros Financeiros" />
+          </q-side-link>
+          
+        </q-item>
+        <q-item>
+          <q-item-side icon="insert_drive_file" />
+          <q-side-link to="/entradanfe">
+               <q-item-main label="Entradas de Notas" sublabel="Cadastros de NFe de Compras" />
+          </q-side-link>
+        </q-item>
+        <q-item>
+          <q-item-side icon="dashboard" />
+          <q-side-link to="/relatorios">
+                <q-item-main label="Relatórios" sublabel="Relatórios Gerais" />
+          </q-side-link>
+        </q-item>
+        <q-item>
+          <q-item-side icon="person" />
+          <q-side-link to="/usuarios">
+                <q-item-main label="Usuários" sublabel="Cadastros de Usuários, Alteração de Senhas, etc." />
+          </q-side-link>
+          
+        </q-item>
+        <q-item>
+          <q-item-side icon="exit_to_app" />
+          <q-side-link to="/">
+                <q-item-main label="Sair" />
+          </q-side-link>
+        </q-item>  
+        
+        <!-- 
+        <q-item>
           <q-side-link to="/">Início</q-side-link>
         </q-item>
         <q-item>
           <q-side-link to="/repos">Ver Repositórios</q-side-link>
         </q-item>
-          
+         
         <q-item @click="launch('https://github.com/profalves')">
           
           <q-item-side class="fa fa-github fa-2x"/>
           <q-item-main label="Acessar o Github" sublabel="quasar-framework.org" />
-        </q-item>
-        <q-item @click="launch('http://forum.quasar-framework.org')">
-          <q-item-side icon="record_voice_over" />
-          <q-item-main label="Forum" sublabel="forum.quasar-framework.org" />
-        </q-item>
-        <q-item @click="launch('https://gitter.im/quasarframework/Lobby')">
-          <q-item-side icon="chat" />
-          <q-item-main label="Gitter Channel" sublabel="Quasar Lobby" />
-        </q-item>
-        <q-item @click="launch('https://twitter.com/quasarframework')">
-          <q-item-side icon="rss feed" />
-          <q-item-main label="Twitter" sublabel="@quasarframework" />
-        </q-item>
+        </q-item>-->
+        
         
       </q-list>
     </div>
-    <router-view />
+    <div class="container">
+        <router-view />
+    </div>
+    
   </q-layout>
   </div>
 </template>
@@ -82,3 +126,12 @@ export default {
   }
 }
 </script>
+<style>
+    body {
+        background-color: lightblue;
+    }
+    .container {
+        margin: 20px;
+    }
+
+</style>
