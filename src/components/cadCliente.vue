@@ -4,14 +4,18 @@
       
       <q-field
         icon="person"
-        class="col-md-6" 
       >
         <q-input v-model="text" float-label="Nome" clearable />
       </q-field>
 
       <q-field
+        icon="confirmation_number"
+      >
+        <q-input v-model="text" float-label="CPF/CNPJ" clearable />
+      </q-field>
+
+      <q-field
         icon="email"
-        class="col-md-6"
         helper="digite um email válido"
       >
         <q-input v-model="text" 

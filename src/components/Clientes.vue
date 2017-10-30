@@ -1,8 +1,33 @@
 <template>
 <div id="clientes">
   <h5>Cadastro de Pessoas</h5>
-
-    <!--
+    
+    <q-data-table
+      :data="table"
+      :config="config"
+      :columns="columns"
+      @refresh="refresh"
+      @selection="selection"
+      @rowclick="rowClick"
+      style="background-color:white;"
+    >
+      <div slot="selection" scope="props">
+        <q-btn flat color="primary" @click="changeMessage(props)">
+          <q-icon name="edit" />
+        </q-btn>
+        <q-btn flat color="primary" @click="deleteRow(props)">
+          <q-icon name="delete" />
+        </q-btn>
+      </div>
+    </q-data-table>
+    
+    <q-fixed-position corner="bottom-right" :offset="[18, 18]">
+        <q-btn round color="primary" @click="$router.push('/cadcliente')">
+            <q-icon name="add" />
+        </q-btn>
+    </q-fixed-position>
+    
+    
     <q-collapsible
       label="Opções"
       sublabel="Altere as opções de tabela"
@@ -24,10 +49,10 @@
         :label-width="4"
       >
         <div class="column group" style="margin: -5px -7px">
-          <q-checkbox v-model="config.refresh" label="Atualizar tabela" />
-          <!--<q-checkbox v-model="config.columnPicker" label="Column Picker" />--
+          <q-checkbox v-model="config.refresh" label="Atualizar tabela (refresh)" />
+          <!--<q-checkbox v-model="config.columnPicker" label="Column Picker" />-->
           <q-checkbox v-model="pagination" label="Paginação" />
-          <!--<q-checkbox v-model="config.responsive" label="Responsiva" />--
+          <q-checkbox v-model="config.responsive" label="Responsiva" />
           <q-checkbox v-model="config.noHeader" label="Sem Cabeçário" />
         </div>
       </q-field>
@@ -75,7 +100,7 @@
             {label: '2', value: 2}
           ]"
         />
-      </q-field>--
+      </q-field>-->
 
       <q-field
         icon="format_line_spacing"
@@ -106,34 +131,7 @@
           <q-slider class="col" v-model="bodyHeight" :min="100" :max="700" label-always :disable="bodyHeightProp === 'auto'" :label-value="`${bodyHeight}px`" />
         </div>
       </q-field>
-    </q-collapsible>-->
-
-    <q-data-table
-      :data="table"
-      :config="config"
-      :columns="columns"
-      @refresh="refresh"
-      @selection="selection"
-      @rowclick="rowClick"
-      style="background-color:white;"
-    >
-      
-
-      <div slot="selection" scope="props">
-        <q-btn flat color="primary" @click="changeMessage(props)">
-          <q-icon name="edit" />
-        </q-btn>
-        <q-btn flat color="primary" @click="deleteRow(props)">
-          <q-icon name="delete" />
-        </q-btn>
-      </div>
-    </q-data-table>
-    
-    <q-fixed-position corner="bottom-right" :offset="[18, 18]">
-        <q-btn round color="primary" @click="$router.push('/cadcliente')">
-            <q-icon name="add" />
-        </q-btn>
-    </q-fixed-position>
+    </q-collapsible>
   
 </div>
 </template>
@@ -149,17 +147,17 @@ export default {
       table,
       text: 'text',
       config: {
-        title: 'Clientes',
-        refresh: true,
+        title: 'Pessoas',
+        refresh: false,
         noHeader: false,
         columnPicker: true,
         leftStickyColumns: 0,
-        rightStickyColumns: 2,
+        rightStickyColumns: 0,
         bodyStyle: {
           maxHeight: '500px'
         },
         rowHeight: '50px',
-        responsive: true,
+        responsive: false,
         pagination: {
           rowsPerPage: 5,
           options: [5, 10, 15, 30, 50, 500]
@@ -168,42 +166,44 @@ export default {
       },
       columns: [
         {
-          label: 'Data de Cadastro',
-          field: 'isodate',
+          label: 'Nome',
+          field: 'name',
           width: '110px',
           classes: 'bg-orange-2',
+          sort: true,
           filter: true,
-          sort (a, b) {
+          type: 'string',
+          /* sort (a, b) {
             return (new Date(a)) - (new Date(b))
           },
           format (value) {
             return new Date(value).toLocaleString()
-          }
+          }*/
         },
-        /*{
-          label: 'Service',
-          field: 'serviceable',
+        {
+          label: 'Tipo',
+          field: 'gender',
           format (value) {
-            if (value === 'Informational') {
-              return '<i class="material-icons text-positive" style="font-size: 22px">info</i>'
+            if (value === 'male') {
+              return '<i class="material-icons">account_circle</i>'
             }
-            return value
+            return '<i class="material-icons">business_center</i>'
           },
           width: '70px'
-        },*/
+        },
         
         {
-          label: 'Nome',
-          field: 'message',
+          label: 'CPF',
+          field: 'birth_year',
           filter: true,
           sort: true,
           type: 'string',
-          width: '500px'
+          width: '100px'
         },
         
         {
           label: 'Endereço',
-          field: 'source',
+          field: 'homeworld',
           filter: true,
           sort: true,
           type: 'string',
@@ -211,8 +211,9 @@ export default {
         },
         {
           label: 'Telefone',
-          field: 'log_number',
+          field: 'height',
           sort: true,
+          filter: true,
           type: 'string',
           width: '100px'
         }
