@@ -1,6 +1,6 @@
 <template>
 <div id="clientes">
-  <h5>Cadastro de Pessoas</h5>
+  <h5>Lista de Pessoas</h5>
     
     <q-data-table
       :data="table"
