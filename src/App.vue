@@ -128,7 +128,7 @@ export default {
 </script>
 <style>
     body {
-        background-color: lightblue;
+        background-color: aliceblue;
     }
     .container {
         margin: 20px;

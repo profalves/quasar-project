@@ -5,7 +5,7 @@
     <q-data-table
       :data="table"
       :config="config"
-      :columns="columns"
+      :columns="colunas"
       @refresh="refresh"
       @selection="selection"
       @rowclick="rowClick"
@@ -30,19 +30,21 @@
     
     <q-collapsible
       label="Opções"
-      sublabel="Altere as opções de tabela"
+      icon="settings"
       style="margin-bottom: 25px; 
              background-color:white;"
       class="shadow-2"
     >
-      <q-field
+        
+      <!--<q-field
         icon="title"
         label="Nome da Tabela"
         :label-width="4"
       >
         <q-input v-model="config.title" />
-      </q-field>
+      </q-field>-->
 
+        
       <q-field
         icon="widgets"
         label="Recursos"
@@ -50,7 +52,7 @@
       >
         <div class="column group" style="margin: -5px -7px">
           <q-checkbox v-model="config.refresh" label="Atualizar tabela (refresh)" />
-          <!--<q-checkbox v-model="config.columnPicker" label="Column Picker" />-->
+          <q-checkbox v-model="config.columnPicker" label="Selecionar colunas" />
           <q-checkbox v-model="pagination" label="Paginação" />
           <q-checkbox v-model="config.responsive" label="Responsiva" />
           <q-checkbox v-model="config.noHeader" label="Sem Cabeçário" />
@@ -147,10 +149,10 @@ export default {
       table,
       text: 'text',
       config: {
-        title: 'Pessoas',
+        title: '',
         refresh: false,
         noHeader: false,
-        columnPicker: true,
+        columnPicker: false,
         leftStickyColumns: 0,
         rightStickyColumns: 0,
         bodyStyle: {
@@ -164,11 +166,11 @@ export default {
         },
         selection: 'multiple'
       },
-      columns: [
+      colunas: [
         {
           label: 'Nome',
           field: 'name',
-          width: '110px',
+          width: '150px',
           classes: 'bg-orange-2',
           sort: true,
           filter: true,
@@ -183,13 +185,14 @@ export default {
         {
           label: 'Tipo',
           field: 'gender',
+          //filter: 'true',
           format (value) {
             if (value === 'male') {
-              return '<i class="material-icons">account_circle</i>'
+              return '<i class="material-icons">account_circle</i> - Cliente'
             }
-            return '<i class="material-icons">business_center</i>'
+            return '<i class="material-icons">business_center</i> - Fornecedor'
           },
-          width: '70px'
+          width: '50px'
         },
         
         {
@@ -220,7 +223,7 @@ export default {
       ],
       pagination: true,
       rowHeight: 50,
-      bodyHeightProp: 'maxHeight',
+      bodyHeightProp: 'auto',
       bodyHeight: 500
     }
   },
