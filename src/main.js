@@ -26,6 +26,11 @@ import 'quasar-extras/material-icons'
 import 'quasar-extras/fontawesome'
 // import 'quasar-extras/animate'
 
+import Vuelidate from 'vuelidate'
+Vue.use(Vuelidate)
+
+import VueMask from 'v-mask'
+Vue.use(VueMask);
 
 Quasar.start(() => {
   /* eslint-disable no-new */

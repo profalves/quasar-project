@@ -1,7 +1,17 @@
 <template>
 <div id="clientes">
   <h5>Lista de Pessoas</h5>
-    
+  <!-- Botão ADD -->
+    <q-fixed-position class="over" corner="bottom-right" :offset="[18, 18]">
+        <q-btn 
+
+           round
+           color="primary" 
+           @click="$router.push('/cadcliente')">
+           <q-icon name="add" />
+        </q-btn>
+    </q-fixed-position>
+  <div id="table">
     <div class="row">
         <q-field
             label="Tipo"
@@ -33,21 +43,14 @@
       </div>
     </q-data-table>
     
-    <q-fixed-position corner="bottom-right" :offset="[18, 18]">
-        <q-btn 
-           round
-           color="primary" 
-           @click="$router.push('/cadcliente')">
-           <q-icon name="add" />
-        </q-btn>
-    </q-fixed-position>
+   
     
-    
+    <!-- Configurações -->
     <q-collapsible
       label="Opções"
       icon="settings"
-      style="margin-bottom: 25px; 
-             background-color:white;"
+      style="background-color:white;
+             margin-bottom:100px;"
       class="shadow-2"
     >
         
@@ -149,7 +152,7 @@
         </div>
       </q-field>
     </q-collapsible>
-  
+  </div>
 </div>
 </template>
 
@@ -162,7 +165,7 @@ export default {
   data () {
     return {
       table,
-      tipo: '',
+      tipo: 'c',
       tipos: [
         {
           label: 'Cliente',
@@ -315,4 +318,6 @@ export default {
   padding 5px
   border-radius 3px
   display inline-block
+.over
+  z-index 5
 </style>
