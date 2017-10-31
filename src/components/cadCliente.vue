@@ -95,9 +95,10 @@
             icon="email"
             helper="Digite um email válido"
           >
-            <q-input v-model="email" 
-                     type="email" 
-                     float-label="Email" suffix="@email.com"/>
+            <q-input 
+                 v-model="email" 
+                 type="email" 
+                 float-label="Email" suffix="@email.com"/>
           </q-field>   
         </div>
     </div>
@@ -404,7 +405,7 @@ export default {
           this.estado = this.getCep.estado.toLowerCase()
       })
       .catch(e => {
-          console.log(e)
+          console.log(e.data)
       })
     
       
@@ -413,15 +414,15 @@ export default {
       window.history.go(-1)
     },
     limpar () {
-      this.nome = '',
-      this.cpf = '',
-      this.fone = '',
-      this.email = '',
-      this.cep = '',
-      this.end = '',
-      this.bairro = '',
-      this.cidade = '',
-      this.estado = '',
+      this.nome = ''
+      this.cpf = ''
+      this.fone = ''
+      this.email = ''
+      this.cep = ''
+      this.end = ''
+      this.bairro = ''
+      this.cidade = ''
+      this.estado = ''
       this.numLogradouro = '' 
     },
     listarCidades(){
