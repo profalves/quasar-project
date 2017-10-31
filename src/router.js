@@ -27,7 +27,7 @@ export default new VueRouter({
     { path: '/clientes', component: load('Clientes') },
     { path: '/cadcliente', component: load('cadCliente') },
     { path: '/produtos', component: load('Produtos') },
-    { path: '/cadproduto', component: load('cadProdutos') },
+    { path: '/cadproduto', component: load('cadProduto') },
     { path: '/contas', component: load('Contas') },
     { path: '/entradanfe', component: load('EntradasNFe') },
     { path: '/relatorios', component: load('Relatorios') },

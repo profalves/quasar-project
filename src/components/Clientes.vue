@@ -201,7 +201,7 @@ export default {
           label: 'Nome',
           field: 'name',
           width: '150px',
-          classes: 'bg-orange-2',
+          //classes: 'bg-orange-2',
           sort: true,
           filter: true,
           type: 'string',

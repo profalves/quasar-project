@@ -42,6 +42,7 @@ import {
   QFab,
   QFabAction,
   QFixedPosition,
+  QAjaxBar,
   Dialog,
   Toast,
   clone
@@ -90,6 +91,7 @@ const imports = {
   QFab,
   QFabAction,
   QFixedPosition,
+  QAjaxBar,
   Dialog,
   Toast,
   clone

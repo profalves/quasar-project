@@ -1,15 +1,16 @@
 <template>
 <div id="clientes">
-    <h5>Cadastro de Pessoa</h5>
     
-    <div class="row" style="margin-bottom:20px">
+    <div style="margin-top:50px"></div>
+    
+    <div class="row topo" style="margin-bottom:20px">
       <q-btn
         v-if="canGoBack"
         color="primary"
         push
         @click="goBack"
-        icon="keyboard_arrow_left"
       >
+        <i class="material-icons">arrow_back</i>
       </q-btn>
       
       <q-btn
@@ -52,14 +53,16 @@
     
     <!-- formulário -->
     <div class="row">
-        <q-field
-            label="Tipo"
-          >
-            <q-select
-                v-model="tipo"
-                :options="tipos"
-            />
-        </q-field>   
+        <div class="col-4">
+            <q-field
+                label="Tipo"
+              >
+                <q-select
+                    v-model="tipo"
+                    :options="tipos"
+                />
+            </q-field>
+        </div>
     </div>
     
     <div class="row">
@@ -67,15 +70,15 @@
           <q-field
             icon="person"
           >
-            <q-input v-model.trim="name" 
+            <q-input v-model.trim="nome" 
                      float-label="Nome" 
                      clearable
-                     @input="$v.name.$touch()"
-                     :error="$v.name.$error"
+                     @input="$v.nome.$touch()"
+                     :error="$v.nome.$error"
             />
             
-             <!--<span v-if="!$v.name.required">Nome é obrigatório</span>-->
-             <span style="color:red" v-if="!$v.name.minLength">Nome é obrigatório e deve conter mais que  {{$v.name.$params.minLength.min}} caracteres.</span>
+             <span style="color:grey" v-if="!$v.nome.required">Nome é requerido</span>
+             <span v-if="!$v.nome.minLength">Este campo deve conter mais que {{$v.nome.$params.minLength.min}} caracteres.</span>
             
           </q-field>   
         </div>
@@ -86,14 +89,26 @@
           <q-field
             icon="confirmation_number"
           >
-            <q-input v-model="cpf" float-label="CPF/CNPJ" clearable />
+            <q-input v-model.number="cpf" 
+                     float-label="CPF/CNPJ"
+                     type="number"
+                     clearable
+                     @input="$v.cpf.$touch()"
+                     :error="$v.cpf.$error"
+            />
+              
+            <span v-if="!$v.cpf.minLength || !$v.cpf.maxLength">Este campo  deve conter entre {{$v.cpf.$params.minLength.min}} e {{$v.cpf.$params.maxLength.max}} caracteres.</span>
           </q-field>   
         </div>
+        
         <div class="col-md-6">
           <q-field
             icon="phone"
           >
-            <q-input v-model="fone" float-label="Telefone" v-mask="'(##) #########'" clearable />
+            <q-input v-model.number="fone" 
+                     float-label="Telefone" 
+                     clearable 
+            />
           </q-field>   
         </div>
     </div>  
@@ -112,7 +127,7 @@
                  clearable
             />
              
-             <span style="color:red" v-if="!$v.email.email">Digite um email válido</span>
+             <span v-if="!$v.email.email">Digite um email válido</span>
           </q-field>
              
           
@@ -125,7 +140,16 @@
             icon="markunread_mailbox"
             helper="Clique no botão ao lado para pesquisar o CEP"
           >
-            <q-input v-model="cep" float-label="CEP" @blur="listarCidades"/>
+            <q-input float-label="CEP"
+                     v-model.number="cep"
+                     type="number"
+                     @blur="listarCidades"
+                     clearable
+                     @input="$v.cep.$touch()"
+                     :error="$v.cep.$error"
+            />
+            <span v-if="!$v.cep.maxLength">Quantidade de números superior ao de um cep</span>
+            
           </q-field>   
         </div>
         <div class="col">
@@ -197,7 +221,7 @@
         </div>
         
     </div>
-   <br> 
+   
    
 </div>
     
@@ -206,8 +230,9 @@
 <script>
 import axios from 'axios'
 import swal from 'sweetalert'
+import VMasker from 'vanilla-masker'
 import estados from 'data/estados.json'
-import { required, minLength, maxLength, email, between } from 'vuelidate/lib/validators'
+import { required, minLength, maxLength, email } from 'vuelidate/lib/validators'
     
 //const APICidades = 'http://educacao.dadosabertosbr.com/api/cidades/'
 const APICidades = 'http://192.168.0.200/celular/api/cidades/consulta?uf='
@@ -217,7 +242,7 @@ export default {
   data () {
     return {
         estados,
-        name: '',
+        nome: '',
         cpf: '',
         fone: '',
         email: '',
@@ -227,7 +252,7 @@ export default {
         cidade: '',
         estado: '',
         numLogradouro: '',
-        tipo: '',
+        tipo: 'c',
         tipos: [
             {
               label: 'Cliente',
@@ -244,46 +269,55 @@ export default {
         getCep: []
     }
   },
+  watch: {
+    'fone' (newVal, oldVal) {
+      this.fone = VMasker.toNumber(newVal)
+      this.fone = VMasker.toPattern(newVal, '(99) 999999999')
+    },
+    'cep' (newVal, oldVal) {
+      this.cep = VMasker.toNumber(newVal)
+      this.cep = VMasker.toPattern(newVal, '99999999')
+    },
+  },
   validations: {
-    name: {
+    nome: {
       required,
       minLength: minLength(3)
     },
     cpf: {
-      required,
       minLength: minLength(11),
-      maxLength: maxLength(14)
+      maxLength: maxLength(14)  
+    },
+    cep: {
+      maxLength: maxLength(8)  
     },
     email: { 
       email  
     }
+    
   },
   methods: {
     buscarCep(){
       axios.get('http://api.postmon.com.br/v1/cep/' + this.cep)
       .then((res)=>{
           this.getCep = res.data
-          console.log(res.data)
+          this.estado = this.getCep.estado.toLowerCase()
           this.end = this.getCep.logradouro
           this.bairro = this.getCep.bairro
           this.cep = this.getCep.cep
-          this.estado = this.getCep.estado.toLowerCase()
           this.listarCidades()
           this.cidade = this.getCep.cidade
-          
+          console.log(res.data)
       })
-      .catch(e => {
+      .catch((e)=>{
         swal(
           'Oops...',
           'CEP inexistente!',
           'error'
         )
         this.cep = ''
-      })
-    
-      this.listarCidades()
-      this.cidade = this.getCep.cidade
-      
+        console.log(e)
+      })  
     },
     goBack(){
       window.history.go(-1)
@@ -306,13 +340,14 @@ export default {
         this.cidades = res.data
         console.log(res.data)
       })
-    }
+    },
+    
   }
+ 
 }
 </script>
 
 <style scoped>
-
 
     select {
       font-family: inherit;
@@ -365,6 +400,19 @@ export default {
       color: red;
       font-size: 13px
     }
+    
+    .topo {
+        margin-top: 50px;
+		
+		padding: 10px 10px;
+		width: 100%; 
+		position: fixed;
+		top: 0; 
+        left: 0;
+		
+		text-align: center;
+        z-index: 5;
+	}
 
     
 </style>
