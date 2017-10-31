@@ -249,6 +249,10 @@
 <script>
 import axios from 'axios'
 //import {estados} from 'data/estados.json'
+    
+const API_Cidades = 'http://educacao.dadosabertosbr.com/api/cidades/'
+//const API_Cidades = 'http://192.168.0.200/celular/api/cidades/consulta?uf='
+
 export default {
   name: 'clientes',
   data () {
@@ -426,7 +430,7 @@ export default {
       this.numLogradouro = '' 
     },
     listarCidades(){
-      axios.get('http://192.168.0.200/celular/api/cidades/consulta?uf=' + this.estado)
+      axios.get(API_Cidades + this.estado)
       .then((res)=>{
         this.cidades = res.data
         console.log(res.data)

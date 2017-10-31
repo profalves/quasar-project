@@ -2,6 +2,18 @@
 <div id="clientes">
   <h5>Lista de Pessoas</h5>
     
+    <div class="row">
+        <q-field
+            label="Tipo"
+          >
+            <q-select
+                v-model="tipo"
+                :options="tipos"
+            />
+        </q-field>   
+    </div>
+    
+    
     <q-data-table
       :data="table"
       :config="config"
@@ -150,6 +162,18 @@ export default {
   data () {
     return {
       table,
+      tipo: '',
+      tipos: [
+        {
+          label: 'Cliente',
+          value: 'c'
+        },
+        {
+          label: 'Fornecedor',
+          value: 'f'
+        },
+
+      ],
       text: 'text',
       config: {
         title: '',
