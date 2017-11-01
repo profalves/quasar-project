@@ -4,7 +4,6 @@
   <!-- Botão ADD -->
     <q-fixed-position class="over" corner="bottom-right" :offset="[18, 18]">
         <q-btn 
-
            round
            color="primary" 
            @click="$router.push('/cadcliente')">

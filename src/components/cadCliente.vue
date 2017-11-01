@@ -87,24 +87,25 @@
     <div class="row">
         <div class="col-md-6">
           <q-field
-            stacked-label="doc"
-            icon="confirmation_number"
+            icon="done"
+            helper="CPF/CNPJ"
           >
             <the-mask class="mdInput"
                       float-label="Nome" 
-                      :mask="['###.###.###-##', '##.###.###/####-##']" 
-                      placeholder="CPF/CNPJ"/>
+                      :mask="['###.###.###-##', '##.###.###/####-##']"
+                      />
           </q-field>   
         </div>
         
         <div class="col-md-6">
           <q-field
             icon="phone"
+            helper="Fone"
           >
-            <q-input v-model.number="fone" 
-                     float-label="Telefone" 
-                     clearable 
-            />
+            <the-mask class="mdInput"
+                      float-label="Nome" 
+                      :mask="['(##) ####-####', '(##) #####-####']"
+                      />
           </q-field>   
         </div>
     </div>  
@@ -143,6 +144,7 @@
                      clearable
                      @input="$v.cep.$touch()"
                      :error="$v.cep.$error"
+                     ref="cep"
             />
             <span v-if="!$v.cep.maxLength">Quantidade de números superior ao de um cep</span>
             
@@ -154,8 +156,10 @@
              color="primary"  
              round
              @click="buscarCep"
+             :disabled="visivel"
           >
-          </q-btn>   
+          </q-btn>
+          <span id="avisoCep" v-if="visivel">Offline</span>
         </div>
     </div>
     
@@ -189,7 +193,7 @@
     <div class="row">
         <div class="col-md-4">
           <q-field
-            icon="star"
+            icon="domain"
           >
             <q-select
                 float-label="Estado/Cidade"
@@ -264,7 +268,9 @@ export default {
         ],
         cidades: [],
         canGoBack: window.history.length > 1,
-        getCep: []
+        getCep: [],
+        error: '',
+        visivel: false
     }
   },
   computed: {
@@ -302,34 +308,35 @@ export default {
     
   },
   methods: {
-    _updateMask (ev) {
-        console.log(ev.target.value)
-        if (ev.target.value.length > 14) {
-          this.mask = '99.999.999/9999-99'
-        } else {
-          this.mask = '999.999.999-999'
-        }
-    },
     buscarCep(){
       axios.get('http://api.postmon.com.br/v1/cep/' + this.cep)
       .then((res)=>{
-          console.log(res.data)
+          //console.log(res.data)
           this.getCep = res.data
           this.estado = this.getCep.estado.toLowerCase()
+          this.listarCidades()
           this.end = this.getCep.logradouro
           this.bairro = this.getCep.bairro
           this.cep = this.getCep.cep
-          this.listarCidades()
           this.cidade = this.getCep.cidade
           
       })
       .catch((e)=>{
         Dialog.create({
           title: 'CEP inexistente',
-          message: 'Digite um CEP válido'
+          message: 'Digite um CEP válido',
+          buttons: [
+            {
+              label: 'Ok',
+              raised: true,
+              color: 'info'
+            }
+          ]
         })
         this.cep = ''
-        console.log(e)
+        this.$refs.cep.focus();
+        this.error = e
+        //console.log(e)
       })  
     },
     goBack(){
@@ -347,15 +354,11 @@ export default {
       this.estado = ''
       this.numLogradouro = '' 
     },
-    listarCidades(){
-      axios.get(APICidades + this.estado)
-      .then((res)=>{
-        this.cidades = res.data
-        console.log(res.data)
-      })
-    },
     salvar(){
-      
+        Toast.create.positive({
+        html: 'Salvo com sucesso',
+        icon: 'done'
+      })
     },
     excluir(){
         Dialog.create({
@@ -364,19 +367,61 @@ export default {
           buttons: [
             {
               label: 'Não! Cancela',
+              color: 'negative',
+              raised: true,
+              style: 'margin-top: 20px',
               handler () {
                 Toast.create('Cancelado...')
               }
             },
             {
               label: 'Sim! Pode excluir',
+              color: 'positive',
+              raised: true,
+              style: 'margin-top: 20px',
               handler () {
                 Toast.create('Excluído!')
               }
             }
           ]
         })
-    }
+    },
+    listarCidades(){
+      axios.get(APICidades + this.estado)
+      .then((res)=>{
+        this.cidades = res.data
+        //console.log(res)
+      })
+    },
+    testarConexao(){
+      axios.get('http://api.postmon.com.br/v1/cep/01001000')
+      .then((res)=>{
+        console.log(res)
+      })
+      .catch((e)=>{
+        /*Dialog.create({
+          title: 'Erro',
+          message: 'dispositivo offLine',
+          buttons: [
+            {
+              label: 'Ok',
+              raised: true,
+              color: 'info'
+            }
+          ]
+        })*/
+        this.visivel = true
+        this.error = e
+        //console.log(e)
+      })
+             
+    },
+    
+  },
+  created(){
+    let t = this
+    t.listarCidades()
+    t.testarConexao()
     
   }
  
@@ -449,16 +494,19 @@ export default {
 	}
     
     .mdInput {
-        margin-top: 17px;
-        width: 95%;
+        /*margin-top: 10px;
+        width: 90%;*/
         background:transparent;
         outline:none;
-        border-top: 0px;
-        border-left: 0px;
-        border-right: 0px;
-        border-bottom-color: #D3DAE0;
-        
-                       
+        border: 0px;
+        /*border-bottom-color: #D3DAE0;*/
     }
+    
+    #avisoCep {
+        font-weight: bolder;
+        font-size: 16px;
+        color: slategrey;
+    }
+    
     
 </style>
