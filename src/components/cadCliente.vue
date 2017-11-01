@@ -87,17 +87,13 @@
     <div class="row">
         <div class="col-md-6">
           <q-field
+            stacked-label="doc"
             icon="confirmation_number"
           >
-            <q-input v-model.number="cpf" 
-                     float-label="CPF/CNPJ"
-                     type="number"
-                     clearable
-                     @input="$v.cpf.$touch()"
-                     :error="$v.cpf.$error"
-            />
-              
-            <span v-if="!$v.cpf.minLength || !$v.cpf.maxLength">Este campo  deve conter entre {{$v.cpf.$params.minLength.min}} e {{$v.cpf.$params.maxLength.max}} caracteres.</span>
+            <the-mask class="mdInput"
+                      float-label="Nome" 
+                      :mask="['###.###.###-##', '##.###.###/####-##']" 
+                      placeholder="CPF/CNPJ"/>
           </q-field>   
         </div>
         
@@ -221,21 +217,7 @@
         </div>
         
     </div>
-    <div class="row">
-        <label>Estados</label>
-        <select>
-            <option v-for="cidade in listaEstados">{{cidade.nome}}
-            </option>
-        </select>
-        <label>Cidades</label>
-        <select>
-            <option v-for="cidade in listaEstados">{{cidade.cidades.cidade}}
-            </option>
-        </select>
-        
-    </div>
-   
-   
+    
 </div>
     
 </template>
@@ -246,8 +228,8 @@ import VMasker from 'vanilla-masker'
 import estados from 'data/estados.json'
 import cidadesJSON from 'data/estados-cidades.json'
 import { required, minLength, maxLength, email } from 'vuelidate/lib/validators'
+import { Dialog, Toast } from 'quasar'
 
-//const swal = require('sweetalert')
 
 //const APICidades = 'http://educacao.dadosabertosbr.com/api/cidades/'
 const APICidades = 'http://192.168.0.200/celular/api/cidades/consulta?uf='
@@ -266,7 +248,7 @@ export default {
         end: '',
         bairro: '',
         cidade: '',
-        estado: '',
+        estado: 'ba',
         numLogradouro: '',
         tipo: 'c',
         tipos: [
@@ -291,9 +273,6 @@ export default {
       // `this` aponta para a instância Vue da variável `vm`
       return this.cidadesJSON.estados
     },
-    listaCidades: function () {
-      return this.cidadesJSON.estados.cidades
-    }
   },
   watch: {
     'fone' (newVal, oldVal) {
@@ -311,7 +290,7 @@ export default {
       minLength: minLength(3)
     },
     cpf: {
-      minLength: minLength(11),
+      minLength: minLength(10),
       maxLength: maxLength(14)  
     },
     cep: {
@@ -323,9 +302,18 @@ export default {
     
   },
   methods: {
+    _updateMask (ev) {
+        console.log(ev.target.value)
+        if (ev.target.value.length > 14) {
+          this.mask = '99.999.999/9999-99'
+        } else {
+          this.mask = '999.999.999-999'
+        }
+    },
     buscarCep(){
       axios.get('http://api.postmon.com.br/v1/cep/' + this.cep)
       .then((res)=>{
+          console.log(res.data)
           this.getCep = res.data
           this.estado = this.getCep.estado.toLowerCase()
           this.end = this.getCep.logradouro
@@ -333,14 +321,13 @@ export default {
           this.cep = this.getCep.cep
           this.listarCidades()
           this.cidade = this.getCep.cidade
-          console.log(res.data)
+          
       })
       .catch((e)=>{
-        swal(
-          'Oops...',
-          'CEP inexistente!',
-          'error'
-        )
+        Dialog.create({
+          title: 'CEP inexistente',
+          message: 'Digite um CEP válido'
+        })
         this.cep = ''
         console.log(e)
       })  
@@ -368,41 +355,26 @@ export default {
       })
     },
     salvar(){
-      swal(
-          'Salvo',
-          'registro salvo com sucesso!',
-          'success'
-      )  
+      
     },
     excluir(){
-      swal({
-          title: 'Você tem certeza que deseja excluir?',
-          text: "Depois que o fizer não será mais revertido!",
-          type: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Sim, pode excluir!',
-          cancelButtonText: 'Não, cancela!',
-          /*confirmButtonClass: 'btn btn-success',
-          cancelButtonClass: 'btn btn-danger',*/
-          buttonsStyling: true
-        }).then(function () {
-          swal(
-            'Deletado!',
-            'Registro excluido com sucesso',
-            'success'
-          )
-        }, function (dismiss) {
-          // dismiss can be 'cancel', 'overlay',
-          // 'close', and 'timer'
-          if (dismiss === 'cancel') {
-            swal(
-              'cancelaado',
-              'Nenhuma exclusão será realizada',
-              'error'
-            )
-          }
+        Dialog.create({
+          title: 'Excluir',
+          message: 'Tem certeza que deseja excluir este registro?',
+          buttons: [
+            {
+              label: 'Não! Cancela',
+              handler () {
+                Toast.create('Cancelado...')
+              }
+            },
+            {
+              label: 'Sim! Pode excluir',
+              handler () {
+                Toast.create('Excluído!')
+              }
+            }
+          ]
         })
     }
     
@@ -462,21 +434,31 @@ export default {
 
     span {
       color: red;
-      font-size: 13px
+      font-size: 12px
     }
     
     .topo {
         margin-top: 50px;
-		
 		padding: 10px 10px;
 		width: 100%; 
 		position: fixed;
 		top: 0; 
         left: 0;
-		
 		text-align: center;
         z-index: 5;
 	}
-
+    
+    .mdInput {
+        margin-top: 17px;
+        width: 95%;
+        background:transparent;
+        outline:none;
+        border-top: 0px;
+        border-left: 0px;
+        border-right: 0px;
+        border-bottom-color: #D3DAE0;
+        
+                       
+    }
     
 </style>

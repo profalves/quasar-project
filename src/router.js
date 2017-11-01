@@ -33,6 +33,7 @@ export default new VueRouter({
     { path: '/relatorios', component: load('Relatorios') },
     { path: '/usuarios', component: load('Usuarios') },
     { path: '/login', component: load('Login') },
+    { path: '/dialog', component: load('Dialogs') },
 
     // Always leave this last one
     { path: '*', component: load('Error404') }, // Not found

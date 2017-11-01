@@ -29,8 +29,11 @@ import 'quasar-extras/fontawesome'
 import Vuelidate from 'vuelidate'
 Vue.use(Vuelidate)
 
-import VueMask from 'v-mask'
-Vue.use(VueMask);
+import VMasker from 'vanilla-masker'
+Vue.use(VMasker);
+
+import VueTheMask from 'vue-the-mask'
+Vue.use(VueTheMask)
 
 Quasar.start(() => {
   /* eslint-disable no-new */
