@@ -197,6 +197,21 @@ export default {
       },
       colunas: [
         {
+          label: 'Data',
+          field: 'created',
+          width: '150px',
+          //classes: 'bg-orange-2',
+          sort: true,
+          filter: true,
+          type: 'string',
+          /* sort (a, b) {
+            return (new Date(a)) - (new Date(b))
+          },
+          format (value) {
+            return new Date(value).toLocaleString()
+          }*/
+        },
+        {
           label: 'Descrição',
           field: 'name',
           width: '150px',
