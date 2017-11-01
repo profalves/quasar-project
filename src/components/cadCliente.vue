@@ -247,6 +247,8 @@ import estados from 'data/estados.json'
 import cidadesJSON from 'data/estados-cidades.json'
 import { required, minLength, maxLength, email } from 'vuelidate/lib/validators'
 
+//const swal = require('sweetalert')
+
 //const APICidades = 'http://educacao.dadosabertosbr.com/api/cidades/'
 const APICidades = 'http://192.168.0.200/celular/api/cidades/consulta?uf='
 
