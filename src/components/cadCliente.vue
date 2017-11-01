@@ -16,7 +16,7 @@
       <q-btn
         color="negative"
         push big
-        @click=""
+        @click="excluir"
       >
         <i class="material-icons">delete</i>
       </q-btn>
@@ -43,7 +43,7 @@
       <q-btn
         color="positive"
         push big
-        @click=""
+        @click="salvar"
         
       >
         <i class="material-icons">done</i>
@@ -221,6 +221,19 @@
         </div>
         
     </div>
+    <div class="row">
+        <label>Estados</label>
+        <select>
+            <option v-for="cidade in listaEstados">{{cidade.nome}}
+            </option>
+        </select>
+        <label>Cidades</label>
+        <select>
+            <option v-for="cidade in listaEstados">{{cidade.cidades.cidade}}
+            </option>
+        </select>
+        
+    </div>
    
    
 </div>
@@ -229,11 +242,11 @@
 
 <script>
 import axios from 'axios'
-import swal from 'sweetalert'
 import VMasker from 'vanilla-masker'
 import estados from 'data/estados.json'
+import cidadesJSON from 'data/estados-cidades.json'
 import { required, minLength, maxLength, email } from 'vuelidate/lib/validators'
-    
+
 //const APICidades = 'http://educacao.dadosabertosbr.com/api/cidades/'
 const APICidades = 'http://192.168.0.200/celular/api/cidades/consulta?uf='
 
@@ -242,6 +255,7 @@ export default {
   data () {
     return {
         estados,
+        cidadesJSON,
         nome: '',
         cpf: '',
         fone: '',
@@ -267,6 +281,16 @@ export default {
         cidades: [],
         canGoBack: window.history.length > 1,
         getCep: []
+    }
+  },
+  computed: {
+    // uma função "getter" computada (computed getter)
+    listaEstados: function () {
+      // `this` aponta para a instância Vue da variável `vm`
+      return this.cidadesJSON.estados
+    },
+    listaCidades: function () {
+      return this.cidadesJSON.estados.cidades
     }
   },
   watch: {
@@ -341,6 +365,44 @@ export default {
         console.log(res.data)
       })
     },
+    salvar(){
+      swal(
+          'Salvo',
+          'registro salvo com sucesso!',
+          'success'
+      )  
+    },
+    excluir(){
+      swal({
+          title: 'Você tem certeza que deseja excluir?',
+          text: "Depois que o fizer não será mais revertido!",
+          type: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Sim, pode excluir!',
+          cancelButtonText: 'Não, cancela!',
+          /*confirmButtonClass: 'btn btn-success',
+          cancelButtonClass: 'btn btn-danger',*/
+          buttonsStyling: true
+        }).then(function () {
+          swal(
+            'Deletado!',
+            'Registro excluido com sucesso',
+            'success'
+          )
+        }, function (dismiss) {
+          // dismiss can be 'cancel', 'overlay',
+          // 'close', and 'timer'
+          if (dismiss === 'cancel') {
+            swal(
+              'cancelaado',
+              'Nenhuma exclusão será realizada',
+              'error'
+            )
+          }
+        })
+    }
     
   }
  
