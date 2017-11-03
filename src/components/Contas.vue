@@ -228,7 +228,7 @@ export default {
         },
         {
           label: 'Tipo',
-          field: 'gender',
+          field: 'rotation_period',
           //filter: 'true',
           format (value) {
             if (value === 'male') {
@@ -241,7 +241,7 @@ export default {
         
         {
           label: 'Categoria',
-          field: 'birth_year',
+          field: 'climate',
           filter: true,
           sort: true,
           type: 'string',
@@ -250,7 +250,7 @@ export default {
         
         {
           label: 'SubCategoria',
-          field: 'homeworld',
+          field: 'terrain',
           filter: true,
           sort: true,
           type: 'string',
@@ -258,7 +258,7 @@ export default {
         },
         {
           label: 'Total',
-          field: 'height',
+          field: 'diameter',
           sort: true,
           filter: true,
           type: 'string',
