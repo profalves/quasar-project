@@ -83,11 +83,14 @@ export default {
       }
      },
      importarDanfe() {
+        this.bloqueado = true
+        this.danfe = ''
         Toast.create.positive({
         html: 'Nota importada com sucesso',
-        icon: 'done' 
+        icon: 'done'
         })
      },
+     
   }
 }
 </script>

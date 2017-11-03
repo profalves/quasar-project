@@ -229,7 +229,8 @@ export default {
         {
           label: 'Tipo',
           field: 'rotation_period',
-          //filter: 'true',
+          filter: 'true',
+          sort: true,
           format (value) {
             if (value < 24) {
               return '<i class="material-icons text-negative">thumb_down</i> - Despesa'

@@ -209,59 +209,61 @@
         </div>
     </div>
     
-    <!--Data tables HTML-->
-    <h6 style="margin-top:30px">Parcelas</h6>
-    <div class="row" id="table">
-        <table style="margin-top: 30px;" class="q-table" :class="computedClasses">
-          <thead>
-            <tr>
-              <th class="text-left">Vencimento</th>
-              <th class="text-right">Valor Total</th>
-              <th class="text-left">Data Pagto</th>
-              <th class="text-right">Valor Pago</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="text-left">01/01/2018</td>
-              <td class="text-right">$10.11</td>
-              <td class="text-left">01/01/2018</td>
-              <td class="text-right">$10.11</td>
-              <td class="text-center">
-                <q-btn round outline small color="warning" icon="edit"></q-btn>    
-              </td>
-              <td class="text-center">
-                <q-btn round outline small color="negative" icon="delete_forever"></q-btn>  
-              </td>
-            </tr>
-            <tr>
-              <td class="text-left">01/01/2018</td>
-              <td class="text-right">$10.11</td>
-              <td class="text-left">01/01/2018</td>
-              <td class="text-right">$10.11</td>
-              <td class="text-center">
-                <q-btn round outline small color="warning" icon="edit"></q-btn>    
-              </td>
-              <td class="text-center">
-                <q-btn round outline small color="negative" icon="delete_forever"></q-btn>  
-              </td>
-            </tr>
-            <tr>
-              <td class="text-left">01/01/2018</td>
-              <td class="text-right">$10.11</td>
-              <td class="text-left">01/01/2018</td>
-              <td class="text-right">$10.11</td>
-              <td class="text-center">
-                <q-btn round outline small color="warning" icon="edit"></q-btn>    
-              </td>
-              <td class="text-center">
-                <q-btn round outline small color="negative" icon="delete_forever"></q-btn>  
-              </td>
-            </tr>
-          </tbody>
-        </table>  
-        
-    </div>
+    <q-collapsible icon="monetization_on" label="Duplicatas" style="background-color:white">
+        <!--Data tables HTML-->
+        <h6 style="margin-top:30px">Parcelas</h6>
+        <div class="row" id="table">
+            <table style="margin-top: 30px;" class="q-table" :class="computedClasses">
+              <thead>
+                <tr>
+                  <th class="text-left">Vencimento</th>
+                  <th class="text-right">Valor Total</th>
+                  <th class="text-left">Data Pagto</th>
+                  <th class="text-right">Valor Pago</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="text-left">01/01/2018</td>
+                  <td class="text-right">$10.11</td>
+                  <td class="text-left">01/01/2018</td>
+                  <td class="text-right">$10.11</td>
+                  <td class="text-center">
+                    <q-btn round outline small color="warning" icon="edit"></q-btn>    
+                  </td>
+                  <td class="text-center">
+                    <q-btn round outline small color="negative" icon="delete_forever"></q-btn>  
+                  </td>
+                </tr>
+                <tr>
+                  <td class="text-left">01/01/2018</td>
+                  <td class="text-right">$10.11</td>
+                  <td class="text-left">01/01/2018</td>
+                  <td class="text-right">$10.11</td>
+                  <td class="text-center">
+                    <q-btn round outline small color="warning" icon="edit"></q-btn>    
+                  </td>
+                  <td class="text-center">
+                    <q-btn round outline small color="negative" icon="delete_forever"></q-btn>  
+                  </td>
+                </tr>
+                <tr>
+                  <td class="text-left">01/01/2018</td>
+                  <td class="text-right">$10.11</td>
+                  <td class="text-left">01/01/2018</td>
+                  <td class="text-right">$10.11</td>
+                  <td class="text-center">
+                    <q-btn round outline small color="warning" icon="edit"></q-btn>    
+                  </td>
+                  <td class="text-center">
+                    <q-btn round outline small color="negative" icon="delete_forever"></q-btn>  
+                  </td>
+                </tr>
+              </tbody>
+            </table>  
+
+        </div>
+    </q-collapsible>
     
 </div>
     

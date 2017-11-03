@@ -1,8 +1,6 @@
 <template>
 <div id="cadEntradasNFe">
-    
-    <div style="margin-top:50px"></div>
-    
+    <div style="margin-top:60px"></div>
     <div class="row topo" style="margin-bottom:20px">
       <q-btn
         v-if="canGoBack"
@@ -53,16 +51,96 @@
     
     <!-- formulário -->
     
-    <div class="row">
+    <div class="row">            
+        
         <div class="col">
             <h5>Cadastro de Nota Fiscal</h5>
         </div>
     </div>
     
+    
+    <div class="row">
+        <div class="col">
+          <q-field
+            icon="assignment_turned_in"
+          >
+            <q-input v-model.number="doc"
+                     type="number"
+                     float-label="Chave de Acesso" 
+                     clearable
+            />
+            
+          </q-field>   
+        </div>
+    </div>
+    
+    <div class="row" style="margin-left:45px">
+      <q-btn
+        color="primary"
+        push
+        @click="visualizarDanfe"
+      >
+        <i class="material-icons">cloud_download</i>
+        Visualizar
+      </q-btn>
+      
+      <q-btn
+        style="margin-left:15px"
+        color="primary"
+        push
+        @click="importarDanfe"
+        :disabled="bloqueado"
+      >
+        <i class="material-icons">cloud_download</i>
+        Importar
+      </q-btn>
+    </div><br>
+    
+    <span>{{danfe}}</span><br><br>
+    
     <q-list style="background-color: white;">
     
       <!--cabeçalho-->
       <q-collapsible opened icon="explore" label="Cabeçalho">
+          
+        <div class="row">
+            <div class="col-10">
+                <q-field
+                    icon="store"
+                 >
+                    <q-select
+                        float-label="Fornecedor"
+                        filter
+                        v-model="fornecedor"
+                        :options="options"
+                    />
+                </q-field>   
+            </div>
+            <div class="col-2 btn-plus" >
+
+                <q-btn 
+                   rounded
+                   color="primary" 
+                   @click="$router.push('/cadcliente')">
+                   <q-icon name="add" />
+                </q-btn>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col">
+                <q-field
+                    icon="store"
+                 >
+                    <q-input
+                        float-label="Empresa Destino"
+                        v-model="fornecedor"
+                    />
+                </q-field>   
+            </div>
+            
+        </div>
+        
         <div class="row">
             <div class="col-6">
                 <q-field
@@ -89,7 +167,7 @@
         </div>
           
         <div class="row">
-            <div class="col-6">
+            <div class="col-md-4">
                 <q-field
                     icon="explore"
                  >
@@ -101,57 +179,46 @@
 
             </div>
 
-            <div class="col-6">
+            <div class="col" style="margin-top:15px">
                 <q-field
                     icon="explore"
+                    helper="CFOP - clique para exibir a lista"
                  >
-                    <q-input
-                        float-label="CFOP"
-                        v-model="sub"
-                    />
-                </q-field>   
+                    <div class="mdl-selectfield">
+                        <select class="browser-default" v-model="cfop" >
+                          <option disabled selected>Escolha um CFOP</option>
+                          <option v-for="cfop in listaCFOPEnt">{{cfop.value}} - {{cfop.label}}</option>
+                        </select>
+                        
+                    </div> 
+                </q-field> 
+                
             </div>
-            
+            <i class="material-icons">keyboard_arrow_down</i>
         </div>
           
         <div class="row">
-            <div class="col-10">
-                <q-field
-                    icon="store"
-                 >
-                    <q-select
-                        float-label="Fornecedor"
-                        filter
-                        v-model="fornecedor"
-                        :options="options"
-                    />
-                </q-field>   
-            </div>
-            <div class="col btn-plus" >
-
-                <q-btn 
-                   rounded
-                   color="primary" 
-                   @click="$router.push('/cadcliente')">
-                   <q-icon name="add" />
-                </q-btn>
-            </div>
+            <div class="col-4">Desconto: R$ 0,00</div>
+            <div class="col-4">Frete: R$ 0,00</div>
+            <div class="col-4">Seguro: R$ 0,00</div>
         </div>
           
         <div class="row">
-            <div class="col">
-              <q-field
-                icon="assignment_turned_in"
-              >
-                <q-input v-model.number="doc"
-                         type="number"
-                         float-label="Chave de Acesso" 
-                         clearable
+            <div class="col-4" style="margin-top:20px">Outros: R$ 0,00</div>
+            <div class="col-4" style="margin-top:20px">Total Produtos: R$ 0,00</div>
+            <div class="col-4">
+                <q-select
+                  v-model="select" 
+                  :options="[
+                    {value: 'vista', label: 'À Vista'},
+                    {value: 'prazo', label: 'À Prazo'}
+                  ]"
                 />
 
-              </q-field>   
             </div>
         </div>
+          
+        
       </q-collapsible>
         
       <!--Itens-->  
@@ -168,10 +235,13 @@
                   <th class="text-center">Quantidade</th>
                   <th class="text-center">NCM</th>
                   <th class="text-center">CFOP</th>
-                  <th class="text-center">CST/CSOSN</th>
+                  <th class="text-center">CST</th>
                   <th class="text-center">Aliq. ICMS</th>
                   <th class="text-center">Valor ICMS</th>
                   <th class="text-center">Valor Total</th>
+                  <th class="text-center">Adicionar</th>
+                  <th class="text-center">Editar</th>
+                  <th class="text-center">Excluir</th>
                   
                 </tr>
               </thead>
@@ -180,8 +250,17 @@
                   <td class="text-left">001</td>
                   <td class="text-left">iPhone 9</td>
                   <td class="text-right">$10.11</td>
+                  <td class="text-left">1</td>
+                  <td class="text-left">88888888</td>
+                  <td class="text-left">5102</td>
+                  <td class="text-right">18%</td><td class="text-left">1</td>
+                  <td class="text-left">$0.11</td>
+                  <td class="text-right">$10.11</td>
                   <td class="text-center">
-                    <q-btn round outline small color="warning" icon="edit"></q-btn>    
+                    <q-btn round outline small color="positive" icon="add" @click="addItem"></q-btn>    
+                  </td>
+                  <td class="text-center">
+                    <q-btn round outline small color="info" icon="edit"></q-btn>    
                   </td>
                   <td class="text-center">
                     <q-btn round outline small color="negative" icon="delete_forever"></q-btn>  
@@ -192,8 +271,17 @@
                   <td class="text-left">002</td>
                   <td class="text-left">Drone X</td>
                   <td class="text-right">$10.11</td>
+                  <td class="text-left">1</td>
+                  <td class="text-left">88888888</td>
+                  <td class="text-left">5102</td>
+                  <td class="text-right">18%</td><td class="text-left">1</td>
+                  <td class="text-left">$0.11</td>
+                  <td class="text-right">$10.11</td>
                   <td class="text-center">
-                    <q-btn round outline small color="warning" icon="edit"></q-btn>    
+                    <q-btn round outline small color="positive" icon="add" @click="addItem"></q-btn>    
+                  </td>
+                  <td class="text-center">
+                    <q-btn round outline small color="info" icon="edit"></q-btn>    
                   </td>
                   <td class="text-center">
                     <q-btn round outline small color="negative" icon="delete_forever"></q-btn>  
@@ -203,8 +291,17 @@
                   <td class="text-left">003</td>
                   <td class="text-left">AlienPC</td>
                   <td class="text-right">$10.11</td>
+                  <td class="text-left">1</td>
+                  <td class="text-left">88888888</td>
+                  <td class="text-left">5102</td>
+                  <td class="text-right">18%</td><td class="text-left">1</td>
+                  <td class="text-left">$0.11</td>
+                  <td class="text-right">$10.11</td>
                   <td class="text-center">
-                    <q-btn round outline small color="warning" icon="edit"></q-btn>    
+                    <q-btn round outline small color="positive" icon="add" @click="addItem"></q-btn>    
+                  </td>
+                  <td class="text-center">
+                    <q-btn round outline small color="info" icon="edit"></q-btn>    
                   </td>
                   <td class="text-center">
                     <q-btn round outline small color="negative" icon="delete_forever"></q-btn>  
@@ -235,9 +332,9 @@
                   <td class="text-left">01/01/2018</td>
                   <td class="text-right">$10.11</td>
                   <td class="text-left">01/01/2018</td>
-                  <td class="text-right">$10.11</td>
+                  <td class="text-right">$10.00</td>
                   <td class="text-center">
-                    <q-btn round outline small color="warning" icon="edit"></q-btn>    
+                    <q-btn round outline small color="info" icon="edit"></q-btn>    
                   </td>
                   <td class="text-center">
                     <q-btn round outline small color="negative" icon="delete_forever"></q-btn>  
@@ -248,9 +345,9 @@
                   <td class="text-left">01/01/2018</td>
                   <td class="text-right">$10.11</td>
                   <td class="text-left">01/01/2018</td>
-                  <td class="text-right">$10.11</td>
+                  <td class="text-right">$0.00</td>
                   <td class="text-center">
-                    <q-btn round outline small color="warning" icon="edit"></q-btn>    
+                    <q-btn round outline small color="info" icon="edit"></q-btn>    
                   </td>
                   <td class="text-center">
                     <q-btn round outline small color="negative" icon="delete_forever"></q-btn>  
@@ -260,9 +357,9 @@
                   <td class="text-left">01/01/2018</td>
                   <td class="text-right">$10.11</td>
                   <td class="text-left">01/01/2018</td>
-                  <td class="text-right">$10.11</td>
+                  <td class="text-right">$0.00</td>
                   <td class="text-center">
-                    <q-btn round outline small color="warning" icon="edit"></q-btn>    
+                    <q-btn round outline small color="info" icon="edit"></q-btn>    
                   </td>
                   <td class="text-center">
                     <q-btn round outline small color="negative" icon="delete_forever"></q-btn>  
@@ -275,103 +372,29 @@
       </q-collapsible>
         
     </q-list>
+    <br>
     
     <div class="row">
-        <div class="col">
-          <q-field
-            icon="feedback"
-          >
-            <q-input v-model.trim="desc" 
-                     float-label="Descrição" 
-                     clearable
-            />
-            
-          </q-field>
-        
-        </div>
-    </div> 
-    
-    <div class="row">
-        <div class="col-10 col-md-4">
-            <q-field
-                icon="group_work"
-             >
-                <q-select
-                    float-label="Categoria"
-                    filter
-                    v-model="cat"
-                    :options="options"
-                />
-            </q-field>
-            
-        </div>
-        <div class="col-2 btn-plus" >
-            <q-btn 
-               rounded
-               color="primary" 
-               @click="$router.push('/')">
-               <q-icon name="add" />
-            </q-btn>
-            
-            
-        </div>
-        <div class="col-10 col-md-4">
-            <q-field
-                icon="group_work"
-             >
-                <q-select
-                    float-label="SubCategoria"
-                    filter
-                    v-model="sub"
-                    :options="options"
-                />
-            </q-field>   
-        </div>
-        <div class="col-2 btn-plus" >
-            <q-btn 
-               rounded
-               color="primary" 
-               @click="$router.push('/')">
-               <q-icon name="add" />
-            </q-btn>    
-        </div>
-    </div>
-    
-    <div class="row">
-        <div class="col">
-            <q-field
-                icon="local_grocery_store"
-             >
-                <q-select
-                    float-label="Forma de Pagamento"
-                    v-model="forma"
-                    :options="formasPagto"
-                />
-            </q-field>   
-        </div>
-    </div>
-    
-    <div class="row">
-        <div class="col">
-            <q-field
-                icon="store"
-             >
-                <q-select
-                    float-label="Tipo de Documento"
-                    v-model="tipoDoc"
-                    :options="tipoDocumento"
-                />
-            </q-field>   
-        </div>
-        <div class="col-2 btn-plus" >
-            
-            <q-btn 
-               rounded
-               color="primary" 
-               @click="$router.push('/cadcliente')">
-               <q-icon name="add" />
+        <div class="col col-md-3">
+            <q-btn
+                color="primary"
+                push
+                @click=""
+            >
+                Alterar preços de venda
             </q-btn>
         </div>
+        <div class="col col-md-3">
+            <q-btn
+                color="primary"
+                push
+                @click=""
+            >
+                Impostos para venda
+            </q-btn>
+        </div>
+      
+    
     </div>
     
     
@@ -383,13 +406,13 @@
 <script>
 //import axios from 'axios'
 //import VMasker from 'vanilla-masker'
-
+import listaCFOP from 'data/CFOP.json'
 import { required, minLength } from 'vuelidate/lib/validators'
 import { Dialog, Toast } from 'quasar'
 
 
 export default {
-  name: 'clientes',
+  name: 'cadEntradasNFe',
   data () {
     return {
         tipo: '',
@@ -400,7 +423,11 @@ export default {
         forma: '',
         doc: '',
         tipoDoc: '',
-        select: '',
+        select: 'vista',
+        bloqueado: true,
+        danfe: '',
+        cfop: '',
+        listaCFOP,
         styles: [
             '',
             'bordered',
@@ -524,6 +551,12 @@ export default {
         classes.push(this.gutter)
       }
       return classes
+    },
+    listaCFOPEnt () {
+      function cfopEntrada(cfop) {
+        return cfop.value < 5000;
+      }
+        return this.listaCFOP.filter(cfopEntrada)
     }
   },
   validations: {
@@ -540,6 +573,34 @@ export default {
     goBack(){
       window.history.go(-1)
     },
+    visualizarDanfe() {
+      if(this.doc!==''){
+        this.danfe = ''
+        this.bloqueado = false
+        this.fornecedor = 'appl'
+        this.desc = 'Dados da DANFE'
+        this.cat = 'Dados da DANFE'
+        this.sub = 'Dados da DANFE'
+        this.forma = 'Dados da DANFE'
+      }
+      else {
+        this.danfe = 'Primeiro coloque a chave de acesso!'
+      }
+     },
+     importarDanfe() {
+        this.bloqueado = true
+        this.doc = ''
+        this.fornecedor = ''
+        this.desc = ''
+        this.cat = ''
+        this.sub = ''
+        this.forma = ''
+        this.cfop = ''
+        Toast.create.positive({
+            html: 'Nota importada com sucesso',
+            icon: 'done'
+        })
+    },
     limpar () {
       this.tipo = ''
       this.fornecedor = ''
@@ -554,7 +615,7 @@ export default {
         Toast.create.positive({
         html: 'Salvo com sucesso',
         icon: 'done'
-      })
+        })
     },
     excluir(){
         Dialog.create({
@@ -582,6 +643,53 @@ export default {
           ]
         })
     },
+    addItem(){
+        Dialog.create({
+          title: 'Adicionar Item',
+          message: 'Digite cuidadosamente os dados fiscais dos itens',
+          form: {
+            codBarras: {
+              type: 'number',
+              label: 'Cód Barras',
+              model: '',
+              min: 5,
+              max: 90
+            },
+            age: {
+              type: 'number',
+              label: 'NCM',
+              model: '',
+              min: 5,
+              max: 90
+            },
+            tags: {
+              type: 'chips',
+              label: 'Chips',
+              model: ['Joe', 'John']
+            },
+            comments: {
+              type: 'textarea',
+              label: 'Textarea',
+              model: ''
+            }
+          },
+          buttons: [
+            'Cancelar',
+            {
+              label: 'Ok',
+              handler (data) {
+                Toast.create.positive({
+                    html: 'Salvo com sucesso',
+                    icon: 'done'
+                })
+                Toast.create('Returned ' + JSON.stringify(data))
+                
+              }
+            }
+          ]
+        })
+          
+    },
     
    
   }
@@ -590,6 +698,53 @@ export default {
 </script>
 
 <style scoped>
+    select {
+      font-family: inherit;
+      background-color: transparent;
+      width: 100%;
+      padding: $select-padding 0;
+      font-size: $select-font-size;
+      color: $select-color;
+      border: none;
+      border-bottom: 1px solid $select-border-color;
+    }
+
+    /* Remove focus */
+    select:focus {
+      outline: none
+    }
+
+    /* Hide label */
+    .mdl-selectfield label {
+      color: #87939F;
+      padding-top: 4px;
+    }
+    .mdl-selectfield label {
+      display: none
+    }
+    /* Use custom arrow */
+    .mdl-selectfield select {
+      appearance: none
+    }
+    .mdl-selectfield {
+      font-family: 'Roboto','Helvetica','Arial',sans-serif;
+      position: relative;
+        &:after {
+            position: absolute;
+            top: 0.75em;
+            right: 0.5em;
+            /* Styling the down arrow */
+            width: 0;
+            height: 0;
+            padding: 0;
+            content: '';
+            border-left: .25em solid transparent;
+            border-right: .25em solid transparent;
+            border-top: .375em solid $select-border-color;
+            pointer-events: none;
+        }
+    }
+    
     .btn-plus {
         padding-top: 22px;
         text-align: center;
@@ -618,12 +773,6 @@ export default {
         outline:none;
         border: 0px;
         /*border-bottom-color: #D3DAE0;*/
-    }
-    
-    #avisoCep {
-        font-weight: bolder;
-        font-size: 16px;
-        color: slategrey;
     }
     
     #table {

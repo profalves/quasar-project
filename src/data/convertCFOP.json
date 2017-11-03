@@ -1,0 +1,1802 @@
+﻿{
+   "1100": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "COMPRAS PARA INDUSTRIALIZAÇÃO, COMERCIALIZAÇÃO OU PRESTAÇÃO DE SERVIÇOS"
+   },
+   "1101": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra para industrialização ou produção rural"
+   },
+   "1102": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra para comercialização"
+   },
+   "1111": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra para industrialização de mercadoria recebida anteriormente em consignação industrial"
+   },
+   "1113": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra para comercialização, de mercadoria recebida anteriormente em consignação mercantil"
+   },
+   "1116": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra para industrialização ou produção rural originada de encomenda para recebimento futuro"
+   },
+   "1117": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra para comercialização originada de encomenda para recebimento futuro"
+   },
+   "1118": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra de mercadoria para comercialização pelo adquirente originário, entregue pelo vendedor remetente ao destinatário, em venda à ordem"
+   },
+   "1120": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra para industrialização, em venda à ordem, já recebida do vendedor remetente"
+   },
+   "1121": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra para comercialização, em venda à ordem, já recebida do vendedor remetente"
+   },
+   "1122": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra para industrialização em que a mercadoria foi remetida pelo fornecedor ao industrializador sem transitar pelo estabelecimento adquirente"
+   },
+   "1124": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Industrialização efetuada por outra empresa"
+   },
+   "1125": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Industrialização efetuada por outra empresa quando a mercadoria remetida para utilização no processo de industrialização não transitou pelo estabelecimento adquirente da mercadoria"
+   },
+   "1126": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "compras para utilização na prestação de serviços sujeitas ao ICMS"
+   },
+   "1128": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "compras para utilização na prestação de serviços sujeitas ao ISSQN"
+   },
+   "1150": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "TRANSFERÊNCIAS PARA INDUSTRIALIZAÇÃO, COMERCIALIZAÇÃO OU PRESTAÇÃO DE SERVIÇOS"
+   },
+   "1151": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Transferência para industrialização ou produção rural"
+   },
+   "1152": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Transferência para comercialização"
+   },
+   "1153": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Transferência de energia elétrica para distribuição"
+   },
+   "1154": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Transferência para utilização na prestação de serviço"
+   },
+   "1200": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "DEVOLUÇÕES DE VENDAS DE PRODUÇÃO PRÓPRIA, DE TERCEIROS OU ANULAÇÕES DE VALORES"
+   },
+   "1201": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de venda de produção do estabelecimento"
+   },
+   "1202": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de venda de mercadoria adquirida ou recebida de terceiros"
+   },
+   "1203": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de venda de produção do estabelecimento, destinada à Zona Franca de Manaus ou Áreas de Livre Comércio"
+   },
+   "1204": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de venda de mercadoria adquirida ou recebida de terceiros, destinada à Zona Franca de Manaus ou Áreas de Livre Comércio"
+   },
+   "1205": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Anulação de valor relativo à prestação de serviço de comunicação"
+   },
+   "1206": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Anulação de valor relativo à prestação de serviço de transporte"
+   },
+   "1207": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Anulação de valor relativo à venda de energia elétrica"
+   },
+   "1208": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de produção do estabelecimento, remetida em transferência"
+   },
+   "1209": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de mercadoria adquirida ou recebida de terceiros, remetida em transferência"
+   },
+   "1250": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "COMPRAS DE ENERGIA ELÉTRICA"
+   },
+   "1251": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra de energia elétrica para distribuição ou comercialização"
+   },
+   "1252": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra de energia elétrica por estabelecimento industrial"
+   },
+   "1253": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra de energia elétrica por estabelecimento comercial"
+   },
+   "1254": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra de energia elétrica por estabelecimento prestador de serviço de transporte"
+   },
+   "1255": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra de energia elétrica por estabelecimento prestador de serviço de comunicação"
+   },
+   "1256": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra de energia elétrica por estabelecimento de produtor rural"
+   },
+   "1257": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra de energia elétrica para consumo por demanda contratada"
+   },
+   "1300": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "AQUISIÇÕES DE SERVIÇOS DE COMUNICAÇÃO"
+   },
+   "1301": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Aquisição de serviço de comunicação para execução de serviço da mesma natureza"
+   },
+   "1302": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Aquisição de serviço de comunicação por estabelecimento industrial"
+   },
+   "1303": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Aquisição de serviço de comunicação por estabelecimento comercial"
+   },
+   "1304": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Aquisição de serviço de comunicação por estabelecimento de prestador de serviço de transporte"
+   },
+   "1305": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Aquisição de serviço de comunicação por estabelecimento de geradora ou de distribuidora de energia elétrica 1.306 - Aquisição de serviço de comunicação por estabelecimento de produtor rural"
+   },
+   "1350": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "AQUISIÇÕES DE SERVIÇOS DE TRANSPORTE"
+   },
+   "1351": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Aquisição de serviço de transporte para execução de serviço da mesma natureza"
+   },
+   "1352": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Aquisição de serviço de transporte por estabelecimento industrial"
+   },
+   "1353": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Aquisição de serviço de transporte por estabelecimento comercial"
+   },
+   "1354": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Aquisição de serviço de transporte por estabelecimento de prestador de serviço de comunicação"
+   },
+   "1355": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Aquisição de serviço de transporte por estabelecimento de geradora ou de distribuidora de energia elétrica"
+   },
+   "1356": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Aquisição de serviço de transporte por estabelecimento de produtor rural"
+   },
+   "1360": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Aquisição de serviço de transporte por contribuinte substituto em relação ao serviço de transporte"
+   },
+   "1400": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "ENTRADAS DE MERCADORIAS SUJEITAS AO REGIME DE SUBSTITUIÇÃO TRIBUTÁRIA"
+   },
+   "1401": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra para industrialização ou produção rural em operação com mercadoria sujeita ao regime de substituição tributária"
+   },
+   "1403": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra para comercialização em operação com mercadoria sujeita ao regime de substituição tributária"
+   },
+   "1406": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra de bem para o ativo imobilizado cuja mercadoria está sujeita ao regime de substituição tributária"
+   },
+   "1407": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra de mercadoria para uso ou consumo cuja mercadoria está sujeita ao regime de substituição tributária"
+   },
+   "1408": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Transferência para industrialização ou produção rural em operação com mercadoria sujeita ao regime de substituição tributária"
+   },
+   "1409": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Transferência para comercialização em operação com mercadoria sujeita ao regime de substituição tributária"
+   },
+   "1410": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de venda de produção do estabelecimento em operação com produto sujeito ao regime de substituição tributária"
+   },
+   "1411": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de venda de mercadoria adquirida ou recebida de terceiros em operação com mercadoria sujeita ao regime de substituição tributária 1.414 - Retorno de produção do estabelecimento, remetida para venda fora do estabelecimento em operação com  produto sujeito ao regime de substituição tributária"
+   },
+   "1415": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Retorno de mercadoria adquirida ou recebida de terceiros, remetida para venda fora do estabelecimento em operação com mercadoria sujeita ao regime de substituição tributária"
+   },
+   "1450": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "SISTEMAS DE INTEGRAÇÃO"
+   },
+   "1451": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Retorno de animal do estabelecimento produtor"
+   },
+   "1452": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Retorno de insumo não utilizado na produção"
+   },
+   "1500": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "ENTRADAS DE MERCADORIAS REMETIDAS COM FIM ESPECÍFICO DE EXPORTAÇÃO E EVENTUAIS DEVOLUÇÕES"
+   },
+   "1501": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Entrada de mercadoria recebida com fim específico de exportação"
+   },
+   "1503": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Entrada decorrente de devolução de produto remetido com fim específico de exportação, de produção do estabelecimento"
+   },
+   "1504": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Entrada decorrente de devolução de mercadoria remetida com fim específico de exportação, adquirida ou recebida de terceiros"
+   },
+   "1505": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Entrada decorrente de devolução simbólica de mercadorias remetidas para formação de lote de exportação, de produtos industrializados ou produzidos pelo próprio estabelecimento"
+   },
+   "1506": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Entrada decorrente de devolução simbólica de mercadorias, adquiridas ou recebidas de terceiros, remetidas para formação de lote de exportação"
+   },
+   "1550": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "OPERAÇÕES COM BENS DE ATIVO IMOBILIZADO E MATERIAIS PARA USO OU CONSUMO"
+   },
+   "1551": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra de bem para o ativo imobilizado"
+   },
+   "1552": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Transferência de bem do ativo imobilizado"
+   },
+   "1553": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de venda de bem do ativo imobilizado"
+   },
+   "1554": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Retorno de bem do ativo imobilizado remetido para uso fora do estabelecimento"
+   },
+   "1555": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Entrada de bem do ativo imobilizado de terceiro, remetido para uso no estabelecimento"
+   },
+   "1556": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra de material para uso ou consumo"
+   },
+   "1557": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Transferência de material para uso ou consumo"
+   },
+   "1600": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "CRÉDITOS E RESSARCIMENTOS DE ICMS"
+   },
+   "1601": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Recebimento, por transferência, de crédito de ICMS"
+   },
+   "1602": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Recebimento, por transferência, de saldo credor de ICMS de outro estabelecimento da mesma empresa, para compensação de saldo devedor de ICMS"
+   },
+   "1603": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Ressarcimento de ICMS retido por substituição tributária 1.604 - Lançamento do crédito relativo à compra de bem para o ativo imobilizado"
+   },
+   "1605": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Recebimento, por transferência, de saldo devedor de ICMS de outro estabelecimento da mesma empresa"
+   },
+   "1652": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra de combustível ou lubrificante para comercialização"
+   },
+   "1653": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra de combustível ou lubrificante por consumidor ou usuário final"
+   },
+   "1658": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Transferência de combustível e lubrificante para industrialização"
+   },
+   "1659": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Transferência de combustível e lubrificante para comercialização"
+   },
+   "1660": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de venda de combustível ou lubrificante destinado à industrialização subseqüente"
+   },
+   "1661": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de venda de combustível ou lubrificante destinado à comercialização"
+   },
+   "1662": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de venda de combustível ou lubrificante destinado a consumidor ou usuário final"
+   },
+   "1663": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Entrada de combustível ou lubrificante para armazenagem"
+   },
+   "1664": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Retorno de combustível ou lubrificante remetido para armazenagem"
+   },
+   "1900": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "OUTRAS ENTRADAS DE MERCADORIAS OU AQUISIÇÕES DE SERVIÇOS"
+   },
+   "1901": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Entrada para industrialização por encomenda"
+   },
+   "1902": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Retorno de mercadoria remetida para industrialização por encomenda"
+   },
+   "1903": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Entrada de mercadoria remetida para industrialização e não aplicada no referido processo"
+   },
+   "1904": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Retorno de remessa para venda fora do estabelecimento"
+   },
+   "1905": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Entrada de mercadoria recebida para depósito em depósito fechado ou armazém geral"
+   },
+   "1906": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Retorno de mercadoria remetida para depósito fechado ou armazém geral"
+   },
+   "1907": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Retorno simbólico de mercadoria remetida para depósito fechado ou armazém geral"
+   },
+   "1908": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Entrada de bem por conta de contrato de comodato"
+   },
+   "1909": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Retorno de bem remetido por conta de contrato de comodato"
+   },
+   "1910": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Entrada de bonificação, doação ou brinde"
+   },
+   "1911": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Entrada de amostra grátis"
+   },
+   "1912": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Entrada de mercadoria ou bem recebido para demonstração"
+   },
+   "1913": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Retorno de mercadoria ou bem remetido para demonstração"
+   },
+   "1914": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Retorno de mercadoria ou bem remetido para exposição ou feira"
+   },
+   "1915": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Entrada de mercadoria ou bem recebido para conserto ou reparo"
+   },
+   "1916": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Retorno de mercadoria ou bem remetido para conserto ou reparo"
+   },
+   "1917": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Entrada de mercadoria recebida em consignação mercantil ou industrial"
+   },
+   "1918": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de mercadoria remetida em consignação mercantil ou industrial"
+   },
+   "1919": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução simbólica de mercadoria vendida ou utilizada em processo industrial, remetida anteriormente em consignação mercantil ou industrial"
+   },
+   "1920": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Entrada de vasilhame ou sacaria"
+   },
+   "1921": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Retorno de vasilhame ou sacaria"
+   },
+   "1922": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Lançamento efetuado a título de simples faturamento decorrente de compra para recebimento futuro"
+   },
+   "1923": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Entrada de mercadoria recebida do vendedor remetente, em venda à ordem"
+   },
+   "1924": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Entrada para industrialização por conta e ordem do adquirente da mercadoria, quando esta não transitar pelo estabelecimento do adquirente"
+   },
+   "1925": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Retorno de mercadoria remetida para industrialização por conta e ordem do adquirente da mercadoria, quando esta não transitar pelo estabelecimento do adquirente"
+   },
+   "1926": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Lançamento efetuado a título de reclassificação de mercadoria decorrente de formação de kit ou de sua desagregação"
+   },
+   "1931": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Lançamento efetuado pelo tomador do serviço de transporte quando a responsabilidade de retenção do imposto for atribuída ao remetente ou alienante da mercadoria, pelo serviço de transporte realizado por transportador autônomo ou por transportador não inscrito na unidade da Federação onde iniciado o serviço"
+   },
+   "1932": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Aquisição de serviço de transporte iniciado em unidade da Federação diversa daquela onde inscrito o prestador"
+   },
+   "1933": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Aquisição de serviço tributado pelo ISSQN"
+   },
+   "1949": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Outra entrada de mercadoria ou prestação de serviço não especificada"
+   },
+   "2000": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DE OUTROS ESTADOS"
+   },
+   "2100": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "COMPRAS PARA INDUSTRIALIZAÇÃO, COMERCIALIZAÇÃO OU PRESTAÇÃO DE SERVIÇOS"
+   },
+   "2101": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra para industrialização ou produção rural"
+   },
+   "2102": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra para comercialização"
+   },
+   "2111": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra para industrialização de mercadoria recebida anteriormente em consignação industrial"
+   },
+   "2113": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra para comercialização, de mercadoria recebida anteriormente em consignação mercantil"
+   },
+   "2116": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra para industrialização ou produção rural originada de encomenda para recebimento futuro"
+   },
+   "2117": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra para comercialização originada de encomenda para recebimento futuro"
+   },
+   "2118": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra de mercadoria para comercialização pelo adquirente originário, entregue pelo vendedor remetente ao destinatário, em venda à ordem"
+   },
+   "2120": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra para industrialização, em venda à ordem, já recebida do vendedor remetente 2.121 - Compra para comercialização, em venda à ordem, já recebida do vendedor remetente"
+   },
+   "2122": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra para industrialização em que a mercadoria foi remetida pelo fornecedor ao industrializador sem transitar pelo estabelecimento adquirente"
+   },
+   "2124": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Industrialização efetuada por outra empresa"
+   },
+   "2125": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Industrialização efetuada por outra empresa quando a mercadoria remetida para utilização no processo de industrialização não transitou pelo estabelecimento adquirente da mercadoria"
+   },
+   "2126": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra para utilização na prestação de serviço"
+   },
+   "2150": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "TRANSFERÊNCIAS PARA INDUSTRIALIZAÇÃO, COMERCIALIZAÇÃO OU PRESTAÇÃO DE SERVIÇOS"
+   },
+   "2151": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Transferência para industrialização ou produção rural"
+   },
+   "2152": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Transferência para comercialização"
+   },
+   "2153": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Transferência de energia elétrica para distribuição"
+   },
+   "2154": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Transferência para utilização na prestação de serviço"
+   },
+   "2200": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "DEVOLUÇÕES DE VENDAS DE PRODUÇÃO PRÓPRIA, DE TERCEIROS OU ANULAÇÕES DE VALORES"
+   },
+   "2201": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de venda de produção do estabelecimento"
+   },
+   "2202": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de venda de mercadoria adquirida ou recebida de terceiros"
+   },
+   "2203": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de venda de produção do estabelecimento, destinada à Zona Franca de Manaus ou Áreas de Livre Comércio"
+   },
+   "2204": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de venda de mercadoria adquirida ou recebida de terceiros, destinada à Zona Franca de Manaus ou Áreas de Livre Comércio"
+   },
+   "2205": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Anulação de valor relativo à prestação de serviço de comunicação"
+   },
+   "2206": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Anulação de valor relativo à prestação de serviço de transporte"
+   },
+   "2207": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Anulação de valor relativo à venda de energia elétrica"
+   },
+   "2208": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de produção do estabelecimento, remetida em transferência"
+   },
+   "2209": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de mercadoria adquirida ou recebida de terceiros, remetida em transferência "
+   },
+   "2250": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "COMPRAS DE ENERGIA ELÉTRICA"
+   },
+   "2251": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra de energia elétrica para distribuição ou comercialização"
+   },
+   "2252": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra de energia elétrica por estabelecimento industrial"
+   },
+   "2253": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra de energia elétrica por estabelecimento comercial"
+   },
+   "2254": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra de energia elétrica por estabelecimento prestador de serviço de transporte"
+   },
+   "2255": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra de energia elétrica por estabelecimento prestador de serviço de comunicação"
+   },
+   "2256": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra de energia elétrica por estabelecimento de produtor rural"
+   },
+   "2257": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra de energia elétrica para consumo por demanda contratada"
+   },
+   "2300": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "AQUISIÇÕES DE SERVIÇOS DE COMUNICAÇÃO"
+   },
+   "2301": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Aquisição de serviço de comunicação para execução de serviço da mesma natureza"
+   },
+   "2302": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Aquisição de serviço de comunicação por estabelecimento industrial"
+   },
+   "2303": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Aquisição de serviço de comunicação por estabelecimento comercial"
+   },
+   "2304": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Aquisição de serviço de comunicação por estabelecimento de prestador de serviço de transporte"
+   },
+   "2305": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Aquisição de serviço de comunicação por estabelecimento de geradora ou de distribuidora de energia elétrica"
+   },
+   "2306": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Aquisição de serviço de comunicação por estabelecimento de produtor rural"
+   },
+   "2351": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Aquisição de serviço de transporte para execução de serviço da mesma natureza"
+   },
+   "2352": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Aquisição de serviço de transporte por estabelecimento industrial"
+   },
+   "2353": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Aquisição de serviço de transporte por estabelecimento comercial"
+   },
+   "2354": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Aquisição de serviço de transporte por estabelecimento de prestador de serviço de comunicação"
+   },
+   "2355": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Aquisição de serviço de transporte por estabelecimento de geradora ou de distribuidora de energia elétrica"
+   },
+   "2356": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Aquisição de serviço de transporte por estabelecimento de produtor rural"
+   },
+   "2400": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "ENTRADAS DE MERCADORIAS SUJEITAS AO REGIME DE SUBSTITUIÇÃO TRIBUTÁRIA"
+   },
+   "2401": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra para industrialização ou produção rural em operação com mercadoria sujeita ao regime desubstituição tributária"
+   },
+   "2403": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra para comercialização em operação com mercadoria sujeita ao regime de substituição tributária"
+   },
+   "2406": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra de bem para o ativo imobilizado cuja mercadoria está sujeita ao regime de substituição tributária"
+   },
+   "2407": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra de mercadoria para uso ou consumo cuja mercadoria está sujeita ao regime de substituição tributária"
+   },
+   "2408": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Transferência para industrialização ou produção rural em operação com mercadoria sujeita ao regime de substituição tributária"
+   },
+   "2409": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Transferência para comercialização em operação com mercadoria sujeita ao regime de substituição tributária"
+   },
+   "2410": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de venda de produção do estabelecimento em operação com produto sujeito ao regime desubstituição tributária"
+   },
+   "2411": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de venda de mercadoria adquirida ou recebida de terceiros em operação com mercadoria sujeita ao regime de substituição tributária"
+   },
+   "2414": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Retorno de produção do estabelecimento, remetida para venda fora do estabelecimento em operação com produto sujeito ao regime de substituição tributária"
+   },
+   "2415": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Retorno de mercadoria adquirida ou recebida de terceiros, remetida para venda fora do estabelecimento em operação com mercadoria sujeita ao regime de substituição tributária"
+   },
+   "2500": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "ENTRADAS DE MERCADORIAS REMETIDAS COM FIM ESPECÍFICO DE EXPORTAÇÃO E EVENTUAIS DEVOLUÇÕES"
+   },
+   "2501": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Entrada de mercadoria recebida com fim específico de exportação"
+   },
+   "2503": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Entrada decorrente de devolução de produto remetido com fim específico de exportação, de produção do estabelecimento"
+   },
+   "2504": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Entrada decorrente de devolução de mercadoria remetida com fim específico de exportação, adquirida ou recebida de terceiros"
+   },
+   "2505": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Entrada decorrente de devolução simbólica de mercadorias remetidas para formação de lote de exportação, de produtos industrializados ou produzidos pelo próprio estabelecimento"
+   },
+   "2506": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Entrada decorrente de devolução simbólica de mercadorias, adquiridas ou recebidas de terceiros, remetidas para formação de lote de exportação"
+   },
+   "2550": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "OPERAÇÕES COM BENS DE ATIVO IMOBILIZADO E MATERIAIS PARA USO OU CONSUMO"
+   },
+   "2551": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra de bem para o ativo imobilizado"
+   },
+   "2552": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Transferência de bem do ativo imobilizado"
+   },
+   "2553": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de venda de bem do ativo imobilizado"
+   },
+   "2554": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Retorno de bem do ativo imobilizado remetido para uso fora do estabelecimento"
+   },
+   "2555": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Entrada de bem do ativo imobilizado de terceiro, remetido para uso no estabelecimento"
+   },
+   "2556": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra de material para uso ou consumo"
+   },
+   "2557": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Transferência de material para uso ou consumo"
+   },
+   "2600": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "CRÉDITOS E RESSARCIMENTOS DE ICMS"
+   },
+   "2603": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Ressarcimento de ICMS retido por substituição tributária"
+   },
+   "2651": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra de combustível ou lubrificante para industrialização subseqüente"
+   },
+   "2652": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra de combustível ou lubrificante para comercialização"
+   },
+   "2653": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra de combustível ou lubrificante por consumidor ou usuário final"
+   },
+   "2658": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Transferência de combustível e lubrificante para industrialização"
+   },
+   "2659": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Transferência de combustível e lubrificante para comercialização"
+   },
+   "2660": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de venda de combustível ou lubrificante destinado à industrialização subseqüente"
+   },
+   "2661": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de venda de combustível ou lubrificante destinado à comercialização"
+   },
+   "2662": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de venda de combustível ou lubrificante destinado a consumidor ou usuário final"
+   },
+   "2663": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Entrada de combustível ou lubrificante para armazenagem"
+   },
+   "2664": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Retorno de combustível ou lubrificante remetido para armazenagem "
+   },
+   "2900": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "OUTRAS ENTRADAS DE MERCADORIAS OU AQUISIÇÕES DE SERVIÇOS"
+   },
+   "2901": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Entrada para industrialização por encomenda"
+   },
+   "2902": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Retorno de mercadoria remetida para industrialização por encomenda"
+   },
+   "2903": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Entrada de mercadoria remetida para industrialização e não aplicada no referido processo"
+   },
+   "2904": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Retorno de remessa para venda fora do estabelecimento"
+   },
+   "2905": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Entrada de mercadoria recebida para depósito em depósito fechado ou armazém geral"
+   },
+   "2906": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Retorno de mercadoria remetida para depósito fechado ou armazém geral"
+   },
+   "2907": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Retorno simbólico de mercadoria remetida para depósito fechado ou armazém geral"
+   },
+   "2908": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Entrada de bem por conta de contrato de comodato"
+   },
+   "2909": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Retorno de bem remetido por conta de contrato de comodato"
+   },
+   "2910": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Entrada de bonificação, doação ou brinde"
+   },
+   "2911": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Entrada de amostra grátis"
+   },
+   "2912": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Entrada de mercadoria ou bem recebido para demonstração"
+   },
+   "2913": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Retorno de mercadoria ou bem remetido para demonstração"
+   },
+   "2914": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Retorno de mercadoria ou bem remetido para exposição ou feira"
+   },
+   "2915": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Entrada de mercadoria ou bem recebido para conserto ou reparo"
+   },
+   "2916": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Retorno de mercadoria ou bem remetido para conserto ou reparo"
+   },
+   "2917": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Entrada de mercadoria recebida em consignação mercantil ou industrial"
+   },
+   "2918": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de mercadoria remetida em consignação mercantil ou industrial"
+   },
+   "2919": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução simbólica de mercadoria vendida ou utilizada em processo industrial, remetida anteriormente em consignação mercantil ou industrial"
+   },
+   "2920": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Entrada de vasilhame ou sacaria"
+   },
+   "2921": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Retorno de vasilhame ou sacaria"
+   },
+   "2922": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Lançamento efetuado a título de simples faturamento decorrente de compra para recebimento futuro"
+   },
+   "2923": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Entrada de mercadoria recebida do vendedor remetente, em venda à ordem"
+   },
+   "2924": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Entrada para industrialização por conta e ordem do adquirente da mercadoria, quando esta não transitar pelo estabelecimento do adquirente"
+   },
+   "2925": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Retorno de mercadoria remetida para industrialização por conta e ordem do adquirente da mercadoria, quando esta não transitar pelo estabelecimento do adquirente"
+   },
+   "2931": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Lançamento efetuado pelo tomador do serviço de transporte quando a responsabilidade de retenção do imposto for atribuída ao remetente ou alienante da mercadoria, pelo serviço de transporte realizado por transportador autônomo ou por transportador não inscrito na unidade da Federação onde iniciado o serviço"
+   },
+   "2932": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Aquisição de serviço de transporte iniciado em unidade da Federação diversa daquela onde inscrito o prestador"
+   },
+   "2933": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Aquisição de serviço tributado pelo ISSQN"
+   },
+   "2949": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Outra entrada de mercadoria ou prestação de serviço não especificado "
+   },
+   "3000": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO EXTERIOR "
+   },
+   "3100": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "COMPRAS PARA INDUSTRIALIZAÇÃO, COMERCIALIZAÇÃO OU PRESTAÇÃO DE SERVIÇOS"
+   },
+   "3101": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra para industrialização ou produção rural"
+   },
+   "3102": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra para comercialização"
+   },
+   "3126": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra para utilização na prestação de serviço"
+   },
+   "3127": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra para industrialização sob o regime de "
+   },
+   "3200": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "DEVOLUÇÕES DE VENDAS DE PRODUÇÃO PRÓPRIA, DE TERCEIROS OU ANULAÇÕES DE VALORES"
+   },
+   "3201": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de venda de produção do estabelecimento"
+   },
+   "3202": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de venda de mercadoria adquirida ou recebida de terceiros"
+   },
+   "3205": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Anulação de valor relativo à prestação de serviço de comunicação"
+   },
+   "3206": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Anulação de valor relativo à prestação de serviço de transporte"
+   },
+   "3207": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Anulação de valor relativo à venda de energia elétrica"
+   },
+   "3211": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de venda de produção do estabelecimento sob o regime de "
+   },
+   "3250": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "COMPRAS DE ENERGIA ELÉTRICA"
+   },
+   "3251": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra de energia elétrica para distribuição ou comercialização "
+   },
+   "3300": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "AQUISIÇÕES DE SERVIÇOS DE COMUNICAÇÃO"
+   },
+   "3301": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Aquisição de serviço de comunicação para execução de serviço da mesma natureza "
+   },
+   "3350": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "AQUISIÇÕES DE SERVIÇOS DE TRANSPORTE"
+   },
+   "3351": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Aquisição de serviço de transporte para execução de serviço da mesma natureza"
+   },
+   "3352": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Aquisição de serviço de transporte por estabelecimento industrial"
+   },
+   "3353": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Aquisição de serviço de transporte por estabelecimento comercial"
+   },
+   "3354": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Aquisição de serviço de transporte por estabelecimento de prestador de serviço de comunicação"
+   },
+   "3355": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Aquisição de serviço de transporte por estabelecimento de geradora ou de distribuidora de energia elétrica"
+   },
+   "3356": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Aquisição de serviço de transporte por estabelecimento de produtor rural "
+   },
+   "3500": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "ENTRADAS DE MERCADORIAS REMETIDAS COM FIM ESPECÍFICO DE EXPORTAÇÃO E EVENTUAIS DEVOLUÇÕES"
+   },
+   "3503": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de mercadoria exportada que tenha sido recebida com fim específico de exportação "
+   },
+   "3550": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "OPERAÇÕES COM BENS DE ATIVO IMOBILIZADO E MATERIAIS PARA USO OU CONSUMO"
+   },
+   "3551": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra de bem para o ativo imobilizado"
+   },
+   "3553": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de venda de bem do ativo imobilizado"
+   },
+   "3556": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra de material para uso ou consumo"
+   },
+   "3651": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra de combustível ou lubrificante para industrialização subseqüente"
+   },
+   "3652": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra de combustível ou lubrificante para comercialização"
+   },
+   "3653": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Compra de combustível ou lubrificante por consumidor ou usuário final "
+   },
+   "3900": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "OUTRAS ENTRADAS DE MERCADORIAS OU AQUISIÇÕES DE SERVIÇOS"
+   },
+   "3930": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Lançamento efetuado a título de entrada de bem sob amparo de regime especial aduaneiro de admissão temporária"
+   },
+   "3949": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Outra entrada de mercadoria ou prestação de serviço não especificado "
+   },
+   "5000": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "SAÍDAS OU PRESTAÇÕES DE SERVIÇOS PARA O ESTADO "
+   },
+   "5100": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "VENDAS DE PRODUÇÃO PRÓPRIA OU DE TERCEIROS"
+   },
+   "5101": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de produção do estabelecimento"
+   },
+   "5102": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de mercadoria adquirida ou recebida de terceiros"
+   },
+   "5103": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de produção do estabelecimento, efetuada fora do estabelecimento"
+   },
+   "5104": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de mercadoria adquirida ou recebida de terceiros, efetuada fora do estabelecimento"
+   },
+   "5105": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de produção do estabelecimento que não deva por ele transitar"
+   },
+   "5106": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de mercadoria adquirida ou recebida de terceiros, que não deva por ele transitar"
+   },
+   "5109": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de produção do estabelecimento, destinada à Zona Franca de Manaus ou Áreas de Livre Comércio"
+   },
+   "5110": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de mercadoria adquirida ou recebida de terceiros, destinada à Zona Franca de Manaus ou Áreas de Livre Comércio"
+   },
+   "5111": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de produção do estabelecimento remetida anteriormente em consignação industrial"
+   },
+   "5112": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de mercadoria adquirida ou recebida de terceiros remetida anteriormente em consignação industrial"
+   },
+   "5113": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de produção do estabelecimento remetida anteriormente em consignação mercantil"
+   },
+   "5114": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de mercadoria adquirida ou recebida de terceiros remetida anteriormente em consignação mercantil"
+   },
+   "5115": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de mercadoria adquirida ou recebida de terceiros, recebida anteriormente em consignação mercantil"
+   },
+   "5116": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de produção do estabelecimento originada de encomenda para entrega futura"
+   },
+   "5117": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de mercadoria adquirida ou recebida de terceiros, originada de encomenda para entrega futura"
+   },
+   "5118": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de produção do estabelecimento entregue ao destinatário por conta e ordem do adquirente originário, em venda à ordem"
+   },
+   "5119": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de mercadoria adquirida ou recebida de terceiros entregue ao destinatário por conta e ordem do adquirente originário, em venda à ordem"
+   },
+   "5120": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de mercadoria adquirida ou recebida de terceiros entregue ao destinatário pelo vendedor remetente, em venda à ordem"
+   },
+   "5122": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de produção do estabelecimento remetida para industrialização, por conta e ordem do adquirente, sem transitar pelo estabelecimento do adquirente"
+   },
+   "5123": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de mercadoria adquirida ou recebida de terceiros remetida para industrialização, por conta e ordem do adquirente, sem transitar pelo estabelecimento do adquirente"
+   },
+   "5124": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Industrialização efetuada para outra empresa"
+   },
+   "5125": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Industrialização efetuada para outra empresa quando a mercadoria recebida para utilização no processo de industrialização não transitar pelo estabelecimento adquirente da mercadoria"
+   },
+   "5150": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "TRANSFERÊNCIAS DE PRODUÇÃO PRÓPRIA OU DE TERCEIROS"
+   },
+   "5151": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Transferência de produção do estabelecimento"
+   },
+   "5152": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Transferência de mercadoria adquirida ou recebida de terceiros"
+   },
+   "5153": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Transferência de energia elétrica"
+   },
+   "5155": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Transferência de produção do estabelecimento, que não deva por ele transitar"
+   },
+   "5156": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Transferência de mercadoria adquirida ou recebida de terceiros, que não deva por ele transitar"
+   },
+   "5200": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "DEVOLUÇÕES DE COMPRAS PARA INDUSTRIALIZAÇÃO, COMERCIALIZAÇÃO OU ANULAÇÕES DE VALORES"
+   },
+   "5201": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de compra para industrialização ou produção rural"
+   },
+   "5202": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de compra para comercialização"
+   },
+   "5205": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Anulação de valor relativo a aquisição de serviço de comunicação"
+   },
+   "5206": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Anulação de valor relativo a aquisição de serviço de transporte"
+   },
+   "5207": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Anulação de valor relativo à compra de energia elétrica"
+   },
+   "5208": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de mercadoria recebida em transferência para industrialização ou produção rural"
+   },
+   "5209": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de mercadoria recebida em transferência para comercialização"
+   },
+   "5210": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de compra para utilização na prestação de serviço sujeitas ao ICMS ou ISSQN"
+   },
+   "5250": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "VENDAS DE ENERGIA ELÉTRICA"
+   },
+   "5251": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de energia elétrica para distribuição ou comercialização"
+   },
+   "5252": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de energia elétrica para estabelecimento industrial"
+   },
+   "5253": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de energia elétrica para estabelecimento comercial"
+   },
+   "5254": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de energia elétrica para estabelecimento prestador de serviço de transporte"
+   },
+   "5255": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de energia elétrica para estabelecimento prestador de serviço de comunicação"
+   },
+   "5256": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de energia elétrica para estabelecimento de produtor rural"
+   },
+   "5257": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de energia elétrica para consumo por demanda contratada"
+   },
+   "5258": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de energia elétrica a não contribuinte "
+   },
+   "5300": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "PRESTAÇÕES DE SERVIÇOS DE COMUNICAÇÃO"
+   },
+   "5301": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Prestação de serviço de comunicação para execução de serviço da mesma natureza"
+   },
+   "5302": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Prestação de serviço de comunicação a estabelecimento industrial"
+   },
+   "5303": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Prestação de serviço de comunicação a estabelecimento comercial"
+   },
+   "5304": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Prestação de serviço de comunicação a estabelecimento de prestador de serviço de transporte"
+   },
+   "5305": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Prestação de serviço de comunicação a estabelecimento de geradora ou de distribuidora de energia elétrica"
+   },
+   "5306": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Prestação de serviço de comunicação a estabelecimento de produtor rural"
+   },
+   "5307": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Prestação de serviço de comunicação a não contribuinte "
+   },
+   "5350": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "PRESTAÇÕES DE SERVIÇOS DE TRANSPORTE"
+   },
+   "5351": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Prestação de serviço de transporte para execução de serviço da mesma natureza"
+   },
+   "5352": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Prestação de serviço de transporte a estabelecimento industrial"
+   },
+   "5353": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Prestação de serviço de transporte a estabelecimento comercial"
+   },
+   "5354": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Prestação de serviço de transporte a estabelecimento de prestador de serviço de comunicação"
+   },
+   "5355": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Prestação de serviço de transporte a estabelecimento de geradora ou de distribuidora de energia elétrica"
+   },
+   "5356": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Prestação de serviço de transporte a estabelecimento de produtor rural"
+   },
+   "5357": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Prestação de serviço de transporte a não contribuinte"
+   },
+   "5359": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Prestação de serviço de transporte a contribuinte ou a não contribuinte quando a mercadoria transportada está dispensada de emissão de nota fiscal"
+   },
+   "5360": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Prestação de serviço de transporte a contribuinte substituto em relação ao serviço de transporte"
+   },
+   "5400": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "SAÍDAS DE MERCADORIAS SUJEITAS AO REGIME DE SUBSTITUIÇÃO TRIBUTÁRIA"
+   },
+   "5401": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de produção do estabelecimento em operação com produto sujeito ao regime de substituição tributária, na condição de contribuinte substituto"
+   },
+   "5402": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de produção do estabelecimento de produto sujeito ao regime de substituição tributária, em operação entre contribuintes substitutos do mesmo produto"
+   },
+   "5403": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de mercadoria adquirida ou recebida de terceiros em operação com mercadoria sujeita ao regime de substituição tributária, na condição de contribuinte substituto"
+   },
+   "5405": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de mercadoria adquirida ou recebida de terceiros em operação com mercadoria sujeita ao regime de substituição tributária, na condição de contribuinte substituído"
+   },
+   "5408": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Transferência de produção do estabelecimento em operação com produto sujeito ao regime de substituição tributária"
+   },
+   "5409": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Transferência de mercadoria adquirida ou recebida de terceiros em operação com mercadoria sujeita ao regime de substituição tributária"
+   },
+   "5410": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de compra para industrialização ou produção rural em operação com mercadoria sujeita ao regime de substituição tributária"
+   },
+   "5411": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de compra para comercialização em operação com mercadoria sujeita ao regime de substituição tributária"
+   },
+   "5412": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de bem do ativo imobilizado, em operação com mercadoria sujeita ao regime de substituição tributária"
+   },
+   "5413": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de mercadoria destinada ao uso ou consumo, em operação com mercadoria sujeita ao regime de substituição tributária"
+   },
+   "5414": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Remessa de produção do estabelecimento para venda fora do estabelecimento em operação com produto sujeito ao regime de substituição tributária"
+   },
+   "5415": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Remessa de mercadoria adquirida ou recebida de terceiros para venda fora do estabelecimento, em operação com mercadoria sujeita ao regime de substituição tributária"
+   },
+   "5450": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "SISTEMAS DE INTEGRAÇÃO"
+   },
+   "5451": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Remessa de animal e de insumo para estabelecimento produtor"
+   },
+   "5500": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "REMESSAS COM FIM ESPECÍFICO DE EXPORTAÇÃO E EVENTUAIS DEVOLUÇÕES"
+   },
+   "5501": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Remessa de produção do estabelecimento, com fim específico de exportação 5.502 - Remessa de mercadoria adquirida ou recebida de terceiros, com fim específico de exportação"
+   },
+   "5503": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de mercadoria recebida com fim específico de exportação"
+   },
+   "5504": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Remessa de mercadorias para formação de lote de exportação, de produtos industrializados ou produzidos pelo próprio estabelecimento"
+   },
+   "5505": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Remessa de mercadorias, adquiridas ou recebidas de terceiros, para formação de lote de exportação "
+   },
+   "5550": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "OPERAÇÕES COM BENS DE ATIVO IMOBILIZADO E MATERIAIS PARA USO OU CONSUMO"
+   },
+   "5551": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de bem do ativo imobilizado"
+   },
+   "5552": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Transferência de bem do ativo imobilizado"
+   },
+   "5553": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de compra de bem para o ativo imobilizado"
+   },
+   "5554": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Remessa de bem do ativo imobilizado para uso fora do estabelecimento"
+   },
+   "5555": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de bem do ativo imobilizado de terceiro, recebido para uso no estabelecimento"
+   },
+   "5556": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de compra de material de uso ou consumo"
+   },
+   "5557": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Transferência de material de uso ou consumo"
+   },
+   "5600": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "CRÉDITOS E RESSARCIMENTOS DE ICMS"
+   },
+   "5601": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Transferência de crédito de ICMS acumulado"
+   },
+   "5602": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Transferência de saldo credor de ICMS para outro estabelecimento da mesma empresa, destinado à compensação de saldo devedor de ICMS"
+   },
+   "5603": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Ressarcimento de ICMS retido por substituição tributária"
+   },
+   "5605": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Transferência de saldo devedor de ICMS de outro estabelecimento da mesma empresa"
+   },
+   "5606": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Utilização de saldo credor de ICMS para extinção por compensação de débitos fiscais"
+   },
+   "5651": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de combustível ou lubrificante de produção do estabelecimento destinado à industrialização subseqüente"
+   },
+   "5652": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de combustível ou lubrificante de produção do estabelecimento destinado à comercialização"
+   },
+   "5653": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de combustível ou lubrificante de produção do estabelecimento destinado a consumidor ou usuário final"
+   },
+   "5654": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de combustível ou lubrificante adquirido ou recebido de terceiros destinado à industrialização subseqüente"
+   },
+   "5655": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de combustível ou lubrificante adquirido ou recebido de terceiros destinado à comercialização"
+   },
+   "5656": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de combustível ou lubrificante adquirido ou recebido de terceiros destinado a consumidor ou usuário final"
+   },
+   "5657": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Remessa de combustível ou lubrificante adquirido ou recebido de terceiros para venda fora do estabelecimento"
+   },
+   "5658": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Transferência de combustível ou lubrificante de produção do estabelecimento"
+   },
+   "5659": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Transferência de combustível ou lubrificante adquirido ou recebido de terceiro"
+   },
+   "5660": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de compra de combustível ou lubrificante adquirido para industrialização subseqüente"
+   },
+   "5661": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de compra de combustível ou lubrificante adquirido para comercialização"
+   },
+   "5662": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de compra de combustível ou lubrificante adquirido por consumidor ou usuário final"
+   },
+   "5663": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Remessa para armazenagem de combustível ou lubrificante"
+   },
+   "5664": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Retorno de combustível ou lubrificante recebido para armazenagem"
+   },
+   "5665": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Retorno simbólico de combustível ou lubrificante recebido para armazenagem"
+   },
+   "5666": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Remessa por conta e ordem de terceiros de combustível ou lubrificante recebido para armazenagem "
+   },
+   "5900": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "OUTRAS SAÍDAS DE MERCADORIAS OU PRESTAÇÕES DE SERVIÇOS"
+   },
+   "5901": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Remessa para industrialização por encomenda"
+   },
+   "5902": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Retorno de mercadoria utilizada na industrialização por encomenda"
+   },
+   "5903": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Retorno de mercadoria recebida para industrialização e não aplicada no referido processo"
+   },
+   "5904": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Remessa para venda fora do estabelecimento"
+   },
+   "5905": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Remessa para depósito fechado ou armazém geral"
+   },
+   "5906": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Retorno de mercadoria depositada em depósito fechado ou armazém geral"
+   },
+   "5907": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Retorno simbólico de mercadoria depositada em depósito fechado ou armazém geral"
+   },
+   "5908": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Remessa de bem por conta de contrato de comodato"
+   },
+   "5909": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Retorno de bem recebido por conta de contrato de comodato"
+   },
+   "5910": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Remessa em bonificação, doação ou brinde"
+   },
+   "5911": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Remessa de amostra grátis"
+   },
+   "5912": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Remessa de mercadoria ou bem para demonstração"
+   },
+   "5913": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Retorno de mercadoria ou bem recebido para demonstração"
+   },
+   "5914": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Remessa de mercadoria ou bem para exposição ou feira"
+   },
+   "5915": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Remessa de mercadoria ou bem para conserto ou reparo"
+   },
+   "5916": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Retorno de mercadoria ou bem recebido para conserto ou reparo"
+   },
+   "5917": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Remessa de mercadoria em consignação mercantil ou industrial"
+   },
+   "5918": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de mercadoria recebida em consignação mercantil ou industrial"
+   },
+   "5919": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução simbólica de mercadoria vendida ou utilizada em processo industrial, recebida anteriormente em consignação mercantil ou industrial"
+   },
+   "5920": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Remessa de vasilhame ou sacaria"
+   },
+   "5921": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de vasilhame ou sacaria"
+   },
+   "5922": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Lançamento efetuado a título de simples faturamento decorrente de venda para entrega futura"
+   },
+   "5923": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Remessa de mercadoria por conta e ordem de terceiros, em venda à ordem"
+   },
+   "5924": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Remessa para industrialização por conta e ordem do adquirente da mercadoria, quando esta não transitar pelo estabelecimento do adquirente"
+   },
+   "5925": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Retorno de mercadoria recebida para industrialização por conta e ordem do adquirente da mercadoria, quando aquela não transitar pelo estabelecimento do adquirente"
+   },
+   "5926": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Lançamento efetuado a título de reclassificação de mercadoria decorrente de formação de kit ou de sua desagregação"
+   },
+   "5927": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Lançamento efetuado a título de baixa de estoque decorrente de perda, roubo ou deterioração"
+   },
+   "5928": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Lançamento efetuado a título de baixa de estoque decorrente do encerramento da atividade da empresa"
+   },
+   "5929": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Lançamento efetuado em decorrência de emissão de documento fiscal relativo a operação ou prestação também registrada em equipamento Emissor de Cupom Fiscal - ECF"
+   },
+   "5931": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Lançamento efetuado em decorrência da responsabilidade de retenção do imposto por substituição tributária, atribuída ao remetente ou alienante da mercadoria, pelo serviço de transporte realizado por transportador autônomo ou por transportador não inscrito na unidade da Federação onde iniciado o serviço"
+   },
+   "5932": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Prestação de serviço de transporte iniciada em unidade da Federação diversa daquela onde inscrito o prestador"
+   },
+   "5933": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Prestação de serviço tributado pelo ISSQN"
+   },
+   "5949": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Outra saída de mercadoria ou prestação de serviço não especificado "
+   },
+   "6000": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "SAÍDAS OU PRESTAÇÕES DE SERVIÇOS PARA OUTROS ESTADOS "
+   },
+   "6100": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "VENDAS DE PRODUÇÃO PRÓPRIA OU DE TERCEIROS"
+   },
+   "6101": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de produção do estabelecimento"
+   },
+   "6102": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de mercadoria adquirida ou recebida de terceiros"
+   },
+   "6103": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de produção do estabelecimento, efetuada fora do estabelecimento"
+   },
+   "6104": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de mercadoria adquirida ou recebida de terceiros, efetuada fora do estabelecimento"
+   },
+   "6105": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de produção do estabelecimento que não deva por ele transitar"
+   },
+   "6106": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de mercadoria adquirida ou recebida de terceiros, que não deva por ele transitar"
+   },
+   "6107": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de produção do estabelecimento, destinada a não contribuinte"
+   },
+   "6108": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de mercadoria adquirida ou recebida de terceiros, destinada a não contribuinte"
+   },
+   "6109": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de produção do estabelecimento, destinada à Zona Franca de Manaus ou Áreas de Livre Comércio"
+   },
+   "6110": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de mercadoria adquirida ou recebida de terceiros, destinada à Zona Franca de Manaus ou Áreas de Livre Comércio"
+   },
+   "6111": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de produção do estabelecimento remetida anteriormente em consignação industrial"
+   },
+   "6112": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de mercadoria adquirida ou recebida de Terceiros remetida anteriormente em consignação industrial"
+   },
+   "6113": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de produção do estabelecimento remetida anteriormente em consignação mercantil"
+   },
+   "6114": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de mercadoria adquirida ou recebida de terceiros remetida anteriormente em consignação mercantil"
+   },
+   "6115": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de mercadoria adquirida ou recebida de terceiros, recebida anteriormente em consignação mercantil"
+   },
+   "6116": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de produção do estabelecimento originada de encomenda para entrega futura"
+   },
+   "6117": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de mercadoria adquirida ou recebida de terceiros, originada de encomenda para entrega futura"
+   },
+   "6118": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de produção do estabelecimento entregue ao destinatário por conta e ordem do adquirente originário, em venda à ordem"
+   },
+   "6119": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de mercadoria adquirida ou recebida de terceiros entregue ao destinatário por conta e ordem do adquirente originário, em venda à ordem"
+   },
+   "6120": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de mercadoria adquirida ou recebida de terceiros entregue ao destinatário pelo vendedor remetente, em venda à ordem"
+   },
+   "6122": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de produção do estabelecimento remetida para industrialização, por conta e ordem do adquirente, sem transitar pelo estabelecimento do adquirente"
+   },
+   "6123": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de mercadoria adquirida ou recebida de terceiros remetida para industrialização, por conta e ordem do adquirente, sem transitar pelo estabelecimento do adquirente"
+   },
+   "6124": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Industrialização efetuada para outra empresa"
+   },
+   "6125": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Industrialização efetuada para outra empresa quando a mercadoria recebida para utilização no processo de industrialização não transitar pelo estabelecimento adquirente da mercadoria"
+   },
+   "6150": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "TRANSFERÊNCIAS DE PRODUÇÃO PRÓPRIA OU DE TERCEIROS"
+   },
+   "6151": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Transferência de produção do estabelecimento"
+   },
+   "6152": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Transferência de mercadoria adquirida ou recebida de terceiros"
+   },
+   "6153": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Transferência de energia elétrica 6.155 - Transferência de produção do estabelecimento, que não deva por ele transitar"
+   },
+   "6156": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Transferência de mercadoria adquirida ou recebida de terceiros, que não deva por ele transitar"
+   },
+   "6200": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "DEVOLUÇÕES DE COMPRAS PARA INDUSTRIALIZAÇÃO, COMERCIALIZAÇÃO OU ANULAÇÕES DE VALORES"
+   },
+   "6201": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de compra para industrialização ou produção rural"
+   },
+   "6202": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de compra para comercialização"
+   },
+   "6205": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Anulação de valor relativo a aquisição de serviço de comunicação"
+   },
+   "6206": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Anulação de valor relativo a aquisição de serviço de transporte"
+   },
+   "6207": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Anulação de valor relativo à compra de energia elétrica"
+   },
+   "6208": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de mercadoria recebida em transferência para industrialização ou produção rural"
+   },
+   "6209": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de mercadoria recebida em transferência para comercialização"
+   },
+   "6210": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de compra para utilização na prestação de serviço "
+   },
+   "6250": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "VENDAS DE ENERGIA ELÉTRICA"
+   },
+   "6251": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de energia elétrica para distribuição ou comercialização"
+   },
+   "6252": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de energia elétrica para estabelecimento industrial"
+   },
+   "6253": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de energia elétrica para estabelecimento comercial"
+   },
+   "6254": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de energia elétrica para estabelecimento prestador de serviço de transporte"
+   },
+   "6255": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de energia elétrica para estabelecimento prestador de serviço de comunicação"
+   },
+   "6256": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de energia elétrica para estabelecimento de produtor rural"
+   },
+   "6257": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de energia elétrica para consumo por demanda contratada"
+   },
+   "6258": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de energia elétrica a não contribuinte"
+   },
+   "6300": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "PRESTAÇÕES DE SERVIÇOS DE COMUNICAÇÃO"
+   },
+   "6301": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Prestação de serviço de comunicação para execução de serviço da mesma natureza"
+   },
+   "6302": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Prestação de serviço de comunicação a estabelecimento industrial"
+   },
+   "6303": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Prestação de serviço de comunicação a estabelecimento comercial"
+   },
+   "6304": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Prestação de serviço de comunicação a estabelecimento de prestador de serviço de transporte"
+   },
+   "6305": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Prestação de serviço de comunicação a estabelecimento de geradora ou de distribuidora de energia elétrica"
+   },
+   "6306": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Prestação de serviço de comunicação a estabelecimento de produtor rural"
+   },
+   "6307": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Prestação de serviço de comunicação a não contribuinte"
+   },
+   "6350": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "PRESTAÇÕES DE SERVIÇOS DE TRANSPORTE"
+   },
+   "6351": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Prestação de serviço de transporte para execução de serviço da mesma natureza"
+   },
+   "6352": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Prestação de serviço de transporte a estabelecimento industrial"
+   },
+   "6353": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Prestação de serviço de transporte a estabelecimento comercial"
+   },
+   "6354": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Prestação de serviço de transporte a estabelecimento de prestador de serviço de comunicação"
+   },
+   "6355": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Prestação de serviço de transporte a estabelecimento de geradora ou de distribuidora de energia elétrica"
+   },
+   "6356": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Prestação de serviço de transporte a estabelecimento de produtor rural"
+   },
+   "6357": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Prestação de serviço de transporte a não contribuinte"
+   },
+   "6359": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Prestação de serviço de transporte a contribuinte ou a não contribuinte quando a mercadoria transportada está dispensada de emissão de nota fiscal"
+   },
+   "6400": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "SAÍDAS DE MERCADORIAS SUJEITAS AO REGIME DE SUBSTITUIÇÃO TRIBUTÁRIA"
+   },
+   "6401": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de produção do estabelecimento em operação com produto sujeito ao regime de substituição tributária, na condição de contribuinte substituto"
+   },
+   "6402": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de produção do estabelecimento de produto sujeito ao regime de substituição tributária, em operação entre contribuintes substitutos do mesmo produto"
+   },
+   "6403": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de mercadoria adquirida ou recebida de terceiros em operação com mercadoria sujeita ao regime de substituição tributária, na condição de contribuinte substituto"
+   },
+   "6404": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de mercadoria sujeita ao regime de substituição tributária, cujo imposto já tenha sido retido anteriormente"
+   },
+   "6408": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Transferência de produção do estabelecimento em operação com produto sujeito ao regime de substituição tributária"
+   },
+   "6409": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Transferência de mercadoria adquirida ou recebida de terceiros em operação com mercadoria sujeita ao regime de substituição tributária"
+   },
+   "6410": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de compra para industrialização ou produção rural em operação com mercadoria sujeita ao regime de substituição tributária"
+   },
+   "6411": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de compra para comercialização em operação com mercadoria sujeita ao regime de substituição tributária"
+   },
+   "6412": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de bem do ativo imobilizado, em operação com mercadoria sujeita ao regime de substituição tributária"
+   },
+   "6413": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de mercadoria destinada ao uso ou consumo, em operação com mercadoria sujeita ao regime de substituição tributária"
+   },
+   "6414": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Remessa de produção do estabelecimento para venda fora do estabelecimento em operação com produto sujeito ao regime de substituição tributária"
+   },
+   "6415": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Remessa de mercadoria adquirida ou recebida de terceiros para venda fora do estabelecimento, em operação com mercadoria sujeita ao regime de substituição tributária"
+   },
+   "6500": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "REMESSAS COM FIM ESPECÍFICO DE EXPORTAÇÃO E EVENTUAIS DEVOLUÇÕES"
+   },
+   "6501": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Remessa de produção do estabelecimento, com fim específico de exportação"
+   },
+   "6502": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Remessa de mercadoria adquirida ou recebida de terceiros, com fim específico de exportação"
+   },
+   "6503": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de mercadoria recebida com fim específico de exportação"
+   },
+   "6504": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Remessa de mercadorias para formação de lote de exportação, de produtos industrializados ou produzidos pelo próprio estabelecimento"
+   },
+   "6505": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Remessa de mercadorias, adquiridas ou recebidas de terceiros, para formação de lote de exportação"
+   },
+   "6550": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "OPERAÇÕES COM BENS DE ATIVO IMOBILIZADO E MATERIAIS PARA USO OU CONSUMO"
+   },
+   "6551": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de bem do ativo imobilizado"
+   },
+   "6552": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Transferência de bem do ativo imobilizado"
+   },
+   "6553": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de compra de bem para o ativo imobilizado"
+   },
+   "6554": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Remessa de bem do ativo imobilizado para uso fora do estabelecimento"
+   },
+   "6555": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de bem do ativo imobilizado de terceiro, recebido para uso no estabelecimento"
+   },
+   "6556": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de compra de material de uso ou consumo"
+   },
+   "6557": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Transferência de material de uso ou consumo"
+   },
+   "6600": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "CRÉDITOS E RESSARCIMENTOS DE ICMS"
+   },
+   "6603": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Ressarcimento de ICMS retido por substituição tributária"
+   },
+   "6651": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de combustível ou lubrificante de produção do estabelecimento destinado à industrialização subseqüente"
+   },
+   "6652": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de combustível ou lubrificante de produção do estabelecimento destinado à comercialização"
+   },
+   "6653": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de combustível ou lubrificante de produção do estabelecimento destinado a consumidor ou usuário final"
+   },
+   "6654": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de combustível ou lubrificante adquirido ou recebido de terceiros destinado à industrialização subseqüente"
+   },
+   "6655": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de combustível ou lubrificante adquirido ou recebido de terceiros destinado à comercialização"
+   },
+   "6656": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de combustível ou lubrificante adquirido ou recebido de terceiros destinado a consumidor ou usuário final"
+   },
+   "6657": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Remessa de combustível ou lubrificante adquirido ou recebido de terceiros para venda fora do estabelecimento"
+   },
+   "6658": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Transferência de combustível ou lubrificante de produção do estabelecimento"
+   },
+   "6659": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Transferência de combustível ou lubrificante adquirido ou recebido de terceiro"
+   },
+   "6660": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de compra de combustível ou lubrificante adquirido para industrialização subseqüente"
+   },
+   "6661": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de compra de combustível ou lubrificante adquirido para comercialização"
+   },
+   "6662": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de compra de combustível ou lubrificante adquirido por consumidor ou usuário final"
+   },
+   "6663": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Remessa para armazenagem de combustível ou lubrificante"
+   },
+   "6664": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Retorno de combustível ou lubrificante recebido para armazenagem"
+   },
+   "6665": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Retorno simbólico de combustível ou lubrificante recebido para armazenagem"
+   },
+   "6666": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Remessa por conta e ordem de terceiros de combustível ou lubrificante recebido para armazenagem"
+   },
+   "6900": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "OUTRAS SAÍDAS DE MERCADORIAS OU PRESTAÇÕES DE SERVIÇOS"
+   },
+   "6901": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Remessa para industrialização por encomenda"
+   },
+   "6902": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Retorno de mercadoria utilizada na industrialização por encomenda"
+   },
+   "6903": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Retorno de mercadoria recebida para industrialização e não aplicada no referido processo"
+   },
+   "6904": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Remessa para venda fora do estabelecimento"
+   },
+   "6905": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Remessa para depósito fechado ou armazém geral"
+   },
+   "6906": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Retorno de mercadoria depositada em depósito fechado ou armazém geral"
+   },
+   "6907": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Retorno simbólico de mercadoria depositada em depósito fechado ou armazém geral"
+   },
+   "6908": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Remessa de bem por conta de contrato de comodato"
+   },
+   "6909": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Retorno de bem recebido por conta de contrato de comodato"
+   },
+   "6910": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Remessa em bonificação, doação ou brinde"
+   },
+   "6911": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Remessa de amostra grátis"
+   },
+   "6912": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Remessa de mercadoria ou bem para demonstração 6.913 - Retorno de mercadoria ou bem recebido para demonstração"
+   },
+   "6914": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Remessa de mercadoria ou bem para exposição ou feira"
+   },
+   "6915": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Remessa de mercadoria ou bem para conserto ou reparo"
+   },
+   "6916": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Retorno de mercadoria ou bem recebido para conserto ou reparo"
+   },
+   "6917": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Remessa de mercadoria em consignação mercantil ou industrial"
+   },
+   "6918": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de mercadoria recebida em consignação mercantil ou industrial"
+   },
+   "6919": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução simbólica de mercadoria vendida ou utilizada em processo industrial, recebida anteriormente em consignação mercantil ou industrial"
+   },
+   "6920": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Remessa de vasilhame ou sacaria"
+   },
+   "6921": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de vasilhame ou sacaria"
+   },
+   "6922": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Lançamento efetuado a título de simples faturamento decorrente de venda para entrega futura"
+   },
+   "6923": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Remessa de mercadoria por conta e ordem de terceiros, em venda à ordem"
+   },
+   "6924": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Remessa para industrialização por conta e ordem do adquirente da mercadoria, quando esta não transitar pelo estabelecimento do adquirente"
+   },
+   "6925": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Retorno de mercadoria recebida para industrialização por conta e ordem do adquirente da mercadoria, quando aquela não transitar pelo estabelecimento do adquirente"
+   },
+   "6929": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Lançamento efetuado em decorrência de emissão de documento fiscal relativo a operação ou prestação também registrada em equipamento Emissor de Cupom Fiscal - ECF"
+   },
+   "6931": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Lançamento efetuado em decorrência da responsabilidade de retenção do imposto por substituição tributária, atribuída ao remetente ou alienante da mercadoria, pelo serviço de transporte realizado por transportador autônomo ou por transportador não inscrito na unidade da Federação onde iniciado o serviço"
+   },
+   "6932": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Prestação de serviço de transporte iniciada em unidade da Federação diversa daquela onde inscrito o prestador"
+   },
+   "6933": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Prestação de serviço tributado pelo ISSQN"
+   },
+   "6949": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Outra saída de mercadoria ou prestação de serviço não especificado"
+   },
+   "7000": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "SAÍDAS OU PRESTAÇÕES DE SERVIÇOS PARA O EXTERIOR "
+   },
+   "7100": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "VENDAS DE PRODUÇÃO PRÓPRIA OU DE TERCEIROS"
+   },
+   "7101": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de produção do estabelecimento"
+   },
+   "7102": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de mercadoria adquirida ou recebida de terceiros"
+   },
+   "7105": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de produção do estabelecimento, que não deva por ele transitar"
+   },
+   "7106": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de mercadoria adquirida ou recebida de terceiros, que não deva por ele transitar"
+   },
+   "7127": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de produção do estabelecimento sob o regime de "
+   },
+   "7200": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "DEVOLUÇÕES DE COMPRAS PARA INDUSTRIALIZAÇÃO, COMERCIALIZAÇÃO OU ANULAÇÕES DE VALORES"
+   },
+   "7201": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de compra para industrialização ou produção rural"
+   },
+   "7202": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de compra para comercialização"
+   },
+   "7205": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Anulação de valor relativo à aquisição de serviço de comunicação"
+   },
+   "7206": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Anulação de valor relativo a aquisição de serviço de transporte"
+   },
+   "7207": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Anulação de valor relativo à compra de energia elétrica"
+   },
+   "7210": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de compra para utilização na prestação de serviço"
+   },
+   "7211": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de compras para industrialização sob o regime de drawback"
+   },
+   "7250": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "VENDAS DE ENERGIA ELÉTRICA"
+   },
+   "7251": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de energia elétrica para o exterior "
+   },
+   "7300": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "PRESTAÇÕES DE SERVIÇOS DE COMUNICAÇÃO"
+   },
+   "7301": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Prestação de serviço de comunicação para execução de serviço da mesma natureza "
+   },
+   "7350": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "PRESTAÇÕES DE SERVIÇO DE TRANSPORTE"
+   },
+   "7358": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Prestação de serviço de transporte "
+   },
+   "7500": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "EXPORTAÇÃO DE MERCADORIAS RECEBIDAS COM FIM ESPECÍFICO DE EXPORTAÇÃO"
+   },
+   "7501": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Exportação de mercadorias recebidas com fim específico de exportação"
+   },
+   "7550": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "OPERAÇÕES COM BENS DE ATIVO IMOBILIZADO E MATERIAIS PARA USO OU CONSUMO"
+   },
+   "7551": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de bem do ativo imobilizado"
+   },
+   "7553": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de compra de bem para o ativo imobilizado"
+   },
+   "7556": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Devolução de compra de material de uso ou consumo"
+   },
+   "7651": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de combustível ou lubrificante de produção do estabelecimento"
+   },
+   "7654": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Venda de combustível ou lubrificante adquirido ou recebido de terceiros"
+   },
+   "7900": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "OUTRAS SAÍDAS DE MERCADORIAS OU PRESTAÇÕES DE SERVIÇOS"
+   },
+   "7930": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Lançamento efetuado atítulo de devolução de bem cuja entrada tenha ocorrido sob amparo de regime especial aduaneiro de admissão temporária"
+   },
+   "7949": {
+      "ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO": "Outra saída de mercadoria ou prestação de serviço não especificado"
+   }
+}
