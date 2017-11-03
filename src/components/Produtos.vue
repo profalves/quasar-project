@@ -185,7 +185,7 @@ export default {
         responsive: false,
         pagination: {
           rowsPerPage: 5,
-          options: [5, 10, 15, 30, 50, 500]
+          options: [5, 10, 15, 30, 50, 100]
         },
         selection: 'multiple'
       },

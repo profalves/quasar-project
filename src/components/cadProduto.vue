@@ -67,12 +67,7 @@
                      type="number"
                      float-label="Cód. Barras" 
                      clearable
-                     @input="$v.barras.$touch()"
-                     :error="$v.barras.$error"
             />
-            
-             <span style="color:grey" v-if="!$v.barras.required">Nome é requerido</span>
-             <span v-if="!$v.barras.minLength">Este campo deve conter mais que {{$v.barras.$params.minLength.min}} caracteres.</span>
             
           </q-field>   
         </div>
@@ -117,7 +112,7 @@
             <q-btn 
                rounded
                color="primary" 
-               @click="$router.push('/cadcliente')">
+               @click="$router.push('/')">
                <q-icon name="add" />
             </q-btn>
         </div>
@@ -141,7 +136,7 @@
             <q-btn 
                rounded
                color="primary" 
-               @click="$router.push('/cadcliente')">
+               @click="$router.push('/')">
                <q-icon name="add" />
             </q-btn>
             
@@ -163,7 +158,7 @@
             <q-btn 
                rounded
                color="primary" 
-               @click="$router.push('/cadcliente')">
+               @click="$router.push('/')">
                <q-icon name="add" />
             </q-btn>    
         </div>
@@ -280,7 +275,7 @@ export default {
         Toast.create.positive({
         html: 'Salvo com sucesso',
         icon: 'done'
-      })
+        })
     },
     excluir(){
         Dialog.create({

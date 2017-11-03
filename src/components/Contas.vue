@@ -6,7 +6,7 @@
         <q-btn 
            round
            color="primary" 
-           @click="$router.push('/')">
+           @click="$router.push('/cadcontas')">
            <q-icon name="add" />
         </q-btn>
     </q-fixed-position>
@@ -191,7 +191,7 @@ export default {
         responsive: false,
         pagination: {
           rowsPerPage: 5,
-          options: [5, 10, 15, 30, 50, 500]
+          options: [5, 10, 15, 30, 50, 100]
         },
         selection: 'multiple'
       },
@@ -199,7 +199,7 @@ export default {
         {
           label: 'Data',
           field: 'created',
-          width: '150px',
+          width: '105px',
           //classes: 'bg-orange-2',
           sort: true,
           filter: true,
@@ -214,7 +214,7 @@ export default {
         {
           label: 'Descrição',
           field: 'name',
-          width: '150px',
+          width: '100px',
           //classes: 'bg-orange-2',
           sort: true,
           filter: true,
@@ -231,10 +231,10 @@ export default {
           field: 'rotation_period',
           //filter: 'true',
           format (value) {
-            if (value === 'male') {
-              return '<i class="material-icons">account_circle</i> - Despesa'
+            if (value < 24) {
+              return '<i class="material-icons text-negative">thumb_down</i> - Despesa'
             }
-            return '<i class="material-icons">business_center</i> - Receita'
+            return '<i class="material-icons text-positive">thumb_up</i> - Receita'
           },
           width: '100px'
         },

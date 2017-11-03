@@ -53,6 +53,12 @@
     
     <!-- formulário -->
     <div class="row">
+        <div class="col">
+            <h5>Cadastro de Pessoas</h5>
+        </div>
+    </div>
+    
+    <div class="row">
         <div class="col-4">
             <q-field
                 label="Tipo"
@@ -103,7 +109,7 @@
             helper="Fone"
           >
             <the-mask class="mdInput"
-                      float-label="Nome" 
+                      float-label="Fone" 
                       :mask="['(##) ####-####', '(##) #####-####']"
                       />
           </q-field>   
@@ -394,12 +400,12 @@ export default {
       })
     },
     testarConexao(){
-      axios.get('http://api.postmon.com.br/v1/cep/01001000')
+      axios.get('http://192.168.0.200/celular/api/cidades/consulta?uf=ba')
       .then((res)=>{
         console.log(res)
       })
       .catch((e)=>{
-        /*Dialog.create({
+        Dialog.create({
           title: 'Erro',
           message: 'dispositivo offLine',
           buttons: [
@@ -409,13 +415,13 @@ export default {
               color: 'info'
             }
           ]
-        })*/
+        })
         this.visivel = true
         this.error = e
         //console.log(e)
       })
-             
-    },
+        
+    }
     
   },
   created(){
@@ -506,6 +512,8 @@ export default {
         font-weight: bolder;
         font-size: 16px;
         color: slategrey;
+        margin-left: 15px;
+        text-decoration: blink;
     }
     
     
