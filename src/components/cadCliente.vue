@@ -61,13 +61,67 @@
     <div class="row">
         <div class="col-4">
             <q-field
-                label="Tipo"
+                helper="Tipo Cadastro" 
               >
                 <q-select
                     v-model="tipo"
                     :options="tipos"
                 />
             </q-field>
+        </div>
+        <div class="col-4">
+            <q-field
+                helper="Tipo Pessoa"    
+              >
+                <q-select
+                    v-model="tipoPessoa"
+                    :options="[
+                        {
+                          label: 'Física',
+                          value: 'f'
+                        },
+                        {
+                          label: 'Jurídica',
+                          value: 'j'
+                        }
+                    ]"
+                />
+            </q-field>
+        </div>
+        <div class="offset-md-2 col" id="cod">
+            <q-field>
+                Código: 1
+            </q-field>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-4">
+            <q-field helper="Família">
+                <q-select
+                    filter
+                    v-model="familia"
+                    :options="options"
+                />
+            </q-field>
+        </div>
+        <div class="col-4">
+            <q-field helper="Vendedor">
+                <q-select
+                    filter
+                    v-model="vendedor"
+                    :options="[
+                        {
+                          label: 'Admin',
+                          value: 1
+                        }
+                    ]"
+                />
+            </q-field>
+        </div>
+        <div class="col" id="genero">
+            <q-radio v-model="sexo" val="mas" color="primary" left-label label="Masc." />
+            <q-radio v-model="sexo" val="fem" color="primary" left-label label="Fem." style="margin-left: 10px" /> 
         </div>
     </div>
     
@@ -83,7 +137,7 @@
                      :error="$v.nome.$error"
             />
             
-             <span style="color:grey" v-if="!$v.nome.required">Nome é requerido</span>
+             <span style="color:#878B8F" v-if="!$v.nome.required">Nome é requerido</span>
              <span v-if="!$v.nome.minLength">Este campo deve conter mais que {{$v.nome.$params.minLength.min}} caracteres.</span>
             
           </q-field>   
@@ -97,136 +151,282 @@
             helper="CPF/CNPJ"
           >
             <the-mask class="mdInput"
-                      float-label="Nome" 
+                      v-model="cpf"
                       :mask="['###.###.###-##', '##.###.###/####-##']"
                       />
           </q-field>   
         </div>
-        
         <div class="col-md-6">
           <q-field
-            icon="phone"
-            helper="Fone"
+            icon="done"
+            helper="RG"
           >
-            <the-mask class="mdInput"
-                      float-label="Fone" 
-                      :mask="['(##) ####-####', '(##) #####-####']"
-                      />
+            <q-input v-model="rg"/>
           </q-field>   
-        </div>
+        </div>    
     </div>  
     
     <div class="row">
-        <div class="col control has-icon has-icon-right">
+        <div class="col-md-6 col-xs-12">
           <q-field
-            icon="email"
+            icon="android"
+            helper="Apelido"
           >
-            <q-input 
-                 v-model="email" 
-                 type="email" 
-                 float-label="Email" suffix="@email.com"
-                 @input="$v.email.$touch()"
-                 :error="$v.email.$error"
-                 clearable
-            />
-             
-             <span v-if="!$v.email.email">Digite um email válido</span>
-          </q-field>
-             
-          
-        </div>
-    </div>
-    
-    <div class="row">
-        <div class="col-8 col-md-6">
-          <q-field
-            icon="markunread_mailbox"
-            helper="Clique no botão ao lado para pesquisar o CEP"
-          >
-            <q-input float-label="CEP"
-                     v-model.number="cep"
-                     type="number"
-                     @blur="listarCidades"
-                     clearable
-                     @input="$v.cep.$touch()"
-                     :error="$v.cep.$error"
-                     ref="cep"
-            />
-            <span v-if="!$v.cep.maxLength">Quantidade de números superior ao de um cep</span>
+            <q-input v-model="alias" />
             
-          </q-field>   
-        </div>
-        <div class="col">
-          <q-btn 
-             icon="search" 
-             color="primary"  
-             round
-             @click="buscarCep"
-             :disabled="visivel"
-          >
-          </q-btn>
-          <span id="avisoCep" v-if="visivel">Offline</span>
-        </div>
-    </div>
-    
-    <div class="row">
+          </q-field>
+        </div>    
         <div class="col">
           <q-field
-            icon="location_on"
+            icon="cake"
+            helper="Data de Nascimento"
           >
-            <q-input v-model="end" float-label="Endereço"/>
-          </q-field>   
-        </div>
-        <div class="col-lg-2 col-md-3 col-sm-12">
-          <q-field
-            icon="location_on"
-          >
-            <q-input v-model="numLogradouro" type="number" float-label="Numero"/>
-          </q-field>   
-        </div>
-    </div>
-    
-    <div class="row">
-        <div class="col">
-          <q-field
-            icon="streetview"
-          >
-            <q-input v-model="bairro" float-label="Bairro"/>
-          </q-field>   
-        </div>
-        
-    </div>
-    <div class="row">
-        <div class="col-md-4">
-          <q-field
-            icon="domain"
-          >
-            <q-select
-                float-label="Estado/Cidade"
-                filter
-                v-model="estado"
-                :options="estados"
-                @blur="listarCidades"
+            <the-mask class="mdInput"
+                      v-model="datanasc"
+                      type="data"
+                      stacked-label="Nome" 
+                      :mask="['##/##/####']"
             />
-          </q-field>   
-        </div>
-        <div class="col-md-8" style="margin-top:14px;">
-          <q-field 
-            icon="location_city"
-            helper="Escolha primeiro um estado para deois selcionar uma cidade"
-          >
-            <div class="mdl-selectfield">
-            <label class="ellipsis absolute self-start">Cidade</label>
-            <select class="browser-default" v-model="cidade" >
-              <option disabled selected>Escolha uma cidade</option>
-              <option v-for="cidade in cidades">{{cidade.nome}}</option>
+            
+          </q-field>
+        </div>    
+    </div>
+    <br>
+    
+    <q-list style="background-color: white;">
+    
+      <!--Endereços-->
+      <q-collapsible icon="pin_drop" label="Endereços">
+          
+        <div class="row">
+            <div class="col-8 col-md-6">
+              <q-field
+                icon="markunread_mailbox"
+                helper="Clique no botão ao lado para pesquisar o CEP"
+              >
+                <q-input float-label="CEP"
+                         v-model.number="cep"
+                         type="number"
+                         @blur="listarCidades"
+                         clearable
+                         @input="$v.cep.$touch()"
+                         :error="$v.cep.$error"
+                         ref="cep"
+                />
+                <span v-if="!$v.cep.maxLength">Quantidade de números superior ao de um cep</span>
 
-            </select>
-            </div>   
-          </q-field>   
+              </q-field>   
+            </div>
+            <div class="col">
+              <q-btn 
+                 icon="search" 
+                 color="primary"  
+                 round
+                 @click="buscarCep"
+                 :disabled="visivel"
+              >
+              </q-btn>
+              <span id="avisoCep" v-if="visivel">Offline</span>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+              <q-field
+                icon="location_on"
+              >
+                <q-input v-model="end" float-label="Endereço"/>
+              </q-field>   
+            </div>
+            <div class="col-lg-2 col-md-3 col-sm-12">
+              <q-field
+                icon="location_on"
+              >
+                <q-input v-model="numLogradouro" type="number" float-label="Numero"/>
+              </q-field>   
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+              <q-field
+                icon="streetview"
+              >
+                <q-input v-model="bairro" float-label="Bairro"/>
+              </q-field>   
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+              <q-field
+                icon="domain"
+              >
+                <q-select
+                    float-label="Estado/Cidade"
+                    filter
+                    v-model="estado"
+                    :options="estados"
+                    @blur="listarCidades"
+                />
+              </q-field>   
+            </div>
+            <div class="col-md-8" style="margin-top:14px;">
+              <q-field 
+                icon="location_city"
+                helper="Escolha primeiro um estado para deois selcionar uma cidade"
+              >
+                <div class="mdl-selectfield">
+                <label class="ellipsis absolute self-start">Cidade</label>
+                <select class="browser-default" v-model="cidade" >
+                  <option disabled selected>Escolha uma cidade</option>
+                  <option v-for="cidade in cidades">{{cidade.nome}}</option>
+
+                </select>
+                </div>   
+              </q-field>   
+            </div>
+
+        </div>
+
+        <div class="row btn-plus" >
+            <div class="col">
+                <q-btn 
+                   rounded
+                   color="primary" 
+                   @click="">
+                   <q-icon name="add_location" />
+                   adicionar endereço
+                </q-btn>
+            </div>
+        </div><br>
+      </q-collapsible>
+        
+      <!--Contatos-->
+      <q-collapsible icon="contact_phone" label="Contatos">
+          
+        <div class="row">
+            
+            <div class="col col-md-4">
+              <q-field
+                icon="phone"
+              >
+                <q-select
+                    float-label="Tipo Contato"
+                    v-model="tipoContato"
+                    :options="[
+                        {
+                          label: 'Residencial',
+                          value: 'res'
+                        },
+                        {
+                          label: 'Comercial',
+                          value: 'com'
+                        },
+                        {
+                          label: 'Celular',
+                          value: 'cel'
+                        }
+                    ]"   
+                />
+              </q-field>   
+            </div>
+            <div class="col" id="fone">
+              <q-field
+                helper="Fone"
+              >
+                <the-mask class="mdInput"
+                          v-model="fone"
+                          float-label="Fone" 
+                          :mask="['(##) ####-####', '(##) #####-####']"
+                          />
+              </q-field>   
+            </div>
+            <div class="col-2 btn-plus" >
+                <q-btn 
+                   rounded
+                   color="primary" 
+                   @click="">
+                   <q-icon name="add" />
+                </q-btn>
+            </div>
         </div>
         
-    </div>
+        <div class="row">
+            <div class="col control has-icon has-icon-right">
+              <q-field
+                icon="email"
+              >
+                <q-input 
+                     v-model="email" 
+                     type="email" 
+                     float-label="Email" suffix="@email.com"
+                     @input="$v.email.$touch()"
+                     :error="$v.email.$error"
+                     clearable
+                />
+
+                 <span v-if="!$v.email.email">Digite um email válido</span>
+              </q-field> 
+            </div>
+            <div class="col-2 btn-plus" >
+                <q-btn 
+                   rounded
+                   color="primary" 
+                   @click="">
+                   <q-icon name="add" />
+                </q-btn>
+            </div>
+        </div>
+          
+        
+      </q-collapsible>
+        
+      <!--Crediário-->  
+      <q-collapsible icon="local_atm" label="Crediário">
+        <div class="row">
+            
+            <div class="col-4">
+                <q-field helper="Crediário">
+                    <q-select
+                        filter
+                        v-model="cred"
+                        :options="[
+                            {
+                              label: 'Sim',
+                              value: 's'
+                            },
+                            {
+                              label: 'Não',
+                              value: 'n'
+                            }
+                        ]"
+                    />
+                </q-field>
+            </div>
+            <div class="offset-1 col">
+                <q-field
+                    label="Limite"
+                  >
+                    <q-input v-model="limite" />
+
+                </q-field>
+            </div>
+        </div>
+          
+        
+      </q-collapsible>
+        
+      <!--OBS-->
+      <q-collapsible icon="message" label="Observações">
+        <q-input 
+                 float-label="Obs:" 
+                 v-model="obs" 
+                 type="textarea" 
+                 />
+      </q-collapsible>
+        
+    </q-list>
     
 </div>
     
@@ -252,7 +452,12 @@ export default {
         cidadesJSON,
         nome: '',
         cpf: '',
+        rg: '',
+        sexo: '',
+        datanasc: '',
+        alias: '',
         fone: '',
+        tipoContato: 'cel',
         email: '',
         cep: '',
         end: '',
@@ -260,6 +465,8 @@ export default {
         cidade: '',
         estado: 'ba',
         numLogradouro: '',
+        obs: '',
+        tipoPessoa: 'f',
         tipo: 'c',
         tipos: [
             {
@@ -272,6 +479,37 @@ export default {
             },
             
         ],
+        options: [
+            {
+              label: 'Indefinido',
+              value: 'ind'
+            },
+            {
+              label: 'Google',
+              value: 'goog'
+            },
+            {
+              label: 'Facebook',
+              value: 'fb'
+            },
+            {
+              label: 'Twitter',
+              value: 'twtr'
+            },
+            {
+              label: 'Apple Inc.',
+              value: 'appl'
+            },
+            {
+              label: 'Oracle',
+              value: 'ora'
+            }
+        ],
+        select: '',
+        familia: 'ind',
+        vendedor: 1,
+        cred: 's',
+        limite: '0,00',
         cidades: [],
         canGoBack: window.history.length > 1,
         getCep: [],
@@ -516,5 +754,21 @@ export default {
         text-decoration: blink;
     }
     
+    #fone {
+        margin-top: 12px;
+    }
+    
+    .btn-plus {
+        margin-top: 20px;
+    }
+    
+    #cod {
+        text-align: right;
+    }
+    
+    #genero {
+        text-align: center;
+        margin-top: 15px;
+    }
     
 </style>

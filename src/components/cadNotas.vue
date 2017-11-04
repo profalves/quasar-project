@@ -682,7 +682,7 @@ export default {
                     html: 'Salvo com sucesso',
                     icon: 'done'
                 })
-                Toast.create('Returned ' + JSON.stringify(data))
+                Toast.create('Dados : ' + JSON.stringify(data))
                 
               }
             }

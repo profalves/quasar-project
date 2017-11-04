@@ -1,5 +1,5 @@
 <template>
-<div id="clientes">
+<div id="cadproduto">
     
     <div style="margin-top:50px"></div>
     
@@ -210,7 +210,7 @@ import { Dialog, Toast } from 'quasar'
 
 
 export default {
-  name: 'clientes',
+  name: 'Cadastro de Produtos',
   data () {
     return {
         nome: '',

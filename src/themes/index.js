@@ -43,6 +43,7 @@ import {
   QFabAction,
   QFixedPosition,
   QAjaxBar,
+  QRadio,
   clone
 } from 'quasar'
 
@@ -90,6 +91,7 @@ const imports = {
   QFabAction,
   QFixedPosition,
   QAjaxBar,
+  QRadio,
   clone
 }
 
