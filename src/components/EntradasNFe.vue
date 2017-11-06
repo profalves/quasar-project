@@ -10,6 +10,19 @@
            <q-icon name="add" />
         </q-btn>
     </q-fixed-position>
+    <q-fixed-position class="over" corner="bottom-left" :offset="[18, 18]">
+        <q-btn
+        v-if="canGoBack"
+        color="primary"
+        push
+        big
+        @click="goBack"
+        >
+          <i class="material-icons">arrow_back</i>
+          Voltar
+        </q-btn>
+    </q-fixed-position>
+    
   <div id="table">
     <q-data-table
       :data="table"
@@ -222,10 +235,14 @@ export default {
       pagination: true,
       rowHeight: 50,
       bodyHeightProp: 'auto',
-      bodyHeight: 500
+      bodyHeight: 500,
+      canGoBack: window.history.length > 1,
     }
   },
   methods: {
+    goBack(){
+      window.history.go(-1)
+    },
     changeMessage (props) {
       props.rows.forEach(row => {
         row.data.message = 'Gogu'

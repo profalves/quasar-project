@@ -74,27 +74,41 @@
         </div>
     </div>
     
-    <div class="row" style="margin-left:45px">
-      <q-btn
-        color="primary"
-        push
-        @click="visualizarDanfe"
-      >
-        <i class="material-icons">cloud_download</i>
-        Visualizar
-      </q-btn>
+    <div class="row" style="margin:10px 0px 0px 45px">
+      <div class="col col-md-3" style="margin-bottom: 10px">
+          <q-btn
+            color="primary"
+            push
+            @click="visualizarDanfe"
+          >
+            <i class="material-icons">cloud_download</i>
+            Visualizar
+          </q-btn>
+      </div>
+      <div class="col" style="margin-bottom: 10px;">
+          <q-btn
+            color="primary"
+            push
+            @click="importarDanfe"
+            :disabled="bloqueado"
+          >
+            <i class="material-icons">cloud_download</i>
+            Importar
+          </q-btn>
       
-      <q-btn
-        style="margin-left:15px"
-        color="primary"
-        push
-        @click="importarDanfe"
-        :disabled="bloqueado"
-      >
-        <i class="material-icons">cloud_download</i>
-        Importar
-      </q-btn>
-    </div><br>
+      </div>
+      <div class="col-xs-12 col-md-4">
+          <q-btn
+            color="primary"
+            class="full"
+            push
+            @click="listarDanfe"
+          >
+            <i class="material-icons">search</i>
+            Localizar notas
+          </q-btn>
+      </div>
+    </div>
     
     <span>{{danfe}}</span><br><br>
     
@@ -232,14 +246,10 @@
                   <th class="text-center">Cód</th>
                   <th class="text-center">Produto</th>
                   <th class="text-center">Preço Unit.</th>
-                  <th class="text-center">Quantidade</th>
-                  <th class="text-center">NCM</th>
-                  <th class="text-center">CFOP</th>
-                  <th class="text-center">CST</th>
-                  <th class="text-center">Aliq. ICMS</th>
-                  <th class="text-center">Valor ICMS</th>
+                  <th class="text-center">Quant.</th>
+                  <th class="text-center">Desconto</th>
+                  <th class="text-center">Valor IPI</th>
                   <th class="text-center">Valor Total</th>
-                  <th class="text-center">Adicionar</th>
                   <th class="text-center">Editar</th>
                   <th class="text-center">Excluir</th>
                   
@@ -251,19 +261,14 @@
                   <td class="text-left">iPhone 9</td>
                   <td class="text-right">$10.11</td>
                   <td class="text-left">1</td>
-                  <td class="text-left">88888888</td>
-                  <td class="text-left">5102</td>
-                  <td class="text-right">18%</td><td class="text-left">1</td>
+                  <td class="text-left">$0.11</td>
                   <td class="text-left">$0.11</td>
                   <td class="text-right">$10.11</td>
                   <td class="text-center">
-                    <q-btn round outline small color="positive" icon="add" @click="addItem"></q-btn>    
+                    <q-btn round outline small color="info" icon="edit" @click="addItem"></q-btn>    
                   </td>
                   <td class="text-center">
-                    <q-btn round outline small color="info" icon="edit"></q-btn>    
-                  </td>
-                  <td class="text-center">
-                    <q-btn round outline small color="negative" icon="delete_forever"></q-btn>  
+                    <q-btn round outline small color="negative" icon="delete_forever" @click="excluir"></q-btn>  
                   </td>
 
                 </tr>
@@ -272,19 +277,14 @@
                   <td class="text-left">Drone X</td>
                   <td class="text-right">$10.11</td>
                   <td class="text-left">1</td>
-                  <td class="text-left">88888888</td>
-                  <td class="text-left">5102</td>
-                  <td class="text-right">18%</td><td class="text-left">1</td>
+                  <td class="text-left">$0.11</td>
                   <td class="text-left">$0.11</td>
                   <td class="text-right">$10.11</td>
                   <td class="text-center">
-                    <q-btn round outline small color="positive" icon="add" @click="addItem"></q-btn>    
+                    <q-btn round outline small color="info" icon="edit" @click="addItem"></q-btn>    
                   </td>
                   <td class="text-center">
-                    <q-btn round outline small color="info" icon="edit"></q-btn>    
-                  </td>
-                  <td class="text-center">
-                    <q-btn round outline small color="negative" icon="delete_forever"></q-btn>  
+                    <q-btn round outline small color="negative" icon="delete_forever" @click="excluir"></q-btn>  
                   </td>
                 </tr>
                 <tr>
@@ -292,25 +292,33 @@
                   <td class="text-left">AlienPC</td>
                   <td class="text-right">$10.11</td>
                   <td class="text-left">1</td>
-                  <td class="text-left">88888888</td>
-                  <td class="text-left">5102</td>
-                  <td class="text-right">18%</td><td class="text-left">1</td>
+                  <td class="text-left">$0.11</td>
                   <td class="text-left">$0.11</td>
                   <td class="text-right">$10.11</td>
                   <td class="text-center">
-                    <q-btn round outline small color="positive" icon="add" @click="addItem"></q-btn>    
+                    <q-btn round outline small color="info" icon="edit" @click="addItem"></q-btn>    
                   </td>
                   <td class="text-center">
-                    <q-btn round outline small color="info" icon="edit"></q-btn>    
-                  </td>
-                  <td class="text-center">
-                    <q-btn round outline small color="negative" icon="delete_forever"></q-btn>  
+                    <q-btn round outline small color="negative" icon="delete_forever" @click="excluir"></q-btn>  
                   </td>
                 </tr>
               </tbody>
             </table>  
 
         </div>
+        <br>
+        
+        <div class="col col-md-3">
+            <q-btn
+                color="primary"
+                push
+                @click="$refs[layoutModal].open()"
+            >
+                Adicionar item
+            </q-btn>
+        </div>
+        
+    
       </q-collapsible>
         
       <!--Duplicatas-->
@@ -397,7 +405,35 @@
     
     </div>
     
-    
+    <q-modal ref="layoutModal" :content-css="{minWidth: '80vw', minHeight: '80vh'}">
+      <q-modal-layout>
+        <q-toolbar slot="header">
+          <q-btn flat @click="$refs.layoutModal.close()">
+            <q-icon name="keyboard_arrow_left" />
+          </q-btn>
+          <q-toolbar-title>
+            Header
+          </q-toolbar-title>
+        </q-toolbar>
+
+        <q-toolbar slot="header">
+          <q-search inverted v-model="search" color="none"></q-search>
+        </q-toolbar>
+
+        <q-toolbar slot="footer">
+          <q-toolbar-title>
+            Footer
+          </q-toolbar-title>
+        </q-toolbar>
+
+        <div class="layout-padding">
+          <h1>Modal</h1>
+
+          <q-btn color="primary" @click="$refs.layoutModal.close()">Close</q-btn>
+          <p class="caption" v-for="n in 15">This is a Modal presenting a Layout.</p>
+        </div>
+      </q-modal-layout>
+    </q-modal>
     
 </div>
     
@@ -415,7 +451,7 @@ export default {
   name: 'cadEntradasNFe',
   data () {
     return {
-        tipo: '',
+        modal: false,
         fornecedor: '',
         desc: '',
         cat: '',
@@ -601,6 +637,9 @@ export default {
             icon: 'done'
         })
     },
+    listarDanfe() {
+      this.$router.push('/entradanfe')
+    },
     limpar () {
       this.tipo = ''
       this.fornecedor = ''
@@ -644,50 +683,6 @@ export default {
         })
     },
     addItem(){
-        Dialog.create({
-          title: 'Adicionar Item',
-          message: 'Digite cuidadosamente os dados fiscais dos itens',
-          form: {
-            codBarras: {
-              type: 'number',
-              label: 'Cód Barras',
-              model: '',
-              min: 5,
-              max: 90
-            },
-            age: {
-              type: 'number',
-              label: 'NCM',
-              model: '',
-              min: 5,
-              max: 90
-            },
-            tags: {
-              type: 'chips',
-              label: 'Chips',
-              model: ['Joe', 'John']
-            },
-            comments: {
-              type: 'textarea',
-              label: 'Textarea',
-              model: ''
-            }
-          },
-          buttons: [
-            'Cancelar',
-            {
-              label: 'Ok',
-              handler (data) {
-                Toast.create.positive({
-                    html: 'Salvo com sucesso',
-                    icon: 'done'
-                })
-                Toast.create('Dados : ' + JSON.stringify(data))
-                
-              }
-            }
-          ]
-        })
           
     },
     
@@ -779,5 +774,7 @@ export default {
         overflow: scroll;    
     }
     
-    
+    .full {
+        width: 100%;
+    }
 </style>

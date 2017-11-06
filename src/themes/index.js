@@ -44,6 +44,8 @@ import {
   QFixedPosition,
   QAjaxBar,
   QRadio,
+  QModal,
+  QModalLayout,
   clone
 } from 'quasar'
 
@@ -92,6 +94,8 @@ const imports = {
   QFixedPosition,
   QAjaxBar,
   QRadio,
+  QModal,
+  QModalLayout,
   clone
 }
 

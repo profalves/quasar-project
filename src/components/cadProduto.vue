@@ -59,7 +59,7 @@
     </div>
     
     <div class="row">
-        <div class="col">
+        <div class="col-md-6">
           <q-field
             icon="crop_free"
           >
@@ -68,6 +68,41 @@
                      float-label="Cód. Barras" 
                      clearable
             />
+            
+          </q-field>   
+        </div>
+        <div class="col">
+          <q-field
+            icon="store"
+          >
+            <q-input v-model.number="codEmpresa"
+                     type="number"
+                     float-label="Cód. Empresa" 
+                     clearable
+            />
+            
+          </q-field>   
+        </div>
+    </div> 
+    
+    <div class="row">
+        <div class="col-md-6">
+          <q-field
+            icon="local_shipping"
+          >
+            <q-input v-model.number="barras"
+                     type="number"
+                     float-label="Cód. Fornecedor" 
+                     clearable
+            />
+            
+          </q-field>   
+        </div>
+        <div class="col" id="id">
+          <q-field
+            icon="store"
+          >
+            Cód. Produto: {{id}}
             
           </q-field>   
         </div>
@@ -93,8 +128,19 @@
         </div>
     </div> 
       
-    
     <div class="row">
+        <div class="col-md-6">
+          <q-field
+            icon="local_mall"
+          >
+            <q-input v-model.trim="nome" 
+                     float-label="Apelido" 
+                     clearable
+            />
+            
+          </q-field>
+        
+        </div>
         <div class="col">
             <q-field
                 icon="store"
@@ -116,6 +162,7 @@
                <q-icon name="add" />
             </q-btn>
         </div>
+        
     </div>
     
     <div class="row">
@@ -165,6 +212,45 @@
     </div>
     
     <div class="row">
+        <div class="col-10 col-md-4">
+            <q-field
+                icon="format_color_fill"
+             >
+                <q-select
+                    float-label="Unidade de Medida"
+                    filter
+                    v-model="select"
+                    :options="[
+                        {label: 'UND', value: 'und'},
+                        {label: 'KG', value: 'kg'},
+                        {label: 'PCT', value: 'pct'},
+                        {label: 'FD', value: 'fd'}
+                              
+                    ]"
+                />
+            </q-field>   
+        </div>
+        <div class="col-2 btn-plus" >
+            
+            <q-btn 
+               rounded
+               color="primary" 
+               @click="$router.push('/')">
+               <q-icon name="add" />
+            </q-btn>
+        </div>
+        <div class="col" id="estoque">
+          <q-field
+            icon="storage"
+          >
+            Estoque: {{estoque}}
+            
+          </q-field>   
+        </div>
+    
+    </div>
+    
+    <div class="row">
         <div class="col-4">
             <q-card color="faded" class="col-sm-6">
             <center>
@@ -210,11 +296,14 @@ import { Dialog, Toast } from 'quasar'
 
 
 export default {
-  name: 'Cadastro de Produtos',
+  name: 'CadProdutos',
   data () {
     return {
         nome: '',
         barras: '',
+        codEmpresa: '',
+        id: 1,
+        estoque: 0,
         select: '',
         options: [
             {
@@ -261,15 +350,9 @@ export default {
     },
     limpar () {
       this.nome = ''
-      this.cpf = ''
-      this.fone = ''
-      this.email = ''
-      this.cep = ''
-      this.end = ''
-      this.bairro = ''
-      this.cidade = ''
-      this.estado = ''
-      this.numLogradouro = '' 
+      this.barras = ''
+      this.select = ''
+      
     },
     salvar(){
         Toast.create.positive({
@@ -341,10 +424,17 @@ export default {
         /*border-bottom-color: #D3DAE0;*/
     }
     
-    #avisoCep {
+    #id {
+        margin-top: 15px;
         font-weight: bolder;
-        font-size: 16px;
-        color: slategrey;
+        font-size: 16px;    
+    }
+    
+    #estoque {
+        margin-top: 15px;
+        font-weight: bolder;
+        font-size: 16px; 
+        color: red;
     }
     
     

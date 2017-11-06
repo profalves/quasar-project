@@ -58,7 +58,7 @@
         </q-item>
         <q-item>
           <q-item-side icon="insert_drive_file" />
-          <q-side-link to="/entradanfe">
+          <q-side-link to="/cadnotas">
                <q-item-main label="Entradas de Notas" sublabel="Cadastros de NFe de Compras" />
           </q-side-link>
         </q-item>
