@@ -212,15 +212,15 @@
         </div>
           
         <div class="row">
-            <div class="col-4">Desconto: R$ 0,00</div>
-            <div class="col-4">Frete: R$ 0,00</div>
-            <div class="col-4">Seguro: R$ 0,00</div>
+            <div class="col">Desconto: R$ 0,00</div>
+            <div class="col-3 offset-1">Frete: R$ 0,00</div>
+            <div class="col offset-1">Seguro: R$ 0,00</div>
         </div>
           
         <div class="row">
-            <div class="col-4" style="margin-top:20px">Outros: R$ 0,00</div>
-            <div class="col-4" style="margin-top:20px">Total Produtos: R$ 0,00</div>
-            <div class="col-4">
+            <div class="col" style="margin-top:20px">Outros: R$ 0,00</div>
+            <div class="col-3 offset-1" style="margin-top:20px">Total Produtos: R$ 0,00</div>
+            <div class="col offset-1">
                 <q-select
                   v-model="select" 
                   :options="[
@@ -236,7 +236,7 @@
       </q-collapsible>
         
       <!--Itens-->  
-      <q-collapsible icon="perm_identity" label="Itens">
+      <q-collapsible icon="local_mall" label="Itens">
           
         <!--Data tables HTML-->
         <div class="row" id="table">
@@ -310,9 +310,11 @@
         
         <div class="col col-md-3">
             <q-btn
-                color="primary"
+                color="secondary"
                 push
-                @click="$refs[layoutModal].open()"
+                :key="modal"
+                @click="$refs.layoutModal.open()"
+                
             >
                 Adicionar item
             </q-btn>
@@ -322,7 +324,7 @@
       </q-collapsible>
         
       <!--Duplicatas-->
-      <q-collapsible icon="perm_identity" label="Duplicatas">
+      <q-collapsible icon="local_atm" label="Duplicatas">
           
         <!--Data tables HTML-->
         <div class="row" id="table">
@@ -405,33 +407,180 @@
     
     </div>
     
-    <q-modal ref="layoutModal" :content-css="{minWidth: '80vw', minHeight: '80vh'}">
+    <!--MODAL-->
+    <q-modal ref="layoutModal" :content-css="{minWidth: '60vw', minHeight: '60vh'}">
       <q-modal-layout>
-        <q-toolbar slot="header">
+        <q-toolbar slot="header" color="black">
           <q-btn flat @click="$refs.layoutModal.close()">
             <q-icon name="keyboard_arrow_left" />
           </q-btn>
           <q-toolbar-title>
-            Header
+            Adicionar item
           </q-toolbar-title>
         </q-toolbar>
 
-        <q-toolbar slot="header">
-          <q-search inverted v-model="search" color="none"></q-search>
+        <q-toolbar slot="header" color="tertiary">
+           <q-radio v-model="tipoCod" val="barras" color="white" left-label label="Cód. Barras" />
+           <q-radio v-model="tipoCod" val="emp" color="white" left-label label="Cód. Emp" style="margin-left: 10px" />
+           <q-search inverted v-model="search" color="none" style="margin-left: 10px"></q-search>
         </q-toolbar>
-
-        <q-toolbar slot="footer">
-          <q-toolbar-title>
-            Footer
-          </q-toolbar-title>
-        </q-toolbar>
-
+        
         <div class="layout-padding">
-          <h1>Modal</h1>
+            <div class="row">
+                <div class="col-md-6">
+                    <q-field
+                        icon="explore"
+                        helper="NCM"
+                     >
+                        <the-mask class="mdInput"
+                                  v-model="ncm"
+                                  :mask="['####-##-##']"
+                        />
+                    </q-field>
 
-          <q-btn color="primary" @click="$refs.layoutModal.close()">Close</q-btn>
-          <p class="caption" v-for="n in 15">This is a Modal presenting a Layout.</p>
+                </div>
+
+                <div class="col">
+                    <q-field
+                        icon="explore"
+                        helper="CFOP - clique para exibir a lista"
+                     >
+                        <div class="mdl-selectfield">
+                            <select class="browser-default" v-model="cfop" >
+                              <option disabled selected>Escolha um CFOP</option>
+                              <option v-for="cfop in listaCFOPEnt">{{cfop.value}} - {{cfop.label}}</option>
+                            </select>
+
+                        </div> 
+                    </q-field> 
+
+                </div>
+                <i class="material-icons">keyboard_arrow_down</i>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <q-field>
+                        <q-input
+                            float-label="Fator de Conversão"
+                            v-model.number="item.fator"   
+                        />
+                    </q-field>
+                </div>
+                <div class="col">
+                    <q-field>
+                        <q-select
+                          float-label="Tipo"
+                          v-model="select" 
+                          :options="[
+                            {value: 'a', label: 'Tipo'},
+                            {value: 'b', label: 'Tipo'}
+                          ]"
+                        /> 
+                    </q-field> 
+
+                </div>
+                <div class="col">
+                    <q-field>
+                        <q-input
+                            float-label="Quantidade"
+                            v-model="item.qtd"   
+                        />
+                    </q-field>
+                </div>
+                <div class="col" style="margin-top: 20px;">
+                    Estoque: <strong style="color: orangered">0</strong>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <q-field>
+                        <q-input
+                            float-label="Desconto"
+                            v-model="item.desconto"   
+                        />
+                    </q-field>
+                </div>
+                <div class="col">
+                    <q-field>
+                        <q-input
+                            float-label="Frete"
+                            v-model="item.frete"   
+                        />
+                    </q-field>
+                </div>
+                <div class="col">
+                    <q-field>
+                        <q-input
+                            float-label="Seguro"
+                            v-model="item.seguro"   
+                        />
+                    </q-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <q-field>
+                        <q-input
+                            float-label="Outros Custos"
+                            v-model="item.outros"   
+                        />
+                    </q-field>
+                </div>
+                <div class="col">
+                    <q-field>
+                        <q-input
+                            float-label="Aliq. IPI"
+                            v-model="item.AliqIPI"   
+                        />
+                    </q-field>
+                </div>
+                <div class="col">
+                    <q-field>
+                        <q-input
+                            float-label="Valor IPI"
+                            v-model="item.vIPI"   
+                        />
+                    </q-field>
+                </div>
+            </div>
+    
         </div>
+        
+        <div class="row">
+            <div class="col-4">
+                <q-card color="faded" class="col-sm-6">
+                <center>
+                    <q-card-title>Custo</q-card-title>
+                        <h4>0,00</h4>
+                        <br>
+                </center>
+                </q-card>
+            </div>
+
+            <div class="col-4">
+                <q-card color="primary" class="col-sm-6">
+                  <center>
+                    <q-card-title>Lucro</q-card-title>
+                        <h4>0,00</h4>
+                        <br>
+                  </center>
+                </q-card>
+            </div>
+
+            <div class="col-4">
+                <q-card color="positive" class="col-sm-6">
+                  <center>
+                    <q-card-title>Venda</q-card-title>
+                        <h4>0,00</h4>
+                        <br>
+                  </center>
+                </q-card>
+            </div>  
+        </div>
+          
+          
+        <q-toolbar slot="footer" color="black">
+        </q-toolbar>
       </q-modal-layout>
     </q-modal>
     
@@ -444,17 +593,21 @@
 //import VMasker from 'vanilla-masker'
 import listaCFOP from 'data/CFOP.json'
 import { required, minLength } from 'vuelidate/lib/validators'
-import { Dialog, Toast } from 'quasar'
+import { Dialog, Toast, Ripple } from 'quasar'
 
 
 export default {
   name: 'cadEntradasNFe',
   data () {
     return {
+        tipoCod: '',
+        ref: 'layoutModal',
         modal: false,
+        search: '',
         fornecedor: '',
         desc: '',
         cat: '',
+        ncm: '',
         sub: '',
         forma: '',
         doc: '',
@@ -463,7 +616,25 @@ export default {
         bloqueado: true,
         danfe: '',
         cfop: '',
+        estoque: '0',
         listaCFOP,
+        item: {
+            ncm: '',
+            cfop: '',
+            fator: '0,00',
+            qtd: 1,
+            estoque: '0',
+            vUnit: '',
+            desconto: '0,00',
+            frete: '0,00',
+            seguro: '0,00',
+            outros: '0,00',
+            AliqIPI: '4%',
+            vIPI: '0,01',
+            custo: '',
+            lucro: '',
+            venda: ''
+        },
         styles: [
             '',
             'bordered',
@@ -562,8 +733,12 @@ export default {
               value: 'recibo'
             }
         ],
+        
         canGoBack: window.history.length > 1,
     }
+  },
+  directives: {
+    Ripple
   },
   computed: {
     computedClasses () {

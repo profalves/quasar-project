@@ -46,6 +46,7 @@ import {
   QRadio,
   QModal,
   QModalLayout,
+  QSearch,
   clone
 } from 'quasar'
 
@@ -96,6 +97,7 @@ const imports = {
   QRadio,
   QModal,
   QModalLayout,
+  QSearch,
   clone
 }
 

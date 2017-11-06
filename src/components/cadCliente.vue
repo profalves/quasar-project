@@ -183,8 +183,7 @@
           >
             <the-mask class="mdInput"
                       v-model="datanasc"
-                      type="data"
-                      stacked-label="Nome" 
+                      type="data" 
                       :mask="['##/##/####']"
             />
             

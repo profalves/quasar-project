@@ -221,7 +221,7 @@ export default {
             }
             return '<i class="material-icons">business_center</i> - Fornecedor'
           },
-          width: '50px'
+          width: '100px'
         },
         
         {
