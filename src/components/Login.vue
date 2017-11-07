@@ -5,14 +5,11 @@
                 text-align: center;
                 ">
       <q-fixed-position class="over" corner="top-right" :offset="[18, 18]">
-        <q-btn 
-           round
-           color="faded" 
-           @click="$router.push('/login')">
-           <q-icon name="settings" />
-        </q-btn>
+        
+        <q-icon name="settings" class="fa-2x" @click="$router.push('/config')" />
+        
       </q-fixed-position>
-      <img src="../../img/logo2017.png" height="200px" />
+      <img src="../../img/logo.png" width="100%" />
       <q-field
 
         helper="Empresa"

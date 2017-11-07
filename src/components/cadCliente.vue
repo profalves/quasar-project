@@ -539,6 +539,18 @@ export default {
       // `this` aponta para a instância Vue da variável `vm`
       return this.cidadesJSON.estados
     },
+    listaCidades: function () {
+      var a = this.listaEstados
+      var lista = []
+      
+      for (var i=0; i < 27; i++) {
+          var n = a[i].cidades
+          lista.push(n)    
+      }
+      console.log(lista)
+      return lista
+    
+    }
   },
   watch: {
     'fone' (newVal, oldVal) {
@@ -650,7 +662,7 @@ export default {
       axios.get(APICidades + this.estado)
       .then((res)=>{
         this.cidades = res.data
-        //console.log(res)
+        //console.log(res.data)
       })
     },
     testarConexao(){

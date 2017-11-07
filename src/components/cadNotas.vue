@@ -156,7 +156,7 @@
         </div>
         
         <div class="row">
-            <div class="col-6">
+            <div class="col-md-6">
                 <q-field
                     icon="date_range"
                  >
@@ -173,7 +173,7 @@
                     icon="date_range"
                  >
                     <q-input
-                        float-label="Data Nota"
+                        float-label="Data Emissão"
                         v-model="sub"
                     />
                 </q-field>   
@@ -212,15 +212,37 @@
         </div>
           
         <div class="row">
-            <div class="col">Desconto: R$ 0,00</div>
-            <div class="col-3 offset-1">Frete: R$ 0,00</div>
-            <div class="col offset-1">Seguro: R$ 0,00</div>
+            <div class="col">
+                <q-field>
+                    <q-input float-label="Desconto"
+                             v-model="desc" />
+                </q-field>    
+            </div>
+            <div class="col">
+                <q-field>
+                    <q-input float-label="Frete"
+                             v-model="desc" />
+                </q-field>    
+            </div>
+            <div class="col">
+                <q-field>
+                    <q-input float-label="Seguro"
+                             v-model="desc" />
+                </q-field>    
+            </div>
         </div>
           
         <div class="row">
-            <div class="col" style="margin-top:20px">Outros: R$ 0,00</div>
-            <div class="col-3 offset-1" style="margin-top:20px">Total Produtos: R$ 0,00</div>
-            <div class="col offset-1">
+            <div class="col">
+                <q-field>
+                    <q-input float-label="Outros"
+                             v-model="desc" />
+                </q-field>    
+            </div>
+            
+            <div class="col-3 offset-1" style="margin-top:30px">
+                <strong>Total Produtos: </strong>R$ 0,00</div>
+            <div class="col offset-1" style="margin-top:13px">
                 <q-select
                   v-model="select" 
                   :options="[
@@ -604,8 +626,9 @@ export default {
         ref: 'layoutModal',
         modal: false,
         search: '',
+        //cabeçário
         fornecedor: '',
-        desc: '',
+        desc: '0,00',
         cat: '',
         ncm: '',
         sub: '',
@@ -926,7 +949,7 @@ export default {
     }
     
     .topo {
-        margin-top: 50px;
+        margin: 50px 0 0 10px;
 		padding: 10px 10px;
 		width: 100%; 
 		position: fixed;
