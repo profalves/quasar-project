@@ -35,6 +35,7 @@ export default new VueRouter({
     { path: '/importadorDanfe', component: load('importadorDanfe') },
     { path: '/relatorios', component: load('Relatorios') },
     { path: '/usuarios', component: load('Usuarios') },
+    { path: '/cadusuario', component: load('cadUsuario') },
     { path: '/login', component: load('Login') },
     { path: '/dialog', component: load('Dialogs') },
     { path: '/test', component: load('Test') },

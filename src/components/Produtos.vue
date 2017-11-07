@@ -191,6 +191,14 @@ export default {
       },
       colunas: [
         {
+          label: 'Código',
+          field: 'crew',
+          filter: true,
+          sort: true,
+          type: 'string',
+          width: '60px'
+        },
+        {
           label: 'Nome',
           field: 'name',
           width: '150px',
@@ -204,14 +212,7 @@ export default {
             return new Date(value).toLocaleString()
           }*/
         },
-        {
-          label: 'Código',
-          field: 'crew',
-          filter: true,
-          sort: true,
-          type: 'string',
-          width: '60px'
-        },
+        
         {
           label: 'Preço',
           field: 'cost_in_credits',

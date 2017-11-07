@@ -47,6 +47,9 @@ import {
   QModal,
   QModalLayout,
   QSearch,
+  QTabs,
+  QTab,
+  QTabPane,
   clone
 } from 'quasar'
 
@@ -98,6 +101,9 @@ const imports = {
   QModal,
   QModalLayout,
   QSearch,
+  QTabs,
+  QTab,
+  QTabPane,
   clone
 }
 

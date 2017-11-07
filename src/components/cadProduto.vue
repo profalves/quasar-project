@@ -98,11 +98,15 @@
             
           </q-field>   
         </div>
-        <div class="col" id="id">
+        <div class="col-md-6">
           <q-field
             icon="store"
           >
-            Cód. Produto: {{id}}
+            <q-input v-model.number="id"
+                     type="number"
+                     float-label="Cód. Produto" 
+                     clearable
+            />
             
           </q-field>   
         </div>
@@ -302,7 +306,7 @@ export default {
         nome: '',
         barras: '',
         codEmpresa: '',
-        id: 1,
+        id: '',
         estoque: 0,
         select: '',
         options: [

@@ -59,7 +59,7 @@
     </div>
     
     <div class="row">
-        <div class="col-4">
+        <div class="col">
             <q-field
                 helper="Tipo Cadastro" 
               >
@@ -69,7 +69,7 @@
                 />
             </q-field>
         </div>
-        <div class="col-4">
+        <div class="col">
             <q-field
                 helper="Tipo Pessoa"    
               >
@@ -88,15 +88,11 @@
                 />
             </q-field>
         </div>
-        <div class="offset-md-2 col" id="cod">
-            <q-field>
-                Código: 1
-            </q-field>
-        </div>
+        
     </div>
     
     <div class="row">
-        <div class="col-4">
+        <div class="col">
             <q-field helper="Família">
                 <q-select
                     filter
@@ -105,24 +101,21 @@
                 />
             </q-field>
         </div>
-        <div class="col-4">
+        <div class="col">
             <q-field helper="Vendedor">
                 <q-select
                     filter
                     v-model="vendedor"
                     :options="[
                         {
-                          label: 'Admin',
+                          label: 'User Logado',
                           value: 1
                         }
                     ]"
                 />
             </q-field>
         </div>
-        <div class="col" id="genero">
-            <q-radio v-model="sexo" val="mas" color="primary" left-label label="Masc." />
-            <q-radio v-model="sexo" val="fem" color="primary" left-label label="Fem." style="margin-left: 10px" /> 
-        </div>
+        
     </div>
     
     <div class="row">
@@ -145,6 +138,13 @@
     </div> 
     
     <div class="row">
+        <div class="col" id="genero">
+            <q-radio v-model="sexo" val="mas" color="primary" left-label label="Masc." />
+            <q-radio v-model="sexo" val="fem" color="primary" left-label label="Fem." style="margin-left: 10px" /> 
+        </div>
+    </div>
+    
+    <div class="row">
         <div class="col-md-6">
           <q-field
             icon="done"
@@ -159,41 +159,16 @@
         <div class="col-md-6">
           <q-field
             icon="done"
-            helper="RG"
+            helper="RG/Inscrição Estadual"
           >
             <q-input v-model="rg"/>
           </q-field>   
         </div>    
-    </div>  
-    
-    <div class="row">
-        <div class="col-md-6 col-xs-12">
-          <q-field
-            icon="android"
-            helper="Apelido"
-          >
-            <q-input v-model="alias" />
-            
-          </q-field>
-        </div>    
-        <div class="col">
-          <q-field
-            icon="cake"
-            helper="Data de Nascimento"
-          >
-            <the-mask class="mdInput"
-                      v-model="datanasc"
-                      type="data" 
-                      :mask="['##/##/####']"
-            />
-            
-          </q-field>
-        </div>    
     </div>
     <br>
-    
+        
     <q-list style="background-color: white;">
-    
+          
       <!--Endereços-->
       <q-collapsible icon="pin_drop" label="Endereços">
           
@@ -219,8 +194,9 @@
             <div class="col">
               <q-btn 
                  icon="search" 
-                 color="primary"  
-                 round
+                 color="primary"
+                 style="margin: 17px 0 0 20px"
+                 round small
                  @click="buscarCep"
                  :disabled="visivel"
               >
@@ -245,6 +221,17 @@
               </q-field>   
             </div>
         </div>
+          
+        <div class="row">
+            <div class="col">
+              <q-field
+                icon="store"
+              >
+                <q-input v-model="ponto" type="textarea" float-label="Ponto de Referência"/>
+              </q-field>   
+            </div>
+
+        </div>
 
         <div class="row">
             <div class="col">
@@ -256,6 +243,7 @@
             </div>
 
         </div>
+            
         <div class="row">
             <div class="col-md-4">
               <q-field
@@ -335,7 +323,7 @@
                 helper="Fone"
               >
                 <the-mask class="mdInput"
-                          v-model="fone"
+                          v-model.number="fone"
                           float-label="Fone" 
                           :mask="['(##) ####-####', '(##) #####-####']"
                           />
@@ -380,7 +368,36 @@
           
         
       </q-collapsible>
-        
+      
+      <!--Dados Complementares-->
+      <q-collapsible icon="person_outline" label="Dados Complementares">
+        <div class="row">
+            <div class="col-md-6 col-xs-12">
+              <q-field
+                icon="android"
+                helper="Apelido"
+              >
+                <input class="mdInput" v-model="alias" />
+
+              </q-field>
+            </div>    
+            <div class="col">
+              <q-field
+                icon="cake"
+                helper="Data de Nascimento"
+              >
+                <the-mask class="mdInput"
+                          v-model="datanasc"
+                          type="data" 
+                          :mask="['##/##/####']"
+                />
+
+              </q-field>
+            </div>    
+        </div>
+          
+      </q-collapsible>  
+      
       <!--Crediário-->  
       <q-collapsible icon="local_atm" label="Crediário">
         <div class="row">
@@ -388,7 +405,6 @@
             <div class="col-4">
                 <q-field helper="Crediário">
                     <q-select
-                        filter
                         v-model="cred"
                         :options="[
                             {
@@ -461,6 +477,7 @@ export default {
         cep: '',
         end: '',
         bairro: '',
+        ponto: '',
         cidade: '',
         estado: 'ba',
         numLogradouro: '',
@@ -749,7 +766,7 @@ export default {
         font-weight: bolder;
         font-size: 16px;
         color: slategrey;
-        margin-left: 15px;
+        margin: 15px 0 0 15px;
         text-decoration: blink;
     }
     

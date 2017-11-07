@@ -211,7 +211,7 @@ export default {
             return new Date(value).toLocaleString()
           }*/
         },
-        {
+        /*{
           label: 'Tipo',
           field: 'gender',
           //filter: 'true',
@@ -222,7 +222,7 @@ export default {
             return '<i class="material-icons">business_center</i> - Fornecedor'
           },
           width: '100px'
-        },
+        },*/
         
         {
           label: 'CPF',

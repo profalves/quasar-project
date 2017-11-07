@@ -76,6 +76,13 @@
           
         </q-item>
         <q-item>
+          <q-item-side icon="settings" />
+          <q-side-link to="/config">
+                <q-item-main label="Configurações" sublabel="Configurações Gerais" />
+          </q-side-link>
+          
+        </q-item>
+        <q-item>
           <q-item-side icon="exit_to_app" />
           <q-side-link to="/login">
                 <q-item-main label="Sair" />
