@@ -58,10 +58,10 @@
         </div>
     </div>
     
-    <div class="row">
+    <!--<div class="row">
         <div class="col">
             <q-field
-                icon="local_grocery_store"
+                icon="account_balance_wallet"
              >
                 <q-select
                     float-label="Tipo"
@@ -70,7 +70,7 @@
                 />
             </q-field>   
         </div>
-    </div>
+    </div>-->
     
     <div class="row">
         <div class="col">
@@ -96,7 +96,7 @@
         </div>
     </div> 
     
-    <div class="row">
+    <!--<div class="row">
         <div class="col">
           <q-field
             icon="feedback"
@@ -109,7 +109,7 @@
           </q-field>
         
         </div>
-    </div> 
+    </div> -->
     
     <div class="row">
         <div class="col-10 col-md-4">
@@ -117,7 +117,7 @@
                 icon="group_work"
              >
                 <q-select
-                    float-label="Categoria"
+                    float-label="Tipo Categoria"
                     filter
                     v-model="cat"
                     :options="options"
@@ -187,6 +187,41 @@
     </div>
     
     <div class="row">
+        <div class="col-md-1 col-xs-12">
+            <q-checkbox v-model="checked" 
+                        label="Despesa Fixa"
+                        style="margin-top:15px;"
+            />
+        </div>
+        <div class="col-md-3 offset-1">
+            <q-field
+                label="Qtd. de Títulos"
+                >
+                <q-input v-model.number="qtdTitulos"
+                         type="number"
+                         clearable
+                />
+
+            </q-field>  
+        </div>
+        <div class="col-md-3 offset-1">
+            <q-field
+                label="Intervalo dias"
+                >
+                <q-input v-model.number="intervalo"
+                         type="number"
+                         clearable
+                />
+
+            </q-field> 
+        </div>
+        <div class="col offset-1">
+            <q-btn color="primary" style="margin-top:15px;" @click="open = true">Criar Títulos</q-btn>
+        </div>
+    </div>
+    
+    
+    <!--<div class="row">
         <div class="col">
             <q-field
                 icon="store"
@@ -207,9 +242,14 @@
                <q-icon name="add" />
             </q-btn>
         </div>
-    </div>
+    </div>-->
     
-    <q-collapsible icon="monetization_on" label="Duplicatas" style="background-color:white">
+    <q-collapsible icon="monetization_on" 
+                   label="Títulos" 
+                   style="background-color:white;
+                          margin-top:30px;"
+                   :opened="open"
+                   >
         <!--Data tables HTML-->
         <h6 style="margin-top:30px">Parcelas</h6>
         <div class="row" id="table">
@@ -289,7 +329,12 @@ export default {
         forma: '',
         doc: '',
         tipoDoc: '',
+        qtdTitulos: '',
+        intervalo: '',
         select: '',
+        checked: false,
+        open: false,
+        //table
         styles: [
             '',
             'bordered',

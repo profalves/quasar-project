@@ -408,17 +408,6 @@ export default {
         font-size: 12px
     }
     
-    .topo {
-        margin-top: 50px;
-		padding: 10px 10px;
-		width: 100%; 
-		position: fixed;
-		top: 0; 
-        left: 0;
-		text-align: center;
-        z-index: 5;
-	}
-    
     .mdInput {
         /*margin-top: 10px;
         width: 90%;*/

@@ -75,9 +75,10 @@
     </div>
     
     <div class="row" style="margin:10px 0px 0px 45px">
-      <div class="col col-md-3" style="margin-bottom: 10px">
+      <div class="col col-md-4" style="margin-bottom: 10px;">
           <q-btn
             color="primary"
+            class="full"
             push
             @click="visualizarDanfe"
           >
@@ -89,6 +90,7 @@
           <q-btn
             color="primary"
             push
+            class="full"
             @click="importarDanfe"
             :disabled="bloqueado"
           >
@@ -160,22 +162,16 @@
                 <q-field
                     icon="date_range"
                  >
-                    <q-input
-                        float-label="Data Entrada"
-                        v-model="cat"   
-                    />
+                    <q-datetime v-model="cat" type="date" float-label="Data Entrada" />
                 </q-field>
 
             </div>
 
-            <div class="col-6">
+            <div class="col-md-6">
                 <q-field
                     icon="date_range"
                  >
-                    <q-input
-                        float-label="Data Emissão"
-                        v-model="sub"
-                    />
+                    <q-datetime v-model="sub" type="date" float-label="Data Emissão" />
                 </q-field>   
             </div>
         </div>
@@ -187,7 +183,7 @@
                  >
                     <q-input
                         float-label="N. Nota"
-                        v-model="cat"   
+                        v-model="nNfe"   
                     />
                 </q-field>
 
@@ -212,19 +208,19 @@
         </div>
           
         <div class="row">
-            <div class="col">
+            <div class="col-md-4">
                 <q-field>
                     <q-input float-label="Desconto"
                              v-model="desc" />
                 </q-field>    
             </div>
-            <div class="col">
+            <div class="col-md-4">
                 <q-field>
                     <q-input float-label="Frete"
                              v-model="desc" />
                 </q-field>    
             </div>
-            <div class="col">
+            <div class="col-md-4">
                 <q-field>
                     <q-input float-label="Seguro"
                              v-model="desc" />
@@ -233,14 +229,14 @@
         </div>
           
         <div class="row">
-            <div class="col">
+            <div class="col-md-4">
                 <q-field>
                     <q-input float-label="Outros"
                              v-model="desc" />
                 </q-field>    
             </div>
             
-            <div class="col-3 offset-1" style="margin-top:30px">
+            <div class="col-xs-5 col-md-3 offset-1" style="margin-top:30px">
                 <strong>Total Produtos: </strong>R$ 0,00</div>
             <div class="col offset-1" style="margin-top:13px">
                 <q-select
@@ -253,7 +249,7 @@
 
             </div>
         </div>
-          
+        <br>  
         
       </q-collapsible>
         
@@ -629,9 +625,10 @@ export default {
         //cabeçário
         fornecedor: '',
         desc: '0,00',
-        cat: '',
-        ncm: '',
+        cat: new Date(),
         sub: '',
+        nNfe: '',
+        ncm: '',
         forma: '',
         doc: '',
         tipoDoc: '',

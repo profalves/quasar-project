@@ -140,5 +140,16 @@ export default {
     .container {
         margin: 20px;
     }
+    
+    .topo {
+        margin: 50px 0 0 10px;
+		padding: 10px 10px;
+		width: 100%; 
+		position: fixed;
+		top: 0; 
+        left: 0;
+		text-align: center;
+        z-index: 5;
+	}
 
 </style>

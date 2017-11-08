@@ -184,7 +184,7 @@ export default {
         rowHeight: '50px',
         responsive: false,
         pagination: {
-          rowsPerPage: 5,
+          rowsPerPage: 15,
           options: [5, 10, 15, 30, 50, 100]
         },
         selection: 'multiple'

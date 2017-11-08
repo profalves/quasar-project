@@ -12,14 +12,46 @@
     </q-fixed-position>
   <div id="table">
     <div class="row">
-        <q-field
+        <div class="col">
+            <q-field
             label="Tipo"
-          >
-            <q-select
-                v-model="tipo"
-                :options="tipos"
-            />
-        </q-field>   
+              >
+                <q-select
+                    v-model="tipo"
+                    :options="tipos"
+                />
+            </q-field>
+        </div>
+        <div class="col offset-1">
+            <q-field
+                label="Despesas"
+                v-if="subDesp"
+              >
+                <q-select
+                    v-model="subtipo"
+                    :options="[
+                        { label: 'A pagar', value: 1},
+                        { label: 'Pago', value: 2}
+                    ]"
+                />
+            </q-field>
+            <q-field
+                label="Receitas"
+                v-else
+              >
+                <q-select
+                    v-model="subtipo"
+                    :options="[
+                        { label: 'A receber', value: 1},
+                        { label: 'Pago', value: 2}
+                    ]"
+                />
+            </q-field>
+        </div>  
+        <div class="col">
+             
+        </div> 
+         
     </div>
     
     
@@ -176,6 +208,8 @@ export default {
         },
 
       ],
+      subtipo: 1,
+      subDesp: true,
       text: 'text',
       config: {
         title: '',
@@ -226,7 +260,7 @@ export default {
             return new Date(value).toLocaleString()
           }*/
         },
-        {
+        /*{
           label: 'Tipo',
           field: 'rotation_period',
           filter: 'true',
@@ -239,7 +273,7 @@ export default {
           },
           width: '100px'
         },
-        
+        */
         {
           label: 'Categoria',
           field: 'climate',
@@ -293,7 +327,8 @@ export default {
     },
     rowClick (row) {
       console.log('clicked on a row', row)
-    }
+    },
+    
   },
   beforeDestroy () {
     clearTimeout(this.timeout)
@@ -323,8 +358,16 @@ export default {
         style[value] = this.bodyHeight + 'px'
       }
       this.config.bodyStyle = style
+    },
+    tipo (value) {
+        if (value === 'r') {
+            this.subDesp=false
+        }
+        else {
+            this.subDesp=true
+        }
     }
-  }
+  } 
 }
 </script>
 
