@@ -1,18 +1,17 @@
 import Vue from 'vue'  
 import Vuex from 'vuex'
+import state from './state'
+import mutations from './mutations'
+import actions from './actions'
+import Pessoas from './modules/pessoas/main'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({  
-    state: {
-      user: {
-        name: '',
-        email: ''
-      }
-    },
-    mutations: {
-      SET_USER (store, obj) {
-        store.user = obj.user
-      }
+    state,
+    mutations,
+    actions,
+    modules: {
+        Pessoas
     }
   })
