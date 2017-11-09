@@ -162,7 +162,17 @@
                 <q-field
                     icon="date_range"
                  >
-                    <q-datetime v-model="cat" type="date" float-label="Data Entrada" />
+                    <q-datetime v-model="cat"
+                                type="date" 
+                                float-label="Data Entrada" 
+                                color="black"
+                                format="DD/MM/YYYY"
+                                ok-label="OK" 
+                                clear-label="Limpar" 
+                                cancel-label="Cancelar"
+                                :day-names="dias"
+                                :month-names="meses"
+                                />
                 </q-field>
 
             </div>
@@ -171,7 +181,17 @@
                 <q-field
                     icon="date_range"
                  >
-                    <q-datetime v-model="sub" type="date" float-label="Data Emissão" />
+                    <q-datetime v-model="sub" 
+                                type="date" 
+                                float-label="Data Emissão" 
+                                color="black"
+                                format="DD/MM/YYYY"
+                                ok-label="OK" 
+                                clear-label="Limpar" 
+                                cancel-label="Cancelar"
+                                :day-names="dias"
+                                :month-names="meses"
+                                />
                 </q-field>   
             </div>
         </div>
@@ -208,37 +228,14 @@
         </div>
           
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-5">
                 <q-field>
-                    <q-input float-label="Desconto"
+                    <q-input float-label="Total da Nota"
                              v-model="desc" />
                 </q-field>    
             </div>
-            <div class="col-md-4">
-                <q-field>
-                    <q-input float-label="Frete"
-                             v-model="desc" />
-                </q-field>    
-            </div>
-            <div class="col-md-4">
-                <q-field>
-                    <q-input float-label="Seguro"
-                             v-model="desc" />
-                </q-field>    
-            </div>
-        </div>
-          
-        <div class="row">
-            <div class="col-md-4">
-                <q-field>
-                    <q-input float-label="Outros"
-                             v-model="desc" />
-                </q-field>    
-            </div>
-            
-            <div class="col-xs-5 col-md-3 offset-1" style="margin-top:30px">
-                <strong>Total Produtos: </strong>R$ 0,00</div>
-            <div class="col offset-1" style="margin-top:13px">
+                
+            <div class="col" style="margin-top:10px">
                 <q-select
                   v-model="select" 
                   :options="[
@@ -249,24 +246,69 @@
 
             </div>
         </div>
-        <br>  
+      
+      </q-collapsible>
+        
+      <!--Outros-->  
+      <q-collapsible icon="local_mall" label="Outras Despesas">
+            <div class="row">
+                <div class="col-md-6">
+                    <q-field>
+                        <q-input float-label="Desconto"
+                                 v-model="desc" />
+                    </q-field>    
+                </div>
+                <div class="col-md-6">
+                    <q-field>
+                        <q-input float-label="Frete"
+                                 v-model="desc" />
+                    </q-field>    
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <q-field>
+                        <q-input float-label="Seguro"
+                                 v-model="desc" />
+                    </q-field>    
+                </div>
+                <div class="col-md-6">
+                    <q-field>
+                        <q-input float-label="Outros"
+                                 v-model="desc" />
+                    </q-field>    
+                </div>
+
+            </div>
         
       </q-collapsible>
         
       <!--Itens-->  
       <q-collapsible icon="local_mall" label="Itens">
-          
+         
+        <div class="col col-md-3">
+            <q-btn
+                color="secondary"
+                push
+                :key="modal"
+                @click="$refs.layoutModal.open()"
+                
+            >
+                Adicionar item
+            </q-btn>
+        </div>  
+        <br>
         <!--Data tables HTML-->
         <div class="row" id="table">
-            <table style="margin-top: 30px;" class="q-table" :class="computedClasses">
+            <table class="q-table" :class="computedClasses">
               <thead>
                 <tr>
                   <th class="text-center">Cód</th>
                   <th class="text-center">Produto</th>
                   <th class="text-center">Preço Unit.</th>
                   <th class="text-center">Quant.</th>
-                  <th class="text-center">Desconto</th>
-                  <th class="text-center">Valor IPI</th>
                   <th class="text-center">Valor Total</th>
                   <th class="text-center">Editar</th>
                   <th class="text-center">Excluir</th>
@@ -279,11 +321,9 @@
                   <td class="text-left">iPhone 9</td>
                   <td class="text-right">$10.11</td>
                   <td class="text-left">1</td>
-                  <td class="text-left">$0.11</td>
-                  <td class="text-left">$0.11</td>
                   <td class="text-right">$10.11</td>
                   <td class="text-center">
-                    <q-btn round outline small color="info" icon="edit" @click="addItem"></q-btn>    
+                    <q-btn round outline small color="info" icon="edit" @click="$refs.layoutModal.open()"></q-btn>    
                   </td>
                   <td class="text-center">
                     <q-btn round outline small color="negative" icon="delete_forever" @click="excluir"></q-btn>  
@@ -295,11 +335,9 @@
                   <td class="text-left">Drone X</td>
                   <td class="text-right">$10.11</td>
                   <td class="text-left">1</td>
-                  <td class="text-left">$0.11</td>
-                  <td class="text-left">$0.11</td>
                   <td class="text-right">$10.11</td>
                   <td class="text-center">
-                    <q-btn round outline small color="info" icon="edit" @click="addItem"></q-btn>    
+                    <q-btn round outline small color="info" icon="edit" @click="$refs.layoutModal.open()"></q-btn>    
                   </td>
                   <td class="text-center">
                     <q-btn round outline small color="negative" icon="delete_forever" @click="excluir"></q-btn>  
@@ -310,11 +348,9 @@
                   <td class="text-left">AlienPC</td>
                   <td class="text-right">$10.11</td>
                   <td class="text-left">1</td>
-                  <td class="text-left">$0.11</td>
-                  <td class="text-left">$0.11</td>
                   <td class="text-right">$10.11</td>
                   <td class="text-center">
-                    <q-btn round outline small color="info" icon="edit" @click="addItem"></q-btn>    
+                    <q-btn round outline small color="info" icon="edit" @click="$refs.layoutModal.open()"></q-btn>    
                   </td>
                   <td class="text-center">
                     <q-btn round outline small color="negative" icon="delete_forever" @click="excluir"></q-btn>  
@@ -322,27 +358,17 @@
                 </tr>
               </tbody>
             </table>  
-
+            
         </div>
-        <br>
-        
-        <div class="col col-md-3">
-            <q-btn
-                color="secondary"
-                push
-                :key="modal"
-                @click="$refs.layoutModal.open()"
-                
-            >
-                Adicionar item
-            </q-btn>
+        <div class="col-6" style="margin-top:30px">
+            <strong>Total Produtos: </strong>R$ 0,00
         </div>
         
     
       </q-collapsible>
         
       <!--Duplicatas-->
-      <q-collapsible icon="local_atm" label="Duplicatas">
+      <q-collapsible v-if="visivel" icon="local_atm" label="Duplicatas">
           
         <!--Data tables HTML-->
         <div class="row" id="table">
@@ -403,7 +429,7 @@
     <br>
     
     <div class="row">
-        <div class="col col-md-3">
+        <div class="col">
             <q-btn
                 color="primary"
                 push
@@ -412,17 +438,7 @@
                 Alterar preços de venda
             </q-btn>
         </div>
-        <div class="col col-md-3">
-            <q-btn
-                color="primary"
-                push
-                @click=""
-            >
-                Impostos para venda
-            </q-btn>
-        </div>
-      
-    
+        
     </div>
     
     <!--MODAL-->
@@ -438,12 +454,33 @@
         </q-toolbar>
 
         <q-toolbar slot="header" color="tertiary">
-           <q-radio v-model="tipoCod" val="barras" color="white" left-label label="Cód. Barras" />
-           <q-radio v-model="tipoCod" val="emp" color="white" left-label label="Cód. Emp" style="margin-left: 10px" />
-           <q-search inverted v-model="search" color="none" style="margin-left: 10px"></q-search>
+           <q-radio v-model="tipoCod" val="barras" color="white" label="Cód. Barras" />
+           <q-radio v-model="tipoCod" val="emp" color="white" label="Cód. Emp" style="margin-left: 20px" />
+           <q-radio v-model="tipoCod" val="nome" color="white" label="Nome" style="margin-left: 20px" />
+        </q-toolbar>
+        
+        <q-toolbar slot="header" color="tertiary">
+           <q-search inverted 
+                     v-model="search" 
+                     color="none" 
+                     style="margin-left: 10px"
+                     placeholder="Procurar..."
+                     ></q-search>
         </q-toolbar>
         
         <div class="layout-padding">
+            
+            <div class="row" >
+                <div class="col-8">
+                    <h5>Nome do Item</h5>
+                </div>
+                <div class="col" style="margin-top: 20px;
+                                        text-align: right;">
+                    Estoque: <strong style="color: orangered;">0</strong>
+                </div>
+            </div>
+            <hr />
+            
             <div class="row">
                 <div class="col-md-6">
                     <q-field
@@ -475,6 +512,7 @@
                 </div>
                 <i class="material-icons">keyboard_arrow_down</i>
             </div>
+            
             <div class="row">
                 <div class="col">
                     <q-field>
@@ -487,16 +525,21 @@
                 <div class="col">
                     <q-field>
                         <q-select
-                          float-label="Tipo"
+                          float-label="Unidade de Medida"
                           v-model="select" 
                           :options="[
-                            {value: 'a', label: 'Tipo'},
-                            {value: 'b', label: 'Tipo'}
+                            {value: 'cx', label: 'CX'},
+                            {value: 'und', label: 'UN'}
                           ]"
                         /> 
                     </q-field> 
 
                 </div>
+            </div>
+            
+            
+            
+            <div class="row">
                 <div class="col">
                     <q-field>
                         <q-input
@@ -505,12 +548,19 @@
                         />
                     </q-field>
                 </div>
-                <div class="col" style="margin-top: 20px;">
-                    Estoque: <strong style="color: orangered">0</strong>
-                </div>
-            </div>
-            <div class="row">
                 <div class="col">
+                    <q-field>
+                        <q-input
+                            float-label="Custo"
+                            v-model="item.desconto"   
+                        />
+                    </q-field>
+                </div>
+                
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
                     <q-field>
                         <q-input
                             float-label="Desconto"
@@ -518,7 +568,7 @@
                         />
                     </q-field>
                 </div>
-                <div class="col">
+                <div class="col-md-6">
                     <q-field>
                         <q-input
                             float-label="Frete"
@@ -526,7 +576,10 @@
                         />
                     </q-field>
                 </div>
-                <div class="col">
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
                     <q-field>
                         <q-input
                             float-label="Seguro"
@@ -534,9 +587,7 @@
                         />
                     </q-field>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col">
+                <div class="col-md-6">
                     <q-field>
                         <q-input
                             float-label="Outros Custos"
@@ -544,7 +595,11 @@
                         />
                     </q-field>
                 </div>
-                <div class="col">
+            </div>
+            
+            <div class="row">
+                
+                <div class="col-md-6">
                     <q-field>
                         <q-input
                             float-label="Aliq. IPI"
@@ -552,7 +607,7 @@
                         />
                     </q-field>
                 </div>
-                <div class="col">
+                <div class="col-md-6">
                     <q-field>
                         <q-input
                             float-label="Valor IPI"
@@ -565,27 +620,26 @@
         </div>
         
         <div class="row">
-            <div class="col-4">
-                <q-card color="faded" class="col-sm-6">
-                <center>
-                    <q-card-title>Custo</q-card-title>
-                        <h4>0,00</h4>
-                        <br>
-                </center>
-                </q-card>
-            </div>
-
-            <div class="col-4">
+            
+            <div class="col">
                 <q-card color="primary" class="col-sm-6">
                   <center>
                     <q-card-title>Lucro</q-card-title>
-                        <h4>0,00</h4>
+                        <input v-model="item.desconto"
+                               style="text-align: center;
+                                      font-size: 30px;
+                                      color: white;
+                                      background:transparent;
+                                      outline:none;
+                                      border: 0px;
+                                      width:85%;"
+                                 />
                         <br>
                   </center>
                 </q-card>
             </div>
 
-            <div class="col-4">
+            <div class="col">
                 <q-card color="positive" class="col-sm-6">
                   <center>
                     <q-card-title>Venda</q-card-title>
@@ -595,12 +649,11 @@
                 </q-card>
             </div>  
         </div>
-          
-          
-        <q-toolbar slot="footer" color="black">
-        </q-toolbar>
+        
       </q-modal-layout>
     </q-modal>
+    
+    
     
 </div>
     
@@ -618,6 +671,7 @@ export default {
   name: 'cadEntradasNFe',
   data () {
     return {
+        visivel: false,
         tipoCod: '',
         ref: 'layoutModal',
         modal: false,
@@ -655,6 +709,8 @@ export default {
             lucro: '',
             venda: ''
         },
+        dias: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
+        meses: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
         styles: [
             '',
             'bordered',
@@ -881,7 +937,16 @@ export default {
           
     },
     
-   
+  },
+  watch: {
+    select (value) {
+        if (value === 'prazo') {
+            this.visivel = true
+        }
+        else {
+            this.visivel = false
+        }
+    }  
   }
  
 }

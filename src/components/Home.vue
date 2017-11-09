@@ -50,7 +50,7 @@
     </div>    
     
     <div class="col-6">
-        <router-link to="/entradanfe">
+        <router-link to="/cadnotas">
             <q-card color="info" class="col-sm-6">
               <q-card-title></q-card-title>
               <q-card-main>

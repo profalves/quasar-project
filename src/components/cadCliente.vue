@@ -91,84 +91,60 @@
         
     </div>
     
-    <div class="row">
-        <div class="col">
-            <q-field helper="Família">
-                <q-select
-                    filter
-                    v-model="familia"
-                    :options="options"
-                />
-            </q-field>
-        </div>
-        <div class="col">
-            <q-field helper="Vendedor">
-                <q-select
-                    filter
-                    v-model="vendedor"
-                    :options="[
-                        {
-                          label: 'User Logado',
-                          value: 1
-                        }
-                    ]"
-                />
-            </q-field>
-        </div>
-        
-    </div>
-    
-    <div class="row">
-        <div class="col">
-          <q-field
-            icon="person"
-          >
-            <q-input v-model.trim="nome" 
-                     float-label="Nome" 
-                     clearable
-                     @input="$v.nome.$touch()"
-                     :error="$v.nome.$error"
-            />
-            
-             <span style="color:#878B8F" v-if="!$v.nome.required">Nome é requerido</span>
-             <span v-if="!$v.nome.minLength">Este campo deve conter mais que {{$v.nome.$params.minLength.min}} caracteres.</span>
-            
-          </q-field>   
-        </div>
-    </div> 
-    
-    <div class="row">
-        <div class="col" id="genero">
-            <q-radio v-model="sexo" val="mas" color="primary" left-label label="Masc." />
-            <q-radio v-model="sexo" val="fem" color="primary" left-label label="Fem." style="margin-left: 10px" /> 
-        </div>
-    </div>
-    
-    <div class="row">
-        <div class="col-md-6">
-          <q-field
-            icon="done"
-            helper="CPF/CNPJ"
-          >
-            <the-mask class="mdInput"
-                      v-model="cpf"
-                      :mask="['###.###.###-##', '##.###.###/####-##']"
-                      />
-          </q-field>   
-        </div>
-        <div class="col-md-6">
-          <q-field
-            icon="done"
-            helper="RG/Inscrição Estadual"
-          >
-            <q-input v-model="rg"/>
-          </q-field>   
-        </div>    
-    </div>
-    <br>
         
     <q-list style="background-color: white;">
           
+      <!--Dados Pessoais-->
+      <q-collapsible opened icon="perm_contact_calendar" label="Dados Pessoais">
+        <div class="row">
+            <div class="col">
+              <q-field
+                icon="person"
+              >
+                <q-input v-model.trim="nome" 
+                         float-label="Nome" 
+                         clearable
+                         @input="$v.nome.$touch()"
+                         :error="$v.nome.$error"
+                />
+
+                 <span style="color:#878B8F" v-if="!$v.nome.required">Nome é requerido</span>
+                 <span v-if="!$v.nome.minLength">Este campo deve conter mais que {{$v.nome.$params.minLength.min}} caracteres.</span>
+
+              </q-field>   
+            </div>
+        </div> 
+
+        <div class="row">
+            <div class="col" id="genero">
+                <q-radio v-model="sexo" val="mas" color="primary" left-label label="Masc." />
+                <q-radio v-model="sexo" val="fem" color="primary" left-label label="Fem." style="margin-left: 10px" /> 
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+              <q-field
+                icon="done"
+                helper="CPF/CNPJ"
+              >
+                <the-mask class="mdInput"
+                          v-model="cpf"
+                          :mask="['###.###.###-##', '##.###.###/####-##']"
+                          />
+              </q-field>   
+            </div>
+            <div class="col-md-6">
+              <q-field
+                icon="done"
+                helper="RG/Inscrição Estadual"
+              >
+                <q-input v-model.number="rg" type="number"/>
+              </q-field>   
+            </div>    
+        </div>    
+      </q-collapsible>
+             
       <!--Endereços-->
       <q-collapsible icon="pin_drop" label="Endereços">
           
@@ -368,6 +344,36 @@
           
         
       </q-collapsible>
+        
+      <!--Familia/Vendedor-->
+      <q-collapsible icon="people_outline" label="Grupo/Vendedor">
+          <div class="row">
+            <div class="col">
+                <q-field helper="Família">
+                    <q-select
+                        filter
+                        v-model="familia"
+                        :options="options"
+                    />
+                </q-field>
+            </div>
+            <div class="col">
+                <q-field helper="Vendedor">
+                    <q-select
+                        filter
+                        v-model="vendedor"
+                        :options="[
+                            {
+                              label: 'User Logado',
+                              value: 1
+                            }
+                        ]"
+                    />
+                </q-field>
+            </div>
+
+        </div>
+      </q-collapsible>
       
       <!--Dados Complementares-->
       <q-collapsible icon="person_outline" label="Dados Complementares">
@@ -421,7 +427,7 @@
             </div>
             <div class="offset-1 col">
                 <q-field
-                    label="Limite"
+                    helper="Limite"
                   >
                     <q-input v-model="limite" />
 

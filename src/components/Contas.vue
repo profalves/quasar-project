@@ -22,7 +22,7 @@
                 />
             </q-field>
         </div>
-        <div class="col offset-1">
+        <div class="col-md-4 col-xs-5 offset-1">
             <q-field
                 label="Despesas"
                 v-if="subDesp"
@@ -227,7 +227,24 @@ export default {
           rowsPerPage: 5,
           options: [5, 10, 15, 30, 50, 100]
         },
-        selection: 'multiple'
+        selection: 'multiple',
+        messages: {
+          noData: '<i class="material-icons">warning</i> Não há dados para exibir.',
+          noDataAfterFiltering: '<i class="material-icons">warning</i> Sem resultados. Por favor, redefina suas buscas.'
+        },
+        // (optional) Override default labels. Useful for I18n.
+        labels: {
+          columns: 'Colunas',
+          allCols: 'Todas',
+          rows: 'Linhas',
+          selected: {
+            singular: 'item selecionado.',
+            plural: 'items selecionado.'
+          },
+          clear: 'limpar',
+          search: 'Buscar',
+          all: 'Todos'
+        }
       },
       colunas: [
         {

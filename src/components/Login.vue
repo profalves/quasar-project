@@ -9,7 +9,7 @@
         <q-icon name="settings" class="fa-2x" @click="$router.push('/config')" />
         
       </q-fixed-position>
-      <img src="../../img/logo.png" width="100%" />
+      <img src="../../img/logo2.png" width="100%" />
       <q-field
 
         helper="Empresa"
