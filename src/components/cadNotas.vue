@@ -117,7 +117,7 @@
     <q-list style="background-color: white;">
     
       <!--cabeçalho-->
-      <q-collapsible opened icon="explore" label="Cabeçalho">
+      <q-collapsible :opened="open.cab" icon="explore" label="Cabeçalho">
           
         <div class="row">
             <div class="col-10">
@@ -242,6 +242,7 @@
                     {value: 'vista', label: 'À Vista'},
                     {value: 'prazo', label: 'À Prazo'}
                   ]"
+                  @blur="open.desp = true"
                 />
 
             </div>
@@ -250,7 +251,7 @@
       </q-collapsible>
         
       <!--Outros-->  
-      <q-collapsible icon="local_mall" label="Outras Despesas">
+      <q-collapsible :opened="open.desp" icon="monetization_on" label="Outras Despesas">
             <div class="row">
                 <div class="col-md-6">
                     <q-field>
@@ -277,7 +278,8 @@
                 <div class="col-md-6">
                     <q-field>
                         <q-input float-label="Outros"
-                                 v-model="desc" />
+                                 v-model="desc"
+                                 @blur="open.itens = true"/>
                     </q-field>    
                 </div>
 
@@ -286,7 +288,7 @@
       </q-collapsible>
         
       <!--Itens-->  
-      <q-collapsible icon="local_mall" label="Itens">
+      <q-collapsible :opened="open.itens" icon="local_mall" label="Itens">
          
         <div class="col col-md-3">
             <q-btn
@@ -368,7 +370,7 @@
       </q-collapsible>
         
       <!--Duplicatas-->
-      <q-collapsible v-if="visivel" icon="local_atm" label="Duplicatas">
+      <q-collapsible v-if="visivel" :opened="open.dup" icon="local_atm" label="Duplicatas">
           
         <!--Data tables HTML-->
         <div class="row" id="table">
@@ -707,6 +709,12 @@ export default {
         },
         dias: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
         meses: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+        open: {
+            cab: true,
+            desp: false,
+            itens: false,
+            dup: false
+        },
         styles: [
             '',
             'bordered',
