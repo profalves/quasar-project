@@ -95,7 +95,7 @@
     <q-list style="background-color: white;">
           
       <!--Dados Pessoais-->
-      <q-collapsible opened icon="perm_contact_calendar" label="Dados Pessoais">
+      <q-collapsible :opened="open.dados" icon="perm_contact_calendar" label="Dados Pessoais">
         <div class="row">
             <div class="col">
               <q-field
@@ -139,20 +139,21 @@
                 icon="done"
                 helper="RG/Inscrição Estadual"
               >
-                <q-input v-model.number="rg" type="number"/>
+                <q-input v-model.number="rg" type="number" @blur="colapDados"/>
               </q-field>   
             </div>    
         </div>    
       </q-collapsible>
              
       <!--Endereços-->
-      <q-collapsible icon="pin_drop" label="Endereços">
+      <q-collapsible :opened="open.end" icon="pin_drop" label="Endereços">
           
         <div class="row">
             <div class="col-8 col-md-6">
               <q-field
                 icon="markunread_mailbox"
                 helper="Clique no botão ao lado para pesquisar o CEP"
+                name="campoCEP"
               >
                 <q-input float-label="CEP"
                          v-model.number="cep"
@@ -162,6 +163,7 @@
                          @input="$v.cep.$touch()"
                          :error="$v.cep.$error"
                          ref="cep"
+                         name="cep"
                 />
                 <span v-if="!$v.cep.maxLength">Quantidade de números superior ao de um cep</span>
 
@@ -241,7 +243,7 @@
               >
                 <div class="mdl-selectfield">
                 <label class="ellipsis absolute self-start">Cidade</label>
-                <select class="browser-default" v-model="cidade" >
+                <select class="browser-default" v-model="cidade" @blur="colapEnd">
                   <option disabled selected>Escolha uma cidade</option>
                   <option v-for="cidade in cidades">{{cidade.nome}}</option>
 
@@ -266,7 +268,7 @@
       </q-collapsible>
         
       <!--Contatos-->
-      <q-collapsible icon="contact_phone" label="Contatos">
+      <q-collapsible :opened="open.cont" icon="contact_phone" label="Contatos">
           
         <div class="row">
             
@@ -327,6 +329,7 @@
                      @input="$v.email.$touch()"
                      :error="$v.email.$error"
                      clearable
+                     @blur="colapCont"
                 />
 
                  <span v-if="!$v.email.email">Digite um email válido</span>
@@ -346,7 +349,7 @@
       </q-collapsible>
         
       <!--Familia/Vendedor-->
-      <q-collapsible icon="people_outline" label="Grupo/Vendedor">
+      <q-collapsible :opened="open.grup" icon="people_outline" label="Grupo/Vendedor">
           <div class="row">
             <div class="col">
                 <q-field helper="Família">
@@ -360,6 +363,7 @@
             <div class="col">
                 <q-field helper="Vendedor">
                     <q-select
+                        @blur="colapGrup"
                         filter
                         v-model="vendedor"
                         :options="[
@@ -376,14 +380,14 @@
       </q-collapsible>
       
       <!--Dados Complementares-->
-      <q-collapsible icon="person_outline" label="Dados Complementares">
+      <q-collapsible :opened="open.comp" icon="person_outline" label="Dados Complementares">
         <div class="row">
             <div class="col-md-6 col-xs-12">
               <q-field
                 icon="android"
                 helper="Apelido"
               >
-                <input class="mdInput" v-model="alias" />
+                <input class="mdInput" v-model="alias"/>
 
               </q-field>
             </div>    
@@ -391,8 +395,10 @@
               <q-field
                 icon="cake"
                 helper="Data de Nascimento"
+                
               >
-                <the-mask class="mdInput"
+                <the-mask @blur="colapComp" 
+                          class="mdInput"
                           v-model="datanasc"
                           type="data" 
                           :mask="['##/##/####']"
@@ -405,7 +411,7 @@
       </q-collapsible>  
       
       <!--Crediário-->  
-      <q-collapsible icon="local_atm" label="Crediário">
+      <q-collapsible :opened="open.cred" icon="local_atm" label="Crediário">
         <div class="row">
             
             <div class="col-4">
@@ -429,7 +435,7 @@
                 <q-field
                     helper="Limite"
                   >
-                    <q-input v-model="limite" />
+                    <q-input v-model="limite" @blur="colapCred"  />
 
                 </q-field>
             </div>
@@ -439,7 +445,7 @@
       </q-collapsible>
         
       <!--OBS-->
-      <q-collapsible icon="message" label="Observações">
+      <q-collapsible :opened="open.obs" icon="message" label="Observações">
         <q-input 
                  float-label="Obs:" 
                  v-model="obs" 
@@ -501,6 +507,16 @@ export default {
             },
             
         ],
+        open: {
+            dados: true,
+            end: false,
+            cont: false,
+            grup: false,
+            comp: false,
+            cred: false,
+            obs: false,
+        },
+        
         options: [
             {
               label: 'Indefinido',
@@ -567,6 +583,11 @@ export default {
       this.cep = VMasker.toNumber(newVal)
       this.cep = VMasker.toPattern(newVal, '99999999')
     },
+    'open.cred' (value) {
+      if (value === true) {
+        this.open.comp = false
+      }  
+    }
   },
   validations: {
     nome: {
@@ -693,7 +714,31 @@ export default {
         //console.log(e)
       })
         
-    }
+    },
+    colapDados() {
+        this.open.dados=false
+        this.open.end=true   
+    },
+    colapEnd() {
+        this.open.end=false
+        this.open.cont=true   
+    },
+    colapCont() {
+        this.open.cont=false
+        this.open.grup=true   
+    },
+    colapGrup() {
+        this.open.grup=false
+        this.open.comp=true   
+    },
+    colapComp() {
+        this.open.comp=false
+        this.open.cred=true   
+    },
+    colapCred() {
+        this.open.obs=true
+        this.open.cred=false
+    },
     
   },
   created(){

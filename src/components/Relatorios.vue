@@ -35,21 +35,6 @@
     
     <div class="col-12">
         <router-link to="/relatorios">
-            <q-card color="warning" class="col-sm-6">
-              <q-card-title></q-card-title>
-              <q-card-main>
-                <center id="card">
-                    <i class="fa fa-money fa-5x center"></i><br>
-                    <p>Contas</p>
-                </center>
-              </q-card-main>
-            </q-card>
-
-        </router-link>
-    </div>    
-    
-    <div class="col-6">
-        <router-link to="/relatorios">
             <q-card color="info" class="col-sm-6">
               <q-card-title></q-card-title>
               <q-card-main>
@@ -59,7 +44,20 @@
                 </center>
               </q-card-main>
             </q-card>
-
+        </router-link>
+    </div>    
+    
+    <div class="col-6">
+        <router-link to="/relatorios">
+            <q-card color="warning" class="col-sm-6">
+              <q-card-title></q-card-title>
+              <q-card-main>
+                <center id="card">
+                    <i class="fa fa-money fa-5x center"></i><br>
+                    <p>Contas</p>
+                </center>
+              </q-card-main>
+            </q-card>
         </router-link>
     </div>    
     
@@ -84,7 +82,7 @@
               <q-card-title></q-card-title>
               <q-card-main>
                 <center id="card">
-                    <i class="fa fa-users fa-5x center"></i><br>
+                    <i class="fa fa-credit-card fa-5x center"></i><br>
                     <p>Forma de Pagto</p>
                 </center>
               </q-card-main>

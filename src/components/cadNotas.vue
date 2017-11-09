@@ -449,7 +449,7 @@
             <q-icon name="keyboard_arrow_left" />
           </q-btn>
           <q-toolbar-title>
-            Adicionar item
+            Detalhes do item
           </q-toolbar-title>
         </q-toolbar>
 
@@ -626,14 +626,9 @@
                   <center>
                     <q-card-title>Lucro</q-card-title>
                         <input v-model="item.desconto"
-                               style="text-align: center;
-                                      font-size: 30px;
-                                      color: white;
-                                      background:transparent;
-                                      outline:none;
-                                      border: 0px;
-                                      width:85%;"
-                                 />
+                               class="boxInput"
+                               max-decimals="2"
+                        />
                         <br>
                   </center>
                 </q-card>
@@ -643,8 +638,9 @@
                 <q-card color="positive" class="col-sm-6">
                   <center>
                     <q-card-title>Venda</q-card-title>
-                        <h4>0,00</h4>
-                        <br>
+                        <input v-model="item.desconto"
+                               class="boxInput"
+                        />
                   </center>
                 </q-card>
             </div>  
@@ -1037,4 +1033,5 @@ export default {
     .full {
         width: 100%;
     }
+    
 </style>

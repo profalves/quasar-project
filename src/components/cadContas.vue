@@ -184,22 +184,54 @@
             
           </q-field>   
         </div>
-    </div>
-    
-    <div class="row">
-        <div class="col-md-1 col-xs-12">
+        <div class="col-md-2 col-xs-12">
             <q-checkbox v-model="checked" 
                         label="Despesa Fixa"
-                        style="margin-top:15px;"
+                        style="margin-top:20px;"
             />
         </div>
+    </div>
+    
+    
+    <div class="row">
+        <div class="col-md-3 offset-1">
+            <q-field
+                icon="date_range"
+                >
+                <q-datetime v-model="vencimento"
+                            type="date" 
+                            float-label="Vencimento" 
+                            color="black"
+                            format="DD/MM/YYYY"
+                            ok-label="OK" 
+                            clear-label="Limpar" 
+                            cancel-label="Cancelar"
+                            :day-names="dias"
+                            :month-names="meses"
+                />
+
+            </q-field>  
+        </div>
+        <div class="col-md-3 offset-1">
+            <q-field
+                label="Valor"
+                >
+                <q-input v-model="valor"
+                         type="number"
+                         prefix="R$"
+                />
+
+            </q-field> 
+        </div>
+    </div>
+        
+    <div class="row">
         <div class="col-md-3 offset-1">
             <q-field
                 label="Qtd. de Títulos"
                 >
                 <q-input v-model.number="qtdTitulos"
                          type="number"
-                         clearable
                 />
 
             </q-field>  
@@ -210,7 +242,6 @@
                 >
                 <q-input v-model.number="intervalo"
                          type="number"
-                         clearable
                 />
 
             </q-field> 
@@ -329,11 +360,16 @@ export default {
         forma: '',
         doc: '',
         tipoDoc: '',
-        qtdTitulos: '',
-        intervalo: '',
+        vencimento: '',
+        valor: '',
+        qtdTitulos: 1,
+        intervalo: 0,
         select: '',
         checked: false,
         open: false,
+        //datatime
+        dias: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
+        meses: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
         //table
         styles: [
             '',

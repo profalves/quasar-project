@@ -259,8 +259,9 @@
             <q-card color="faded" class="col-sm-6">
             <center>
                 <q-card-title>Custo</q-card-title>
-                    <h4>0,00</h4>
-                    <br>
+                    <input v-model="preco"
+                           class="boxInput"
+                    />
             </center>
             </q-card>
         </div>
@@ -269,8 +270,9 @@
             <q-card color="primary" class="col-sm-6">
               <center>
                 <q-card-title>Lucro</q-card-title>
-                    <h4>0,00</h4>
-                    <br>
+                    <input v-model="preco"
+                           class="boxInput"
+                    />
               </center>
             </q-card>
         </div>
@@ -279,8 +281,9 @@
             <q-card color="positive" class="col-sm-6">
               <center>
                 <q-card-title>Venda</q-card-title>
-                    <h4>0,00</h4>
-                    <br>
+                    <input v-model="preco"
+                           class="boxInput"
+                    />
               </center>
             </q-card>
         </div>        
@@ -306,6 +309,7 @@ export default {
         nome: '',
         barras: '',
         codEmpresa: '',
+        preco: '0,00',
         id: '',
         estoque: 0,
         select: '',

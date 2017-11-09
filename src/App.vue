@@ -151,5 +151,15 @@ export default {
 		text-align: center;
         z-index: 5;
 	}
+    
+    .boxInput {
+        text-align: center;
+        font-size: 30px;
+        color: white;
+        background:transparent;
+        outline:none;
+        border: 0px;
+        width:85%;
+    }
 
 </style>
