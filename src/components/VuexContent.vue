@@ -19,8 +19,8 @@
         name: 'VuexTests',
         mounted() {
             const payload = {
-                name: 'Outro nome',
-                email: 'Novo email',
+                name: 'Rodrigo Alves',
+                email: 'Novo',
                 city: 'Serrinha',
                 estado: 'BA',
             }

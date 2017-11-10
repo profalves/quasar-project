@@ -37,6 +37,7 @@ export default new VueRouter({
     { path: '/usuarios', component: load('Usuarios') },
     { path: '/cadusuario', component: load('cadUsuario') },
     { path: '/login', component: load('Login') },
+    { path: '/config', component: load('Config') },
     { path: '/dialog', component: load('Dialogs') },
     { path: '/test', component: load('Test') },
     { path: '/vuex', component: load('VuexContent') },

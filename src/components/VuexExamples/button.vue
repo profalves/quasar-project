@@ -13,7 +13,7 @@ export default {
     mudarDados(){
       const payload = {
         name: 'Outro nome',
-        email: 'Novo email'
+        email: 'outro email'
       }
       
       this.$store.commit('CHANGE_USER', payload)
