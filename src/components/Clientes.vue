@@ -126,7 +126,7 @@
         label="Altura das linhas"
         :label-width="4"
       >
-        <q-slider v-model="rowHeight" :min="50" :max="200" label-always :label-value="`${rowHeight}px` "/>
+        <q-slider v-model="rowHeight" :min="38" :max="200" label-always :label-value="`${rowHeight}px` "/>
       </q-field>
 
       <q-field
@@ -179,21 +179,19 @@ export default {
       text: 'text',
       config: {
         title: '',
-        refresh: false,
-        noHeader: false,
-        columnPicker: false,
-        leftStickyColumns: 0,
-        rightStickyColumns: 0,
+        refresh: (localStorage.getItem('refresh') === 'true'),
+        noHeader: (localStorage.getItem('noHeader') === 'true'),
+        columnPicker: (localStorage.getItem('columnPicker') === 'true'),
         bodyStyle: {
           maxHeight: '500px'
         },
-        rowHeight: '50px',
-        responsive: false,
+        rowHeight: localStorage.getItem('rowHeight') + 'px',
+        responsive: (localStorage.getItem('responsive') === 'true'),
         pagination: {
           rowsPerPage: 5,
           options: [5, 10, 15, 30, 50, 100]
         },
-        selection: 'multiple',
+        selection: localStorage.getItem('selection'),
         messages: {
           noData: '<i class="material-icons">warning</i> Não há dados para exibir.',
           noDataAfterFiltering: '<i class="material-icons">warning</i> Sem resultados. Por favor, redefina suas buscas.'
@@ -269,9 +267,9 @@ export default {
         }
       ],
       pagination: true,
-      rowHeight: 50,
-      bodyHeightProp: 'auto',
-      bodyHeight: 500
+      rowHeight: parseInt(localStorage.getItem('rowHeight')),
+      bodyHeightProp: localStorage.getItem('bodyHeightProp'),
+      bodyHeight: parseInt(localStorage.getItem('bodyHeight'))
       
     }
   },
