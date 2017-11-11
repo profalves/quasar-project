@@ -266,10 +266,10 @@ export default {
           width: '100px'
         }
       ],
-      pagination: true,
+      pagination: (localStorage.getItem('pagination') === 'true'),
       rowHeight: parseInt(localStorage.getItem('rowHeight')),
       bodyHeightProp: localStorage.getItem('bodyHeightProp'),
-      bodyHeight: parseInt(localStorage.getItem('bodyHeight'))
+      bodyHeight: parseInt(localStorage.getItem('bodyHeight')),
       
     }
   },

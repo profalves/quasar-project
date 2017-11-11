@@ -161,5 +161,14 @@ export default {
         border: 0px;
         width:85%;
     }
+    
+    .mdInput {
+        /*margin-top: 10px;
+        width: 90%;*/
+        background:transparent;
+        outline:none;
+        border: 0px;
+        /*border-bottom-color: #D3DAE0;*/
+    }
 
 </style>

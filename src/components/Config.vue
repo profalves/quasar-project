@@ -68,30 +68,66 @@
                   <q-slider class="col" v-model="bodyHeight" :min="100" :max="700" label-always :disable="bodyHeightProp === 'auto'" :label-value="`${bodyHeight}px`" />
                 </div>
               </q-field>
-              <br>
       
               <!--Salvar-->
               <div class="row">
                 <q-btn icon="done"
                        color="primary"
                        @click="salvarConfig"
+                       style="margin: 10px;"
                 >Salvar</q-btn>
                 
                 <q-btn icon="refresh"
                        color="primary"
-                       @click="resetConfig"
-                       style="margin-left: 10px;"
+                       @click="alertReset"
+                       style="margin: 10px;"
                 >Resetar</q-btn>
 
-              </div><br>
+              </div>
               
               
           </div>
         </q-collapsible>
         <q-collapsible icon="drafts" label="Banco de Dados" sublabel="Configure o Banco de Dados a ser utilizado">
-          <div>
-            ip/ porta/ nome do banco
+          <div class="row">
+            <div class="col-md-6">
+              <q-field
+                icon="pin_drop"
+                helper="IP"
+              >
+                <q-input v-model="ip" />
+              </q-field>   
+            </div>
+            <div class="col-md-6">
+              <q-field
+                icon="pin_drop"
+                helper="Porta"
+              >
+                <q-input v-model.number="porta" type="number"/>
+              </q-field>   
+            </div>    
+          </div> 
+          <div class="row">
+            <div class="col">
+              <q-field
+                icon="featured_play_list"
+                helper="Nome do Banco de Dados"
+              >
+                <q-input v-model.trim="banco" />
+              </q-field>   
+            </div> 
+            <div class="col-2 btn-plus" >
+                <q-btn 
+                   rounded
+                   color="primary" 
+                   @click="salvarBanco">
+                   <q-icon name="add" />
+                </q-btn>
+            </div>
           </div>
+            
+          Ultimo banco salvo: {{ultBanco}}
+          
         </q-collapsible>
       </q-list>
       
@@ -99,25 +135,43 @@
 </template>
 
 <script>
-
+import { Dialog, Toast } from 'quasar'
 //import { mapState } from 'vuex'
 export default {
   data () {
     return {
-      config: {
+      config: { //config. das tabelas
         refresh: (localStorage.getItem('refresh') === 'true'),
         noHeader: (localStorage.getItem('noHeader') === 'true'),
         columnPicker: (localStorage.getItem('columnPicker') === 'true'),
         responsive: (localStorage.getItem('responsive') === 'true'),
         selection: localStorage.getItem('selection')
       },
-      pagination: true,
+      //ainda config. das tabelas
+      pagination: (localStorage.getItem('pagination') === 'true'),
       rowHeight: parseInt(localStorage.getItem('rowHeight')),
       bodyHeightProp: localStorage.getItem('bodyHeightProp'),
-      bodyHeight: parseInt(localStorage.getItem('bodyHeight'))
+      bodyHeight: parseInt(localStorage.getItem('bodyHeight')),
+      // config. Banco de Dados
+      ip: '',
+      porta: '',
+      banco: '',
+      bancoID: '',
+      
+      bancosDados: [],
+        
+      
+      
+      ultBanco: {
+        ip: localStorage.getItem('ip' + localStorage.getItem('bancoCont'), this.ip),
+        porta: localStorage.getItem('porta' + localStorage.getItem('bancoCont'), this.porta),
+        banco: localStorage.getItem('banco' + localStorage.getItem('bancoCont'), this.banco),
+      }
+      
     }
   },
   methods: {
+    //Listas
     salvarConfig(){
         localStorage.setItem('refresh', this.config.refresh)
         localStorage.setItem('noHeader', this.config.noHeader)
@@ -144,17 +198,66 @@ export default {
         
         this.salvarConfig()
     
-    }
-  },
-  created () {
-    
-  }
-  /*computed: {
-    outro() {
-        return 'test new computed'    
     },
-
-    ...mapState({
+    alertReset(){
+        let t = this
+        Dialog.create({
+          title: 'Tem certeza que deseja voltar para as configurações iniciais de listas?',
+          message: 'Depois de confirmado, esta ação não poderá ser revertida...',
+          buttons: [
+            {
+              label: 'Não',
+              color: 'negative',
+              raised: true,
+              style: 'margin-top: 20px',
+              handler () {
+                Toast.create('NÃO RESETADO: As configurações de listas continuam as mesmas')
+              }
+            },
+            {
+              label: 'Sim',
+              color: 'positive',
+              raised: true,
+              style: 'margin-top: 20px',
+              handler () {
+                t.resetConfig()
+                Toast.create('configurações de listas retornaram para as configurações iniciais')
+              }
+            }
+          ]
+        })
+    },
+    //Bancos
+    salvarBanco(){
+        
+        var bancoCont = parseInt(localStorage.getItem('bancoCont'))
+        if(isNaN(bancoCont)) {
+            bancoCont = 0
+        }
+        var cont = bancoCont + 1
+        localStorage.setItem('bancoCont', cont)
+        localStorage.setItem('ip' + localStorage.getItem('bancoCont'), this.ip)
+        localStorage.setItem('porta' + localStorage.getItem('bancoCont'), this.porta)
+        localStorage.setItem('banco' + localStorage.getItem('bancoCont'), this.banco)
+        this.ip = ''
+        this.porta = ''
+        this.banco = ''
+    
+    },
+    listarBancos (){
+        
+        var lista = { ip : localStorage.getItem('ip' + localStorage.getItem('bancoCont')),
+                  porta: localStorage.getItem('porta' + localStorage.getItem('bancoCont')),
+                  banco: localStorage.getItem('banco' + localStorage.getItem('bancoCont'))
+                  }
+        this.bancosDados.push(lista)
+    }
+    
+  },
+  created (){
+    this.listarBancos()
+  }
+  /*  ...mapState({
         // arrow functions can make the code very succinct!
         config: state => {
             const {
