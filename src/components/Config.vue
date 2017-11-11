@@ -125,7 +125,12 @@
                 </q-btn>
             </div>
           </div>
-            
+          
+            <ul>
+                <li v-for: banco in bancosDados>{{banco.ip}}</li>
+            </ul>  
+          
+          todos os bancos salvos: {{bancosDados}}<br>
           Ultimo banco salvo: {{ultBanco}}
           
         </q-collapsible>
@@ -245,12 +250,14 @@ export default {
     
     },
     listarBancos (){
-        
-        var lista = { ip : localStorage.getItem('ip' + localStorage.getItem('bancoCont')),
-                  porta: localStorage.getItem('porta' + localStorage.getItem('bancoCont')),
-                  banco: localStorage.getItem('banco' + localStorage.getItem('bancoCont'))
+        var i
+        for (i = 1; i <= localStorage.getItem('bancoCont'); i++) {
+        var lista = { ip : localStorage.getItem('ip' + i),
+                  porta: localStorage.getItem('porta' + i),
+                  banco: localStorage.getItem('banco' + i)
                   }
         this.bancosDados.push(lista)
+        }
     }
     
   },
