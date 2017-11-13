@@ -477,6 +477,7 @@ export default {
     return {
         estados,
         cidadesJSON,
+        
         nome: '',
         cpf: '',
         rg: '',

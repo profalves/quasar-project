@@ -4,6 +4,7 @@
                 max-width: 90vw;
                 text-align: center;
                 ">
+        
       <q-fixed-position class="over" corner="top-right" :offset="[18, 18]">
         
         <q-icon name="settings" class="fa-2x" @click="$router.push('/config')" />

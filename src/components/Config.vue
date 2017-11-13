@@ -88,14 +88,14 @@
               
           </div>
         </q-collapsible>
-        <q-collapsible icon="drafts" label="Banco de Dados" sublabel="Configure o Banco de Dados a ser utilizado">
+        <q-collapsible icon="drafts" label="Banco de Dados" sublabel="Configure a Empresa ao qual deseja conectar">
           <div class="row">
             <div class="col-md-6">
               <q-field
                 icon="pin_drop"
-                helper="IP"
+                helper="IP/Host"
               >
-                <q-input v-model="ip" />
+                <q-input v-model.trim="ip" clearable/>
               </q-field>   
             </div>
             <div class="col-md-6">
@@ -103,7 +103,7 @@
                 icon="pin_drop"
                 helper="Porta"
               >
-                <q-input v-model.number="porta" type="number"/>
+                <q-input v-model.number="porta" type="number" clearable/>
               </q-field>   
             </div>    
           </div> 
@@ -113,7 +113,7 @@
                 icon="featured_play_list"
                 helper="Nome do Banco de Dados"
               >
-                <q-input v-model.trim="banco" />
+                <q-input v-model.trim="banco" clearable />
               </q-field>   
             </div> 
             <div class="col-2 btn-plus" >
@@ -125,14 +125,38 @@
                 </q-btn>
             </div>
           </div>
-          
-            <ul>
-                <li v-for: banco in bancosDados>{{banco.ip}}</li>
-            </ul>  
-          
-          todos os bancos salvos: {{bancosDados}}<br>
-          Ultimo banco salvo: {{ultBanco}}
-          
+          <br>
+          Bancos de Dados salvos: <br><br>
+            
+        <div class="row" id="config">    
+            <table class="q-table" :class="computedClasses" style="width: 100%">
+              <thead>
+                <tr>
+                  <th class="text-left">ID</th>
+                  <th class="text-left">Nome</th>
+                  <th class="text-left">IP/Host</th>
+                  <th class="text-left">Porta</th>
+                  <th class="text-left">Editar</th>
+                  <th class="text-left">Excluir</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(item, index) in bancosDados">
+                  <td class="text-left">{{ item.IdBanco }}</td>
+                  <td class="text-left">{{ item.banco }}</td>
+                  <td class="text-right">{{ item.ip }}</td>
+                  <td class="text-right">{{ item.porta }}</td>
+                  <td class="text-center">
+                    <a @click="editar(item)" color="info"><i class="material-icons fa-2x" >mode_edit</i></a>   
+                  </td>
+                  <td class="text-center">
+                    <i class="material-icons fa-2x" @click="excluir(item, index)" color="negative">delete_forever</i> 
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+        </div>
+        
         </q-collapsible>
       </q-list>
       
@@ -157,22 +181,47 @@ export default {
       rowHeight: parseInt(localStorage.getItem('rowHeight')),
       bodyHeightProp: localStorage.getItem('bodyHeightProp'),
       bodyHeight: parseInt(localStorage.getItem('bodyHeight')),
+      
       // config. Banco de Dados
       ip: '',
       porta: '',
       banco: '',
       bancoID: '',
-      
       bancosDados: [],
-        
+      filtro: '',
+      indice: '',
+      edit: false,
+      //tabela
+      misc: 'bordered', //[{value: 'bordered'},{value: 'highlight'}]
+      separator: 'cell', // none, horizontal, vertical, cell
+      stripe: 'odd', // none, odd, even
+      type: 'none', // flipped, responsive
+      gutter: 'none', // compact, loose
       
-      
-      ultBanco: {
-        ip: localStorage.getItem('ip' + localStorage.getItem('bancoCont'), this.ip),
-        porta: localStorage.getItem('porta' + localStorage.getItem('bancoCont'), this.porta),
-        banco: localStorage.getItem('banco' + localStorage.getItem('bancoCont'), this.banco),
+    }
+  },
+  computed: {
+    computedClasses () {
+      let classes = []
+      if (this.misc.includes('bordered')) {
+        classes.push('bordered')
       }
-      
+      if (this.misc.includes('highlight')) {
+        classes.push('highlight')
+      }
+      if (this.separator !== 'none') {
+        classes.push(this.separator + '-separator')
+      }
+      if (this.stripe !== 'none') {
+        classes.push('striped-' + this.stripe)
+      }
+      if (this.type !== 'none') {
+        classes.push(this.type)
+      }
+      if (this.gutter !== 'none') {
+        classes.push(this.gutter)
+      }
+      return classes
     }
   },
   methods: {
@@ -187,8 +236,10 @@ export default {
         localStorage.setItem('rowHeight', this.rowHeight)
         localStorage.setItem('bodyHeightProp', this.bodyHeightProp)
         localStorage.setItem('bodyHeight', this.bodyHeight)
-        
-        
+        Toast.create.positive({
+            html: 'Configurações salvas com sucesso',
+            icon: 'done'
+        })    
     },
     resetConfig(){
         this.config.refresh = false
@@ -232,77 +283,96 @@ export default {
           ]
         })
     },
-    //Bancos
-    salvarBanco(){
-        
-        var bancoCont = parseInt(localStorage.getItem('bancoCont'))
-        if(isNaN(bancoCont)) {
-            bancoCont = 0
-        }
-        var cont = bancoCont + 1
-        localStorage.setItem('bancoCont', cont)
-        localStorage.setItem('ip' + localStorage.getItem('bancoCont'), this.ip)
-        localStorage.setItem('porta' + localStorage.getItem('bancoCont'), this.porta)
-        localStorage.setItem('banco' + localStorage.getItem('bancoCont'), this.banco)
-        this.ip = ''
-        this.porta = ''
-        this.banco = ''
     
-    },
+    //Bancos
     listarBancos (){
         var i
         for (i = 1; i <= localStorage.getItem('bancoCont'); i++) {
-        var lista = { ip : localStorage.getItem('ip' + i),
-                  porta: localStorage.getItem('porta' + i),
-                  banco: localStorage.getItem('banco' + i)
-                  }
-        this.bancosDados.push(lista)
+            var lista = { 
+                            IdBanco : localStorage.getItem('IdBanco' + i),
+                            ip : localStorage.getItem('ip' + i),
+                            porta: localStorage.getItem('porta' + i),
+                            banco: localStorage.getItem('banco' + i)
+                        }
+            if(lista.IdBanco!==null){
+                this.bancosDados.push(lista)
+            }
         }
-    }
+
+    },
+    salvarBanco(){
+        if(this.edit === true){
+            localStorage.setItem('ip' + this.filtro, this.ip)
+            localStorage.setItem('porta' + this.filtro, this.porta)
+            localStorage.setItem('banco' + this.filtro, this.banco)
+            this.ip = ''
+            this.porta = ''
+            this.banco = ''
+            Toast.create.positive({
+                html: 'Configurações salvas com sucesso',
+                icon: 'done'
+            })
+            this.bancosDados = []
+            this.listarBancos()
+        }
+        else{
+            var bancoCont = parseInt(localStorage.getItem('bancoCont'))
+            if(isNaN(bancoCont)) {
+                bancoCont = 0
+            }
+            var cont = bancoCont + 1
+            localStorage.setItem('bancoCont', cont)
+            localStorage.setItem('IdBanco' + localStorage.getItem('bancoCont'), cont)
+            localStorage.setItem('ip' + localStorage.getItem('bancoCont'), this.ip)
+            localStorage.setItem('porta' + localStorage.getItem('bancoCont'), this.porta)
+            localStorage.setItem('banco' + localStorage.getItem('bancoCont'), this.banco)
+            this.ip = ''
+            this.porta = ''
+            this.banco = ''
+            Toast.create.positive({
+                html: 'Configurações salvas com sucesso',
+                icon: 'done'
+            })
+            this.bancosDados = []
+            this.listarBancos()
+        }
+    },
+    editar(item, index) {
+        this.filtro = item.IdBanco
+        this.edit = true
+        this.ip = localStorage.getItem('ip' + this.filtro)
+        this.porta = localStorage.getItem('porta' + this.filtro)
+        this.banco = localStorage.getItem('banco' + this.filtro)
+        
+    },
+    excluir(item, index) {
+        this.filtro = item.IdBanco
+        this.indice = index
+        
+        if(this.indice !== -1) {
+            this.bancosDados.splice(index,1)
+        }
+        
+        localStorage.removeItem('IdBanco' + this.filtro)
+        localStorage.removeItem('ip' + this.filtro)
+        localStorage.removeItem('porta' + this.filtro)
+        localStorage.removeItem('banco' + this.filtro)
+        
+        this.bancosDados = []
+        this.listarBancos()
+    },
+    
     
   },
   created (){
     this.listarBancos()
   }
-  /*  ...mapState({
-        // arrow functions can make the code very succinct!
-        config: state => {
-            const {
-                title, 
-                selection,
-                refresh,
-                noHeader,
-                columnPicker,
-                leftStickyColumns,
-                rightStickyColumns,
-                bodyStyle,
-                rowHeight,
-                responsive,
-                pagination,
-            } = state.config.lista
-            return {
-                title, 
-                selection,
-                refresh,
-                noHeader,
-                columnPicker,
-                leftStickyColumns,
-                rightStickyColumns,
-                bodyStyle,
-                rowHeight,
-                responsive,
-                pagination
-            }
-        },
-        pagination: state => state.config.pagination,
-        rowHeight: state => state.config.rowHeight,
-        bodyHeightPropbodyHeight: state => state.config.bodyHeightPropbodyHeight,
-        bodyHeight: state => state.config.bodyHeight,
-        
-    })
-  },*/
+  
 }
 </script>
 
 <style>
+    #config {
+        overflow: scroll;
+    }
 </style>
