@@ -59,30 +59,57 @@
     </div>
     
     <div class="row">
-        <div class="col">
+        <div class="col-md-4">
             <q-field
                 helper="Tipo Cadastro" 
               >
                 <q-select
-                    v-model="tipo"
+                    v-model="Pessoas.CodTipo"
                     :options="tipos"
                 />
             </q-field>
         </div>
-        <div class="col">
+        <div class="col-md-4">
             <q-field
                 helper="Tipo Pessoa"    
               >
                 <q-select
-                    v-model="tipoPessoa"
+                    v-model="Pessoas.PJ"
                     :options="[
                         {
                           label: 'Física',
-                          value: 'f'
+                          value: false
                         },
                         {
                           label: 'Jurídica',
-                          value: 'j'
+                          value: true
+                        }
+                    ]"
+                />
+            </q-field>
+        </div>
+        <div class="col-md-4" v-if="Pessoas.PJ==true">
+            <q-field
+                helper="Tipo Jurídica: Regime Tributário"    
+              >
+                <q-select
+                    v-model="Pessoas.CodRegimeTribut"
+                    :options="[
+                        {
+                          label: 'Física',
+                          value: 0
+                        },
+                        {
+                          label: 'Simples Nacional',
+                          value: 1
+                        },
+                        {
+                          label: 'Simples Nacional - excesso de sublimite da receita bruta',
+                          value: 2
+                        },
+                        {
+                          label: 'Regime Normal',
+                          value: 3
                         }
                     ]"
                 />
@@ -117,8 +144,8 @@
 
         <div class="row">
             <div class="col" id="genero">
-                <q-radio v-model="sexo" val="mas" color="primary" left-label label="Masc." />
-                <q-radio v-model="sexo" val="fem" color="primary" left-label label="Fem." style="margin-left: 10px" /> 
+                <q-radio v-model="sexo" val=false color="primary" left-label label="Masc." />
+                <q-radio v-model="sexo" val=true color="primary" left-label label="Fem." style="margin-left: 10px" /> 
             </div>
         </div>
 
@@ -127,19 +154,26 @@
               <q-field
                 icon="done"
                 helper="CPF/CNPJ"
+                :error="$v.cpf.$error"
               >
                 <the-mask class="mdInput"
                           v-model="cpf"
                           :mask="['###.###.###-##', '##.###.###/####-##']"
+                          @input="$v.cpf.$touch()"
                           />
-              </q-field>   
+                  
+                
+              </q-field>
+                
+                <span style="color:#878B8F; margin-left:43px" v-if="!$v.cpf.required">Este campo é requerido</span>
+                <div class="error" v-if="!$v.cpf.minLength">Este campo deve ser igual ou maior que {{$v.cpf.$params.minLength.min}} caracteres.</div>
             </div>
             <div class="col-md-6">
               <q-field
                 icon="done"
                 helper="RG/Inscrição Estadual"
               >
-                <q-input v-model.number="rg" type="number" @blur="colapDados"/>
+                <q-input v-model.number="Pessoas.RG" type="number" @blur="colapDados"/>
               </q-field>   
             </div>    
         </div>    
@@ -188,14 +222,14 @@
               <q-field
                 icon="location_on"
               >
-                <q-input v-model="end" float-label="Endereço"/>
+                <q-input v-model="Pessoas.Endereco" float-label="Endereço"/>
               </q-field>   
             </div>
             <div class="col-lg-2 col-md-3 col-sm-12">
               <q-field
                 icon="location_on"
               >
-                <q-input v-model="numLogradouro" type="number" float-label="Numero"/>
+                <q-input v-model="Pessoas.Numero" type="number" float-label="Numero"/>
               </q-field>   
             </div>
         </div>
@@ -205,7 +239,7 @@
               <q-field
                 icon="store"
               >
-                <q-input v-model="ponto" type="textarea" float-label="Ponto de Referência"/>
+                <q-input v-model="Pessoas.PontoReferencia" type="textarea" float-label="Ponto de Referência"/>
               </q-field>   
             </div>
 
@@ -216,7 +250,7 @@
               <q-field
                 icon="streetview"
               >
-                <q-input v-model="bairro" float-label="Bairro"/>
+                <q-input v-model="Pessoas.Bairro" float-label="Bairro"/>
               </q-field>   
             </div>
 
@@ -323,7 +357,7 @@
                 icon="email"
               >
                 <q-input 
-                     v-model="email" 
+                     v-model="Pessoas.Email" 
                      type="email" 
                      float-label="Email" suffix="@email.com"
                      @input="$v.email.$touch()"
@@ -335,14 +369,14 @@
                  <span v-if="!$v.email.email">Digite um email válido</span>
               </q-field> 
             </div>
-            <div class="col-2 btn-plus" >
+            <!--<div class="col-2 btn-plus" >
                 <q-btn 
                    rounded
                    color="primary" 
                    @click="">
                    <q-icon name="add" />
                 </q-btn>
-            </div>
+            </div>-->
         </div>
           
         
@@ -387,7 +421,7 @@
                 icon="android"
                 helper="Apelido"
               >
-                <input class="mdInput" v-model="alias"/>
+                <input class="mdInput" v-model="Pessoas.Apelido"/>
 
               </q-field>
             </div>    
@@ -417,15 +451,15 @@
             <div class="col-4">
                 <q-field helper="Crediário">
                     <q-select
-                        v-model="cred"
+                        v-model="Pessoas.venderCrediario"
                         :options="[
                             {
                               label: 'Sim',
-                              value: 's'
+                              value: true
                             },
                             {
                               label: 'Não',
-                              value: 'n'
+                              value: false
                             }
                         ]"
                     />
@@ -435,7 +469,7 @@
                 <q-field
                     helper="Limite"
                   >
-                    <q-input v-model="limite" @blur="colapCred"  />
+                    <q-input v-model="Pessoas.LimiteCredito" @blur="colapCred"  />
 
                 </q-field>
             </div>
@@ -448,7 +482,7 @@
       <q-collapsible :opened="open.obs" icon="message" label="Observações">
         <q-input 
                  float-label="Obs:" 
-                 v-model="obs" 
+                 v-model="Pessoas.Observacoes" 
                  type="textarea" 
                  />
       </q-collapsible>
@@ -471,40 +505,97 @@ import { Dialog, Toast } from 'quasar'
 //const APICidades = 'http://educacao.dadosabertosbr.com/api/cidades/'
 const APICidades = 'http://192.168.0.200/celular/api/cidades/consulta?uf='
 
+const API = 'http://192.168.0.200:29755/'
+
 export default {
   name: 'clientes',
   data () {
     return {
         estados,
         cidadesJSON,
-        
         nome: '',
-        cpf: '',
-        rg: '',
         sexo: '',
+        Pessoas:{
+            CodRegimeTribut : 1,
+            CodTipo : 1,
+            CodFamilia : 1,
+            Nome : '', //requerido
+            Apelido : '',
+            Contato : '',
+            CPF : '', //requerido
+            RG : '',
+            CNPJ : '',
+            NCartTrabalho : '',
+            NReservista : '',
+            NTituloEleitor : '',
+            NPIS : '',
+            NCNH : '',
+            Endereco : '',
+            Numero : '',
+            Bairro : '',
+            CEP : '',
+            CodigoIBGECidade : 2930501, //not null
+            CodigoUF : 29,  //not null
+            LimiteCredito : 0.00, //not null
+            TelResid : '',
+            TelComercial : '',
+            Celular1 : '',
+            Celular2 : '',
+            Email : '',
+            Skype : '',
+            Site : '',
+            CodigoVendedor : 1, //not null
+            Observacoes : '',
+            PJ : false, //not null
+            DataNasc : new Date(),
+            SexoFeminino : false,
+            CaminhoFoto : '',
+            CodPai : 0,
+            PontoReferencia : '',
+            NomePai : '',
+            NomeMae : '',
+            CodigoUsuario : 1,
+            Excluido : false,
+            EmpresaRendaExtra : 0.00,
+            venderCrediario : false
+        },
+        cpf: '',
         datanasc: '',
-        alias: '',
         fone: '',
         tipoContato: 'cel',
         email: '',
         cep: '',
-        end: '',
-        bairro: '',
-        ponto: '',
         cidade: '',
         estado: 'ba',
-        numLogradouro: '',
-        obs: '',
-        tipoPessoa: 'f',
-        tipo: 'c',
+        tipo: 1,
         tipos: [
             {
               label: 'Cliente',
-              value: 'c'
+              value: 1
+            },
+            {
+              label: 'Dependente do Cliente',
+              value: 7
+            },
+            {
+              label: 'Empregado',
+              value: 4
             },
             {
               label: 'Fornecedor',
-              value: 'f'
+              value: 2
+            },
+            {
+              label: 'Referencia Pessoal',
+              value: 6
+            },
+            {
+              label: 'Referencia Pessoal',
+              value: 5
+            },
+            {
+              label: 'Transportadora',
+              value: 3
             },
             
         ],
@@ -517,7 +608,6 @@ export default {
             cred: false,
             obs: false,
         },
-        
         options: [
             {
               label: 'Indefinido',
@@ -566,11 +656,11 @@ export default {
       var a = this.listaEstados
       var lista = []
       
-      for (var i=0; i < 27; i++) {
+      for (var i=0; i < a.length; i++) {
           var n = a[i].cidades
           lista.push(n)    
       }
-      console.log(lista)
+      //console.log(lista)
       return lista
     
     }
@@ -596,7 +686,8 @@ export default {
       minLength: minLength(3)
     },
     cpf: {
-      minLength: minLength(10),
+      required,
+      minLength: minLength(11),
       maxLength: maxLength(14)  
     },
     cep: {
@@ -615,11 +706,12 @@ export default {
           this.getCep = res.data
           this.estado = this.getCep.estado.toLowerCase()
           this.listarCidades()
-          this.end = this.getCep.logradouro
-          this.bairro = this.getCep.bairro
-          this.cep = this.getCep.cep
+          this.Pessoas.Endereco = this.getCep.logradouro
+          this.Pessoas.Bairro = this.getCep.bairro
+          this.Pessoas.CEP = this.getCep.cep
           this.cidade = this.getCep.cidade
-          
+          this.Pessoas.CodigoIBGECidade = parseInt(this.getCep.cidade_info.codigo_ibge)
+          this.Pessoas.CodigoUF = parseInt(this.getCep.estado_info.codigo_ibge)
       })
       .catch((e)=>{
         Dialog.create({
@@ -636,7 +728,7 @@ export default {
         this.cep = ''
         this.$refs.cep.focus();
         this.error = e
-        //console.log(e)
+        console.log(e)
       })  
     },
     goBack(){
@@ -655,10 +747,40 @@ export default {
       this.numLogradouro = '' 
     },
     salvar(){
-        Toast.create.positive({
-        html: 'Salvo com sucesso',
-        icon: 'done'
-      })
+        this.Pessoas.Nome = this.nome
+        this.Pessoas.SexoFeminino = (this.sexo === 'true')
+        if(this.cpf.length>11){
+            this.Pessoas.CNPJ = this.cpf
+        }
+        else{
+            this.Pessoas.CPF = this.cpf
+        }
+        
+        axios.post(API + 'pessoa/gravarPessoa', this.Pessoas)
+          .then((res)=>{
+            Toast.create.positive({
+                html: 'Salvo com sucesso',
+                icon: 'done'
+            })
+            console.log(res)
+            console.log(res.data)
+            console.log('sucess')
+
+          })
+          .catch((e)=>{
+            console.log('error')
+            //var data = JSON.parse(e)
+            //console.log(data)
+            console.log(e)
+            console.log(String(e))
+            console.log(e.toString())
+            console.log(e.body)
+            console.log(e.error)
+            console.log(e.errors)
+            console.log(e.data)
+            console.log(e.JSON)
+        })
+        
     },
     excluir(){
         Dialog.create({
@@ -696,7 +818,7 @@ export default {
     testarConexao(){
       axios.get('http://192.168.0.200/celular/api/cidades/consulta?uf=ba')
       .then((res)=>{
-        console.log(res)
+        console.log('Conexão com a web realizada com sucesso')
       })
       .catch((e)=>{
         Dialog.create({
@@ -746,7 +868,7 @@ export default {
     let t = this
     t.listarCidades()
     t.testarConexao()
-    
+    //console.log()
   }
  
 }
@@ -806,24 +928,19 @@ export default {
       font-size: 12px
     }
     
-    .topo {
-        margin-top: 50px;
-		padding: 10px 10px;
-		width: 100%; 
-		position: fixed;
-		top: 0; 
-        left: 0;
-		text-align: center;
-        z-index: 5;
-	}
+    .error {
+      color: red;
+      font-size: 12px;
+      margin-left: 43px;
+    }
     
     .mdInput {
         /*margin-top: 10px;
         width: 90%;*/
-        background:transparent;
-        outline:none;
-        border: 0px;
-        /*border-bottom-color: #D3DAE0;*/
+        background: transparent;
+        outline: none;
+        /*border: 1px;
+        border-bottom-color: #D3DAE0;*/
     }
     
     #avisoCep {

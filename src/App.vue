@@ -142,10 +142,10 @@ export default {
     }
     
     .topo {
-        margin: 50px 0 0 10px;
+        margin: -50px 0 0 10px;
 		padding: 10px 10px;
 		width: 100%; 
-		position: fixed;
+		position: absolute;
 		top: 0; 
         left: 0;
 		text-align: center;

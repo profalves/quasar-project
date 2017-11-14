@@ -157,13 +157,12 @@
 
 <script>
 import {clone} from 'quasar'
-import table from '../data/table.json'
-export default {
-  
-  
+import axios from 'axios'
+//import table from '../data/table.json'
+export default { 
   data () {
     return {
-      table,
+      table: [],
       tipo: 'c',
       tipos: [
         {
@@ -214,7 +213,7 @@ export default {
       colunas: [
         {
           label: 'Nome',
-          field: 'name',
+          field: 'table.nome',
           width: '150px',
           //classes: 'bg-orange-2',
           sort: true,
@@ -274,6 +273,27 @@ export default {
     }
   },
   methods: {
+    listarPessoas(){
+      axios.get('http://192.168.0.200:29755/pessoa/obterpessoa')
+      .then((res)=>{
+          console.log(res.data)
+          this.table = res.data
+      })
+      .catch((e)=>{
+        /*Dialog.create({
+          title: 'CEP inexistente',
+          message: 'Digite um CEP válido',
+          buttons: [
+            {
+              label: 'Ok',
+              raised: true,
+              color: 'info'
+            }
+          ]
+        })*/
+        console.log(e)
+      })  
+    },
     changeMessage (props) {
       props.rows.forEach(row => {
         row.data.message = 'Gogu'
@@ -325,6 +345,10 @@ export default {
       }
       this.config.bodyStyle = style
     }
+  },
+  created(){
+    this.listarPessoas()
+    window.console.log(this.table)
   }
 }
 </script>
