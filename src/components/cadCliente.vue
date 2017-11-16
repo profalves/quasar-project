@@ -187,6 +187,7 @@
               <q-field
                 icon="markunread_mailbox"
                 helper="Clique no botão ao lado para pesquisar o CEP"
+                :error="$v.cep.$error"
                 name="campoCEP"
               >
                 <q-input float-label="CEP"
@@ -195,7 +196,6 @@
                          @blur="listarCidades"
                          clearable
                          @input="$v.cep.$touch()"
-                         :error="$v.cep.$error"
                          ref="cep"
                          name="cep"
                 />
@@ -260,20 +260,19 @@
             <div class="col-md-4">
               <q-field
                 icon="domain"
+                helper="UF"
               >
-                <q-select
-                    float-label="Estado/Cidade"
-                    filter
-                    v-model="estado"
-                    :options="estados"
-                    @blur="listarCidades"
-                />
+                <select class="browser-default" v-model="estado" @blur="listarCidades">
+                  <option disabled selected>Escolha um Estado</option>
+                  <option v-for="est in estados" :value="est.uf">{{est.nome}}</option>
+
+                </select>
               </q-field>   
             </div>
-            <div class="col-md-8" style="margin-top:14px;">
+            <div class="col-md-8">
               <q-field 
                 icon="location_city"
-                helper="Escolha primeiro um estado para deois selcionar uma cidade"
+                helper="Escolha primeiro um estado para depois selcionar uma cidade"
               >
                 <div class="mdl-selectfield">
                 <label class="ellipsis absolute self-start">Cidade</label>
@@ -291,9 +290,11 @@
         <div class="row btn-plus" >
             <div class="col">
                 <q-btn 
-                   rounded
-                   color="primary" 
-                   @click="">
+                    rounded
+                    color="primary" 
+                    @click=""
+                    disabled   
+                >
                    <q-icon name="add_location" />
                    adicionar endereço
                 </q-btn>
@@ -341,7 +342,7 @@
                           />
               </q-field>   
             </div>
-            <div class="col-2 btn-plus" >
+            <div class="col-2 offset-1 btn-plus" >
                 <q-btn 
                    rounded
                    color="primary" 
@@ -385,14 +386,21 @@
       <!--Familia/Vendedor-->
       <q-collapsible :opened="open.grup" icon="people_outline" label="Grupo/Vendedor">
           <div class="row">
-            <div class="col">
+            <div class="col-xs-8 col-md-4">
                 <q-field helper="Família">
-                    <q-select
-                        filter
-                        v-model="familia"
-                        :options="options"
-                    />
+                    <select class="browser-default" v-model="Pessoas.CodFamilia">
+                      <option disabled selected>Escolha uma família</option>
+                      <option v-for="familia in familias" :value="familia.codigo">{{familia.nome}}</option>
+                    </select>
                 </q-field>
+            </div>
+            <div class="col-2 offset-1 btn-plus" >
+                <q-btn 
+                   rounded
+                   color="primary" 
+                   @click="novaFamilia">
+                   <q-icon name="add" />
+                </q-btn>
             </div>
             <div class="col">
                 <q-field helper="Vendedor">
@@ -419,25 +427,26 @@
             <div class="col-md-6 col-xs-12">
               <q-field
                 icon="android"
-                helper="Apelido"
               >
-                <input class="mdInput" v-model="Pessoas.Apelido"/>
+                <q-input v-model="Pessoas.Apelido" float-label="Apelido"/>
 
               </q-field>
             </div>    
             <div class="col">
               <q-field
-                icon="cake"
-                helper="Data de Nascimento"
-                
-              >
-                <the-mask @blur="colapComp" 
-                          class="mdInput"
-                          v-model="datanasc"
-                          type="data" 
-                          :mask="['##/##/####']"
+                icon="date_range"
+                >
+                <q-datetime v-model="Pessoas.DataNasc"
+                            type="date" 
+                            float-label="Data de Nascimento" 
+                            color="black"
+                            format="DD/MM/YYYY"
+                            ok-label="OK" 
+                            clear-label="Limpar" 
+                            cancel-label="Cancelar"
+                            :day-names="dias"
+                            :month-names="meses"
                 />
-
               </q-field>
             </div>    
         </div>
@@ -496,26 +505,27 @@
 <script>
 import axios from 'axios'
 import VMasker from 'vanilla-masker'
-import estados from 'data/estados.json'
 import cidadesJSON from 'data/estados-cidades.json'
 import { required, minLength, maxLength, email } from 'vuelidate/lib/validators'
 import { Dialog, Toast } from 'quasar'
 
+//dev
+const API = 'http://192.168.0.200/WSV3/'
 
-//const APICidades = 'http://educacao.dadosabertosbr.com/api/cidades/'
-const APICidades = 'http://192.168.0.200/celular/api/cidades/consulta?uf='
-
-const API = 'http://192.168.0.200:29755/'
+//debug
+//const API = 'http://192.168.0.200:29755/'
 
 export default {
   name: 'clientes',
   data () {
     return {
-        estados,
+        //estados,
+        estados: [],
         cidadesJSON,
         nome: '',
         sexo: '',
         Pessoas:{
+            codigo: 0,
             CodRegimeTribut : 1,
             CodTipo : 1,
             CodFamilia : 1,
@@ -547,7 +557,7 @@ export default {
             CodigoVendedor : 1, //not null
             Observacoes : '',
             PJ : false, //not null
-            DataNasc : new Date(),
+            DataNasc : '',
             SexoFeminino : false,
             CaminhoFoto : '',
             CodPai : 0,
@@ -557,7 +567,7 @@ export default {
             CodigoUsuario : 1,
             Excluido : false,
             EmpresaRendaExtra : 0.00,
-            venderCrediario : false
+            venderCrediario : true
         },
         cpf: '',
         datanasc: '',
@@ -635,7 +645,8 @@ export default {
             }
         ],
         select: '',
-        familia: 'ind',
+        //familia: '',
+        familias: [],
         vendedor: 1,
         cred: 's',
         limite: '0,00',
@@ -643,7 +654,10 @@ export default {
         canGoBack: window.history.length > 1,
         getCep: [],
         error: '',
-        visivel: false
+        visivel: false,
+        //datatime
+        dias: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
+        meses: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
     }
   },
   computed: {
@@ -747,10 +761,16 @@ export default {
       this.numLogradouro = '' 
     },
     salvar(){
+        //EDITAR
+        
+        //NOVO
         this.Pessoas.Nome = this.nome
         this.Pessoas.SexoFeminino = (this.sexo === 'true')
+        //this.Pessoas.DataNasc = new Date(2000, 0, 1)
         if(this.cpf.length>11){
             this.Pessoas.CNPJ = this.cpf
+            this.Pessoas.CPF = this.cpf.substring(0, 10)
+            
         }
         else{
             this.Pessoas.CPF = this.cpf
@@ -762,23 +782,15 @@ export default {
                 html: 'Salvo com sucesso',
                 icon: 'done'
             })
-            console.log(res)
+            //console.log(res)
             console.log(res.data)
-            console.log('sucess')
+            console.log('sucesso')
 
           })
           .catch((e)=>{
             console.log('error')
-            //var data = JSON.parse(e)
-            //console.log(data)
             console.log(e)
             console.log(String(e))
-            console.log(e.toString())
-            console.log(e.body)
-            console.log(e.error)
-            console.log(e.errors)
-            console.log(e.data)
-            console.log(e.JSON)
         })
         
     },
@@ -808,15 +820,81 @@ export default {
           ]
         })
     },
+    novaFamilia(){
+        Dialog.create({
+          title: 'Nova Família de Clientes',
+          message: 'Digite o nome da nova família e clique em salvar.',
+          form: {
+            nome: {
+              type: 'text',
+              label: 'Nome',
+              model: ''
+            },
+            codigoUsuario: {
+              model: 1
+            }
+          },
+          buttons: [
+            'Cancel',
+            {
+              label: 'Ok',
+              handler (data) {
+                //console.log(data)
+                if(data.nome === null || data.nome === ''){
+                    Toast.create.negative('A família não pode ser cadastrada com nome nulo') 
+                    return
+                }
+                axios.post(API + 'pessoa/gravarPessoaFamilia', data)
+                  .then((res)=>{
+                    //console.log(res)
+                    console.log(res.data)
+                    //console.log(res.data)
+                    console.log('sucesso')
+                    //Toast.create('Returned ' + JSON.stringify(data))
+                    Toast.create.positive('Família ' + JSON.stringify(data.nome) + ' cadastrada com sucesso')
+
+                  })
+                  .catch((e)=>{
+                    console.log('error')
+                    console.log(e)
+                    console.log(e.body)
+                })
+                
+              }
+            }
+          ]
+    })
+    
+    },
+    listarFamilias(){
+      axios.get(API + 'pessoa/obterPessoasFamilia')
+      .then((res)=>{
+        this.familias = res.data
+        //console.log(res.data)
+      })
+      .catch((e)=>{
+        console.log(e)
+      })  
+    },
+    listarUFs(){
+      axios.get(API + 'cidade/obterUfs')
+      .then((res)=>{
+        this.estados = res.data
+        //console.log(res.data)
+      })
+      .catch((e)=>{
+        console.log(e)
+      })
+    },
     listarCidades(){
-      axios.get(APICidades + this.estado)
+      axios.get(API + 'cidade/obtercidades?uf=' + this.estado)
       .then((res)=>{
         this.cidades = res.data
         //console.log(res.data)
       })
     },
     testarConexao(){
-      axios.get('http://192.168.0.200/celular/api/cidades/consulta?uf=ba')
+      axios.get('http://192.168.0.200/WSV3/cidade/obtercidades?uf=ba')
       .then((res)=>{
         console.log('Conexão com a web realizada com sucesso')
       })
@@ -866,7 +944,9 @@ export default {
   },
   created(){
     let t = this
+    t.listarUFs()
     t.listarCidades()
+    t.listarFamilias()
     t.testarConexao()
     //console.log()
   }
@@ -896,13 +976,7 @@ export default {
     .mdl-selectfield label {
       color: #87939F;
       padding-top: 4px;
-    }
-    .mdl-selectfield label {
       display: none
-    }
-    /* Use custom arrow */
-    .mdl-selectfield select {
-      appearance: none
     }
     .mdl-selectfield {
       font-family: 'Roboto','Helvetica','Arial',sans-serif;

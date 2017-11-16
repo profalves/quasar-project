@@ -50,6 +50,7 @@ import {
   QTabs,
   QTab,
   QTabPane,
+  Loading,
   clone
 } from 'quasar'
 
@@ -104,6 +105,7 @@ const imports = {
   QTabs,
   QTab,
   QTabPane,
+  Loading,
   clone
 }
 

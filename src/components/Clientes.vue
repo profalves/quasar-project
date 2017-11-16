@@ -24,7 +24,7 @@
     
     
     <q-data-table
-      :data="table"
+      :data="pessoas"
       :config="config"
       :columns="colunas"
       @refresh="refresh"
@@ -152,17 +152,32 @@
       </q-field>
     </q-collapsible>
   </div>
+    
 </div>
 </template>
 
 <script>
-import {clone} from 'quasar'
+import {
+  Loading,
+  QSpinnerGears,
+  clone
+} from 'quasar'
+//import {clone} from 'quasar'
 import axios from 'axios'
 //import table from '../data/table.json'
+const API = 'http://192.168.0.200/WSV3/' 
+
+function show (options) {
+  Loading.show(options)
+  setTimeout(() => {
+    Loading.hide()
+  }, 3000)
+}
+
 export default { 
   data () {
     return {
-      table: [],
+      pessoas: [],
       tipo: 'c',
       tipos: [
         {
@@ -213,7 +228,7 @@ export default {
       colunas: [
         {
           label: 'Nome',
-          field: 'table.nome',
+          field: 'nome',
           width: '150px',
           //classes: 'bg-orange-2',
           sort: true,
@@ -240,8 +255,8 @@ export default {
         },*/
         
         {
-          label: 'CPF',
-          field: 'birth_year',
+          label: 'n. Doc',
+          field: 'codigo',
           filter: true,
           sort: true,
           type: 'string',
@@ -250,7 +265,7 @@ export default {
         
         {
           label: 'Endereço',
-          field: 'homeworld',
+          field: 'endereco',
           filter: true,
           sort: true,
           type: 'string',
@@ -258,7 +273,7 @@ export default {
         },
         {
           label: 'Telefone',
-          field: 'height',
+          field: 'telResid',
           sort: true,
           filter: true,
           type: 'string',
@@ -274,10 +289,10 @@ export default {
   },
   methods: {
     listarPessoas(){
-      axios.get('http://192.168.0.200:29755/pessoa/obterpessoa')
+      axios.get(API + 'pessoa/obterpessoa')
       .then((res)=>{
           console.log(res.data)
-          this.table = res.data
+          this.pessoas = res.data
       })
       .catch((e)=>{
         /*Dialog.create({
@@ -294,10 +309,15 @@ export default {
         console.log(e)
       })  
     },
-    changeMessage (props) {
-      props.rows.forEach(row => {
-        row.data.message = 'Gogu'
-      })
+    changeMessage () {
+      Loading.show({message: 'First message. Gonna change it in 3 seconds...'})
+      setTimeout(() => {
+        show({
+          spinner: QSpinnerGears,
+          spinnerColor: 'red',
+          message: 'Updated message'
+        })
+      }, 3000)
     },
     deleteRow (props) {
       props.rows.forEach(row => {
