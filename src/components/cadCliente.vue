@@ -260,28 +260,25 @@
             <div class="col-md-4">
               <q-field
                 icon="domain"
-                helper="UF"
               >
-                <select class="browser-default" v-model="estado" @blur="listarCidades">
-                  <option disabled selected>Escolha um Estado</option>
-                  <option v-for="est in estados" :value="est.uf">{{est.nome}}</option>
-
-                </select>
+                <q-select v-model="estado"
+                          :options="listaEstados"
+                          float-label="UF"
+                          filter>
+                </q-select>
               </q-field>   
             </div>
-            <div class="col-md-8">
+
+            <div class="col">
               <q-field 
                 icon="location_city"
-                helper="Escolha primeiro um estado para depois selcionar uma cidade"
               >
-                <div class="mdl-selectfield">
-                <label class="ellipsis absolute self-start">Cidade</label>
-                <select class="browser-default" v-model="cidade" @blur="colapEnd">
-                  <option disabled selected>Escolha uma cidade</option>
-                  <option v-for="cidade in cidades">{{cidade.nome}}</option>
-
-                </select>
-                </div>   
+                <q-select v-model="cidade"
+                          :options="listaCidades"
+                          float-label="Cidade"
+                          filter>
+                </q-select>
+                  
               </q-field>   
             </div>
 
@@ -575,6 +572,19 @@ export default {
         tipoContato: 'cel',
         email: '',
         cep: '',
+        endAdicional:{
+            CodPessoa: '', //not null
+            Nome: '', //not null
+            Numero: '', 
+            PontoRef: '', 
+            Bairro: '', 
+            CodigoIBGECidade: '', //not null
+            CodigoUF: '', //not null
+            Excluido: false, //not null
+            CodTipo: 1, //not null
+            CodigoUsuario: '', //not null
+            CEP: ''
+        },
         cidade: '',
         estado: 'ba',
         tipo: 1,
@@ -657,22 +667,31 @@ export default {
         visivel: false,
         //datatime
         dias: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
-        meses: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+        meses: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
     }
   },
   computed: {
     // uma função "getter" computada (computed getter)
     listaEstados: function () {
-      // `this` aponta para a instância Vue da variável `vm`
-      return this.cidadesJSON.estados
-    },
-    listaCidades: function () {
-      var a = this.listaEstados
+      var a = this.estados
       var lista = []
       
       for (var i=0; i < a.length; i++) {
-          var n = a[i].cidades
-          lista.push(n)    
+          var n = a[i].nome
+          var c = a[i].codigoUF
+          lista.push({label: n, codigoUF: c})    
+      }
+      //console.log(lista)
+      return lista
+    },
+    listaCidades: function () {
+      var a = this.cidades
+      var lista = []
+      
+      for (var i=0; i < a.length; i++) {
+          var n = a[i].nome
+          var c = a[i].codigoIBGE
+          lista.push({label: n, codigoIBGE: c})    
       }
       //console.log(lista)
       return lista
@@ -766,7 +785,14 @@ export default {
         //NOVO
         this.Pessoas.Nome = this.nome
         this.Pessoas.SexoFeminino = (this.sexo === 'true')
-        //this.Pessoas.DataNasc = new Date(2000, 0, 1)
+        this.Pessoas.DataNasc = new Date(2000, 0, 1)
+        if(this.cpf==="" || this.cpf===null){
+            this.Pessoas.CPF = '0'
+            
+        }
+        else{
+            this.Pessoas.CPF = this.cpf
+        }
         if(this.cpf.length>11){
             this.Pessoas.CNPJ = this.cpf
             this.Pessoas.CPF = this.cpf.substring(0, 10)
@@ -775,7 +801,7 @@ export default {
         else{
             this.Pessoas.CPF = this.cpf
         }
-        
+                
         axios.post(API + 'pessoa/gravarPessoa', this.Pessoas)
           .then((res)=>{
             Toast.create.positive({
