@@ -17,6 +17,7 @@
     "chosen-js": "^1.8.2",
     "lodash": "^4.17.4",
     "moment": "^2.18.1",
+    "municipios-ibge": "^1.0.1",
     "quasar-extras": "0.x",
     "quasar-framework": "^0.14.1",
     "sweetalert": "^2.0.3",

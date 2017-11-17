@@ -38,9 +38,6 @@ Vue.use(VMasker);
 import VueTheMask from 'vue-the-mask'
 Vue.use(VueTheMask)
 
-import chosen from 'chosen-js'
-Vue.use(chosen)
-
 Quasar.start(() => {
   /* eslint-disable no-new */
   new Vue({

@@ -35,7 +35,7 @@
                color: black"
         push big
         @click=""
-        
+        disabled
       >
         <i class="material-icons">edit</i>
       </q-btn>
@@ -153,27 +153,25 @@
             <div class="col-md-6">
               <q-field
                 icon="done"
-                helper="CPF/CNPJ"
                 :error="$v.cpf.$error"
               >
-                <the-mask class="mdInput"
-                          v-model="cpf"
-                          :mask="['###.###.###-##', '##.###.###/####-##']"
-                          @input="$v.cpf.$touch()"
-                          />
+                <q-input float-label="CPF/CNPJ" 
+                         v-model="cpf"
+                         v-mask="['###.###.###-##', '##.###.###/####-##']"
+                         @input="$v.cpf.$touch()"
+                />
                   
                 
               </q-field>
                 
-                <span style="color:#878B8F; margin-left:43px" v-if="!$v.cpf.required">Este campo é requerido</span>
-                <div class="error" v-if="!$v.cpf.minLength">Este campo deve ser igual ou maior que {{$v.cpf.$params.minLength.min}} caracteres.</div>
+                <!--<span style="color:#878B8F; margin-left:43px" v-if="!$v.cpf.required">Este campo é requerido</span>-->
+                <div class="error" v-if="!$v.cpf.minLength">Este campo deve ser igual ou maior que 11 caracteres.</div>
             </div>
             <div class="col-md-6">
               <q-field
                 icon="done"
-                helper="RG/Inscrição Estadual"
               >
-                <q-input v-model.number="Pessoas.RG" type="number" @blur="colapDados"/>
+                <q-input v-model.number="Pessoas.RG" float-label="RG/Inscrição Estadual"  type="number" @blur="colapDados"/>
               </q-field>   
             </div>    
         </div>    
@@ -264,6 +262,7 @@
                 <q-select v-model="estado"
                           :options="listaEstados"
                           float-label="UF"
+                          @blur="listarCidades"
                           filter>
                 </q-select>
               </q-field>   
@@ -273,7 +272,7 @@
               <q-field 
                 icon="location_city"
               >
-                <q-select v-model="cidade"
+                <q-select v-model="Pessoas.CodigoIBGECidade"
                           :options="listaCidades"
                           float-label="Cidade"
                           filter>
@@ -289,15 +288,30 @@
                 <q-btn 
                     rounded
                     color="primary" 
-                    @click=""
-                    disabled   
+                    @click="$refs.layoutModal.open()"  
                 >
                    <q-icon name="add_location" />
                    adicionar endereço
                 </q-btn>
             </div>
         </div><br>
+          
+        <!--Demais Endereços-->
+          <q-collapsible icon="pin_drop" label="Demais Endereços">
+            <div v-for="(end, index) in enderecos">
+                <div>
+                  <strong>Rua:</strong> {{end.nome}}<strong>,</strong> {{end.numero}} - <strong>Bairro:</strong> {{end.bairro}}<br>
+                  <strong>Ponto de Referência:</strong> <br>
+                  {{end.pontoRef}} <br>
+                  <strong>CEP:</strong> {{end.cep}}
+                  <hr>
+                </div>
+            </div>
+
+          </q-collapsible>
       </q-collapsible>
+        
+      
         
       <!--Contatos-->
       <q-collapsible :opened="open.cont" icon="contact_phone" label="Contatos">
@@ -343,7 +357,7 @@
                 <q-btn 
                    rounded
                    color="primary" 
-                   @click="">
+                   @click="adicionarTel">
                    <q-icon name="add" />
                 </q-btn>
             </div>
@@ -353,13 +367,13 @@
             <div class="col control has-icon has-icon-right">
               <q-field
                 icon="email"
+                :error="$v.email.$error"
               >
                 <q-input 
-                     v-model="Pessoas.Email" 
+                     v-model="email" 
                      type="email" 
                      float-label="Email" suffix="@email.com"
                      @input="$v.email.$touch()"
-                     :error="$v.email.$error"
                      clearable
                      @blur="colapCont"
                 />
@@ -367,14 +381,14 @@
                  <span v-if="!$v.email.email">Digite um email válido</span>
               </q-field> 
             </div>
-            <!--<div class="col-2 btn-plus" >
+            <div class="col-2 offset-1 btn-plus" >
                 <q-btn 
                    rounded
                    color="primary" 
                    @click="">
                    <q-icon name="add" />
                 </q-btn>
-            </div>-->
+            </div>
         </div>
           
         
@@ -385,10 +399,11 @@
           <div class="row">
             <div class="col-xs-8 col-md-4">
                 <q-field helper="Família">
-                    <select class="browser-default" v-model="Pessoas.CodFamilia">
-                      <option disabled selected>Escolha uma família</option>
-                      <option v-for="familia in familias" :value="familia.codigo">{{familia.nome}}</option>
-                    </select>
+                    <q-select
+                        filter
+                        v-model="Pessoas.CodFamilia"
+                        :options="listaFamiliasPessoas"
+                    />
                 </q-field>
             </div>
             <div class="col-2 offset-1 btn-plus" >
@@ -492,8 +507,145 @@
                  type="textarea" 
                  />
       </q-collapsible>
+      
         
     </q-list>
+    
+    <!--MODAL-->
+    <q-modal ref="layoutModal" :content-css="{minWidth: '60vw', minHeight: '60vh'}">
+      <q-modal-layout>
+        <q-toolbar slot="header" color="black">
+          <q-btn flat @click="$refs.layoutModal.close()">
+            <q-icon name="keyboard_arrow_left" />
+          </q-btn>
+          <q-toolbar-title>
+            Endereços Adicionais
+          </q-toolbar-title>
+        </q-toolbar>
+        
+        <div class="layout-padding">
+        <div class="row">
+            <div class="col-8 col-md-6">
+              <q-field
+                icon="markunread_mailbox"
+                helper="Clique no botão ao lado para pesquisar o CEP"
+                :error="$v.cep.$error"
+                name="campoCEP"
+              >
+                <q-input float-label="CEP"
+                         v-model.number="cep2"
+                         type="number"
+                         @blur="listarCidades"
+                         clearable
+                         @input="$v.cep.$touch()"
+                         ref="cep"
+                         name="cep"
+                />
+                <span v-if="!$v.cep.maxLength">Quantidade de números superior ao de um cep</span>
+
+              </q-field>   
+            </div>
+            <div class="col">
+              <q-btn 
+                 icon="search" 
+                 color="primary"
+                 style="margin: 17px 0 0 20px"
+                 round small
+                 @click="buscarCepADD"
+                 :disabled="visivel"
+              >
+              </q-btn>
+              <span id="avisoCep" v-if="visivel">Offline</span>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+              <q-field
+                icon="location_on"
+              >
+                <q-input v-model="endAdicional.Nome" float-label="Endereço"/>
+              </q-field>   
+            </div>
+            <div class="col-lg-2 col-md-3 col-sm-12">
+              <q-field
+                icon="location_on"
+              >
+                <q-input v-model="endAdicional.Numero" type="number" float-label="Numero"/>
+              </q-field>   
+            </div>
+        </div>
+          
+        <div class="row">
+            <div class="col">
+              <q-field
+                icon="store"
+              >
+                <q-input v-model="endAdicional.PontoRef" type="textarea" float-label="Ponto de Referência"/>
+              </q-field>   
+            </div>
+
+        </div>
+
+        <div class="row">
+            <div class="col">
+              <q-field
+                icon="streetview"
+              >
+                <q-input v-model="endAdicional.Bairro" float-label="Bairro"/>
+              </q-field>   
+            </div>
+
+        </div>
+            
+        <div class="row">
+            <div class="col-md-4">
+              <q-field
+                icon="domain"
+              >
+                <q-select v-model="estado2"
+                          :options="listaEstados"
+                          float-label="UF"
+                          @blur="listarCidades"
+                          filter>
+                </q-select>
+              </q-field>   
+            </div>
+
+            <div class="col">
+              <q-field 
+                icon="location_city"
+              >
+                <q-select v-model="endAdicional.CodigoIBGECidade"
+                          :options="listaCidades"
+                          float-label="Cidade"
+                          filter>
+                </q-select>
+                  
+              </q-field>   
+            </div>
+
+        </div>
+
+        <div class="row btn-plus" >
+            <div class="col">
+                <q-btn 
+                    rounded
+                    color="primary" 
+                    @click="adicionarEnd"  
+                >
+                   <q-icon name="add_location" />
+                   salvar endereço
+                </q-btn>
+            </div>
+        </div><br> 
+            
+            
+        </div>
+        
+        
+      </q-modal-layout>
+    </q-modal>
     
 </div>
     
@@ -502,7 +654,7 @@
 <script>
 import axios from 'axios'
 import VMasker from 'vanilla-masker'
-import cidadesJSON from 'data/estados-cidades.json'
+//import cidadesJSON from 'data/estados-cidades.json'
 import { required, minLength, maxLength, email } from 'vuelidate/lib/validators'
 import { Dialog, Toast } from 'quasar'
 
@@ -516,9 +668,10 @@ export default {
   name: 'clientes',
   data () {
     return {
-        //estados,
         estados: [],
-        cidadesJSON,
+        estadoNovo: [],
+        enderecos: [],
+        //cidadesJSON,
         nome: '',
         sexo: '',
         Pessoas:{
@@ -541,7 +694,7 @@ export default {
             Numero : '',
             Bairro : '',
             CEP : '',
-            CodigoIBGECidade : 2930501, //not null
+            CodigoIBGECidade : '', //not null
             CodigoUF : 29,  //not null
             LimiteCredito : 0.00, //not null
             TelResid : '',
@@ -569,24 +722,29 @@ export default {
         cpf: '',
         datanasc: '',
         fone: '',
+        maskedTel: false,
+        rawTel: true,
         tipoContato: 'cel',
         email: '',
         cep: '',
+        cep2: '',
         endAdicional:{
-            CodPessoa: '', //not null
+            CodPessoa: parseInt(localStorage.getItem('codPessoa')) , //not null
             Nome: '', //not null
             Numero: '', 
             PontoRef: '', 
             Bairro: '', 
-            CodigoIBGECidade: '', //not null
-            CodigoUF: '', //not null
+            CodigoIBGECidade: 2930501, //not null
+            CodigoUF: 29, //not null
             Excluido: false, //not null
             CodTipo: 1, //not null
-            CodigoUsuario: '', //not null
+            CodigoUsuario: 1, //not null
             CEP: ''
         },
         cidade: '',
-        estado: 'ba',
+        cidade2: '',
+        estado: 'BA',
+        estado2: 'BA',
         tipo: 1,
         tipos: [
             {
@@ -658,7 +816,6 @@ export default {
         //familia: '',
         familias: [],
         vendedor: 1,
-        cred: 's',
         limite: '0,00',
         cidades: [],
         canGoBack: window.history.length > 1,
@@ -676,10 +833,11 @@ export default {
       var a = this.estados
       var lista = []
       
-      for (var i=0; i < a.length; i++) {
-          var n = a[i].nome
-          var c = a[i].codigoUF
-          lista.push({label: n, codigoUF: c})    
+      for (let i=0; i < a.length; i++) {
+          let n = a[i].nome
+          let u = a[i].uf
+          let c = a[i].codUF
+          lista.push({label: n, value: u, codigoUF: c})    
       }
       //console.log(lista)
       return lista
@@ -688,10 +846,23 @@ export default {
       var a = this.cidades
       var lista = []
       
-      for (var i=0; i < a.length; i++) {
-          var n = a[i].nome
-          var c = a[i].codigoIBGE
-          lista.push({label: n, codigoIBGE: c})    
+      for (let i=0; i < a.length; i++) {
+          let n = a[i].nome
+          let c = a[i].codigoIBGE
+          lista.push({label: n, value: c})    
+      }
+      //console.log(lista)
+      return lista
+    
+    },
+    listaFamiliasPessoas: function () {
+      var a = this.familias
+      var lista = []
+      
+      for (let i=0; i < a.length; i++) {
+          let n = a[i].nome
+          let c = a[i].codigo
+          lista.push({label: n, value: c})    
       }
       //console.log(lista)
       return lista
@@ -699,10 +870,6 @@ export default {
     }
   },
   watch: {
-    'fone' (newVal, oldVal) {
-      this.fone = VMasker.toNumber(newVal)
-      this.fone = VMasker.toPattern(newVal, '(99) 999999999')
-    },
     'cep' (newVal, oldVal) {
       this.cep = VMasker.toNumber(newVal)
       this.cep = VMasker.toPattern(newVal, '99999999')
@@ -719,9 +886,7 @@ export default {
       minLength: minLength(3)
     },
     cpf: {
-      required,
-      minLength: minLength(11),
-      maxLength: maxLength(14)  
+      minLength: minLength(14)
     },
     cep: {
       maxLength: maxLength(8)  
@@ -735,9 +900,9 @@ export default {
     buscarCep(){
       axios.get('http://api.postmon.com.br/v1/cep/' + this.cep)
       .then((res)=>{
-          //console.log(res.data)
+          console.log(res.response)
           this.getCep = res.data
-          this.estado = this.getCep.estado.toLowerCase()
+          this.estado = this.getCep.estado
           this.listarCidades()
           this.Pessoas.Endereco = this.getCep.logradouro
           this.Pessoas.Bairro = this.getCep.bairro
@@ -747,9 +912,10 @@ export default {
           this.Pessoas.CodigoUF = parseInt(this.getCep.estado_info.codigo_ibge)
       })
       .catch((e)=>{
+        this.error = e.response
         Dialog.create({
           title: 'CEP inexistente',
-          message: 'Digite um CEP válido',
+          message: this.error.statusText,
           buttons: [
             {
               label: 'Ok',
@@ -760,8 +926,44 @@ export default {
         })
         this.cep = ''
         this.$refs.cep.focus();
-        this.error = e
-        console.log(e)
+        console.log(e.response)
+      })  
+    },
+    buscarCepADD(){
+      axios.get('http://api.postmon.com.br/v1/cep/' + this.cep2)
+      .then((res)=>{
+          console.log(res.response)
+          this.getCep = res.data
+          this.estado2 = this.getCep.estado
+          axios.get(API + 'cidade/obtercidades?uf=' + this.estado2)
+          .then((res)=>{
+            this.cidades = res.data
+            //console.log(res.data)
+          })
+          this.endAdicional.Nome = this.getCep.logradouro
+          this.endAdicional.Bairro = this.getCep.bairro
+          this.endAdicional.CEP = this.getCep.cep
+          this.cidade2 = this.getCep.cidade
+          this.endAdicional.CodigoIBGECidade = parseInt(this.getCep.cidade_info.codigo_ibge)
+          this.endAdicional.CodigoUF = parseInt(this.getCep.estado_info.codigo_ibge)
+      })
+      .catch((e)=>{
+        this.error = e.response
+        Dialog.create({
+          title: 'CEP inexistente',
+          message: this.error.statusText,
+          buttons: [
+            {
+              label: 'Ok',
+              raised: true,
+              color: 'info'
+            }
+          ]
+        })
+        this.cep = ''
+        this.$refs.cep.focus();
+        
+        console.log(e.response)
       })  
     },
     goBack(){
@@ -786,13 +988,7 @@ export default {
         this.Pessoas.Nome = this.nome
         this.Pessoas.SexoFeminino = (this.sexo === 'true')
         this.Pessoas.DataNasc = new Date(2000, 0, 1)
-        if(this.cpf==="" || this.cpf===null){
-            this.Pessoas.CPF = '0'
-            
-        }
-        else{
-            this.Pessoas.CPF = this.cpf
-        }
+        
         if(this.cpf.length>11){
             this.Pessoas.CNPJ = this.cpf
             this.Pessoas.CPF = this.cpf.substring(0, 10)
@@ -801,7 +997,17 @@ export default {
         else{
             this.Pessoas.CPF = this.cpf
         }
-                
+        if(this.cpf==="" || this.cpf===null){
+            this.Pessoas.CPF = 0
+            
+        }
+        
+        if(this.Pessoas.CodigoIBGECidade === ''){
+            this.CodigoIBGECidade = 2930501
+        }
+        
+        
+        
         axios.post(API + 'pessoa/gravarPessoa', this.Pessoas)
           .then((res)=>{
             Toast.create.positive({
@@ -810,15 +1016,80 @@ export default {
             })
             //console.log(res)
             console.log(res.data)
+            console.log(res.response)
             console.log('sucesso')
+
+          })
+          .catch((e)=>{
+            //console.log('error')
+            //console.log(e)
+            console.log(String(e))
+            let error = e.response.data
+            console.log(error)
+            for(var i=0; error.length; i++){
+                Toast.create.negative(error[i].value)
+            }
+        })
+        
+    },
+    adicionarEnd(){
+        axios.post(API + 'pessoa/gravarEndereco', this.endAdicional)
+          .then((res)=>{
+            //console.log(res)
+            console.log(res.data)
+            console.log(res.response)
+            //console.log(res.data)
+            console.log('sucesso')
+            //Toast.create('Returned ' + JSON.stringify(data))
+            Toast.create.positive('cadastrado com sucesso')
 
           })
           .catch((e)=>{
             console.log('error')
             console.log(e)
-            console.log(String(e))
-        })
-        
+            console.log(e.body)
+            console.log(e.response)
+          })
+    },
+    adicionarTel(){
+        let novoTel = {Numero: this.fone, CodTipo: 1}
+        axios.post(API + 'pessoa/gravarPessoasTelefone', novoTel)
+          .then((res)=>{
+            //console.log(res)
+            console.log(res.data)
+            console.log(res.response)
+            //console.log(res.data)
+            console.log('sucesso')
+            //Toast.create('Returned ' + JSON.stringify(data))
+            Toast.create.positive('cadastrado com sucesso')
+
+          })
+          .catch((e)=>{
+            console.log('error')
+            console.log(e)
+            console.log(e.body)
+            console.log(e.response)
+          })
+    },
+    adicionarEmail(){
+        let novoTel = {Numero: this.email, CodTipo: 1}
+        axios.post(API + 'pessoa/gravarPessoasTelefone', novoTel)
+          .then((res)=>{
+            //console.log(res)
+            console.log(res.data)
+            console.log(res.response)
+            //console.log(res.data)
+            console.log('sucesso')
+            //Toast.create('Returned ' + JSON.stringify(data))
+            Toast.create.positive('cadastrado com sucesso')
+
+          })
+          .catch((e)=>{
+            console.log('error')
+            console.log(e)
+            console.log(e.body)
+            console.log(e.response)
+          })
     },
     excluir(){
         Dialog.create({
@@ -884,7 +1155,7 @@ export default {
                     console.log('error')
                     console.log(e)
                     console.log(e.body)
-                })
+                  })
                 
               }
             }
@@ -918,6 +1189,26 @@ export default {
         this.cidades = res.data
         //console.log(res.data)
       })
+      axios.get(API + 'cidade/obterufs?uf=' + this.estado)
+      .then((res)=>{
+        this.estadoNovo = res.data
+        this.Pessoas.CodigoUF = parseInt(this.estadoNovo[0].codUF)
+        //console.log(res.data)
+      })
+    
+    },
+    listarEnderecos(){
+      let c = parseInt(localStorage.getItem('codPessoa'))
+      if(isNaN(c)){
+        return 
+      }
+        
+      axios.get(API + 'pessoa/obterEnderecos?CodPessoa=' + c)
+      .then((res)=>{
+        this.enderecos = res.data
+        //console.log(res.data)
+      })
+      
     },
     testarConexao(){
       axios.get('http://192.168.0.200/WSV3/cidade/obtercidades?uf=ba')
@@ -973,6 +1264,7 @@ export default {
     t.listarUFs()
     t.listarCidades()
     t.listarFamilias()
+    t.listarEnderecos()
     t.testarConexao()
     //console.log()
   }
