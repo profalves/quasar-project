@@ -982,47 +982,6 @@ export default {
 
 <style scoped>
 
-    select {
-      font-family: inherit;
-      background-color: transparent;
-      width: 100%;
-      padding: $select-padding 0;
-      font-size: $select-font-size;
-      color: $select-color;
-      border: none;
-      border-bottom: 1px solid $select-border-color;
-    }
-
-    /* Remove focus */
-    select:focus {
-      outline: none
-    }
-
-    /* Hide label */
-    .mdl-selectfield label {
-      color: #87939F;
-      padding-top: 4px;
-      display: none
-    }
-    .mdl-selectfield {
-      font-family: 'Roboto','Helvetica','Arial',sans-serif;
-      position: relative;
-        &:after {
-            position: absolute;
-            top: 0.75em;
-            right: 0.5em;
-            /* Styling the down arrow */
-            width: 0;
-            height: 0;
-            padding: 0;
-            content: '';
-            border-left: .25em solid transparent;
-            border-right: .25em solid transparent;
-            border-top: .375em solid $select-border-color;
-            pointer-events: none;
-        }
-    }
-
     span {
       color: red;
       font-size: 12px
