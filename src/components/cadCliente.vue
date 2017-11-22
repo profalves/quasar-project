@@ -244,12 +244,12 @@
               <q-field
                 icon="domain"
               >
-                <q-select v-model="estado"
+                <q-dialog-select v-model="estado"
                           :options="listaEstados"
                           float-label="UF"
                           @blur="listarCidades"
-                          filter>
-                </q-select>
+                          filter
+                />
               </q-field>   
             </div>
 
@@ -257,18 +257,18 @@
               <q-field 
                 icon="location_city"
               >
-                <q-select v-model="Pessoas.codigoIBGECidade"
+                <q-dialog-select v-model="Pessoas.codigoIBGECidade"
                           :options="listaCidades"
                           float-label="Cidade"
-                          filter>
-                </q-select>
+                          filter
+                />
                   
               </q-field>   
             </div>
 
         </div>
 
-        <div class="row btn-plus" >
+        <div class="row btn-plus" v-if="visivel">
             <div class="col">
                 <q-btn 
                     rounded
@@ -282,7 +282,7 @@
         </div><br>
           
         <!--Demais Endereços-->
-            <q-collapsible icon="pin_drop" label="Demais Endereços">
+            <q-collapsible icon="pin_drop" label="Demais Endereços" v-if="visivel">
             
                 <q-list v-for="item in enderecos" :key="item.$id">
                   <q-list-header>Endereço: {{item.codigo}}</q-list-header>
@@ -897,7 +897,7 @@ export default {
         canGoBack: window.history.length > 1,
         getCep: [],
         error: '',
-        visivel: false,
+        visivel: true,
         //datatime
         dias: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
         meses: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
@@ -1423,7 +1423,18 @@ export default {
               //console.log(res.data)
               this.Pessoas = res.data
               this.nome = this.Pessoas.nome
-              this.cpf = this.Pessoas.cpf
+              if(this.Pessoas.cnpj!==""){
+                this.cpf = this.Pessoas.cnpj
+              }
+              else {
+                this.cpf = this.Pessoas.cpf
+              }
+              if(this.Pessoas.cnpj===null){
+                this.cpf = this.Pessoas.cpf
+              }
+              else {
+                this.cpf = this.Pessoas.cpf
+              }
               this.cep = this.Pessoas.cep
               if(this.Pessoas.sexoFeminino!==null){
                 this.sexo = this.Pessoas.sexoFeminino.toString()
@@ -1493,6 +1504,9 @@ export default {
     t.listarEnderecos()
     t.listarPessoas()
     t.testarConexao()
+    if (localStorage.getItem('cadMode')==='save'){
+        this.visivel = false
+    }
       
   }
  

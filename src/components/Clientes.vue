@@ -10,8 +10,9 @@
            <q-icon name="add" />
         </q-btn>
     </q-fixed-position>
+  <i>Para editar um registro, basta apenas clicar no produto</i>
   <div id="table">
-    <div class="row">
+    <!--<div class="row">
         <q-field
             label="Tipo"
           >
@@ -20,7 +21,7 @@
                 :options="tipos"
             />
         </q-field>   
-    </div>
+    </div>-->
     
     
     <q-data-table
@@ -149,6 +150,8 @@
         </div>
       </q-field>
     </q-collapsible>
+
+    
   </div>
     
 </div>
@@ -158,6 +161,9 @@
 import { Dialog, Toast, Loading, clone } from 'quasar'
 import axios from 'axios'
 const API = 'http://192.168.0.200/WSV3/' 
+  
+//debug
+//const API = 'http://192.168.0.200:29755/' 
 
 export default { 
   data () {
@@ -176,8 +182,7 @@ export default {
         },
 
       ],
-      text: 'text',
-      selecionou: '',
+      
       //LISTA
       config: {
         title: '',
@@ -311,11 +316,31 @@ export default {
               raised: true,
               style: 'margin-top: 20px',
               handler: () => {
-                
+                  let a = this.excluidos
+                  let obj = {}
+
+                  for (let i=0; i < a.length; i++) {
+                      obj = a[i].data
+                      obj.excluido = true
+                      obj.cpf = 0
+                      console.log(obj)
+                      Loading.show({message: 'Aguardando Dados...'})
+                      axios.post(API + 'pessoa/excluirPessoa?codPessoa=' + obj.codigo)
+                          .then((res)=>{
+                              console.log(res)
+                              Loading.hide()
+                              this.listarPessoas()
+                          })
+                          .catch((e)=>{
+                            console.log(e)
+                            return
+                          })  
+                      
+                  }
               }
             }
           ]
-        })
+      })
     },
     refresh (done) {
       this.timeout = setTimeout(() => {
@@ -324,7 +349,6 @@ export default {
     },
     selection (number, rows) {
       console.log(rows)
-      this.selecionou = number
       console.log(`selecionou ${number}: ${rows}`)
     },
     rowClick (row) {

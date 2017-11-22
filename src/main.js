@@ -38,6 +38,10 @@ Vue.use(VMasker);
 import VueTheMask from 'vue-the-mask'
 Vue.use(VueTheMask)
 
+import money from 'v-money'
+// register directive v-money and component <money>
+Vue.use(money, {precision: 4})
+
 Quasar.start(() => {
   /* eslint-disable no-new */
   new Vue({

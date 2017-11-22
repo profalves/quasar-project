@@ -18,7 +18,7 @@
     
     
     <q-data-table
-      :data="table"
+      :data="Produtos"
       :config="config"
       :columns="colunas"
       @refresh="refresh"
@@ -26,14 +26,12 @@
       @rowclick="rowClick"
       style="background-color:white;"
     >
-      <div slot="selection" scope="props">
-        <q-btn flat color="primary" @click="changeMessage(props)">
-          <q-icon name="edit" />
-        </q-btn>
+      <template slot="selection" scope="props">
+        
         <q-btn flat color="primary" @click="deleteRow(props)">
           <q-icon name="delete" />
         </q-btn>
-      </div>
+      </template>
     </q-data-table>
     
    
@@ -150,15 +148,19 @@
 </template>
 
 <script>
-import {clone} from 'quasar'
-import table from '../data/starships.json'
+import { Loading, clone } from 'quasar'
+import axios from 'axios'
+const API = 'http://192.168.0.200/WSV3/' 
+  
+//debug
+//const API = 'http://192.168.0.200:29755/' 
+
 export default {
   
   
   data () {
     return {
-      table,
-      text: 'text',
+      Produtos: [],
       config: {
         title: '',
         refresh: (localStorage.getItem('refresh') === 'true'),
@@ -187,7 +189,7 @@ export default {
             singular: 'item selecionado.',
             plural: 'items selecionado.'
           },
-          clear: 'limpar',
+          clear: 'limpar seleção',
           search: 'Buscar',
           all: 'Todos'
         }
@@ -195,7 +197,7 @@ export default {
       colunas: [
         {
           label: 'Código',
-          field: 'crew',
+          field: '$id',
           filter: true,
           sort: true,
           type: 'string',
@@ -203,7 +205,7 @@ export default {
         },
         {
           label: 'Nome',
-          field: 'name',
+          field: 'nome',
           width: '150px',
           sort: true,
           filter: true,
@@ -218,7 +220,7 @@ export default {
         
         {
           label: 'Preço',
-          field: 'cost_in_credits',
+          field: 'valor',
           filter: true,
           sort: true,
           type: 'string',
@@ -226,7 +228,7 @@ export default {
         },
         {
           label: 'Estoque',
-          field: 'length',
+          field: 'estoqueAtual',
           sort: true,
           filter: true,
           type: 'string',
@@ -234,7 +236,7 @@ export default {
         },
         {
           label: 'Família',
-          field: 'starship_class',
+          field: 'familia',
           sort: true,
           filter: true,
           type: 'string',
@@ -246,32 +248,6 @@ export default {
       bodyHeightProp: localStorage.getItem('bodyHeightProp'),
       bodyHeight: parseInt(localStorage.getItem('bodyHeight'))
     }
-  },
-  methods: {
-    changeMessage (props) {
-      props.rows.forEach(row => {
-        row.data.message = 'Gogu'
-      })
-    },
-    deleteRow (props) {
-      props.rows.forEach(row => {
-        this.table.splice(row.index, 1)
-      })
-    },
-    refresh (done) {
-      this.timeout = setTimeout(() => {
-        done()
-      }, 5000)
-    },
-    selection (number, rows) {
-      console.log(`selected ${number}: ${rows}`)
-    },
-    rowClick (row) {
-      console.log('clicked on a row', row)
-    }
-  },
-  beforeDestroy () {
-    clearTimeout(this.timeout)
   },
   watch: {
     pagination (value) {
@@ -299,7 +275,50 @@ export default {
       }
       this.config.bodyStyle = style
     }
+  },
+  methods: {
+    changeMessage (props) {
+      props.rows.forEach(row => {
+        row.data.message = 'Gogu'
+      })
+    },
+    deleteRow (props) {
+      props.rows.forEach(row => {
+        this.table.splice(row.index, 1)
+      })
+    },
+    refresh (done) {
+      this.timeout = setTimeout(() => {
+        done()
+      }, 5000)
+    },
+    selection (number, rows) {
+      console.log(`selected ${number}: ${rows}`)
+    },
+    rowClick (row) {
+      console.log('clicked on a row', row)
+    },
+    listarProdutos(){
+      Loading.show({message: 'Aguardando Dados...'})
+      axios.get(API + 'produto/obterProduto')
+      .then((res)=>{
+          //console.log(res.data)
+          this.Produtos = res.data
+          Loading.hide()
+      })
+      .catch((e)=>{
+        console.log(e)
+      })  
+    }
+  },
+
+  beforeDestroy () {
+    clearTimeout(this.timeout)
+  },
+  created(){
+    this.listarProdutos()
   }
+  
 }
 </script>
 

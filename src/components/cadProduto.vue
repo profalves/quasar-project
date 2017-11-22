@@ -17,11 +17,12 @@
         color="negative"
         push big
         @click="excluir"
+        style="margin-left: 5px"
       >
         <i class="material-icons">delete</i>
       </q-btn>
         
-      <q-btn
+      <!--<q-btn
         style="background: white; 
                color: black"
         push
@@ -38,13 +39,13 @@
         
       >
         <i class="material-icons">edit</i>
-      </q-btn>
+      </q-btn>-->
       
       <q-btn
         color="positive"
         push big
         @click="salvar"
-        
+        style="margin-left: 5px"
       >
         <i class="material-icons">done</i>
     </q-btn>
@@ -55,6 +56,28 @@
     <div class="row">
         <div class="col">
             <h5>Cadastro de Produtos</h5>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col">
+            <q-field
+                icon="format_color_fill"
+             >
+                <q-select
+                    float-label="Tipo de Produto"
+                    filter
+                    v-model="select"
+                    :options="[
+                        {label: 'Mercadoria para Revenda', value: 1},
+                        {label: 'Materia Prima', value: 2},
+                        {label: 'Item do Sistema', value: 3},
+                        {label: 'Mercadoria para Consumo', value: 4},
+                        {label: 'Fabricação para Venda', value: 5},
+                        {label: 'Venda Casada - Combo de Produtos', value: 6}
+                    ]"
+                />
+            </q-field>   
         </div>
     </div>
     
@@ -153,7 +176,7 @@
                     float-label="Família de Produtos"
                     filter
                     v-model="select"
-                    :options="options"
+                    :options="listaFamiliasProdutos"
                 />
             </q-field>   
         </div>
@@ -229,7 +252,6 @@
                         {label: 'KG', value: 'kg'},
                         {label: 'PCT', value: 'pct'},
                         {label: 'FD', value: 'fd'}
-                              
                     ]"
                 />
             </q-field>   
@@ -260,6 +282,7 @@
             <center>
                 <q-card-title>Custo</q-card-title>
                     <input v-model="preco"
+                           v-money="money"
                            class="boxInput"
                     />
             </center>
@@ -271,6 +294,7 @@
               <center>
                 <q-card-title>Lucro</q-card-title>
                     <input v-model="preco"
+                           v-money="money"
                            class="boxInput"
                     />
               </center>
@@ -282,6 +306,7 @@
               <center>
                 <q-card-title>Venda</q-card-title>
                     <input v-model="preco"
+                           v-money="money"
                            class="boxInput"
                     />
               </center>
@@ -295,11 +320,15 @@
 </template>
 
 <script>
-//import axios from 'axios'
-//import VMasker from 'vanilla-masker'
-
+import axios from 'axios'
 import { required, minLength } from 'vuelidate/lib/validators'
 import { Dialog, Toast } from 'quasar'
+    
+//dev
+const API = 'http://192.168.0.200/WSV3/'
+
+//debug
+//const API = 'http://192.168.0.200:29755/'
 
 
 export default {
@@ -309,7 +338,37 @@ export default {
         nome: '',
         barras: '',
         codEmpresa: '',
-        preco: '0,00',
+        Produto: {
+            codigo: 0,
+            codBarra: 9999, //não nulo
+            codEmpresa: 9999, //não nulo
+            codFornecedor: 1,
+            codFabrica: 1,
+            codCategoria: 1,
+            codMarca: 1,
+            codFamilia: 1,
+            codTipo: 1, //não nulo
+            codUsuario: 1, //não nulo
+            nome: 'TESTE RETAGUARDA WEB', //não nulo
+            apelido: '',
+            ncm: '',
+            custo: '',
+            percLucro: '',
+            referencia: '',
+            posicaoFisica: '',
+            aplicacao: '',
+            excluido: '',
+        },
+        familias: [],
+        preco: 0.00,
+        money: {
+            decimal: ',',
+            thousands: '.',
+            prefix: 'R$ ',
+            //suffix: ' #',
+            precision: 2,
+            masked: false /* doesn't work with directive */
+        },
         id: '',
         estoque: 0,
         select: '',
@@ -337,7 +396,6 @@ export default {
         ],
         cidades: [],
         canGoBack: window.history.length > 1,
-        getCep: [],
         error: '',
         visivel: false
     }
@@ -352,6 +410,20 @@ export default {
       minLength: minLength(3)
     }
   },
+  computed: {
+    listaFamiliasProdutos: function () {
+      var a = this.familias
+      var lista = []
+      
+      for (let i=0; i < a.length; i++) {
+          let n = a[i].nome
+          let c = a[i].codigo
+          lista.push({label: n, value: c})    
+      }
+      //console.log(lista)
+      return lista
+    },
+  },
   methods: {
     goBack(){
       window.history.go(-1)
@@ -363,9 +435,30 @@ export default {
       
     },
     salvar(){
-        Toast.create.positive({
-        html: 'Salvo com sucesso',
-        icon: 'done'
+        //NOVO
+        //this.Pessoas.nome = this.nome
+        
+        axios.post(API + 'produto/gravarProduto', this.Produto)
+          .then((res)=>{
+            Toast.create.positive({
+                html: 'Sucesso',
+                icon: 'done'
+            })
+            //console.log(res)
+            console.log(res.data)
+            console.log(res.response)
+            console.log('sucesso')
+            this.$router.push('clientes')
+          })
+          .catch((e)=>{
+            //console.log('error')
+            //console.log(e)
+            console.log(String(e))
+            let error = e.response.data
+            console.log(error)
+            for(var i=0; error.length; i++){
+                Toast.create.negative(error[i].value)
+            }
         })
     },
     excluir(){
@@ -394,8 +487,21 @@ export default {
           ]
         })
     },
+    listarFamilias(){
+      axios.get(API + 'produto/obterProdutosFamilia')
+      .then((res)=>{
+        this.familias = res.data
+      })
+      .catch((e)=>{
+        console.log(e)
+      })
+    },
     
    
+  },
+  created(){
+    let t = this
+    t.listarFamilias()    
   }
  
 }
