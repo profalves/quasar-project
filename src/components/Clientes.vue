@@ -6,7 +6,7 @@
         <q-btn 
            round
            color="primary" 
-           @click="$router.push('/cadcliente')">
+           @click="novo">
            <q-icon name="add" />
         </q-btn>
     </q-fixed-position>
@@ -32,14 +32,12 @@
       @rowclick="rowClick"
       style="background-color:white;"
     >
-      <div slot="selection" scope="props">
-        <q-btn flat color="primary" @click="changeMessage(props)">
-          <q-icon name="edit" />
-        </q-btn>
+      <template slot="selection" scope="props">
+        
         <q-btn flat color="primary" @click="deleteRow(props)">
           <q-icon name="delete" />
         </q-btn>
-      </div>
+      </template>
     </q-data-table>
     
    
@@ -157,27 +155,15 @@
 </template>
 
 <script>
-import {
-  Loading,
-  QSpinnerGears,
-  clone
-} from 'quasar'
-//import {clone} from 'quasar'
+import { Dialog, Toast, Loading, clone } from 'quasar'
 import axios from 'axios'
-//import table from '../data/table.json'
 const API = 'http://192.168.0.200/WSV3/' 
-
-function show (options) {
-  Loading.show(options)
-  setTimeout(() => {
-    Loading.hide()
-  }, 3000)
-}
 
 export default { 
   data () {
     return {
       pessoas: [],
+      excluidos: [],
       tipo: 'c',
       tipos: [
         {
@@ -191,6 +177,8 @@ export default {
 
       ],
       text: 'text',
+      selecionou: '',
+      //LISTA
       config: {
         title: '',
         refresh: (localStorage.getItem('refresh') === 'true'),
@@ -219,7 +207,7 @@ export default {
             singular: 'item selecionado.',
             plural: 'items selecionado.'
           },
-          clear: 'limpar',
+          clear: 'limpar seleção',
           search: 'Buscar',
           all: 'Todos'
         }
@@ -289,40 +277,45 @@ export default {
   },
   methods: {
     listarPessoas(){
+      Loading.show({message: 'Aguardando Dados...'})
       axios.get(API + 'pessoa/obterpessoa')
       .then((res)=>{
-          console.log(res.data)
+          //console.log(res.data)
           this.pessoas = res.data
+          Loading.hide()
       })
       .catch((e)=>{
-        /*Dialog.create({
-          title: 'CEP inexistente',
-          message: 'Digite um CEP válido',
-          buttons: [
-            {
-              label: 'Ok',
-              raised: true,
-              color: 'info'
-            }
-          ]
-        })*/
         console.log(e)
       })  
     },
-    changeMessage () {
-      Loading.show({message: 'First message. Gonna change it in 3 seconds...'})
-      setTimeout(() => {
-        show({
-          spinner: QSpinnerGears,
-          spinnerColor: 'red',
-          message: 'Updated message'
-        })
-      }, 3000)
-    },
     deleteRow (props) {
-      props.rows.forEach(row => {
-        this.table.splice(row.index, 1)
-      })
+      let row = props.rows
+      console.log(row)
+      this.excluidos = row
+      Dialog.create({
+          title: 'Excluir',
+          message: 'Tem certeza que deseja excluir ' + this.excluidos.length + ' registro(s)?',
+          buttons: [
+            {
+              label: 'Não! Cancela',
+              color: 'negative',
+              raised: true,
+              style: 'margin-top: 20px',
+              handler () {
+                Toast.create('Cancelado...')
+              }
+            },
+            {
+              label: 'Sim! Pode excluir',
+              color: 'positive',
+              raised: true,
+              style: 'margin-top: 20px',
+              handler: () => {
+                
+              }
+            }
+          ]
+        })
     },
     refresh (done) {
       this.timeout = setTimeout(() => {
@@ -330,10 +323,19 @@ export default {
       }, 5000)
     },
     selection (number, rows) {
-      console.log(`selected ${number}: ${rows}`)
+      console.log(rows)
+      this.selecionou = number
+      console.log(`selecionou ${number}: ${rows}`)
     },
     rowClick (row) {
       console.log('clicked on a row', row)
+      localStorage.setItem('codPessoa', row.codigo)
+      localStorage.setItem('cadMode', 'edit')
+      this.$router.push({ path: '/cadcliente' })  
+    },
+    novo(){
+      localStorage.setItem('cadMode', 'save')
+      this.$router.push('/cadcliente')
     }
   },
   beforeDestroy () {
@@ -368,7 +370,6 @@ export default {
   },
   created(){
     this.listarPessoas()
-    window.console.log(this.table)
   }
 }
 </script>

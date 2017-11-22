@@ -3,7 +3,7 @@
       <q-list inset-separator>
         <q-collapsible icon="mail" label="Configuações Gerais" sublabel="Configurações essenciais do sistema">
           <div>
-            {{config}}
+            Tela cheia <q-checkbox v-model="check" />
           </div>
         </q-collapsible>
         <q-collapsible icon="view_list" label="Listas" sublabel="Configure globalmente a exibição das listas">
@@ -103,7 +103,10 @@
                 icon="pin_drop"
                 helper="Porta"
               >
-                <q-input v-model.number="porta" type="number" clearable/>
+                <q-input v-model.number="porta" 
+                         type="number"
+                         v-mask="['#####']"
+                         clearable/>
               </q-field>   
             </div>    
           </div> 
@@ -150,7 +153,7 @@
                     <a @click="editar(item)" color="info"><i class="material-icons fa-2x" >mode_edit</i></a>   
                   </td>
                   <td class="text-center">
-                    <i class="material-icons fa-2x" @click="excluir(item, index)" color="negative">delete_forever</i> 
+                    <i class="material-icons fa-2x mHover text-negative" @click="excluir(item, index)" color="negative">delete_forever</i> 
                   </td>
                 </tr>
               </tbody>
@@ -169,7 +172,10 @@ import { Dialog, Toast } from 'quasar'
 export default {
   data () {
     return {
-      config: { //config. das tabelas
+      //Gerais
+      check: false,
+      //config. das tabelas
+      config: { 
         refresh: (localStorage.getItem('refresh') === 'true'),
         noHeader: (localStorage.getItem('noHeader') === 'true'),
         columnPicker: (localStorage.getItem('columnPicker') === 'true'),
@@ -375,4 +381,5 @@ export default {
     #config {
         overflow: scroll;
     }
+    
 </style>

@@ -20,6 +20,10 @@
         Retaguarda Web
         <div slot="subtitle">7Virtual</div>
       </q-toolbar-title>
+        
+      <q-btn flat @click="toggleFullscreen">
+        <q-icon name="fullscreen" />
+      </q-btn>
     </q-toolbar>
 
     <div slot="left">
@@ -115,7 +119,7 @@
 </template>
 
 <script>
-import { openURL } from 'quasar'
+import { openURL, AppFullscreen } from 'quasar'
 
 export default {
   name: 'index',
@@ -129,8 +133,11 @@ export default {
   methods: {
     launch (url) {
       openURL(url)
+    },
+    toggleFullscreen () {
+      AppFullscreen.toggle()
     }
-  }
+  },
 }
 </script>
 <style>
@@ -142,10 +149,10 @@ export default {
     }
     
     .topo {
-        margin: -50px 0 0 10px;
-		padding: 10px 10px;
+        margin-top: -80px;
+		padding-top: 60px;
 		width: 100%; 
-		position: absolute;
+		position: sticky;
 		top: 0; 
         left: 0;
 		text-align: center;
@@ -169,6 +176,10 @@ export default {
         outline:none;
         border: 0px;
         /*border-bottom-color: #D3DAE0;*/
+    }
+    
+    .mHover {
+        cursor: pointer;
     }
 
 </style>

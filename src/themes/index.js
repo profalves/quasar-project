@@ -11,6 +11,7 @@ import {
   QItem,
   QItemSide,
   QItemMain,
+  QItemSeparator,
   QSideLink,
   QField,
   QToggle,
@@ -51,6 +52,8 @@ import {
   QTab,
   QTabPane,
   Loading,
+  LocalStorage,
+  AppFullscreen,
   clone
 } from 'quasar'
 
@@ -66,6 +69,7 @@ const imports = {
   QItem,
   QItemSide,
   QItemMain,
+  QItemSeparator,
   QSideLink,
   QField,
   QToggle,
@@ -106,6 +110,8 @@ const imports = {
   QTab,
   QTabPane,
   Loading,
+  LocalStorage,
+  AppFullscreen,
   clone
 }
 
