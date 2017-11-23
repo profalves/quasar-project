@@ -181,5 +181,9 @@ export default {
     .mHover {
         cursor: pointer;
     }
+    
+    #table {
+        overflow: scroll;
+    }
 
 </style>

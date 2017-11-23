@@ -12,8 +12,8 @@
         </q-btn>
     </q-fixed-position>
     
-    
-  <div id="table">
+  <i>Para editar um registro, basta apenas clicar no produto</i>  
+  <div id="lista">
     
     
     
@@ -224,7 +224,7 @@ export default {
           filter: true,
           sort: true,
           type: 'string',
-          width: '100px'
+          width: '80px'
         },
         {
           label: 'Estoque',
@@ -235,8 +235,8 @@ export default {
           width: '80px'
         },
         {
-          label: 'Família',
-          field: 'familia',
+          label: 'Cód. Barras',
+          field: 'codBarra',
           sort: true,
           filter: true,
           type: 'string',

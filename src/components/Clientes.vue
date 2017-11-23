@@ -11,7 +11,7 @@
         </q-btn>
     </q-fixed-position>
   <i>Para editar um registro, basta apenas clicar no produto</i>
-  <div id="table">
+  <div id="lista">
     <!--<div class="row">
         <q-field
             label="Tipo"

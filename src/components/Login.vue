@@ -54,7 +54,7 @@
       <q-field>
         <q-btn icon="person" 
                color="faded" 
-               @click="$router.push('/')"
+               @click="$router.push('/home')"
                >Entrar</q-btn>
       </q-field>
           

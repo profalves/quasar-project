@@ -1447,9 +1447,10 @@ export default {
       }
     },
     testarConexao(){
-      axios.get('http://192.168.0.200/WSV3/cidade/obtercidades?uf=ba')
+      axios.get('https://httpbin.org/get')
       .then((res)=>{
         console.log('Conexão com a web realizada com sucesso')
+        console.log(res)
       })
       .catch((e)=>{
         Dialog.create({
@@ -1564,8 +1565,5 @@ export default {
         margin-top: 15px;
     }
     
-    #table {
-        overflow: scroll;
-    }
     
 </style>
