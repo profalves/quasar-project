@@ -29,6 +29,9 @@ import 'quasar-extras/material-icons'
 import 'quasar-extras/fontawesome'
 // import 'quasar-extras/animate'
 
+import VueResource from 'vue-resource'
+Vue.use(VueResource)
+
 import Vuelidate from 'vuelidate'
 Vue.use(Vuelidate)
 
@@ -40,7 +43,7 @@ Vue.use(VueTheMask)
 
 import money from 'v-money'
 // register directive v-money and component <money>
-Vue.use(money, {precision: 4})
+Vue.use(money, {precision:4})
 
 Quasar.start(() => {
   /* eslint-disable no-new */

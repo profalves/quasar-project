@@ -107,6 +107,21 @@ export default {
     return {
     }
   },
+  created(){
+    //vibração
+    let options = {
+      body: 'Seja bem vindo!',
+      vibrate: [200, 100, 200]
+    }
+    let n = new Notification('Retaguarda Web (Test Notification)', options)
+    
+    function expression(statement) { 
+     'use strict'
+     return statement;
+    }
+    expression(n.vibrate) // ESLint ignore line
+    
+  }
 }
 </script>
 

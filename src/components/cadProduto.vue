@@ -67,7 +67,7 @@
                 <q-select
                     float-label="Tipo de Produto"
                     filter
-                    v-model="select"
+                    v-model="CadProduto.produto.codTipo"
                     :options="[
                         {label: 'Mercadoria para Revenda', value: 1},
                         {label: 'Materia Prima', value: 2},
@@ -86,10 +86,9 @@
           <q-field
             icon="crop_free"
           >
-            <q-input v-model.number="barras"
+            <q-input v-model.number="CadProduto.produto.codBarra"
+                     float-label="Cód. Barras"
                      type="number"
-                     float-label="Cód. Barras" 
-                     clearable
             />
             
           </q-field>   
@@ -98,10 +97,9 @@
           <q-field
             icon="store"
           >
-            <q-input v-model.number="codEmpresa"
+            <q-input v-model.number="CadProduto.produto.codEmpresa"
+                     float-label="Cód. Empresa"
                      type="number"
-                     float-label="Cód. Empresa" 
-                     clearable
             />
             
           </q-field>   
@@ -113,10 +111,9 @@
           <q-field
             icon="local_shipping"
           >
-            <q-input v-model.number="barras"
+            <q-input v-model.number="CadProduto.produto.codFornecedor"
+                     float-label="Cód. Fornecedor"
                      type="number"
-                     float-label="Cód. Fornecedor" 
-                     clearable
             />
             
           </q-field>   
@@ -125,10 +122,9 @@
           <q-field
             icon="store"
           >
-            <q-input v-model.number="id"
+            <q-input v-model.number="CadProduto.produto.codFabrica"
+                     float-label="Cód. Produto"
                      type="number"
-                     float-label="Cód. Produto" 
-                     clearable
             />
             
           </q-field>   
@@ -160,7 +156,7 @@
           <q-field
             icon="local_mall"
           >
-            <q-input v-model.trim="nome" 
+            <q-input v-model.trim="CadProduto.produto.apelido" 
                      float-label="Apelido" 
                      clearable
             />
@@ -175,7 +171,7 @@
                 <q-select
                     float-label="Família de Produtos"
                     filter
-                    v-model="select"
+                    v-model="CadProduto.produto.codFamilia"
                     :options="listaFamiliasProdutos"
                 />
             </q-field>   
@@ -200,7 +196,7 @@
                 <q-select
                     float-label="Categoria"
                     filter
-                    v-model="select"
+                    v-model="CadProduto.produto.codCategoria"
                     :options="listaCategorias"
                 />
             </q-field>
@@ -223,7 +219,7 @@
                 <q-select
                     float-label="Marca"
                     filter
-                    v-model="select"
+                    v-model="CadProduto.produto.codMarca"
                     :options="listaMarcas"
                 />
             </q-field>   
@@ -246,7 +242,7 @@
                 <q-select
                     float-label="Unidade de Medida"
                     filter
-                    v-model="select"
+                    v-model="CadProduto.produto.unMed"
                     :options="listaMedidas"
                 />
             </q-field>   
@@ -264,7 +260,7 @@
           <q-field
             icon="storage"
           >
-            Estoque: {{estoque}}
+            Estoque: {{CadProduto.produto.qtd}}
             
           </q-field>   
         </div>
@@ -272,11 +268,11 @@
     </div>
     
     <div class="row">
-        <div class="col-4">
-            <q-card color="faded" class="col-sm-6">
+        <div class="col-sm-12 col-md-4">
+            <q-card color="faded">
             <center>
                 <q-card-title>Custo</q-card-title>
-                    <money v-model="custo"
+                    <money v-model="CadProduto.produto.custo"
                            v-bind="money"
                            class="boxInput"
                     />
@@ -284,24 +280,23 @@
             </q-card>
         </div>
         
-        <div class="col-4">
-            <q-card color="primary" class="col-sm-6">
+        <div class="col-sm-12 col-md-4">
+            <q-card color="primary">
               <center>
                 <q-card-title>Lucro</q-card-title>
-                    <money v-model="lucro"
+                    <money v-model="CadProduto.produto.percLucro"
                            v-bind="perc"
                            class="boxInput"
-                           @blur="calc"
                     />
               </center>
             </q-card>
         </div>
         
-        <div class="col-4">
-            <q-card color="positive" class="col-sm-6">
+        <div class="col-sm-12 col-md-4">
+            <q-card color="positive" >
               <center>
                 <q-card-title>Venda</q-card-title>
-                    <money v-model="preco"
+                    <money v-model="valorVenda"
                            v-bind="money"
                            class="boxInput"
                     />
@@ -331,8 +326,10 @@
                     <tr v-for="item in tabPreco">
                       <td class="text-left">{{ item.nome }}</td>
                       <td class="text-right">{{ item.ml }}</td>
-                      <td class="text-left">
-                        <input v-model="preco">   
+                      <td class="text-left" width="100px">
+                        <money v-model="preco"
+                               v-bind="money"
+                        />  
                       </td>
                       <td class="text-left">{{ item.mLminima }}</td>
                       <td class="text-left">0,00</td>
@@ -357,7 +354,7 @@
                         <q-select
                             float-label="Unidade de Medida"
                             filter
-                            v-model="select"
+                            v-model="fatorConv.unMed"
                             :options="listaMedidas"
                         />
                     </q-field>   
@@ -377,9 +374,7 @@
                      >
                         <q-input
                             float-label="Fator de conversão"
-                            filter
-                            v-model="select"
-                            :options="listaMedidas"
+                            v-model="fatorConv.FatorConversao"
                         />
                     </q-field>   
                 </div>
@@ -387,7 +382,7 @@
             <div class="row">
                 <div class="col-4">
                     <q-field helper="Valor de Custo R$">
-                        <money v-model="custo"
+                        <money v-model="CadProduto.produto.custo"
                                v-bind="money"
                                class="mdInput"
                         />
@@ -396,17 +391,16 @@
 
                 <div class="col-4">
                     <q-field helper="Margem de Lucro %">
-                        <money v-model="lucro"
+                        <money v-model="CadProduto.produto.percLucro"
                                v-bind="perc"
                                class="mdInput"
-                               @blur="calc"
                         />
                     </q-field> 
                 </div>
 
                 <div class="col-4">
                     <q-field helper="Valor de Venda R$">
-                        <money v-model="preco"
+                        <money v-model="valorVenda"
                                v-bind="money"
                                class="mdInput"
                         />
@@ -426,7 +420,7 @@
                     <q-btn 
                         rounded
                         color="primary" 
-                        @click=""
+                        @click="salvarFator"
                     >adicionar fator
                     </q-btn>
                 </div>
@@ -447,13 +441,13 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="item in tabPreco">
-                      <td class="text-left">{{ item.nome }}</td>
-                      <td class="text-right">{{ item.ml }}</td>
-                      <td class="text-left">0</td>
-                      <td class="text-left">{{ item.mLminima }}</td>
-                      <td class="text-left">0,00</td>
-                      <td class="text-left">0,00</td>
+                    <tr v-for="item in fatores">
+                      <td class="text-left">{{ item.unMed }}</td>
+                      <td class="text-right">{{ item.fatorConversao }}</td>
+                      <td class="text-left">{{ item.conversaoEntrada | boolString }}</td>
+                      <td class="text-left">{{ item.ml | decimal }}</td>
+                      <td class="text-left">{{ CadProduto.produto.custo | decimal }}</td>
+                      <td class="text-left">{{ item.valorVenda | decimal }}</td>
                       <td class="text-center">
                         <a @click="" color="info"><i class="material-icons fa-2x">mode_edit</i></a>   
                       </td>
@@ -474,7 +468,7 @@
 <script>
 import axios from 'axios'
 import { required, minLength } from 'vuelidate/lib/validators'
-import { Dialog, Toast } from 'quasar'
+import { Dialog, Toast, Loading } from 'quasar'
     
 //dev
 const API = 'http://192.168.0.200/WSV3/'
@@ -487,35 +481,54 @@ export default {
   data () {
     return {
         nome: '',
-        barras: '',
-        codEmpresa: '',
+        cod: '',
         CadProduto: {
+            produto: {
                 codigo: 0,
-                codBarra: 0, //não nulo
-                codEmpresa: 0, //não nulo
+                codBarra: '', //não nulo
+                codEmpresa: '', //não nulo
                 codFornecedor: '',
                 codFabrica: '',
                 codCategoria: 1,
                 codMarca: 1,
                 codFamilia: 1,
                 codTipo: 1, //não nulo
-                codigoUsuario: 1, //não nulo
-                nome: 'FERRO DE PASSAR', //não nulo
+                codigoUsuario: parseInt(localStorage.getItem('codUser')), //não nulo
+                nome: '', //não nulo
                 apelido: '',
                 ncm: '',
                 custo: '',
                 percLucro: '',
                 referencia: '',
                 posicaoFisica: '',
-                aplicacao: ''
+                aplicacao: '',
+                unMed: 'UN'
+            },
+            precos: [
+                {
+                    codigoCab: 1,
+                    codProduto: 0,
+                    valor: 0.00,
+                    valorMinimo: 0.00,
+                    codigoUsuario: parseInt(localStorage.getItem('codUser'))
+                },
+                {
+                    codigoCab: 2,
+                    codProduto: 0,
+                    valor: 0.00,
+                    valorMinimo: 0.00,
+                    codigoUsuario: parseInt(localStorage.getItem('codUser'))
+                }
+            ]
         },
-        ProdutosTbPrecoDet: {
-                codigoCab: 2,
-                codProduto: 0,
-                valor: 100.00,
-                valorMinimo: 1.00,
-                codigoUsuario: 1
-        },
+        /*ProdutosTbPrecoDet: {
+            codigoCab: 2,
+            codProduto: 0,
+            valor: 0.00,
+            valorMinimo: 0.00,
+            codigoUsuario: parseInt(localStorage.getItem('codUser'))
+        },*/
+        valor: '',
         familias: [],
         categorias: [],
         marcas: [],
@@ -542,11 +555,22 @@ export default {
         },
         id: '',
         estoque: 0,
-        select: '',
+        select: 1,
         checked: false,
         canGoBack: window.history.length > 1,
         error: '',
         visivel: false,
+        fatorConv: {
+            CodigoProduto: parseInt(localStorage.getItem('codProduto')),
+            UnMed: '',
+            FatorConversao: '',
+            ValorVenda: 0.00,
+            ConversaoEntrada: false,
+            CodigoUsuario: parseInt(localStorage.getItem('codUser'))
+        
+        },
+        fatores: [],
+        
         //tabela
         misc: 'bordered', //[{value: 'bordered'},{value: 'highlight'}]
         separator: 'cell', // none, horizontal, vertical, cell
@@ -554,6 +578,19 @@ export default {
         type: 'none', // flipped, responsive
         gutter: 'none', // compact, loose
     }
+  },
+  filters: {
+    boolString: function (value) {
+      if (value===true) {
+        return 'Sim'
+      }
+      else {
+        return 'Não'
+      }
+    },
+    decimal: function (value) {
+      return value.toFixed(2)
+    },
   },
   validations: {
     nome: {
@@ -629,26 +666,47 @@ export default {
       var lista = []
       
       for (let i=0; i < a.length; i++) {
-          let n = a[i].nome
-          let c = a[i].codigo
+          let n = a[i].significado
+          let c = a[i].nome
           lista.push({label: n, value: c})    
       }
       //console.log(lista)
       return lista
+    },
+    valorVenda(){
+        if(this.CadProduto.produto.percLucro>0){
+            return this.CadProduto.produto.custo + (this.CadProduto.produto.custo*(this.CadProduto.produto.percLucro/100))
+        }
     },
   },
   methods: {
     goBack(){
       window.history.go(-1)
     },
-    calc(){
-        let margem = this.custo + (this.custo*(this.lucro/100))
-        this.preco = margem
-    },
     salvar(){
         //NOVO
-        axios.post(API + 'produto/gravarProduto', [this.CadProduto, this.ProdutosTbPrecoDet])
+        this.CadProduto.produto.nome = this.nome
+                
+        if(this.CadProduto.produto.codFabrica === ''){
+            this.CadProduto.produto.codFabrica = 0
+        }
+        if(this.CadProduto.produto.codBarra === ''){
+            this.CadProduto.produto.codBarra = 0
+        }
+        if(this.CadProduto.produto.codEmpresa === ''){
+            this.CadProduto.produto.codEmpresa = 0
+        }
+        if(this.CadProduto.produto.codFornecedor === ''){
+            this.CadProduto.produto.codFornecedor = 0
+        }
+        
+        if(this.valor>0){
+            this.CadProduto.precos[1] = this.valor
+        }
+        Loading.show({message: 'Enviando Dados...'})
+        axios.post(API + 'produto/gravarProduto', this.CadProduto)
           .then((res)=>{
+            Loading.hide()
             Toast.create.positive({
                 html: 'Sucesso',
                 icon: 'done'
@@ -660,6 +718,7 @@ export default {
             this.$router.push('produtos')
           })
           .catch((e)=>{
+            Loading.hide()
             //console.log('error')
             console.log(e)
             console.log(String(e))
@@ -859,7 +918,7 @@ export default {
     
     },
     listarUnidadesMedida(){
-      axios.get(API + 'produto/obterUnMedida')
+      axios.get(API + 'produto/obterUnMedidas')
       .then((res)=>{
         this.unidades = res.data
       })
@@ -870,7 +929,7 @@ export default {
     novaUnidade(){
         Dialog.create({
           title: 'Nova Unidade de Medida de Produtos',
-          message: 'Digite o nome da nova unidade de medida e clique em ok.',
+          message: 'Digite o nome da nova unidade de medida (É suportado apenas 6 (seis) caracteres), depois digite o seu significado (é preferivel em 1 (uma) palavra) e clique em ok.',
           form: {
             nome: {
               type: 'text',
@@ -918,6 +977,7 @@ export default {
         })
     
     },
+      
     listarTabelasPreco(){
       axios.get(API + 'produto/obterProdutosTbPrecoCab')
       .then((res)=>{
@@ -928,6 +988,62 @@ export default {
         console.log(e)
       })
     },
+    listarProdutos(){
+      if (localStorage.getItem('cadMode')==='edit'){
+          Loading.show({message: 'Aguardando Dados...'})
+          axios.get(API + 'produto/obterproduto?codProduto=' + localStorage.getItem('codProduto'))
+          .then((res)=>{
+              Loading.hide()
+              //console.log(res.data)
+              this.CadProduto.produto = res.data
+              this.nome = this.CadProduto.produto.nome  
+              this.valor = this.CadProduto.produto.valor  
+          })
+          .catch((e)=>{
+            Loading.hide()
+            console.log(e.response)
+          })
+      }
+    },
+    
+    listarFatoresConv(){
+      axios.get(API + 'produto/obterProdutosOutrasEmb?codProduto=' + parseInt(localStorage.getItem('codProduto')))
+      .then((res)=>{
+        this.fatores = res.data
+        //console.log(res)
+      })
+      .catch((e)=>{
+        console.log(e)
+      })
+    },
+    salvarFator(){
+        Loading.show({message: 'Enviando Dados...'})
+        axios.post(API + 'produto/gravarProdutosOutrasEmb', this.fatorConv)
+          .then((res)=>{
+            Loading.hide()
+            Toast.create.positive({
+                html: 'Sucesso',
+                icon: 'done'
+            })
+            //console.log(res)
+            console.log(res.data)
+            console.log(res.response)
+            console.log('sucesso')
+            //this.$router.push('produtos')
+          })
+          .catch((e)=>{
+            Loading.hide()
+            //console.log('error')
+            console.log(e)
+            console.log(String(e))
+            let error = e.response.data
+            console.log(error)
+            for(var i=0; error.length; i++){
+                Toast.create.negative(error[i].value)
+            }
+        })  
+    }
+    
    
   },
   created(){
@@ -937,6 +1053,8 @@ export default {
     t.listarMarcas()
     t.listarUnidadesMedida()
     t.listarTabelasPreco()
+    t.listarFatoresConv()
+    t.listarProdutos()
 
   }
  
@@ -973,7 +1091,7 @@ export default {
         margin-top: 15px;
         font-weight: bolder;
         font-size: 16px; 
-        color: red;
+        color: darkorange;
     }
     
     

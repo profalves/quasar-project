@@ -15,11 +15,12 @@
         color="negative"
         push big
         @click="excluir"
+        style="margin-left:5px;"
       >
         <i class="material-icons">delete</i>
       </q-btn>
         
-      <q-btn
+      <!--<q-btn
         style="background: white; 
                color: black"
         push
@@ -36,13 +37,13 @@
         
       >
         <i class="material-icons">edit</i>
-      </q-btn>
+      </q-btn>-->
       
       <q-btn
         color="positive"
         push big
         @click="salvar"
-        
+        style="margin-left:5px;"
       >
         <i class="material-icons">done</i>
     </q-btn>
@@ -57,8 +58,20 @@
             <h5>Cadastro de Nota Fiscal</h5>
         </div>
     </div>
-    
-    
+    <div class="row">
+        <div class="col-xs-12 col-md-4">
+          <q-btn
+            color="primary"
+            class="full"
+            push
+            @click="$router.push('/entradanfe')"
+          >
+            <i class="material-icons">search</i>
+            Localizar notas
+          </q-btn>
+        </div>
+    </div><br>
+    <!--
     <div class="row">
         <div class="col">
           <q-field
@@ -113,6 +126,7 @@
     </div>
     
     <span>{{danfe}}</span><br><br>
+    -->
     
     <q-list style="background-color: white;">
     
@@ -127,8 +141,33 @@
                     <q-select
                         float-label="Fornecedor"
                         filter
-                        v-model="fornecedor"
-                        :options="options"
+                        v-model="cabecalho.codPessoaEmissor"
+                        :options="listaFornecedores"
+                    />
+                </q-field>   
+            </div>
+            <div class="col-2 btn-plus" >
+
+                <q-btn 
+                   rounded
+                   color="primary" 
+                   @click="cadFornecedor">
+                   <q-icon name="add" />
+                </q-btn>
+            </div>
+        </div>
+          
+        <!--
+        <div class="row">
+            <div class="col-10">
+                <q-field
+                    icon="store"
+                 >
+                    <q-select
+                        float-label="Empresa Destino"
+                        filter
+                        v-model="cabecalho.codPessoaDestina"
+                        :options="listaDestina"
                     />
                 </q-field>   
             </div>
@@ -142,27 +181,14 @@
                 </q-btn>
             </div>
         </div>
-        
-        <div class="row">
-            <div class="col">
-                <q-field
-                    icon="store"
-                 >
-                    <q-input
-                        float-label="Empresa Destino"
-                        v-model="fornecedor"
-                    />
-                </q-field>   
-            </div>
-            
-        </div>
+-->
         
         <div class="row">
             <div class="col-md-6">
                 <q-field
                     icon="date_range"
                  >
-                    <q-datetime v-model="cat"
+                    <q-datetime v-model="cabecalho.dataEntrada"
                                 type="date" 
                                 float-label="Data Entrada" 
                                 color="black"
@@ -181,7 +207,7 @@
                 <q-field
                     icon="date_range"
                  >
-                    <q-datetime v-model="sub" 
+                    <q-datetime v-model="cabecalho.dataVenda" 
                                 type="date" 
                                 float-label="Data Emissão" 
                                 color="black"
@@ -197,50 +223,79 @@
         </div>
           
         <div class="row">
-            <div class="col-md-4">
+            <div class="col">
                 <q-field
                     icon="explore"
                  >
                     <q-input
                         float-label="N. Nota"
-                        v-model="nNfe"   
+                        v-model="cabecalho.numeroCupom"
+                        type="number"
                     />
                 </q-field>
 
             </div>
 
-            <div class="col" style="margin-top:15px">
+            <!--<div class="col">
                 <q-field
                     icon="explore"
-                    helper="CFOP - clique para exibir a lista"
                  >
-                    <div class="mdl-selectfield">
-                        <select class="browser-default" v-model="cfop" >
-                          <option disabled selected>Escolha um CFOP</option>
-                          <option v-for="cfop in listaCFOPEnt">{{cfop.value}} - {{cfop.label}}</option>
-                        </select>
-                        
-                    </div> 
+                    
+                    <q-search v-model="cfop"
+                              float-label="CFOP"
+                              
+                    >
+                        <q-autocomplete
+                          separator
+                          :static-data="{field: 'value', list: listaCFOPEnt}"
+                          @search="search"
+                        />
+                          
+                    </q-search>    
+                     
                 </q-field> 
                 
-            </div>
-            <i class="material-icons">keyboard_arrow_down</i>
+            </div>-->
+            
         </div>
           
         <div class="row">
-            <div class="col-md-5">
-                <q-field>
-                    <q-input float-label="Total da Nota"
-                             v-model="desc" />
+            <div class="col">
+              <q-field
+                icon="done"
+                :error="$v.chave.$error"
+                helper="Chave de Acesso"
+              >
+                <the-mask v-model="cabecalho.chaveAcesso"
+                          :mask="['####-####-####-####-####-####-####-####-####-####-####']"
+                          @input="$v.chave.$touch()"
+                          class="mdInput"
+                          style="width: 100%"
+                />
+                  
+                
+              </q-field>
+                
+                <!--<span style="color:#878B8F; margin-left:43px" v-if="!$v.cpf.required">Este campo é requerido</span>-->
+                <div class="error" v-if="!$v.chave.minLength">Este campo deve ser conter  caracteres.</div>
+            </div>
+        </div>
+          
+        <div class="row">
+            <div class="col-xs-12 col-md-6" style="margin-top: 10px">
+                <q-field
+                    label="Total da Nota"
+                >
+                    {{ somaNota | formatMoney }} 
                 </q-field>    
             </div>
                 
-            <div class="col" style="margin-top:10px">
+            <div class="col-xs-12 col-md-6" style="margin-top:10px">
                 <q-select
-                  v-model="select" 
+                  v-model="cabecalho.vendaPrazo" 
                   :options="[
-                    {value: 'vista', label: 'À Vista'},
-                    {value: 'prazo', label: 'À Prazo'}
+                    {value: false, label: 'À Vista'},
+                    {value: true, label: 'À Prazo'}
                   ]"
                   @blur="open.desp = true"
                 />
@@ -318,44 +373,17 @@
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td class="text-left">001</td>
-                  <td class="text-left">iPhone 9</td>
-                  <td class="text-right">$10.11</td>
-                  <td class="text-left">1</td>
-                  <td class="text-right">$10.11</td>
+                <tr v-for="item in CadNotas.det">
+                  <td class="text-left">{{ item.codigoProduto }}</td>
+                  <td class="text-right">{{ item.nomeProduto }}</td>
+                  <td class="text-left">{{ item.custo | formatMoney }}</td>
+                  <td class="text-left">{{ item.qtd }}</td>
+                  <td class="text-left">{{ item.totalItem | formatMoney }}</td>
                   <td class="text-center">
-                    <q-btn round outline small color="info" icon="edit" @click="$refs.layoutModal.open()"></q-btn>    
+                    <q-btn round outline small color="info" icon="edit" @click=""></q-btn>    
                   </td>
                   <td class="text-center">
-                    <q-btn round outline small color="negative" icon="delete_forever" @click="excluir"></q-btn>  
-                  </td>
-
-                </tr>
-                <tr>
-                  <td class="text-left">002</td>
-                  <td class="text-left">Drone X</td>
-                  <td class="text-right">$10.11</td>
-                  <td class="text-left">1</td>
-                  <td class="text-right">$10.11</td>
-                  <td class="text-center">
-                    <q-btn round outline small color="info" icon="edit" @click="$refs.layoutModal.open()"></q-btn>    
-                  </td>
-                  <td class="text-center">
-                    <q-btn round outline small color="negative" icon="delete_forever" @click="excluir"></q-btn>  
-                  </td>
-                </tr>
-                <tr>
-                  <td class="text-left">003</td>
-                  <td class="text-left">AlienPC</td>
-                  <td class="text-right">$10.11</td>
-                  <td class="text-left">1</td>
-                  <td class="text-right">$10.11</td>
-                  <td class="text-center">
-                    <q-btn round outline small color="info" icon="edit" @click="$refs.layoutModal.open()"></q-btn>    
-                  </td>
-                  <td class="text-center">
-                    <q-btn round outline small color="negative" icon="delete_forever" @click="excluir"></q-btn>  
+                    <q-btn round outline small color="negative" icon="delete_forever" @click="excluirItem(index)"></q-btn>  
                   </td>
                 </tr>
               </tbody>
@@ -363,32 +391,132 @@
             
         </div>
         <div class="col-6" style="margin-top:30px">
-            <strong>Total Produtos: </strong>R$ 0,00
+            <strong>Total Produtos: </strong>{{ somaNota | formatMoney }}
         </div>
         
     
       </q-collapsible>
         
       <!--Duplicatas-->
-      <q-collapsible v-if="visivel" :opened="open.dup" icon="local_atm" label="Duplicatas">
+      <q-collapsible v-if="cabecalho.vendaPrazo===true" :opened="open.dup" icon="local_atm" label="Duplicatas">
+          
+            <div class="row">
+                <div class="col">
+                    <q-field>
+                        <q-select
+                            float-label="Forma de Pagamento"
+                            filter
+                            v-model="duplicata.formaPgto"
+                            :options="listaFormas"
+                        />
+                    </q-field> 
+
+                </div>
+                
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <q-field>
+                        <q-select
+                            float-label="Tipo Despesa"
+                            filter
+                            v-model="duplicata.codTipo"
+                            :options="listaCategorias"
+                            @change="listarSubtipos"
+                        />
+                    </q-field> 
+
+                </div>
+                <div class="col-md-6">
+                    <q-field>
+                        <q-select
+                            float-label="SubTipo Despesa"
+                            filter
+                            v-model="duplicata.codSubTipoDespesa"
+                            :options="listaSubCategorias"
+                        />
+                    </q-field> 
+
+                </div>
+                
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <q-field
+                    >
+                        
+                        <q-datetime v-model="duplicata.vencimento"
+                                type="date" 
+                                float-label="Vencimento" 
+                                color="black"
+                                format="DD/MM/YYYY"
+                                ok-label="OK" 
+                                clear-label="Limpar" 
+                                cancel-label="Cancelar"
+                                :day-names="dias"
+                                :month-names="meses"
+                                />
+                    </q-field>
+                </div>
+                <div class="col-md-6">
+                    <q-field>
+                        <q-input
+                            float-label="Quantidade Parcelas"
+                            v-model="detItem.qtd"   
+                        />
+                    </q-field>
+                </div>
+                
+                
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <q-field
+                            helper="Intervalo Dias"
+                    >
+                        <q-input
+                            
+                            v-model="detItem.qtd"
+                            class="mdInput"
+                        />
+                    </q-field>
+                </div>
+                <div class="col-md-6">
+                    <q-field
+                        helper="Valor Titulo"
+                    >
+                        <money v-model="detItem.frete" 
+                               v-bind="money"
+                               class="mdInput"
+                               style="margin-top: 2px"
+                        />
+                    </q-field>
+                </div>
+            </div>
+            
+        
+        <div class="row">
+            <div class="col" style="margin:10px">
+                <q-btn color="secondary" @click="addDup()">Adicionar Duplicata</q-btn>
+            </div>   
+        </div>
           
         <!--Data tables HTML-->
-        <div class="row" id="table">
+        <div class="row" id="tableDup">
             <table style="margin-top: 30px;" class="q-table" :class="computedClasses">
               <thead>
                 <tr>
                   <th class="text-center">Vencimento</th>
-                  <th class="text-center">Valor Total</th>
-                  <th class="text-center">Data Pagto</th>
-                  <th class="text-center">Valor Pago</th>
+                  <th class="text-center">Valor</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td class="text-left">01/01/2018</td>
-                  <td class="text-right">$10.11</td>
-                  <td class="text-left">01/01/2018</td>
-                  <td class="text-right">$10.00</td>
+                <tr v-for="dup in CadNotas.titulos">
+                  <td class="text-left">{{dup.vencimento | formatDates}}</td>
+                  <td class="text-right">{{dup.valorTitulo | formatMoney}}</td>
                   <td class="text-center">
                     <q-btn round outline small color="info" icon="edit"></q-btn>    
                   </td>
@@ -397,34 +525,15 @@
                   </td>
 
                 </tr>
-                <tr>
-                  <td class="text-left">01/01/2018</td>
-                  <td class="text-right">$10.11</td>
-                  <td class="text-left">01/01/2018</td>
-                  <td class="text-right">$0.00</td>
-                  <td class="text-center">
-                    <q-btn round outline small color="info" icon="edit"></q-btn>    
-                  </td>
-                  <td class="text-center">
-                    <q-btn round outline small color="negative" icon="delete_forever"></q-btn>  
-                  </td>
-                </tr>
-                <tr>
-                  <td class="text-left">01/01/2018</td>
-                  <td class="text-right">$10.11</td>
-                  <td class="text-left">01/01/2018</td>
-                  <td class="text-right">$0.00</td>
-                  <td class="text-center">
-                    <q-btn round outline small color="info" icon="edit"></q-btn>    
-                  </td>
-                  <td class="text-center">
-                    <q-btn round outline small color="negative" icon="delete_forever"></q-btn>  
-                  </td>
-                </tr>
+                
               </tbody>
             </table>  
 
         </div>
+        <div class="col-6" style="margin-top:30px">
+            <strong>Total Duplicatas: </strong>{{ somaContas | formatMoney}}
+        </div>
+          
       </q-collapsible>
         
     </q-list>
@@ -456,34 +565,66 @@
         </q-toolbar>
 
         <q-toolbar slot="header" color="tertiary">
-           <q-radio v-model="tipoCod" val="barras" color="white" label="Cód. Barras" />
-           <q-radio v-model="tipoCod" val="emp" color="white" label="Cód. Emp" style="margin-left: 20px" />
-           <q-radio v-model="tipoCod" val="nome" color="white" label="Nome" style="margin-left: 20px" />
+           <q-radio v-model="tipoCod" 
+                    val="barras" 
+                    color="white" 
+                    label="Cód. Barras" 
+                    @focus="search = ''" />
+           <q-radio v-model="tipoCod" 
+                    val="emp" color="white" 
+                    label="Cód. Emp" 
+                    style="margin-left: 20px"  
+                    @focus="search = ''" />
+           <q-radio v-model="tipoCod" 
+                    val="nome" color="white" 
+                    label="Nome" 
+                    style="margin-left: 20px" 
+                    @focus="search = ''" />
         </q-toolbar>
         
-        <q-toolbar slot="header" color="tertiary">
+        <q-toolbar slot="header" color="tertiary" v-if="tipoCod === 'nome'">
            <q-search inverted 
                      v-model="search" 
                      color="none" 
                      style="margin-left: 10px"
                      placeholder="Procurar..."
-                     ></q-search>
+                     @keyup.enter="listarProdutos"
+                     @blur="listarProdutos"
+                     >
+                <q-autocomplete
+                  :static-data="{field: 'label', list: listaItens}"
+                  @selected="listarProdutos"
+                />
+               
+           </q-search>
+        </q-toolbar>
+        <q-toolbar slot="header" color="tertiary" v-else>
+           <q-search inverted 
+                     v-model="search" 
+                     color="none" 
+                     style="margin-left: 10px"
+                     placeholder="Procurar..."
+                     @keyup.enter="listarProdutos"
+                     @blur="listarProdutos"
+                     >
+               
+           </q-search>
         </q-toolbar>
         
         <div class="layout-padding">
             
             <div class="row" >
                 <div class="col-8">
-                    <h5>Nome do Item</h5>
+                    <h5>{{ produto.nome }}</h5>
                 </div>
                 <div class="col" style="margin-top: 20px;
                                         text-align: right;">
-                    Estoque: <strong style="color: orangered;">0</strong>
+                    Estoque: <strong style="color: orangered;">{{ produto.qtd }}</strong>
                 </div>
             </div>
             <hr />
             
-            <div class="row">
+            <!--<div class="row">
                 <div class="col-md-6">
                     <q-field
                         icon="explore"
@@ -513,7 +654,7 @@
 
                 </div>
                 <i class="material-icons">keyboard_arrow_down</i>
-            </div>
+            </div>-->
             
             <div class="row">
                 <div class="col">
@@ -527,13 +668,11 @@
                 <div class="col">
                     <q-field>
                         <q-select
-                          float-label="Unidade de Medida"
-                          v-model="select" 
-                          :options="[
-                            {value: 'cx', label: 'CX'},
-                            {value: 'und', label: 'UN'}
-                          ]"
-                        /> 
+                            float-label="Unidade de Medida"
+                            filter
+                            v-model="detItem.unMedCom"
+                            :options="listaMedidas"
+                        />
                     </q-field> 
 
                 </div>
@@ -546,15 +685,19 @@
                     <q-field>
                         <q-input
                             float-label="Quantidade"
-                            v-model="item.qtd"   
+                            v-model="detItem.qtd"   
                         />
                     </q-field>
                 </div>
                 <div class="col">
-                    <q-field>
-                        <q-input
-                            float-label="Custo"
-                            v-model="item.desconto"   
+                    <q-field
+                        helper="Custo"
+                    >
+                        
+                        <money v-model="detItem.custo"
+                               v-bind="money"
+                               class="mdInput"
+                               style="margin-top:12px"
                         />
                     </q-field>
                 </div>
@@ -563,18 +706,22 @@
             
             <div class="row">
                 <div class="col-md-6">
-                    <q-field>
-                        <q-input
-                            float-label="Desconto"
-                            v-model="item.desconto"   
+                    <q-field
+                        helper="Desconto"
+                    >
+                        <money v-model="detItem.desconto"
+                               v-bind="money"
+                               class="mdInput"
                         />
                     </q-field>
                 </div>
                 <div class="col-md-6">
-                    <q-field>
-                        <q-input
-                            float-label="Frete"
-                            v-model="item.frete"   
+                    <q-field
+                        helper="Frete"
+                    >
+                        <money v-model="detItem.frete" 
+                               v-bind="money"
+                               class="mdInput"
                         />
                     </q-field>
                 </div>
@@ -582,18 +729,22 @@
             
             <div class="row">
                 <div class="col-md-6">
-                    <q-field>
-                        <q-input
-                            float-label="Seguro"
-                            v-model="item.seguro"   
+                    <q-field
+                        helper="Seguro"
+                    >
+                        <money v-model="detItem.seguro"   
+                               v-bind="money"
+                               class="mdInput"
                         />
                     </q-field>
                 </div>
                 <div class="col-md-6">
-                    <q-field>
-                        <q-input
-                            float-label="Outros Custos"
-                            v-model="item.outros"   
+                    <q-field
+                        helper="Outros Custos"
+                    >
+                        <money v-model="detItem.outro"
+                               v-bind="money"
+                               class="mdInput"
                         />
                     </q-field>
                 </div>
@@ -604,18 +755,24 @@
                 <div class="col-md-6">
                     <q-field>
                         <q-input
-                            float-label="Aliq. IPI"
-                            v-model="item.AliqIPI"   
+                            float-label="Aliq. IPI (%)"
+                            v-model="item.AliqIPI"
+                            suffix="%"
+                            style="padding-right: 20px"
                         />
                     </q-field>
                 </div>
                 <div class="col-md-6">
-                    <q-field>
-                        <q-input
-                            float-label="Valor IPI"
-                            v-model="item.vIPI"   
+                    <q-field
+                        helper="IPI"
+                             >
+                        <money v-model="detItem.IPI"
+                               v-bind="money"
+                               class="mdInput"
+                               style="margin-top: 12px"
                         />
                     </q-field>
+                    
                 </div>
             </div>
     
@@ -640,12 +797,18 @@
                 <q-card color="positive" class="col-sm-6">
                   <center>
                     <q-card-title>Venda</q-card-title>
-                        <input v-model="item.desconto"
+                        <input v-model="detItem.venda"
                                class="boxInput"
                         />
                   </center>
                 </q-card>
             </div>  
+        </div>
+        
+        <div class="row">
+            <div class="col" style="margin:10px">
+                <q-btn color="secondary" @click="addItem($refs.layoutModal.close())">Adicionar item</q-btn>
+            </div>   
         </div>
         
       </q-modal-layout>
@@ -658,27 +821,169 @@
 </template>
 
 <script>
-//import axios from 'axios'
+import axios from 'axios'
 //import VMasker from 'vanilla-masker'
 import listaCFOP from 'data/CFOP.json'
-import { required, minLength } from 'vuelidate/lib/validators'
-import { Dialog, Toast, Ripple } from 'quasar'
+import { minLength } from 'vuelidate/lib/validators'
+import { Dialog, Toast, Loading, Ripple } from 'quasar'
+    
+//dev
+const API = 'http://192.168.0.200/WSV3/'
+
+//debug
+//const API = 'http://192.168.0.200:29755/'
 
 
 export default {
   name: 'cadEntradasNFe',
   data () {
     return {
+        //Classe Cadnotas
+        CadNotas:{
+            Cab:{},
+            det:[],
+            formasPgto:[
+                {
+                    dataPagto: '',
+                    valor: 0.00,
+                    formaPagto: 1,
+                    codigoTransacao: 1,
+                    codigoOperacao: 1,
+                    codigoCaixa: 1,
+                    codigoUsuario: 1,
+                    codigoEmpresa: 1,
+                    dataVencimento: '',
+                    codigoOpCartao: 1,
+                    codigoBandeiraNFCE: '',
+                    codigoCCBandeira: '',
+                    tipoIntregCartao: '',
+                    OBS: '',
+                    qtdParcelas: '',
+                    quitado: false
+                }
+            ],
+            titulos: [],
+            cheques: [
+                {
+                    codPessoaTitular: 1,
+                    codigoBanco: 100,
+                    valor: 0.00,
+                    numeroCheque: 9999999,
+                    numeroAgencia: '',
+                    numeroConta: '',
+                    dataVcto: '',
+                    codigoUsuario: 1,
+
+                }
+            ],
+            cartao: [
+                {
+                    codOperadora: 1,
+                    codBandeira: 1,
+                    dataVcto: new Date(),
+                    valorParcela: 0.00,
+                    taxaOP: '',
+                    taxaMensal: '',
+                    codigoUsuario: 1
+                }
+            ],
+            Transporte: {
+                    CodPessoa: 1,
+                    modFrete: 1, //Required
+                    quantVolumes: 0,
+                    pesoLiquido: 0.00,
+                    pesoBruto: 0.00,
+                    especie: '', //50
+                    marca: '', //50
+                    numeroVolumes: 0,
+                    placaVeiculo: '',
+                    UFVeiculo: 'ba'
+            }       
+        },
+        
+        cabecalho:{ //cab
+            vendaPrazo: false,
+            tipoNotaE: '', //4
+            tipoMovimento: 'E', //1
+            numeroCupom: 0, //int
+            numeroNotaE: '', //int
+            chaveAcesso: '', //44
+            dataVenda: '',
+            codPessoaEmissor: '',
+            codPessoaDestina: 1,
+            valorBruto: 0.00,
+            valorDesconto: 0.00,
+            valorAcrescimo: 0.00,
+            valorRecibo: 0.00,
+            troco: 0.00,
+            codigoCaixa: 1,
+            codigoOperacao: 1,
+            codigoParcelamento: 1,
+            codigoDependente: '',
+            codigoEmpresa: 1,
+            codigoUsuario: 1,
+            codigoVendedor: 1,
+            codigoStatus: '',
+            OBS: '',
+            dataEntrada: ''
+        },
+        detItem: { //det 
+            codTabPreco: 2,
+            codigoProduto: '',
+            codigoUsuario: 1,
+            codigoComputador: '',    
+            custo: 0.00,    
+            custoTrib: 0.00,    
+            desconto: 0.00,    
+            venda: 0.00,    
+            acrescimo: 0.00,    
+            unMedCom: '',    
+            unMedTrib: '',    
+            encargos: 0.00,    
+            IPI: 0.00,    
+            frete: 0.00,    
+            seguro: 0.00,    
+            outro: 0.00,    
+            qtd: 1,    
+            qtdCom: 1,    
+            tipoSaida: 'V',    
+            qtdDevolvida: 0.00,    
+            totalItem: 0.00,    
+            cancelado: '',    
+            codPessoaEmpregado: '',
+            OBS: '',    
+            impresso: ''
+        },
+        duplicata: {
+            codForncedor: '', //não nulo
+            codTipo: 1, //não nulo
+            codSubTipoDespesa: 1, //não nulo
+            tipo: 'CP', 
+            pagtoTitulo: 0,
+            codigoCab: 0,
+            codigoVZC: 0,
+            contaFixa: false,
+            formaPgto: 1,
+            formaPgtoNFce: 1,
+            numeroDocumento: '',
+            vencimento: new Date(), //não nulo
+            pagamento: '',
+            valorTitulo: '',
+            valorPago: '',
+            valorDesc: '',
+            valorJuros: '',
+            codigoUsuario: 1, //não nulo
+        },
+        tipoEntradaEstoque: 'compra', // { Compra, OrdemCompra, LancarProducao }
         visivel: false,
-        tipoCod: '',
+        tipoCod: 'nome',
         ref: 'layoutModal',
         modal: false,
         search: '',
+        
         //cabeçário
-        fornecedor: '',
+        pessoas: [],
         desc: '0,00',
-        cat: new Date(),
-        sub: '',
         nNfe: '',
         ncm: '',
         forma: '',
@@ -688,8 +993,8 @@ export default {
         bloqueado: true,
         danfe: '',
         cfop: '',
-        estoque: '0',
         listaCFOP,
+        estoque: '0',
         item: {
             ncm: '',
             cfop: '',
@@ -701,12 +1006,22 @@ export default {
             frete: '0,00',
             seguro: '0,00',
             outros: '0,00',
-            AliqIPI: '4%',
+            AliqIPI: '',
             vIPI: '0,01',
             custo: '',
             lucro: '',
             venda: ''
         },
+        selected: '',
+        produto: '',
+        produtos: [],
+        unidades: [],
+        indice: 0,
+        cat: [],
+        sub: [],
+        formas: [],
+        
+        //configs
         dias: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
         meses: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
         open: {
@@ -815,6 +1130,16 @@ export default {
         ],
         
         canGoBack: window.history.length > 1,
+        
+        //v-money
+        money: {
+            decimal: ',',
+            thousands: '.',
+            prefix: 'R$ ',
+            //suffix: ' #',
+            precision: 2,
+            masked: false /* doesn't work with directive */
+        },
     }
   },
   directives: {
@@ -847,23 +1172,188 @@ export default {
       function cfopEntrada(cfop) {
         return cfop.value < 5000;
       }
-        return this.listaCFOP.filter(cfopEntrada)
+      let a = this.listaCFOP.filter(cfopEntrada)
+      let lista = []
+      
+      for (let i=0; i < a.length; i++) {
+          let n = a[i].value.toString() + ' - ' + a[i].label.toString()
+          let c = a[i].value.toString()
+          let v = c.toString().substring(3,4)
+          if(v!=='0'){
+            lista.push({label: n, value: c})
+          }   
+      }
+      return lista
+      
+      
+      
+    },
+    listaFornecedores: function () {
+      let a = this.pessoas
+      let lista = []
+      
+      for (let i=0; i < a.length; i++) {
+          if(a[i].codTipo === 2){
+              let n = a[i].nome
+              let c = a[i].codigo
+              lista.push({label: n, value: c})  
+          }  
+      }
+      //console.log(lista)
+      return lista
+    
+    }, 
+    listaDestina: function () {
+      let a = this.pessoas
+      let lista = []
+      
+      for (let i=0; i < a.length; i++) {
+          //if(a[i].codigo === 1){
+          let n = a[i].nome
+          let c = a[i].codigo
+          lista.push({label: n, value: c})  
+          //}  
+      }
+      //console.log(lista)
+      return lista
+    
+    },
+    listaItens: function () {
+      var a = this.produtos
+      var lista = []
+      
+      for (let i=0; i < a.length; i++) {
+          let n = a[i].nome
+          let c = a[i].codigo
+          lista.push({label: n, value: c})    
+      }
+      //console.log(lista)
+      return lista
+    },
+    listaMedidas: function () {
+      var a = this.unidades
+      var lista = []
+      
+      for (let i=0; i < a.length; i++) {
+          let n = a[i].significado
+          let c = a[i].nome
+          lista.push({label: n, value: c})    
+      }
+      //console.log(lista)
+      return lista
+    },
+    listaCategorias: function () {
+      var a = this.cat
+      var lista = []
+      
+      for (let i=0; i < a.length; i++) {
+          let n = a[i].nome
+          let c = a[i].codigo
+          lista.push({label: n, value: c})   
+      }
+      //console.log(lista)
+      return lista
+    
+    }, 
+    listaSubCategorias: function () {
+      var a = this.sub
+      var lista = []
+      
+      for (let i=0; i < a.length; i++) {
+          let n = a[i].nome
+          let c = a[i].codigo
+          lista.push({label: n, value: c}) 
+      }
+      //console.log(lista)
+      return lista
+    
+    }, 
+    listaFormas: function () {
+      var a = this.formas
+      var lista = []
+      
+      for (let i=0; i < a.length; i++) {
+          let n = a[i].nome
+          let c = a[i].codigo
+          lista.push({label: n, value: c}) 
+      }
+      //console.log(lista)
+      return lista
+    
+    },
+    somaNota(value){
+      if(this.CadNotas.det.length === 0){ return 0 }
+      let a = this.CadNotas.det
+      let lista = []
+
+      for (let i=0; i < a.length; i++) {
+          let n = a[i].totalItem
+          lista.push(n)
+      }
+       
+      value = lista.reduce(function(a, b) {
+        return a + b;
+      });
+      return value
+    },
+    somaContas(value){
+      if(this.CadNotas.det.length === 0){ return 0 }
+      let a = this.CadNotas.titulos
+      let lista = []
+
+      for (let i=0; i < a.length; i++) {
+          let n = a[i].valorTitulo
+          lista.push(n)
+      }
+       
+      value = lista.reduce(function(a, b) {
+        return a + b;
+      });
+      return value
+    },
+  },
+  filters: {
+    formatMoney: function (value) {
+        function numberToReal(numero) {
+            numero = numero.toFixed(2).split('.');
+            numero[0] = "R$ " + numero[0].split(/(?=(?:...)*$)/).join('.');
+            return numero.join(',');
+        }
+        let x = numberToReal(value);
+        return x
+    },
+    formatDates: function (value) {
+        return new Date(value).toLocaleString('pt-BR', {year: 'numeric',month: '2-digit',day: '2-digit'})
     }
   },
   validations: {
-    nome: {
-      required,
-      minLength: minLength(3)
+    chave: {
+      minLength: minLength(43)
     },
-    barras: {
-      required,
-      minLength: minLength(3)
-    }
   },
   methods: {
     goBack(){
       window.history.go(-1)
     },
+    cadFornecedor(){
+        localStorage.setItem('tela', 'fornNotas')
+        localStorage.setItem('cadMode', 'save')
+        this.$router.push('/cadcliente')
+    },
+    listarPessoas(){
+      Loading.show({message: 'Aguardando Dados...'})
+      axios.get(API + 'pessoa/obterpessoa')
+      .then((res)=>{
+          //console.log(res.data)
+          this.pessoas = res.data
+          Loading.hide()
+      })
+      .catch((e)=>{
+        console.log(e)
+        Loading.hide()
+      })  
+    },
+    /*
     visualizarDanfe() {
       if(this.doc!==''){
         this.danfe = ''
@@ -878,7 +1368,7 @@ export default {
         this.danfe = 'Primeiro coloque a chave de acesso!'
       }
      },
-     importarDanfe() {
+    importarDanfe() {
         this.bloqueado = true
         this.doc = ''
         this.fornecedor = ''
@@ -895,20 +1385,37 @@ export default {
     listarDanfe() {
       this.$router.push('/entradanfe')
     },
-    limpar () {
-      this.tipo = ''
-      this.fornecedor = ''
-      this.desc = ''
-      this.cat = ''
-      this.sub = ''
-      this.forma = ''
-      this.doc = ''
-      this.tipoDoc = ''
-    },
+    */
+    
     salvar(){
-        Toast.create.positive({
-        html: 'Salvo com sucesso',
-        icon: 'done'
+        
+        //if(this.CadNotas.cab.caixa ===
+        let qtdParcelas = 12
+        let intervalo = 30
+        Loading.show({message: 'Enviando Dados...'})
+        axios.post(API + 'pedido/gravarPedido', [this.CadNotas, this.tipoEntradaEstoque, qtdParcelas, intervalo])
+          .then((res)=>{
+            Loading.hide()
+            Toast.create.positive({
+                html: 'Sucesso',
+                icon: 'done'
+            })
+            //console.log(res)
+            console.log(res.data)
+            console.log(res.response)
+            console.log('sucesso')
+            this.$router.push('entradanfe')
+          })
+          .catch((e)=>{
+            Loading.hide()
+            //console.log('error')
+            console.log(e)
+            console.log(String(e))
+            let error = e.response.data
+            console.log(error)
+            for(var i=0; error.length; i++){
+                Toast.create.negative(error[i].value)
+            }
         })
     },
     excluir(){
@@ -937,20 +1444,262 @@ export default {
           ]
         })
     },
+      
     addItem(){
-          
+        if(this.produto === ''){
+            Toast.create('Não pode adicionar item nulo')
+            return
+        }
+        this.detItem.codigoProduto = this.produto.codigo
+        this.detItem.totalItem = this.detItem.custo * this.detItem.qtd
+        Object.assign(this.detItem, {nomeProduto: this.produto.nome})
+        this.CadNotas.det.push(this.detItem)
+        
+        this.detItem = {
+            codTabPreco: 2,
+            codigoProduto: '',
+            codigoUsuario: 1,
+            codigoComputador: '',    
+            custo: 0.00,    
+            custoTrib: 0.00,    
+            desconto: 0.00,    
+            venda: 0.00,    
+            acrescimo: 0.00,    
+            unMedCom: '',    
+            unMedTrib: '',    
+            encargos: 0.00,    
+            IPI: 0.00,    
+            frete: 0.00,    
+            seguro: 0.00,    
+            outro: 0.00,    
+            qtd: 1,    
+            qtdCom: 1,    
+            tipoSaida: 'V',    
+            qtdDevolvida: 0.00,    
+            totalItem: 0.00,    
+            cancelado: '',    
+            codPessoaEmpregado: '',
+            OBS: '',    
+            impresso: ''
+        }
+        
+    },
+    excluirItem(index){
+        this.indice = index
+        
+        if(this.indice !== -1) {
+            this.CadNotas.det.splice(index,1)
+        }
+    },
+    limpar(){
+        
+        this.$set('detItem',{
+            codTabPreco: 2,
+            codigoProduto: '',
+            codigoUsuario: 1,
+            codigoComputador: '',    
+            custo: 0.00,    
+            custoTrib: 0.00,    
+            desconto: 0.00,    
+            venda: 0.00,    
+            acrescimo: 0.00,    
+            unMedCom: '',    
+            unMedTrib: '',    
+            encargos: 0.00,    
+            IPI: 0.00,    
+            frete: 0.00,    
+            seguro: 0.00,    
+            outro: 0.00,    
+            qtd: 1,    
+            qtdCom: 1,    
+            tipoSaida: 'V',    
+            qtdDevolvida: 0.00,    
+            totalItem: 0.00,    
+            cancelado: '',    
+            codPessoaEmpregado: '',
+            OBS: '',    
+            impresso: ''
+        })
+        
+    },
+     
+    addDup(){
+        this.CadNotas.titulos.push(this.duplicata)
+    },
+      
+    //====== LISTAS ======================================================================
+      
+    listarProdutos(){
+      if(this.search === ''){
+        this.search = 0
+      }
+        
+      if(this.tipoCod === 'barras'){
+          Loading.show()
+          axios.get(API + 'produto/obterproduto?codBarra=' + this.search)
+          .then((res)=>{
+            Loading.hide()
+            this.produto = res.data
+            this.detItem.custo = this.produto.custo
+            this.detItem.venda = this.produto.valor
+            this.detItem.unMed = this.produto.unMed
+            
+            //console.log(res)
+            if(typeof this.produto.nome == 'undefined'){
+                Object.assign(this.produto, {nome: 'Produto não encontrado'});
+            }
+          })
+          .catch((e)=>{
+            Loading.hide()
+            console.log(e)
+            if(typeof this.produto.nome == 'undefined'){
+                Object.assign(this.produto, {nome: 'Produto não encontrado'});
+            }
+          })
+      }
+      else if(this.tipoCod === 'emp'){
+          axios.get(API + 'produto/obterproduto?codEmpresa=' + this.search)
+          .then((res)=>{
+            this.produto = res.data
+            this.detItem.custo = this.produto.custo
+            this.detItem.venda = this.produto.valor
+            this.detItem.unMedCom = this.produto.unMed
+            
+            //console.log(res)
+            if(typeof this.produto.nome == 'undefined'){
+                Object.assign(this.produto, {nome: 'Produto não encontrado'});
+            }
+          })
+          .catch((e)=>{
+            console.log(e)
+            if(typeof this.produto.nome == 'undefined'){
+                Object.assign(this.produto, {nome: 'Produto não encontrado'});
+            }
+          })
+      }
+      else {
+          Loading.show()
+          axios.get(API + 'produto/obterproduto?nomeProduto=' + this.search)
+          .then((res)=>{
+            Loading.hide()
+            this.produto = res.data
+            this.detItem.custo = this.produto.custo
+            this.detItem.venda = this.produto.valor
+            this.detItem.unMed = this.produto.unMed
+            
+            //console.log(res)
+            if(typeof this.produto.nome == 'undefined'){
+                Object.assign(this.produto, {nome: 'Produto não encontrado'});
+            }
+          })
+          .catch((e)=>{
+            Loading.hide()
+            console.log(e)
+            if(typeof this.produto.nome == 'undefined'){
+                Object.assign(this.produto, {nome: 'Produto não encontrado'});
+            }
+          })
+      }
+    },
+    todosProdutos(){
+        Loading.show({message: 'Aguardando dados...'})
+        axios.get(API + 'produto/obterproduto')
+          .then((res)=>{
+            Loading.hide()
+            this.produtos = res.data
+            //console.log(res)
+          })
+          .catch((e)=>{
+            Loading.hide()
+            console.log(e)
+            Toast.create({
+                html: 'Sem Conexão',
+                timeout: 6000,
+                bgColor: '#f44242',
+                icon: 'mood_bad'
+            })
+          })
+    },
+    listarUnidadesMedida(){
+      axios.get(API + 'produto/obterUnMedidas')
+      .then((res)=>{
+        this.unidades = res.data
+      })
+      .catch((e)=>{
+        console.log(e)
+      })
+    },
+    listarTipos(){
+      Loading.show({message: 'Aguardando Dados...'})
+      axios.get(API + 'conta/obterContasTipo')
+      .then((res)=>{
+          //console.log(res.data)
+          this.cat = res.data
+          Loading.hide()
+      })
+      .catch((e)=>{
+        console.log(e)
+        Loading.hide()
+      })  
+    },
+    listarSubtipos(){
+      Loading.show({message: 'Aguardando Dados...'})
+      axios.get(API + 'conta/obterContasSubTipo?codTipo=' + this.duplicata.codTipo)
+      .then((res)=>{
+          //console.log(res.data)
+          this.sub = res.data
+          Loading.hide()
+      })
+      .catch((e)=>{
+        console.log(e)
+        Loading.hide()
+      })  
+    },
+    listarFormasPgto(){
+      Loading.show({message: 'Aguardando Dados...'})
+      axios.get(API + 'conta/obterformaspgto')
+      .then((res)=>{
+          //console.log(res.data)
+          this.formas = res.data
+          Loading.hide()
+      })
+      .catch((e)=>{
+        console.log(e)
+        Loading.hide()
+      })  
+    },
+    listarNotas(){
+      Loading.show({message: 'Aguardando Dados...'})
+      axios.get(API + 'pedido/obterPedido?codigoCab=' + localStorage.getItem('codCab'))
+      .then((res)=>{
+          //console.log(res.data)
+          this.CadNotas = res.data
+          this.cabecalho = this.CadNotas.cab
+          Loading.hide()
+      })
+      .catch((e)=>{
+        console.log(e)
+        Loading.hide()
+      })  
     },
     
+    
+    
   },
-  watch: {
-    select (value) {
-        if (value === 'prazo') {
-            this.visivel = true
-        }
-        else {
-            this.visivel = false
-        }
-    }  
+  
+  created(){
+    let t = this
+    if(localStorage.getItem('cadMode') === 'edit'){
+        t.listarNotas()   
+    }
+    t.listarPessoas()
+    t.todosProdutos()
+    t.listarUnidadesMedida()
+    t.listarTipos()
+    t.listarSubtipos()
+    t.listarFormasPgto()
+    
+    
   }
  
 }
@@ -1013,17 +1762,6 @@ export default {
         color: red;
         font-size: 12px
     }
-    
-    .topo {
-        margin: 50px 0 0 10px;
-		padding: 10px 10px;
-		width: 100%; 
-		position: fixed;
-		top: 0; 
-        left: 0;
-		text-align: center;
-        z-index: 5;
-	}
     
     .mdInput {
         /*margin-top: 10px;

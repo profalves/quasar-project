@@ -18,3 +18,7 @@ $ quasar build
 $ quasar lint
 ```
 # quasar-project
+
+>> ATENÇÃO: Ao gerar build para o aplicativo Android, antes faça:
+
+### - Mudar na classe dos botões de cadastro, na propriedade 'position', de 'sticky' para 'fixed'

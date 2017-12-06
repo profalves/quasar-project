@@ -6,11 +6,13 @@
         <q-btn 
            round
            color="primary" 
-           @click="$router.push('/cadcontas')">
+           @click="novo">
            <q-icon name="add" />
         </q-btn>
     </q-fixed-position>
-  <div id="table">
+    
+  <div id="lista">
+      
     <div class="row">
         <div class="col">
             <q-field
@@ -19,6 +21,7 @@
                 <q-select
                     v-model="tipo"
                     :options="tipos"
+                    @change="listarContas"
                 />
             </q-field>
         </div>
@@ -30,9 +33,10 @@
                 <q-select
                     v-model="subtipo"
                     :options="[
-                        { label: 'A pagar', value: 1},
-                        { label: 'Pago', value: 2}
+                        { label: 'a pagar', value: false},
+                        { label: 'pagas', value: true}
                     ]"
+                    @change="listarContas"
                 />
             </q-field>
             <q-field
@@ -42,21 +46,20 @@
                 <q-select
                     v-model="subtipo"
                     :options="[
-                        { label: 'A receber', value: 1},
-                        { label: 'Pago', value: 2}
+                        { label: 'a receber', value: false},
+                        { label: 'pagas', value: true}
                     ]"
+                    @change="listarContas"
                 />
             </q-field>
         </div>  
-        <div class="col">
-             
-        </div> 
+        <div class="col"></div> 
          
     </div>
     
     
     <q-data-table
-      :data="table"
+      :data="contas"
       :config="config"
       :columns="colunas"
       @refresh="refresh"
@@ -64,14 +67,17 @@
       @rowclick="rowClick"
       style="background-color:white;"
     >
-      <div slot="selection" scope="props">
-        <q-btn flat color="primary" @click="changeMessage(props)">
-          <q-icon name="edit" />
+      <template slot="selection" scope="props">
+        <q-btn v-if="subtipo === false"
+               flat 
+               color="primary" 
+               @click="baixarTitulos(props)">
+          Baixar
         </q-btn>
         <q-btn flat color="primary" @click="deleteRow(props)">
           <q-icon name="delete" />
         </q-btn>
-      </div>
+      </template>
     </q-data-table>
     
    
@@ -158,7 +164,7 @@
         label="Altura das linhas"
         :label-width="4"
       >
-        <q-slider v-model="rowHeight" :min="50" :max="200" label-always :label-value="`${rowHeight}px` "/>
+        <q-slider v-model="rowHeight" :min="38" :max="200" label-always :label-value="`${rowHeight}px` "/>
       </q-field>
 
       <q-field
@@ -188,29 +194,34 @@
 </template>
 
 <script>
-import {clone} from 'quasar'
-import table from '../data/db.json'
+import { Dialog, Toast, Loading, clone } from 'quasar'
+import axios from 'axios'
+
+const API = 'http://192.168.0.200/WSV3/'
+  
+//debug
+//const API = 'http://192.168.0.200:29755/'    
 export default {
-  
-  
   data () {
     return {
-      table,
-      tipo: 'd',
+      contas: [],
+      tipo: 'cp',
       tipos: [
         {
           label: 'Despesas',
-          value: 'd'
+          value: 'cp'
         },
         {
           label: 'Receitas',
-          value: 'r'
+          value: 'cr'
         },
 
       ],
-      subtipo: 1,
+      subtipo: false,
       subDesp: true,
       text: 'text',
+      excluidos: '',  
+      
       config: {
         title: '',
         refresh: (localStorage.getItem('refresh') === 'true'),
@@ -246,34 +257,28 @@ export default {
       },
       colunas: [
         {
-          label: 'Data',
-          field: 'created',
+          label: 'Vencimento',
+          field: 'vencimento',
           width: '105px',
-          //classes: 'bg-orange-2',
-          sort: true,
+          classes: 'bg-grey-5',
           filter: true,
           type: 'string',
-          /* sort (a, b) {
-            return (new Date(a)) - (new Date(b))
+          sort (a, b) {
+            return (new Date(b)) - (new Date(a))
           },
           format (value) {
-            return new Date(value).toLocaleString()
-          }*/
+            return new Date(value).toLocaleString('pt-BR', {year: 'numeric',month: '2-digit',day: '2-digit'})
+          }
         },
         {
-          label: 'Descrição',
-          field: 'name',
-          width: '100px',
+          label: 'Fornecedor',
+          field: 'fornecedor',
+          width: '120px',
           //classes: 'bg-orange-2',
           sort: true,
           filter: true,
-          type: 'string',
-          /* sort (a, b) {
-            return (new Date(a)) - (new Date(b))
-          },
-          format (value) {
-            return new Date(value).toLocaleString()
-          }*/
+          type: 'date',
+          
         },
         /*{
           label: 'Tipo',
@@ -291,7 +296,7 @@ export default {
         */
         {
           label: 'Categoria',
-          field: 'climate',
+          field: 'contaTipo',
           filter: true,
           sort: true,
           type: 'string',
@@ -300,19 +305,28 @@ export default {
         
         {
           label: 'SubCategoria',
-          field: 'terrain',
+          field: 'contaSubTipo',
           filter: true,
           sort: true,
           type: 'string',
-          width: '120px'
+          width: '100px'
         },
         {
           label: 'Total',
-          field: 'diameter',
+          field: 'valorTitulo',
           sort: true,
           filter: true,
           type: 'string',
-          width: '100px'
+          width: '100px',
+          format (value) {
+            function numberToReal(numero) {
+                numero = numero.toFixed(2).split('.');
+                numero[0] = "R$ " + numero[0].split(/(?=(?:...)*$)/).join('.');
+                return numero.join(',');
+            }
+            let x = numberToReal(value);
+            return x
+          }
         }
       ],
       pagination: (localStorage.getItem('pagination') === 'true'),
@@ -322,28 +336,142 @@ export default {
     }
   },
   methods: {
-    changeMessage (props) {
-      props.rows.forEach(row => {
-        row.data.message = 'Gogu'
+    listarContas(){
+      Loading.show({message: 'Aguardando Dados...'})
+      axios.get(API + 'conta/obterContas?tipo=' + this.tipo + '&pagas=' + this.subtipo)
+      .then((res)=>{
+          console.log(res)
+          this.contas = res.data
+          Loading.hide()
       })
+      .catch((e)=>{
+        console.log(e)
+      })  
     },
     deleteRow (props) {
-      props.rows.forEach(row => {
-        this.table.splice(row.index, 1)
+      let row = props.rows
+      console.log(row)
+      this.excluidos = row
+      Dialog.create({
+          title: 'Excluir',
+          message: 'Tem certeza que deseja excluir ' + this.excluidos.length + ' registro(s)?',
+          buttons: [
+            {
+              label: 'Não! Cancela',
+              color: 'negative',
+              raised: true,
+              style: 'margin-top: 20px',
+              handler () {
+                Toast.create('Cancelado...')
+              }
+            },
+            {
+              label: 'Sim! Pode excluir',
+              color: 'positive',
+              raised: true,
+              style: 'margin-top: 20px',
+              handler: () => {
+                  let a = this.excluidos
+                  let obj = {}
+
+                  for (let i=0; i < a.length; i++) {
+                      obj = a[i].data
+                      obj.excluido = true
+                      console.log(obj)
+                      Loading.show({message: 'Aguardando Dados...'})
+                      axios.post(API + 'conta/excluirConta?codigo=' + obj.codigo)
+                          .then((res)=>{
+                              //console.log(res)
+                              Toast.create('Excluido com sucesso')
+                              Loading.hide()
+                              this.listarContas()
+                          })
+                          .catch((e)=>{
+                            console.log(e)
+                            Loading.hide()
+                            return
+                          })  
+                      
+                  }
+              }
+            }
+          ]
+      })
+    },
+    baixarTitulos (props) {
+      let row = props.rows
+      console.log(row)
+      this.excluidos = row
+      Dialog.create({
+          title: 'Excluir',
+          message: 'Tem certeza que deseja baixar ' + this.excluidos.length + ' registro(s)?',
+          buttons: [
+            {
+              label: 'Não! Cancela',
+              color: 'negative',
+              raised: true,
+              style: 'margin-top: 20px',
+              handler () {
+                Toast.create('Cancelado...')
+              }
+            },
+            {
+              label: 'Sim! Pode baixar',
+              color: 'positive',
+              raised: true,
+              style: 'margin-top: 20px',
+              handler: () => {
+                  let a = this.excluidos
+                  let obj = {}
+                  let lista = []
+                  
+                  
+                  for (let i=0; i < a.length; i++) {
+                      obj = a[i].data
+                      obj.pagamento = new Date()
+                      obj.valorPago = 10
+                      lista.push(obj)
+                  }
+                   
+                  Loading.show({message: 'Aguardando Dados...'})
+                  axios.post(API + 'conta/pagarContas', lista)
+                      .then((res)=>{
+                          //console.log(res)
+                          Toast.create.positive('Titulos Baixados com sucesso')
+                          Loading.hide()
+                          this.listarContas()
+                      })
+                      .catch((e)=>{
+                        console.log(e)
+                        Loading.hide()
+                        return
+                      })  
+                      
+                
+              }
+            }
+          ]
       })
     },
     refresh (done) {
       this.timeout = setTimeout(() => {
-        done()
+        this.listarContas()
       }, 5000)
     },
     selection (number, rows) {
-      console.log(`selected ${number}: ${rows}`)
+      console.log(rows)
+      console.log(`selecionou ${number}: ${rows}`)
     },
     rowClick (row) {
       console.log('clicked on a row', row)
+      localStorage.setItem('codConta', row.codigo)
+      localStorage.setItem('cadMode', 'edit')
+      this.$router.push({ path: '/cadContas' })  
     },
-    
+    novo(){
+      localStorage.setItem('cadMode', 'save')
+      this.$router.push('/cadContas')
+    }
   },
   beforeDestroy () {
     clearTimeout(this.timeout)
@@ -382,7 +510,10 @@ export default {
             this.subDesp=true
         }
     }
-  } 
+  },
+  created(){
+    this.listarContas()
+  }
 }
 </script>
 

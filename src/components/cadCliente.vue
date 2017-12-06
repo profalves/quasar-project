@@ -46,7 +46,7 @@
                 helper="Tipo Cadastro" 
               >
                 <q-select
-                    v-model="Pessoas.codTipo"
+                    v-model="CadPessoa.pessoa.codTipo"
                     :options="tipos"
                 />
             </q-field>
@@ -56,7 +56,7 @@
                 helper="Tipo Pessoa"    
               >
                 <q-select
-                    v-model="Pessoas.pj"
+                    v-model="CadPessoa.pessoa.pj"
                     :options="[
                         {
                           label: 'Física',
@@ -67,15 +67,16 @@
                           value: true
                         }
                     ]"
+                    
                 />
             </q-field>
         </div>
-        <div class="col-md-4" v-if="Pessoas.pj === true">
+        <div class="col-md-4" v-if="CadPessoa.pessoa.pj === true">
             <q-field
                 helper="Tipo Jurídica: Regime Tributário"    
               >
                 <q-select
-                    v-model="Pessoas.codRegimeTribut"
+                    v-model="CadPessoa.pessoa.codRegimeTribut"
                     :options="[
                         {
                           label: 'Física',
@@ -125,7 +126,7 @@
         </div> 
 
         <div class="row">
-            <div class="col" id="genero" v-if="Pessoas.pj === false">
+            <div class="col" id="genero" v-if="CadPessoa.pessoa.pj === false">
                 <q-radio v-model="sexo" val=false color="primary" left-label label="Masc." />
                 <q-radio v-model="sexo" val=true color="primary" left-label label="Fem." style="margin-left: 10px" /> 
             </div>
@@ -140,7 +141,7 @@
               >
                 <the-mask v-model="cpf"
                           :mask="['###.###.###-##', '##.###.###/####-##']"
-                          @input="$v.cpf.$touch()"
+                          @input="$v.cpf.$touch(verificaPessoa())"
                           class="mdInput"
                 />
                   
@@ -155,7 +156,7 @@
                 icon="done"
                 helper="RG/Inscrição Estadual"
               >
-                <q-input v-model="Pessoas.rg" @blur="colapDados"/>
+                <q-input v-model="CadPessoa.pessoa.rg" @blur="colapDados"/>
               </q-field>   
             </div>    
         </div>    
@@ -193,10 +194,10 @@
                  style="margin: 17px 0 0 20px"
                  round small
                  @click="buscarCep"
-                 :disabled="visivel"
+                 :disabled="OFF"
               >
               </q-btn>
-              <span id="avisoCep" v-if="visivel">Offline</span>
+              <span id="avisoCep" v-if="OFF">Offline</span>
             </div>
         </div>
 
@@ -205,14 +206,14 @@
               <q-field
                 icon="location_on"
               >
-                <q-input v-model="Pessoas.endereco" float-label="Endereço"/>
+                <q-input v-model="CadPessoa.pessoa.endereco" float-label="Endereço"/>
               </q-field>   
             </div>
             <div class="col-lg-2 col-md-3 col-sm-12">
               <q-field
                 icon="location_on"
               >
-                <q-input v-model="Pessoas.numero" type="number" float-label="Numero"/>
+                <q-input v-model="CadPessoa.pessoa.numero" type="number" float-label="Numero"/>
               </q-field>   
             </div>
         </div>
@@ -222,7 +223,7 @@
               <q-field
                 icon="store"
               >
-                <q-input v-model="Pessoas.pontoReferencia" type="textarea" float-label="Ponto de Referência"/>
+                <q-input v-model="CadPessoa.pessoa.pontoReferencia" type="textarea" float-label="Ponto de Referência"/>
               </q-field>   
             </div>
 
@@ -233,7 +234,7 @@
               <q-field
                 icon="streetview"
               >
-                <q-input v-model="Pessoas.bairro" float-label="Bairro"/>
+                <q-input v-model="CadPessoa.pessoa.bairro" float-label="Bairro"/>
               </q-field>   
             </div>
 
@@ -244,7 +245,7 @@
               <q-field
                 icon="domain"
               >
-                <q-dialog-select v-model="estado"
+                <q-select v-model="estado"
                           :options="listaEstados"
                           float-label="UF"
                           @blur="listarCidades"
@@ -257,7 +258,7 @@
               <q-field 
                 icon="location_city"
               >
-                <q-dialog-select v-model="Pessoas.codigoIBGECidade"
+                <q-select v-model="CadPessoa.pessoa.codigoIBGECidade"
                           :options="listaCidades"
                           float-label="Cidade"
                           filter
@@ -268,7 +269,7 @@
 
         </div>
 
-        <div class="row btn-plus" v-if="visivel">
+        <div class="row btn-plus">
             <div class="col">
                 <q-btn 
                     rounded
@@ -280,15 +281,33 @@
                 </q-btn>
             </div>
         </div><br>
+        
+        <q-list v-for="(item, index) in endAdd" :key="index" style="margin-top:15px">
           
+          <q-list-header>Endereço: {{item.index}}</q-list-header>
+          <q-item>
+            <q-item-main>
+                <div>
+                    <strong>Rua:</strong> {{item.Nome}}
+                    <strong>,</strong> {{item.Numero}}<br>
+                    <strong>Ponto de Referência:</strong> {{item.PontoRef}}<br>
+                    <strong>Bairro:</strong> {{item.Bairro}}<br>
+                    <!--<strong>Cidade:</strong> {{item.cidade}} <strong>UF:</strong> {{item.UF}}<br>-->
+                    <strong>CEP:</strong> {{item.CEP}}<br><br>
+                    <i class="material-icons fa-2x mHover text-negative" @click="endAdd.splice(index, 1)" color="negative">delete_forever</i>
+                </div>
+            </q-item-main>
+          </q-item>
+          
+        </q-list>
         <!--Demais Endereços-->
             <q-collapsible icon="pin_drop" label="Demais Endereços" v-if="visivel">
             
                 <q-list v-for="item in enderecos" :key="item.$id">
-                  <q-list-header>Endereço: {{item.codigo}}</q-list-header>
+                  <q-list-header>Endereço: {{item.$id}}</q-list-header>
                   <q-item>
                     <q-item-main>
-                        <div >
+                        <div>
                             <strong>Rua:</strong> {{item.endereco}}
                             <strong>,</strong> {{item.numero}}<br>
                             <strong>Ponto de Referência:</strong> {{item.pontoRef}}<br>
@@ -352,11 +371,29 @@
           </q-collapsible>-->
       </q-collapsible>
               
-      <!--Contatos-->
-      <q-collapsible :opened="open.cont" icon="contact_phone" label="Contatos">
+      <!--Telefones-->
+      <q-collapsible :opened="open.tel" icon="contact_phone" label="Telefones">
+        <i>Para salvar um telefone, o mesmo deve ser digitado e depois clicar no botão de adicionar (+)</i><br>
+        
+        <q-list v-for="(item, index) in fones" :key="index" style="margin-top:15px">
           
+          <q-list-header>Telefone: {{item.index}}</q-list-header>
+          <q-item>
+            <q-item-main>
+                <div class="row">
+                    <div class="col left" style="margin-top:7px;">
+                        <strong>Fone:</strong> {{item.Numero | fone}}
+                    </div>
+                    <div class="col-2">
+                        <i class="material-icons fa-2x mHover text-negative" @click="fones.splice(index, 1)" color="negative">delete_forever</i>
+                    </div>
+                </div>
+            </q-item-main>
+          </q-item>
+          
+        </q-list>  
+        
         <div class="row">
-            
             <div class="col-md-4">
               <q-field
                 icon="phone"
@@ -391,8 +428,8 @@
               >
                 <the-mask class="mdInput"
                           v-model.number="fone"
-                         float-label="Fone" 
-                         :mask="['(##) ####-####', '(##) #####-####']"
+                          float-label="Fone" 
+                          :mask="['(##) ####-####', '(##) #####-####']"
                          />
               </q-field>   
             </div>
@@ -400,7 +437,7 @@
                 <q-btn 
                    rounded
                    color="primary" 
-                   @click="adicionarTel">
+                   @click="salvarTel">
                    <q-icon name="add" />
                 </q-btn>
             </div>
@@ -411,8 +448,57 @@
                 <q-checkbox label="Móvel?" v-model="foneADD.movel"/>
             </div>
         </div>
+         
+        <!--Telefones Cadastrados-->
+            <q-collapsible icon="phone_in_talk" label="Telefones Cadastrados" v-if="visivel">
+            
+                <q-list v-for="(item, index) in fones" :key="index">
+                  <q-list-header>Telefone: {{item.$id}}</q-list-header>
+                  <q-item>
+                    <q-item-main>
+                        <div >
+                            <strong>Numero:</strong> {{item.numero}}
+                            <strong>Tipo:</strong> {{item.tipo}}
+                        </div>
+                    </q-item-main>
+                  </q-item>
+                  <q-item-separator />
+                  <q-item>
+                    <div class="row">
+                        <div class="col-6">
+                            <a @click="" color="info"><i class="material-icons fa-2x">mode_edit</i></a>
+                        </div>
+                        <div class="col-6">
+                            <i class="material-icons fa-2x mHover text-negative" @click="" color="negative">delete_forever</i>
+                        </div>
+                    </div>
+                  </q-item>
+                </q-list>
+            </q-collapsible>
+        </q-collapsible>
+      
+      <!--Emails-->
+      <q-collapsible :opened="open.email" icon="contact_mail" label="Emails">
+        
+        <i>Para salvar um email, o mesmo deve ser digitado e depois clicar no botão de adicionar (+)</i><br>
+        
+        <q-list v-for="(item, index) in emails" :key="index" style="margin-top:15px">
           
-        <hr>
+          <q-list-header>Email: {{item.index}}</q-list-header>
+          <q-item>
+            <q-item-main>
+                <div class="row">
+                    <div class="col left" style="margin-top:7px;">
+                        <strong>Email:</strong> {{item.Endereco}}
+                    </div>
+                    <div class="col-2">
+                        <i class="material-icons fa-2x mHover text-negative" @click="emails.splice(index, 1)" color="negative">delete_forever</i>
+                    </div>
+                </div>
+            </q-item-main>
+          </q-item>
+          
+        </q-list>  
           
         <div class="row">
             
@@ -451,7 +537,7 @@
                      @input="$v.email.$touch()"
                      placeholder="@email.com"
                      clearable
-                     @blur="colapCont"
+                     @blur="colapEmail"
                 />
 
                  <span v-if="!$v.email.email">Digite um email válido</span>
@@ -461,12 +547,36 @@
                 <q-btn 
                    rounded
                    color="primary" 
-                   @click="adicionarEmail">
+                   @click="novoEmail">
                    <q-icon name="add" />
                 </q-btn>
             </div>
         </div>
-          
+        <!--Emails Cadastrados-->
+            <q-collapsible icon="mail_outline" label="Emails Cadastrados" v-if="visivel">
+            
+                <q-list v-for="email in emails" :key="email.codigo">
+                  <q-list-header>Telefone: {{email.$id}}</q-list-header>
+                  <q-item>
+                    <q-item-main>
+                        <strong>Email:</strong> {{email.endereco}}<br>
+                        <strong>Tipo:</strong> {{email.tipo}}
+                        
+                    </q-item-main>
+                  </q-item>
+                  <q-item-separator />
+                  <q-item>
+                    <div class="row">
+                        <div class="col-6">
+                            <a @click="" color="info"><i class="material-icons fa-2x">mode_edit</i></a>
+                        </div>
+                        <div class="col-6">
+                            <i class="material-icons fa-2x mHover text-negative" @click="" color="negative">delete_forever</i>
+                        </div>
+                    </div>
+                  </q-item>
+                </q-list>
+            </q-collapsible>  
         
       </q-collapsible>
         
@@ -477,7 +587,7 @@
                 <q-field helper="Família">
                     <q-select
                         filter
-                        v-model="Pessoas.codFamilia"
+                        v-model="CadPessoa.pessoa.codFamilia"
                         :options="listaFamiliasPessoas"
                         @click="listarFamilias"
                     />
@@ -496,7 +606,7 @@
                     <q-select
                         @blur="colapGrup"
                         filter
-                        v-model="Pessoas.codigoVendedor"
+                        v-model="CadPessoa.pessoa.codigoVendedor"
                         :options="listaVendedores"
                     />
                 </q-field>
@@ -512,7 +622,7 @@
               <q-field
                 icon="android"
               >
-                <q-input v-model="Pessoas.apelido" float-label="Apelido"/>
+                <q-input v-model="CadPessoa.pessoa.apelido" float-label="Apelido"/>
 
               </q-field>
             </div>    
@@ -520,7 +630,7 @@
               <q-field
                 icon="date_range"
                 >
-                <q-datetime v-model="Pessoas.dataNasc"
+                <q-datetime v-model="CadPessoa.pessoa.dataNasc"
                             type="date" 
                             float-label="Data de Nascimento" 
                             color="black"
@@ -544,7 +654,7 @@
             <div class="col-4">
                 <q-field helper="Crediário">
                     <q-select
-                        v-model="Pessoas.venderCrediario"
+                        v-model="CadPessoa.pessoa.venderCrediario"
                         :options="[
                             {
                               label: 'Sim',
@@ -562,7 +672,13 @@
                 <q-field
                     helper="Limite"
                   >
-                    <q-input v-model="Pessoas.limiteCredito" @blur="colapCred"  />
+                    
+                    <money v-model="CadPessoa.pessoa.limiteCredito" 
+                           @blur="colapCred"
+                           v-bind="money"
+                           class="mdInput"
+                           style="margin-top:3px"
+                    />
 
                 </q-field>
             </div>
@@ -575,7 +691,7 @@
       <q-collapsible :opened="open.obs" icon="message" label="Observações">
         <q-input 
                  float-label="Obs:" 
-                 v-model="Pessoas.observacoes" 
+                 v-model="CadPessoa.pessoa.observacoes" 
                  type="textarea" 
                  />
       </q-collapsible>
@@ -596,6 +712,38 @@
         </q-toolbar>
         
         <div class="layout-padding">
+            
+        <div class="row">
+            <div class="col">
+                <q-select
+                  v-model="endAdicional.CodTipo"
+                  float-label="Tipo de Endereço"
+                  radio
+                  :options="[
+                        {
+                          label: 'Principal',
+                          value: 1
+                        },
+                        {
+                          label: 'Entrega',
+                          value: 2
+                        },
+                        {
+                          label: 'Correspondência',
+                          value: 3
+                        },
+                        {
+                          label: 'Trabalho',
+                          value: 4
+                        },
+                        {
+                          label: 'Recado',
+                          value: 5
+                        }
+                  ]"
+                />
+            </div>   
+        </div>    
         <div class="row">
             <div class="col-8 col-md-6">
               <q-field
@@ -625,10 +773,10 @@
                  style="margin: 17px 0 0 20px"
                  round small
                  @click="buscarCepADD"
-                 :disabled="visivel"
+                 :disabled="OFF"
               >
               </q-btn>
-              <span id="avisoCep" v-if="visivel">Offline</span>
+              <span id="avisoCep" v-if="OFF">Offline</span>
             </div>
         </div>
 
@@ -705,7 +853,7 @@
                 <q-btn 
                     rounded
                     color="primary" 
-                    @click="adicionarEnd"  
+                    @click="salvarEnd"  
                 >
                    <q-icon name="add_location" />
                    salvar endereço
@@ -757,52 +905,61 @@ export default {
   name: 'clientes',
   data () {
     return {
+        
         estados: [],
         estadoNovo: [],
         enderecos: [],
         //cidadesJSON,
+        OFF: false,
         cad: '',
         nome: '',
         sexo: '',
-        Pessoas:{
-            codigo: 0,
-            codRegimeTribut : 1,
-            codTipo : 1,
-            codFamilia : 1,
-            nome : '', //requerido
-            apelido : '',
-            contato : '',
-            cpf : '', //requerido
-            rg : '',
-            cnpj : '',
-            endereco : '',
-            numero : '',
-            bairro : '',
-            cep : '',
-            codigoIBGECidade : '', //not null
-            codigoUF : 29,  //not null
-            limiteCredito : 0.00, //not null
-            telResid : '',
-            telComercial : '',
-            celular1 : '',
-            celular2 : '',
-            email : '',
-            skype : '',
-            site : '',
-            codigoVendedor : 1, //not null
-            observacoes : '',
-            pj : false, //not null
-            dataNasc : '',
-            sexoFeminino : false,
-            caminhoFoto : '',
-            codPai : 0,
-            pontoReferencia : '',
-            nomePai : '',
-            nomeMae : '',
-            codigoUsuario : 1,
-            excluido : false,
-            venderCrediario : true
+        CadPessoa:{
+            pessoa:{
+                codRegimeTribut : 1,
+                codTipo : 1,
+                codFamilia : 1,
+                nome : 'TESTE 3011', //requerido
+                apelido : '',
+                contato : '',
+                cpf : 0, //requerido
+                rg : '',
+                cnpj : '',
+                endereco : '',
+                numero : '',
+                bairro : '',
+                cep : '',
+                codigoIBGECidade : '', //not null
+                codigoUF : 29,  //not null
+                limiteCredito : 0.00, //not null
+                telResid : '',
+                telComercial : '',
+                celular1 : '',
+                celular2 : '',
+                email : '',
+                skype : '',
+                site : '',
+                codigoVendedor : 1, //not null
+                observacoes : '',
+                pj : false, //not null
+                dataNasc : '',
+                sexoFeminino : false,
+                caminhoFoto : '',
+                codPai : 0,
+                pontoReferencia : '',
+                nomePai : '',
+                nomeMae : '',
+                codigoUsuario : parseInt(localStorage.getItem('codUser')),
+                venderCrediario : true,
+            },
+            pessoasTelefone: [],
+            pessoasEndereco: [],
+            enderecoElet: []
+            
         },
+        endAdd: [],
+        fones: [],
+        emails: [],
         cpf: '',
         datanasc: '',
         fone: '',
@@ -812,9 +969,9 @@ export default {
         cep: '',
         cep2: '',
         endAdicional:{
-            CodPessoa: parseInt(localStorage.getItem('codPessoa')) , //not null
-            Nome: '', //not null
-            Numero: '', 
+            CodPessoa: parseInt(localStorage.getItem('codPessoa')), //not null //
+            Nome: 'Endereço 2', //not null
+            Numero: '1', 
             PontoRef: '', 
             Bairro: '', 
             Cidade: '', //not null
@@ -823,9 +980,9 @@ export default {
             CodigoUF: 29, //not null
             Excluido: false, //not null
             CodTipo: 1, //not null
-            CodigoUsuario: 1, //not null
+            CodigoUsuario: parseInt(localStorage.getItem('codUser')), //not null
             CEP: '',
-            Codigo: 0,
+            index: 0
         },
         cidade: '',
         cidade2: '',
@@ -866,23 +1023,27 @@ export default {
         open: {
             dados: true,
             end: false,
-            cont: false,
+            tel: false,
+            email: false,
             grup: false,
             comp: false,
             cred: false,
             obs: false,
         },
         endItem: {},
+        foneCont: '',
         foneADD: {
-            Numero: '' ,
-            CodTipo: 1 ,
-            movel: false,
-            codPessoa: 527
-        },
+                Numero: '' ,
+                CodTipo: 1 ,
+                movel: false,
+                index: 0,
+                nomeTipo: '',
+                CodPessoa: 0
+        },    
         emailADD: {
-            Endereco: '',
-            CodTipo: 1,
-            codPessoa: 527
+                Endereco: '',
+                CodTipo: 1,
+                index: 0
         },
         select: '',
         check: '',
@@ -898,9 +1059,22 @@ export default {
         getCep: [],
         error: '',
         visivel: true,
+        setTipo: false,
+        
+        //v-money
+        money: {
+            decimal: ',',
+            thousands: '.',
+            prefix: 'R$ ',
+            //suffix: ' #',
+            precision: 2,
+            masked: false /* doesn't work with directive */
+        },
+        
         //datatime
         dias: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
         meses: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+        
         //tabela
         misc: 'bordered', //[{value: 'bordered'},{value: 'highlight'}]
         separator: 'cell', // none, horizontal, vertical, cell
@@ -941,7 +1115,10 @@ export default {
           let n = a[i].nome
           let u = a[i].uf
           let c = a[i].codUF
-          lista.push({label: n, value: u, codigoUF: c})    
+          lista.push({label: n, 
+                      value: u, 
+                      codigoUF: c
+                     })    
       }
       //console.log(lista)
       return lista
@@ -986,7 +1163,12 @@ export default {
     
     }
   },
-  watch: {
+  filters: {
+    fone: function (value) {
+        return VMasker.toPattern(value, '(99) 999999999')
+    }
+  },
+  /*watch: {
     'cep' (newVal, oldVal) {
       this.cep = VMasker.toNumber(newVal)
       this.cep = VMasker.toPattern(newVal, '99999999')
@@ -996,7 +1178,7 @@ export default {
         this.open.comp = false
       }  
     }
-  },
+  },*/
   validations: {
     nome: {
       required,
@@ -1015,6 +1197,18 @@ export default {
   },
     
   methods: {
+    
+    verificaPessoa(){
+        if(this.setTipo === false){
+            if(this.cpf.length>11){
+                this.CadPessoa.pessoa.pj=true
+            }
+            else{
+                this.CadPessoa.pessoa.pj=false
+            }
+        }
+        
+    },
     buscarCep(){
       axios.get('http://api.postmon.com.br/v1/cep/' + this.cep)
       .then((res)=>{
@@ -1087,30 +1281,39 @@ export default {
       window.history.go(-1)
     },
     salvar(){
+        //EDITAR
+        if (localStorage.getItem('cadMode')==='edit'){
+            this.CadPessoa.pessoa.codigo = localStorage.getItem('codPessoa')
+        }
         //NOVO
-        this.Pessoas.nome = this.nome
-        this.Pessoas.sexoFeminino = (this.sexo === 'true')
-        this.Pessoas.dataNasc = new Date(2000, 0, 1)
+        this.CadPessoa.pessoa.nome = this.nome
+        this.CadPessoa.pessoa.sexoFeminino = (this.sexo === 'true')
+        this.CadPessoa.pessoa.dataNasc = new Date(2000, 0, 1)
         
         if(this.cpf.length>11){
-            this.Pessoas.cnpj = this.cpf
-            this.Pessoas.cpf = this.cpf.substring(0, 10)
+            this.CadPessoa.pessoa.cnpj = this.cpf
+            this.CadPessoa.pessoa.cpf = this.cpf.substring(0, 10)
             
         }
         else{
-            this.Pessoas.cpf = this.cpf
+            this.CadPessoa.pessoa.cpf = this.cpf
         }
+        
         if(this.cpf==="" || this.cpf===null){
-            this.Pessoas.cpf = 0
-            
+            this.CadPessoa.pessoa.cpf = 0  
         }
         
-        if(this.Pessoas.codigoIBGECidade === ''){
-            this.Pessoas.codigoIBGECidade = 2930501
+        if(this.CadPessoa.pessoa.codigoIBGECidade === ''){
+            this.CadPessoa.pessoa.codigoIBGECidade = 2930501
         }
         
-        axios.post(API + 'pessoa/gravarPessoa', this.Pessoas)
+        
+        //, this.fones, this.emails, this.endAdd
+        
+        Loading.show({message: 'Enviando Dados...'})
+        axios.post(API + 'pessoa/gravarPessoa', this.CadPessoa)
           .then((res)=>{
+            Loading.hide()
             Toast.create.positive({
                 html: 'Sucesso',
                 icon: 'done'
@@ -1119,9 +1322,18 @@ export default {
             console.log(res.data)
             console.log(res.response)
             console.log('sucesso')
-            this.$router.push('clientes')
+            if(localStorage.getItem('tela') === 'fornContas'){
+                this.$router.push('cadcontas')    
+            }
+            else if(localStorage.getItem('tela') === 'fornNotas'){
+                this.$router.push('cadnotas')    
+            }
+            else {
+                this.$router.push('clientes')
+            }
           })
           .catch((e)=>{
+            Loading.hide()
             //console.log('error')
             //console.log(e)
             console.log(String(e))
@@ -1163,7 +1375,36 @@ export default {
           ]
         })
     },
+      
     //ENDEREÇOS
+    novoEnd (){
+       if(this.endAdicional.Nome===""){
+           Toast.create.negative('Não pode salvar um nome de endereço nulo')
+           return
+       }
+       this.endAdicional.CEP = this.cep2
+       this.endAdicional.index = this.endAdicional.index+1
+       this.endAdd.push(this.endAdicional)
+       this.cep2 = ''
+       this.$refs.layoutModal.close()
+       this.endAdicional = {
+           CodTipo:2,
+           Numero:"",
+           index: this.foneADD.index,
+           Bairro:"",
+           CEP:"",
+           Cidade:"",
+           CodPessoa: 0,
+           CodigoIBGECidade: 2930501,
+           CodigoUF: 29,
+           CodigoUsuario: parseInt(localStorage.getItem('codUser')),
+           Nome: "",
+           PontoRef: "",
+           UF: 'BA',
+                               
+       }
+       
+    },
     adicionarEnd(){
         Loading.show({message: 'Aguarde...'})
         axios.post(API + 'pessoaEnd/gravarEndereco', this.endAdicional)
@@ -1211,10 +1452,10 @@ export default {
               color: 'positive',
               raised: true,
               style: 'margin-top: 20px',
-              handler(data) {
+              handler: (data) => {
                 let vm = this
-                endEx.excluido = true
                 data = endEx
+                endEx.excluido = true
                 Loading.show({message: 'Excluindo...'})
                 axios.post(API + 'pessoaEnd/gravarEndereco', data)
                   .then((res)=>{
@@ -1230,7 +1471,7 @@ export default {
 
                   })
                   .catch((e)=>{
-                    Toast.create('Returned ' + JSON.stringify(item))
+                    //Toast.create('Returned ' + JSON.stringify(item))
                     console.log('error')
                     console.log(e)
                     console.log(e.response)
@@ -1267,10 +1508,41 @@ export default {
         this.endAdicional.codigo = 0
         this.endAdicional.excluido = false
     },
+    salvarEnd(){
+        if (localStorage.getItem('cadMode')==='save'){
+            this.novoEnd()
+        }
+        else {
+            this.adicionarEnd()
+        }
+    },
+    listarEnderecos(){
+      let c = parseInt(localStorage.getItem('codPessoa'))
+      if(isNaN(c)){
+        return 
+      }
+        
+      axios.get(API + 'pessoaEnd/obterEnderecos?CodPessoa=' + c)
+      .then((res)=>{
+        this.enderecos = res.data
+        //console.log(res.data)
+      })
+      .catch((e)=>{
+        this.enderecos = e.response
+        //console.log(res.data)
+      })
+      
+    },
+      
+    //TELEFONES
     adicionarTel(){
         this.foneADD.Numero = this.fone
+        this.foneADD.CodPessoa = localStorage.getItem('codPessoa')
+        Loading.show({message: 'Enviando Dados...'})
         axios.post(API + 'pessoaTelefone/gravarPessoaTelefone', this.foneADD)
           .then((res)=>{
+            Loading.hide()
+            this.fone = ''
             //console.log(res)
             console.log(res.data)
             console.log(res.response)
@@ -1281,12 +1553,56 @@ export default {
 
           })
           .catch((e)=>{
+            Loading.hide()
             console.log('error')
             console.log(e)
             console.log(e.body)
             console.log(e.response)
           })
     },
+    novoTel (){
+       if(this.fone===""){
+           Toast.create.negative('Não pode salvar um numero de telefone nulo')
+           return
+       }
+       this.foneADD.Numero = this.fone
+       this.foneADD.index = this.foneADD.index+1
+       this.fones.push(this.foneADD)
+       this.fone = ''
+       this.foneADD = {
+            CodTipo:1,
+            Numero:"",
+            index: this.foneADD.index,
+            movel:false,
+            nomeTipo:"" 
+       }
+    },
+    salvarTel(){
+        if (localStorage.getItem('cadMode')==='save'){
+            this.novoTel()
+        }
+        else {
+            this.adicionarTel()
+        }
+    },
+    listarTelefones(){
+      let c = parseInt(localStorage.getItem('codPessoa'))
+      if(isNaN(c)){
+        return 
+      }
+        
+      axios.get(API + 'pessoaTelefone/obterPessoasTelefone?codPessoa=' + c)
+      .then((res)=>{
+        this.fones = res.data
+        console.log(res.data)
+      })
+      .catch((e)=>{
+        console.log(e.response)
+      })
+      
+    },
+      
+    //EMAILS  
     adicionarEmail(){
         this.emailADD.Endereco = this.email
         axios.post(API + 'pessoaEnd/gravarPessoaEndEletronico', this.emailADD)
@@ -1307,7 +1623,47 @@ export default {
             console.log(e.response)
           })
     },
+    novoEmail (){
+       if(this.email===""){
+           Toast.create.negative('Não pode salvar um email com endereço nulo')
+           return
+       }
+       this.emailADD.Endereco = this.email
+       this.emailADD.index = this.emailADD.index+1
+       this.emails.push(this.emailADD)
+       this.email = ''
+       this.emailADD = {
+            CodTipo:1,
+            Endereco:"",
+            index: this.emailADD.index
+       }
+    },
+    salvarEmail(){
+        if (localStorage.getItem('cadMode')==='save'){
+            this.novoEmail()
+        }
+        else {
+            this.adicionarEmail()
+        }
+    },
+    listarEmail(){
+      let c = parseInt(localStorage.getItem('codPessoa'))
+      if(isNaN(c)){
+        return 
+      }
+        
+      axios.get(API + 'pessoaEnd/obterPessoasEndEletronico?codPessoa=' + c)
+      .then((res)=>{
+        this.emails = res.data
+        console.log(res.data)
+      })
+      .catch((e)=>{
+        console.log(e.response)
+      })
+      
+    },
     
+    //FAMILIA
     novaFamilia(){
         Dialog.create({
           title: 'Nova Família de Clientes',
@@ -1319,33 +1675,35 @@ export default {
               model: ''
             },
             codigoUsuario: {
-              model: 1
+              model: parseInt(localStorage.getItem('codUser'))
             }
           },
           buttons: [
             'Cancel',
             {
               label: 'Ok',
-              handler (data) {
+              handler: (data) => {
                 //console.log(data)
                 if(data.nome === null || data.nome === ''){
                     Toast.create.negative('A família não pode ser cadastrada com nome nulo') 
                     return
                 }
+                Loading.show({message: 'Enviando Dados...'})
                 axios.post(API + 'pessoa/gravarPessoaFamilia', data)
                   .then((res)=>{
+                    Loading.hide()
                     //console.log(res)
-                    console.log(res.data)
-                    //console.log(res.data)
+                    console.log(res.response)
                     console.log('sucesso')
                     //Toast.create('Returned ' + JSON.stringify(data))
                     Toast.create.positive('Família ' + JSON.stringify(data.nome) + ' cadastrada com sucesso')
-
+                    this.listarFamilias()
                   })
                   .catch((e)=>{
+                    Loading.hide()
                     console.log('error')
                     console.log(e)
-                    console.log(e.body)
+                    console.log(e.response)
                   })
                 
               }
@@ -1363,6 +1721,8 @@ export default {
         console.log(e)
       })
     },
+      
+    //OUTRAS LISTAS
     listarVendedores(){
       axios.get(API + 'usuario/obterUsuario')
       .then((res)=>{
@@ -1392,27 +1752,10 @@ export default {
       axios.get(API + 'cidade/obterufs?uf=' + this.estado)
       .then((res)=>{
         this.estadoNovo = res.data
-        this.Pessoas.CodigoUF = parseInt(this.estadoNovo[0].codUF)
+        this.CadPessoa.pessoa.codigoUF = parseInt(this.estadoNovo[0].codUF)
         //console.log(res.data)
       })
     
-    },
-    listarEnderecos(){
-      let c = parseInt(localStorage.getItem('codPessoa'))
-      if(isNaN(c)){
-        return 
-      }
-        
-      axios.get(API + 'pessoaEnd/obterEnderecos?CodPessoa=' + c)
-      .then((res)=>{
-        this.enderecos = res.data
-        //console.log(res.data)
-      })
-      .catch((e)=>{
-        this.enderecos = e.response
-        //console.log(res.data)
-      })
-      
     },
     listarPessoas(){
       if (localStorage.getItem('cadMode')==='edit'){
@@ -1421,23 +1764,23 @@ export default {
           .then((res)=>{
               Loading.hide()
               //console.log(res.data)
-              this.Pessoas = res.data
-              this.nome = this.Pessoas.nome
-              if(this.Pessoas.cnpj!==""){
-                this.cpf = this.Pessoas.cnpj
+              this.CadPessoa.pessoa = res.data
+              this.estado = this.CadPessoa.pessoa.uf
+              this.nome = this.CadPessoa.pessoa.nome
+              if(this.CadPessoa.pessoa.cnpj!==""){
+                this.cpf = this.CadPessoa.pessoa.cnpj
               }
               else {
-                this.cpf = this.Pessoas.cpf
+                this.cpf = this.CadPessoa.pessoa.cpf
               }
-              if(this.Pessoas.cnpj===null){
-                this.cpf = this.Pessoas.cpf
+              
+              if(this.CadPessoa.pessoa.cnpj===null){
+                this.cpf = this.CadPessoa.pessoa.cpf
               }
-              else {
-                this.cpf = this.Pessoas.cpf
-              }
-              this.cep = this.Pessoas.cep
-              if(this.Pessoas.sexoFeminino!==null){
-                this.sexo = this.Pessoas.sexoFeminino.toString()
+              
+              this.cep = this.CadPessoa.pessoa.cep
+              if(this.CadPessoa.pessoa.sexoFeminino!==null){
+                this.sexo = this.CadPessoa.pessoa.sexoFeminino.toString()
               }
               
           })
@@ -1446,11 +1789,13 @@ export default {
           })
       }
     },
+      
+    //OUTROS MÉTODOS
     testarConexao(){
       axios.get('https://httpbin.org/get')
       .then((res)=>{
         console.log('Conexão com a web realizada com sucesso')
-        console.log(res)
+        //console.log(res)
       })
       .catch((e)=>{
         Dialog.create({
@@ -1464,9 +1809,9 @@ export default {
             }
           ]
         })
-        this.visivel = true
-        this.error = e
-        //console.log(e)
+        this.OFF = true
+        this.error = e.response
+        console.log(e.response)
       })
         
     },
@@ -1476,11 +1821,15 @@ export default {
     },
     colapEnd() {
         this.open.end=false
-        this.open.cont=true   
+        this.open.tel=true   
     },
-    colapCont() {
-        this.open.cont=false
-        this.open.grup=true   
+    colapTel() {
+        this.open.tel=false
+        this.open.email=true   
+    },
+    colapEmail() {
+        this.open.email=false
+        this.open.grup=true  
     },
     colapGrup() {
         this.open.grup=false
@@ -1502,13 +1851,24 @@ export default {
     t.listarCidades()
     t.listarFamilias()
     t.listarVendedores()
-    t.listarEnderecos()
-    t.listarPessoas()
     t.testarConexao()
-    if (localStorage.getItem('cadMode')==='save'){
+    
+    //se for novo cadastro
+    if (localStorage.getItem('cadMode')==='save'){//NOVO
         this.visivel = false
     }
-      
+    else {
+        
+        t.listarPessoas()
+        t.listarEnderecos()
+        t.listarTelefones()
+        t.listarEmail()
+    }
+    
+    if(localStorage.getItem('tela') === 'fornContas' || localStorage.getItem('tela') === 'fornNotas'){
+        this.CadPessoa.pessoa.codTipo = 2
+    }
+    
   }
  
 }

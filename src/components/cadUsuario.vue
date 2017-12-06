@@ -17,11 +17,12 @@
         color="negative"
         push big
         @click="excluir"
+        style="margin-left: 5px"
       >
         <i class="material-icons">delete</i>
       </q-btn>
         
-      <q-btn
+      <!--<q-btn
         style="background: white; 
                color: black"
         push
@@ -38,13 +39,13 @@
         
       >
         <i class="material-icons">edit</i>
-      </q-btn>
+      </q-btn>-->
       
       <q-btn
         color="positive"
         push big
         @click="salvar"
-        
+        style="margin-left: 5px"
       >
         <i class="material-icons">done</i>
     </q-btn>
@@ -58,7 +59,7 @@
         </div>
     </div>
     
-    <q-tabs color="tertiary" align="justify">
+    <q-tabs color="tertiary" align="justify" style="background-color: white">
         <q-tab default name="dados" slot="title" icon="person" label="Dados Usuário" />
         <q-tab name="permissions" slot="title" icon="vpn_key" label="Permissões" />
 
@@ -75,8 +76,22 @@
                              :error="$v.nome.$error"
                     />
 
-                     <span style="color:#878B8F" v-if="!$v.nome.required">Nome é requerido</span>
+                     <span style="color:#8F8F8F" v-if="!$v.nome.required">Nome é requerido</span>
                      <span v-if="!$v.nome.minLength">Este campo deve conter mais que {{$v.nome.$params.minLength.min}} caracteres.</span>
+
+                  </q-field>   
+                </div>
+                <div class="col">
+                  <q-field
+                    icon="verified_user"
+                    helper="Se não preencher, será gerado aleatoriamente"
+                  >
+                    <q-input v-model.number="usuario.codigoIdentificacao" 
+                             float-label="Codigo de Identificação" 
+                             clearable
+                    />
+
+                     
 
                   </q-field>   
                 </div>
@@ -90,8 +105,11 @@
                     <q-input v-model.trim="senha"
                              type="password"
                              float-label="Senha" 
-                             clearable         
-                    /> 
+                             clearable 
+                             @input="$v.senha.$touch()"
+                             :error="$v.senha.$error"
+                    />
+                    <span style="color:#8F8F8F" v-if="!$v.nome.required">A senha é de preenchimento obrigatório</span>
                   </q-field>   
                 </div>
                 <div class="col">
@@ -100,12 +118,20 @@
                              >
                         <q-select
                             float-label="Função"
-                            v-model="vendedor"
+                            v-model="usuario.codigoFuncao"
                             :options="[
                                 {
                                   label: 'Admin',
                                   value: 1
-                                }
+                                },
+                                {
+                                  label: 'Caixa',
+                                  value: 2
+                                },
+                                {
+                                  label: 'Vendedor',
+                                  value: 3
+                                },
                             ]"
                         />
                     </q-field>
@@ -119,19 +145,23 @@
                     icon="monetization_on"
                   >
                     <q-input float-label="Desconto Máx."
-                             v-model.number="cpf"
+                             v-model.trim="desc"
                              type="number"
                              suffix="%"
+                             @blur="$v.desc.$touch()"
+                             :error="$v.desc.$error"
 
-                             />
-                  </q-field>   
+                    />
+                    <span class="form-group__message" v-if="!$v.desc.between">O desconto deve ser entre {{$v.desc.$params.between.min}} e {{$v.desc.$params.between.max}}</span>
+                  </q-field>
+                    
                 </div>
                 <div class="col">
                   <q-field
                     icon="monetization_on"
                   >
                     <q-input float-label="Comissão"
-                             v-model.number="cpf"
+                             v-model.number="usuario.comissao"
                              type="number"
                              suffix="%"
 
@@ -145,7 +175,7 @@
                     <q-field>
                         <q-select
                             float-label="Empresa"
-                            v-model="vendedor"
+                            v-model="usuario.codigoEmpresa"
                             :options="[
                                 {
                                   label: '7Virtual',
@@ -159,13 +189,9 @@
                     <q-field>
                         <q-select
                             float-label="Empregado"
-                            v-model="vendedor"
-                            :options="[
-                                {
-                                  label: 'Não Identificado',
-                                  value: 1
-                                }
-                            ]"
+                            v-model="usuario.codPessoa"
+                            :options="listaPessoas"
+                            filter
                         />
                     </q-field>
                 </div>
@@ -183,13 +209,13 @@
                       </q-card-title>
                       <q-card-separator />
                       <q-card-main>
-                        <q-checkbox v-model="PDV.check1" label="Bloquear cancelamento de item na venda" /><br>
-                        <q-checkbox v-model="checked" label="Permitir ver saldo no caixa" /><br>
-                        <q-checkbox v-model="checked" label="Permitir nota de devolução" /><br>
-                        <q-checkbox v-model="checked" label="Permitir outras saídas" /><br>
-                        <q-checkbox v-model="checked" label="Permitir orçamento" /><br>
-                        <q-checkbox v-model="checked" label="Permitir cancelamento de nota/pedido" /><br>
-                        <q-checkbox v-model="checked" label="Alterar desconto dado pelo sistema" /><br>
+                        <q-checkbox v-model="usuario.bloqueiaCancelaProd" label="Bloquear cancelamento de item na venda" /><br>
+                        <q-checkbox v-model="usuario.verQuantiaCaixa" label="Permitir ver saldo no caixa" /><br>
+                        <q-checkbox v-model="usuario.devolverProduto" label="Permitir nota de devolução" /><br>
+                        <q-checkbox v-model="usuario.pdV_PermitirOutrasSaidas" label="Permitir outras saídas" /><br>
+                        <q-checkbox v-model="usuario.pdV_CriarOrcamento" label="Permitir orçamento" /><br>
+                        <q-checkbox v-model="usuario.pdV_CancelarPedido" label="Permitir cancelamento de nota/pedido" /><br>
+                        <q-checkbox v-model="usuario.pdV_ModificarDescontoSistema" label="Alterar desconto dado pelo sistema" /><br>
                       </q-card-main>
                     </q-card>   
                 </div>
@@ -201,13 +227,13 @@
                       </q-card-title>
                       <q-card-separator />
                       <q-card-main>
-                        <q-checkbox v-model="RET.check1" label="Permitir cadastro de usuários" /><br>
-                        <q-checkbox v-model="checked" label="Permitir movimentar estoque" /><br>
-                        <q-checkbox v-model="checked" label="Permitir alterar tabela de preços" /><br>
-                        <q-checkbox v-model="checked" label="Permitir transferência de produtos" /><br>
-                        <q-checkbox v-model="checked" label="Permitir visualizar custo do produto" /><br>
-                        <q-checkbox v-model="checked" label="Permitir visualizar financeiro" /><br>
-                        <q-checkbox v-model="checked" label="Permitir alterar produto" /><br>
+                        <q-checkbox v-model="usuario.cadUsuario" label="Permitir cadastro de usuários" /><br>
+                        <q-checkbox v-model="usuario.movimentaEstoqueES" label="Permitir movimentar estoque" /><br>
+                        <q-checkbox v-model="usuario.ret_AlteraTabPreco" label="Permitir alterar tabela de preços" /><br>
+                        <q-checkbox v-model="usuario.pdV_PermitirTransfProduto" label="Permitir transferência de produtos" /><br>
+                        <q-checkbox v-model="usuario.ret_VerCusto" label="Permitir visualizar custo do produto" /><br>
+                        <q-checkbox v-model="usuario.acessaFinanceiro" label="Permitir visualizar financeiro" /><br>
+                        <q-checkbox v-model="usuario.alteraProduto" label="Permitir alterar produto" /><br>
                       </q-card-main>
                     </q-card>   
                 </div>
@@ -216,97 +242,82 @@
     </q-tabs>
     
     
-        
-    
     
 </div>
     
 </template>
 
 <script>
-//import axios from 'axios'
+import axios from 'axios'
 import VMasker from 'vanilla-masker'
-import estados from 'data/estados.json'
-import cidadesJSON from 'data/estados-cidades.json'
-import { required, minLength, maxLength, email } from 'vuelidate/lib/validators'
-import { Dialog, Toast } from 'quasar'
+import { required, between, minLength, maxLength, email } from 'vuelidate/lib/validators'
+import { Dialog, Toast, Loading } from 'quasar'
+    
+//dev
+const API = 'http://192.168.0.200/WSV3/'
+
+//debug
+//const API = 'http://192.168.0.200:29755/'
 
 export default {
   name: 'cadUsuario',
   data () {
     return {
-        estados,
-        cidadesJSON,
+        usuario: {
+            "codigoIdentificacao": '',
+            "nome": '',
+            "codPessoa": 3,
+            "senha": '',
+            "descontoMax": 0.00,
+            "comissao": 0.00,
+            "cadUsuario": false,
+            "bloqueiaCancelaProd": false,
+            "codigoFuncao": 2,
+            "codigoEmpresa": 1,
+            "movimentaEstoqueES": false,
+            "verQuantiaCaixa": false,
+            "devolverProduto": false,
+            "pdV_EstornarRecbto": false,
+            "pdV_CancelarPedido": false,
+            "pdV_PermitirOutrasSaidas": false,
+            "pdV_ModificarDescontoSistema": false,
+            "pdV_PermitirTransfProduto": false,
+            "pdV_CriarOrcamento": false,
+            "ret_VerCusto": false,
+            "ret_AlteraTabPreco": false,
+            "codigoUsuario": parseInt(localStorage.getItem('codUser')),
+            "acessaFinanceiro": false,
+            "alteraProduto": false
+        },
         nome: '',
         senha: '',
-        cpf: '',
-        obs: '',
-        checked: false,
-        tipoPessoa: 'f',
-        tipo: 'c',
-        PDV: {
-          check1: false,
-          check2: true,
-          check3: true,
-          check4: true,
-          check5: false, 
-          check6: false, 
-          check7: false, 
-            
-        },
-        RET: {
-          check1: false,
-          check2: true,
-          check3: true,
-          check4: true,
-          check5: false, 
-          check6: false, 
-          check7: false,  
-        },
-        options: [
-            {
-              label: 'Indefinido',
-              value: 'ind'
-            },
-            {
-              label: 'Google',
-              value: 'goog'
-            },
-            {
-              label: 'Facebook',
-              value: 'fb'
-            },
-            {
-              label: 'Twitter',
-              value: 'twtr'
-            },
-            {
-              label: 'Apple Inc.',
-              value: 'appl'
-            },
-            {
-              label: 'Oracle',
-              value: 'ora'
-            }
-        ],
-        select: '',
-        familia: 'ind',
-        vendedor: 1,
-        cred: 's',
-        limite: '0,00',
-        cidades: [],
+        desc: 0,
         canGoBack: window.history.length > 1,
-        getCep: [],
         error: '',
-        visivel: false
+        visivel: false,
+        vendedor: '',
+        pessoas: [],
+        usuarios: [],
+        ultimoUser: [],
     }
   },
+    
   computed: {
-    // uma função "getter" computada (computed getter)
-    listaEstados: function () {
-      // `this` aponta para a instância Vue da variável `vm`
-      return this.cidadesJSON.estados
-    },
+    listaPessoas: function () {
+      var a = this.pessoas
+      var lista = []
+      
+      for (let i=0; i < a.length; i++) {
+          if(a[i].codTipo === 4){
+              let n = a[i].nome
+              let c = a[i].codigo
+              lista.push({label: n, value: c})  
+          }  
+      }
+      //console.log(lista)
+      return lista
+    
+    }  
   },
   watch: {
     'fone' (newVal, oldVal) {
@@ -323,9 +334,11 @@ export default {
       required,
       minLength: minLength(3)
     },
-    cpf: {
-      minLength: minLength(10),
-      maxLength: maxLength(14)  
+    senha: {
+      required,
+    },
+    desc: {
+      between: between(0, 99)  
     },
     cep: {
       maxLength: maxLength(8)  
@@ -339,23 +352,38 @@ export default {
     goBack(){
       window.history.go(-1)
     },
-    limpar () {
-      this.nome = ''
-      this.cpf = ''
-      this.fone = ''
-      this.email = ''
-      this.cep = ''
-      this.end = ''
-      this.bairro = ''
-      this.cidade = ''
-      this.estado = ''
-      this.numLogradouro = '' 
-    },
     salvar(){
-        Toast.create.positive({
-        html: 'Salvo com sucesso',
-        icon: 'done'
-      })
+        this.usuario.nome = this.nome
+        this.usuario.senha = this.senha
+        if(this.usuario.codigoIdentificacao===null || this.usuario.codigoIdentificacao === ''){
+            this.usuario.codigoIdentificacao = this.ultimoUser.codigoIdentificacao+1
+        }
+      
+        Loading.show({message: 'Enviando Dados...'})
+        axios.post(API + 'usuario/gravarUsuario', this.usuario)
+          .then((res)=>{
+            Loading.hide()
+            Toast.create.positive({
+                html: 'Sucesso',
+                icon: 'done'
+            })
+            //console.log(res)
+            console.log(res.data)
+            console.log(res.response)
+            console.log('sucesso')
+            this.$router.push('usuarios')
+          })
+          .catch((e)=>{
+            Loading.hide()
+            //console.log('error')
+            console.log(e)
+            console.log(String(e))
+            let error = e.response.data
+            console.log(error)
+            for(var i=0; error.length; i++){
+                Toast.create.negative(error[i].value)
+            }
+        })
     },
     excluir(){
         Dialog.create({
@@ -383,7 +411,59 @@ export default {
           ]
         })
     },
+    listarPessoas(){
+      Loading.show({message: 'Aguardando Dados...'})
+      axios.get(API + 'pessoa/obterpessoa')
+      .then((res)=>{
+          //console.log(res.data)
+          this.pessoas = res.data
+          Loading.hide()
+      })
+      .catch((e)=>{
+        console.log(e)
+        Loading.hide()
+      })  
+    },
     
+    listarUsuarios(){
+      Loading.show({message: 'Aguardando Dados...'})
+      axios.get(API + 'usuario/obterUsuario')
+      .then((res)=>{
+          //console.log(res)
+          this.usuarios = res.data
+          Loading.hide()
+          this.ultimoUser = this.usuarios.slice(-1)[0]
+      })
+      .catch((e)=>{
+        console.log(e)
+      })  
+    },
+    editarUsuario(){
+      if (localStorage.getItem('cadMode')==='edit'){
+          Loading.show({message: 'Aguardando Dados...'})
+          axios.get(API + 'usuario/obterUsuario?codidentificacao=' + localStorage.getItem('codUsuario'))
+          .then((res)=>{
+              Loading.hide()
+              //console.log(res.data)
+              this.usuario = res.data
+              this.nome = this.usuario.nome
+              this.senha = this.usuario.senha
+          })
+          .catch((e)=>{
+            console.log(e)
+          })
+      }
+    },
+  },
+  created (){
+    let t = this
+    if(localStorage.getItem('cadMode')==='edit'){
+        t.editarUsuario()
+    }
+    else {
+        t.listarUsuarios()
+    }
+    t.listarPessoas()
   }
  
 }
@@ -443,16 +523,6 @@ export default {
       font-size: 12px
     }
     
-    .topo {
-        margin: 50px 0 0 10px;
-		padding: 10px 10px;
-		width: 100%; 
-		position: fixed;
-		top: 0; 
-        left: 0;
-		text-align: center;
-        z-index: 5;
-	}
     
     .mdInput {
         /*margin-top: 10px;

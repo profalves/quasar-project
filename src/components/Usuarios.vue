@@ -6,14 +6,17 @@
         <q-btn 
            round
            color="primary" 
-           @click="$router.push('/cadUsuario')">
+           @click="novo">
            <q-icon name="add" />
         </q-btn>
     </q-fixed-position>
-  <div id="table">
+    
+    <i>Para editar um registro, basta apenas clicar no produto</i>
+    
+  <div id="lista">
     
     <q-data-table
-      :data="table"
+      :data="usuarios"
       :config="config"
       :columns="colunas"
       @refresh="refresh"
@@ -21,14 +24,11 @@
       @rowclick="rowClick"
       style="background-color:white;"
     >
-      <div slot="selection" scope="props">
-        <q-btn flat color="primary" @click="changeMessage(props)">
-          <q-icon name="edit" />
-        </q-btn>
+      <template slot="selection" scope="props">
         <q-btn flat color="primary" @click="deleteRow(props)">
           <q-icon name="delete" />
         </q-btn>
-      </div>
+      </template>
     </q-data-table>
     
    
@@ -145,26 +145,22 @@
 </template>
 
 <script>
-import {clone} from 'quasar'
-import table from '../data/table.json'
+import { Dialog, Toast, Loading, clone } from 'quasar'
+import axios from 'axios'
+
+const API = 'http://192.168.0.200/WSV3/' 
+  
+//debug
+//const API = 'http://192.168.0.200:29755/'     
+    
+
 export default {
   
   name: 'usuarios',
   data () {
     return {
-      table,
-      tipo: 'c',
-      tipos: [
-        {
-          label: 'Cliente',
-          value: 'c'
-        },
-        {
-          label: 'Fornecedor',
-          value: 'f'
-        },
-
-      ],
+      usuarios: [],
+      excluidos: [],
       text: 'text',
       config: {
         title: '',
@@ -192,9 +188,9 @@ export default {
           rows: 'Linhas',
           selected: {
             singular: 'item selecionado.',
-            plural: 'items selecionado.'
+            plural: 'itens selecionados.'
           },
-          clear: 'limpar',
+          clear: 'limpar seleção',
           search: 'Buscar',
           all: 'Todos'
         }
@@ -202,16 +198,16 @@ export default {
       colunas: [
         {
           label: 'Código',
-          field: 'height',
+          field: 'codigoIdentificacao',
           filter: true,
           sort: true,
-          type: 'string',
+          type: 'number',
           width: '100px'
         },
         
         {
           label: 'Nome',
-          field: 'name',
+          field: 'nome',
           width: '150px',
           //classes: 'bg-orange-2',
           sort: true,
@@ -226,7 +222,7 @@ export default {
         },
         {
           label: 'Função',
-          field: 'eye_color',
+          field: 'funcao',
           filter: true,
           sort: true,
           type: 'string',
@@ -234,7 +230,7 @@ export default {
         },
         {
           label: 'Empresa',
-          field: 'skin_color',
+          field: 'codigoEmpresa',
           sort: true,
           filter: true,
           type: 'string',
@@ -249,12 +245,88 @@ export default {
     }
   },
   methods: {
-    changeMessage (props) {
-      props.rows.forEach(row => {
-        row.data.message = 'Gogu'
+    listarUsuarios(){
+      Loading.show({message: 'Aguardando Dados...'})
+      axios.get(API + 'usuario/obterUsuario')
+      .then((res)=>{
+          console.log(res)
+          this.usuarios = res.data
+          Loading.hide()
       })
+      .catch((e)=>{
+        console.log(e)
+      })  
     },
     deleteRow (props) {
+      let row = props.rows
+      console.log(row)
+      this.excluidos = row
+      Dialog.create({
+          title: 'Excluir',
+          message: 'Tem certeza que deseja excluir ' + this.excluidos.length + ' registro(s)?',
+          buttons: [
+            {
+              label: 'Não! Cancela',
+              color: 'negative',
+              raised: true,
+              style: 'margin-top: 20px',
+              handler () {
+                Toast.create('Cancelado...')
+              }
+            },
+            {
+              label: 'Sim! Pode excluir',
+              color: 'positive',
+              raised: true,
+              style: 'margin-top: 20px',
+              handler: () => {
+                  let a = this.excluidos
+                  let obj = {}
+
+                  for (let i=0; i < a.length; i++) {
+                      obj = a[i].data
+                      obj.excluido = true
+                      console.log(obj)
+                      Loading.show({message: 'Aguardando Dados...'})
+                      axios.post(API + 'usuario/excluirUsuario?codUsuario=' + obj.codigo)
+                          .then((res)=>{
+                              //console.log(res)
+                              Toast.create('Excluido com sucesso')
+                              Loading.hide()
+                              this.listarUsuarios()
+                          })
+                          .catch((e)=>{
+                            console.log(e)
+                            Loading.hide()
+                            return
+                          })  
+                      
+                  }
+              }
+            }
+          ]
+      })
+    },
+    refresh (done) {
+      this.timeout = setTimeout(() => {
+        this.listarUsuarios()
+      }, 5000)
+    },
+    selection (number, rows) {
+      console.log(rows)
+      console.log(`selecionou ${number}: ${rows}`)
+    },
+    rowClick (row) {
+      console.log('clicked on a row', row)
+      localStorage.setItem('codUsuario', row.codigoIdentificacao)
+      localStorage.setItem('cadMode', 'edit')
+      this.$router.push({ path: '/cadUsuario' })  
+    },
+    novo(){
+      localStorage.setItem('cadMode', 'save')
+      this.$router.push('/cadUsuario')
+    }
+    /*deleteRow (props) {
       props.rows.forEach(row => {
         this.table.splice(row.index, 1)
       })
@@ -269,7 +341,7 @@ export default {
     },
     rowClick (row) {
       console.log('clicked on a row', row)
-    }
+    }*/
   },
   beforeDestroy () {
     clearTimeout(this.timeout)
@@ -300,6 +372,9 @@ export default {
       }
       this.config.bodyStyle = style
     }
+  },
+  created(){
+    this.listarUsuarios()
   }
 }
 </script>

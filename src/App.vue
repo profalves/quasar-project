@@ -1,7 +1,7 @@
 <template>
   <!-- Don't drop "q-app" class -->
   <div id="q-app">
-    
+  <q-window-resize-observable @resize="onResize" /> 
   <q-layout
     ref="layout"
     view="lHh Lpr fff"
@@ -21,7 +21,7 @@
         <div slot="subtitle">7Virtual</div>
       </q-toolbar-title>
         
-      <q-btn flat @click="toggleFullscreen">
+      <q-btn flat @click="toggleFullscreen" v-if="visivel">
         <q-icon name="fullscreen" />
       </q-btn>
     </q-toolbar>
@@ -128,6 +128,7 @@ export default {
   },
   data () {
     return {
+        visivel: true
     }
   },
   methods: {
@@ -136,6 +137,20 @@ export default {
     },
     toggleFullscreen () {
       AppFullscreen.toggle()
+    },
+    novo(){
+      localStorage.setItem('cadMode', 'save')
+      this.$router.push('/cadContas')
+    },
+    onResize (size) {
+      //console.log(size)
+      if(size.width < 430 || size.height < 400){
+        this.visivel = false
+      }
+      else{
+        this.visivel = true
+      }
+      
     }
   },
 }
@@ -149,7 +164,7 @@ export default {
     }
     
     .topo {
-        margin-top: -80px;
+        margin-top: -90px;
 		padding-top: 60px;
 		width: 100%; 
 		position: sticky;

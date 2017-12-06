@@ -210,7 +210,7 @@ export default {
           rows: 'Linhas',
           selected: {
             singular: 'item selecionado.',
-            plural: 'items selecionado.'
+            plural: 'itens selecionados.'
           },
           clear: 'limpar seleção',
           search: 'Buscar',
@@ -252,25 +252,26 @@ export default {
           field: 'codigo',
           filter: true,
           sort: true,
+          type: 'number',
+          width: '60px'
+        },
+        
+        {
+          label: 'Telefone',
+          field: 'telResid',
+          //sort: true,
+          filter: true,
           type: 'string',
           width: '100px'
         },
         
         {
-          label: 'Endereço',
-          field: 'endereco',
+          label: 'Tipo',
+          field: 'tipo',
           filter: true,
           sort: true,
           type: 'string',
           width: '120px'
-        },
-        {
-          label: 'Telefone',
-          field: 'telResid',
-          sort: true,
-          filter: true,
-          type: 'string',
-          width: '100px'
         }
       ],
       pagination: (localStorage.getItem('pagination') === 'true'),
@@ -291,6 +292,7 @@ export default {
       })
       .catch((e)=>{
         console.log(e)
+        Loading.hide()
       })  
     },
     deleteRow (props) {
@@ -327,6 +329,7 @@ export default {
                       Loading.show({message: 'Aguardando Dados...'})
                       axios.post(API + 'pessoa/excluirPessoa?codPessoa=' + obj.codigo)
                           .then((res)=>{
+                              Toast.create('Excluido com sucesso')
                               console.log(res)
                               Loading.hide()
                               this.listarPessoas()
@@ -344,7 +347,7 @@ export default {
     },
     refresh (done) {
       this.timeout = setTimeout(() => {
-        done()
+        this.listarPessoas()
       }, 5000)
     },
     selection (number, rows) {

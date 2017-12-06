@@ -1,175 +1,121 @@
 <template>
   <div class="layout-padding row justify-center">
     <div style="width: 500px; max-width: 90vw;">
-      <p class="caption">
-        <span class="desktop-only">Click</span>
-        <span class="mobile-only">Tap</span>
-        on each type to see it in action.
+      <p class="caption" style="margin-bottom: 40px">
+        These examples feature countries autocomplete.<br>
+        On desktop, Escape key closes the suggestions popover and you can navigate with keyboard arrow keys. Selection is made with either mouse/finger tap or by Enter key.
       </p>
 
-      <q-list style="max-width: 600px;">
-        <q-item
-          link
-          v-for="modal in types"
-          :key="modal"
-          @click="$refs[modal.ref].open()"
-          
-        >
-          <q-item-side icon="open_in_new" />
-          <q-item-main :label="modal.label" />
-          <q-item-side right icon="keyboard_arrow_right" />
-        </q-item>
-      </q-list>
+      <q-search v-model="terms" placeholder="Start typing a country name">
+        <q-autocomplete @search="search" @selected="selected" />
+      </q-search>
 
-      <p class="caption">Appear from Edges</p>
-      <q-list style="max-width: 600px;">
-        <q-item
-          link
-          v-for="position in ['top', 'bottom', 'left', 'right']"
-          :key="position"
-          @click="openSpecialPosition(position)"
-          
-        >
-          <q-item-side icon="open_in_new" />
-          <q-item-main :label="`Modal from ${position}`" />
-          <q-item-side right icon="keyboard_arrow_right" />
-        </q-item>
-      </q-list>
+      <q-search inverted v-model="terms" placeholder="Start typing a country name">
+        <q-autocomplete @search="search" @selected="selected"  />
+      </q-search>
+
+      <p class="caption">Maximum of 2 results at a time</p>
+      <q-search inverted color="amber" v-model="terms">
+        <q-autocomplete
+          @search="search"
+          :max-results="2"
+          @selected="selected"
+        />
+      </q-search>
+
+      <p class="caption">Minimum 3 characters to trigger search</p>
+      <q-input color="amber" v-model="terms" placeholder="Type 'fre'">
+        <q-autocomplete
+          @search="search"
+          :min-characters="3"
+          @selected="selected"
+        />
+      </q-input>
+
+      <p class="caption">Custom debounce before triggering search</p>
+      <q-input color="amber" v-model="terms" placeholder="One second debounce">
+        <q-autocomplete
+          @search="search"
+          :debounce="1000"
+          @selected="selected"
+        />
+      </q-input>
+
+      <p class="caption">Static List</p>
+      <q-search inverted color="secondary" v-model="terms" placeholder="Featuring static data">
+        <q-autocomplete
+          :static-data="{field: 'value', list: countries}"
+          @selected="selected"
+        />
+      </q-search>
+
+      <p class="caption">Separator between results</p>
+      <q-search v-model="terms">
+        <q-autocomplete
+          separator
+          @search="search"
+          @selected="selected"
+        />
+      </q-search>
     </div>
-
-    <q-modal ref="basicModal" :content-css="{padding: '50px', minWidth: '50vw'}">
-      <h4>Basic Modal</h4>
-      <p v-for="n in 25">Scroll down to close</p>
-      <q-btn color="primary" @click="$refs.basicModal.close()">Close</q-btn>
-    </q-modal>
-
-    <q-modal
-      ref="eventsModal"
-      @open="notify('open')"
-      @escape-key="notify('escape-key')"
-      @close="notify('close')"
-      :content-css="{padding: '50px', minWidth: '50vw'}"
-    >
-      <h4>Modal with Events</h4>
-      <p v-for="n in 25">Scroll down to close</p>
-      <q-btn color="primary" @click="$refs.eventsModal.close()">Close</q-btn>
-    </q-modal>
-
-    <q-modal ref="layoutModal" :content-css="{minWidth: '80vw', minHeight: '80vh'}">
-      <q-modal-layout>
-        <q-toolbar slot="header">
-          <q-btn flat @click="$refs.layoutModal.close()">
-            <q-icon name="keyboard_arrow_left" />
-          </q-btn>
-          <q-toolbar-title>
-            Header
-          </q-toolbar-title>
-        </q-toolbar>
-
-        <q-toolbar slot="header">
-          <q-search inverted v-model="search" color="none"></q-search>
-        </q-toolbar>
-
-        <q-toolbar slot="footer">
-          <q-toolbar-title>
-            Footer
-          </q-toolbar-title>
-        </q-toolbar>
-
-        <div class="layout-padding">
-          <h1>Modal</h1>
-
-          <q-btn color="primary" @click="$refs.layoutModal.close()">Close</q-btn>
-          <p class="caption" v-for="n in 15">This is a Modal presenting a Layout.</p>
-        </div>
-      </q-modal-layout>
-    </q-modal>
-
-    <q-modal ref="minimizedModal" minimized :content-css="{padding: '50px'}">
-      <h4>Minimized Modal</h4>
-      <p>This one has backdrop on small screens too.</p>
-      <q-btn color="red" @click="$refs.minimizedModal.close()">Close Me</q-btn>
-    </q-modal>
-
-    <q-modal ref="maximizedModal" maximized :content-css="{padding: '50px'}">
-      <h4>Maximized Modal</h4><p>This one is maximized on bigger screens too.</p>
-      <q-btn color="tertiary" @click="$refs.maximizedModal.close()">Close Me</q-btn>
-    </q-modal>
-
-    <q-modal ref="positionModal" :position="position" :content-css="{padding: '20px'}">
-      <h4>Modal</h4><p>This one gets displayed from {{position}}.</p>
-      <q-btn color="orange" @click="$refs.positionModal.close()">Close Me</q-btn>
-    </q-modal>
   </div>
 </template>
 
 <script>
+import countries from 'data/autocomplete.json'
 import {
-  Toast,
-  QBtn,
-  QIcon,
-  QModal,
-  QModalLayout,
-  QToolbar,
-  QToolbarTitle,
+  QAutocomplete,
   QSearch,
-  QList,
-  QItem,
-  QItemSide,
-  QItemMain
+  QInput,
+  uid,
+  filter,
+  Toast
 } from 'quasar'
+const icons = ['alarm', 'email', 'search', 'build', 'card_giftcard', 'perm_identity', 'receipt', 'schedule', 'speaker_phone', 'archive', 'weekend', 'battery_charging_full']
+function getRandomIcon () {
+  return icons[Math.floor(Math.random() * icons.length)]
+}
+function getRandomStamp () {
+  if (Math.floor(Math.random() * 50) % 3 === 0) {
+    return `${Math.floor(Math.random() * 10)} min`
+  }
+}
+function getRandomSecondLabel () {
+  if (Math.floor(Math.random() * 50) % 4 === 0) {
+    return `UID: ${uid().substring(0, 8)}`
+  }
+}
+function parseCountries () {
+  return countries.map(country => {
+    return {
+      label: country,
+      sublabel: getRandomSecondLabel(),
+      icon: getRandomIcon(),
+      stamp: getRandomStamp(),
+      value: country
+    }
+  })
+}
 export default {
   components: {
-    QBtn,
-    QIcon,
-    QModal,
-    QModalLayout,
-    QToolbar,
-    QToolbarTitle,
+    QAutocomplete,
     QSearch,
-    QList,
-    QItem,
-    QItemSide,
-    QItemMain
+    QInput
   },
-  
   data () {
     return {
-      search: '',
-      types: [
-        {
-          label: 'Basic',
-          ref: 'basicModal'
-        },
-        {
-          label: 'Basic with Events',
-          ref: 'eventsModal'
-        },
-        {
-          label: 'With Layout',
-          ref: 'layoutModal'
-        },
-        {
-          label: 'Always Minimized',
-          ref: 'minimizedModal'
-        },
-        {
-          label: 'Always Maximized',
-          ref: 'maximizedModal'
-        }
-      ],
-      position: 'bottom'
+      terms: '',
+      countries: parseCountries()
     }
   },
   methods: {
-    notify (eventName) {
-      Toast.create(`Event "${eventName}" was triggered.`)
+    search (terms, done) {
+      setTimeout(() => {
+        done(filter(terms, {field: 'value', list: parseCountries()}))
+      }, 1000)
     },
-    openSpecialPosition (position) {
-      this.position = position
-      this.$nextTick(() => {
-        this.$refs.positionModal.open()
-      })
+    selected (item) {
+      Toast.create(`Selected suggestion "${item.label}"`)
     }
   }
 }

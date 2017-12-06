@@ -17,11 +17,12 @@
         color="negative"
         push big
         @click="excluir"
+        style="margin-left:5px;"
       >
         <i class="material-icons">delete</i>
       </q-btn>
         
-      <q-btn
+      <!--<q-btn
         style="background: white; 
                color: black"
         push
@@ -38,13 +39,13 @@
         
       >
         <i class="material-icons">edit</i>
-      </q-btn>
+      </q-btn>-->
       
       <q-btn
         color="positive"
         push big
         @click="salvar"
-        
+        style="margin-left:5px;"
       >
         <i class="material-icons">done</i>
     </q-btn>
@@ -54,34 +55,32 @@
     <!-- formulário -->
     <div class="row">
         <div class="col">
-            <h5>Lançamentos Financeiro</h5>
+            <h5>Lançamentos Financeiros</h5>
         </div>
     </div>
     
-    <!--<div class="row">
-        <div class="col">
+    
+    <div class="row">
+        <div class="col-xs-12 col-md-4">
             <q-field
                 icon="account_balance_wallet"
              >
                 <q-select
                     float-label="Tipo"
-                    v-model="tipo"
+                    v-model="conta.tipo"
                     :options="tipos"
                 />
             </q-field>   
         </div>
-    </div>-->
-    
-    <div class="row">
-        <div class="col">
+        <div class="col offset-md-2">
             <q-field
                 icon="store"
              >
                 <q-select
                     float-label="Fornecedor"
                     filter
-                    v-model="fornecedor"
-                    :options="options"
+                    v-model="conta.codFornecedor"
+                    :options="listaFornecedores"
                 />
             </q-field>   
         </div>
@@ -90,7 +89,7 @@
             <q-btn 
                rounded
                color="primary" 
-               @click="$router.push('/cadcliente')">
+               @click="cadFornecedor">
                <q-icon name="add" />
             </q-btn>
         </div>
@@ -119,8 +118,9 @@
                 <q-select
                     float-label="Tipo Categoria"
                     filter
-                    v-model="cat"
-                    :options="options"
+                    v-model="conta.codTipo"
+                    :options="listaCategorias"
+                    @change="listarSubtipos"
                 />
             </q-field>
             
@@ -129,7 +129,7 @@
             <q-btn 
                rounded
                color="primary" 
-               @click="$router.push('/')">
+               @click="novoTipo">
                <q-icon name="add" />
             </q-btn>
             
@@ -142,8 +142,8 @@
                 <q-select
                     float-label="SubCategoria"
                     filter
-                    v-model="sub"
-                    :options="options"
+                    v-model="conta.codSubTipoDespesa"
+                    :options="listaSubCategorias"
                 />
             </q-field>   
         </div>
@@ -151,7 +151,7 @@
             <q-btn 
                rounded
                color="primary" 
-               @click="$router.push('/')">
+               @click="novoSubTipo">
                <q-icon name="add" />
             </q-btn>    
         </div>
@@ -164,8 +164,8 @@
              >
                 <q-select
                     float-label="Forma de Pagamento"
-                    v-model="forma"
-                    :options="formasPagto"
+                    v-model="conta.formaPgto"
+                    :options="listaFormas"
                 />
             </q-field>   
         </div>
@@ -176,8 +176,7 @@
           <q-field
             icon="assignment_turned_in"
           >
-            <q-input v-model.number="doc"
-                     type="number"
+            <q-input v-model.number="conta.numeroDocumento"
                      float-label="n. Documento" 
                      clearable
             />
@@ -194,11 +193,11 @@
     
     
     <div class="row">
-        <div class="col-md-3 offset-1">
+        <div class="col">
             <q-field
                 icon="date_range"
                 >
-                <q-datetime v-model="vencimento"
+                <q-datetime v-model="conta.vencimento"
                             type="date" 
                             float-label="Vencimento" 
                             color="black"
@@ -208,35 +207,36 @@
                             cancel-label="Cancelar"
                             :day-names="dias"
                             :month-names="meses"
+                            
                 />
 
             </q-field>  
         </div>
-        <div class="col-md-3 offset-1">
+        <div class="col-xs-5 offset-md-1 offset-lg-2">
             <q-field
-                label="Valor"
+                helper="Valor Parcela"
                 >
-                <q-input v-model="valor"
-                         type="number"
-                         prefix="R$"
+                <money v-model="conta.valorTitulo"
+                       v-bind="money"
+                       class="mdInput"
+                       style="margin-top:12px"
                 />
-
             </q-field> 
         </div>
     </div>
         
-    <div class="row">
-        <div class="col-md-3 offset-1">
+    <div class="row" v-if="geraParcela">
+        <div class="col">
             <q-field
                 label="Qtd. de Títulos"
                 >
-                <q-input v-model.number="qtdTitulos"
+                <q-input v-model.number="qtdParcelas"
                          type="number"
                 />
 
             </q-field>  
         </div>
-        <div class="col-md-3 offset-1">
+        <div class="col">
             <q-field
                 label="Intervalo dias"
                 >
@@ -246,10 +246,53 @@
 
             </q-field> 
         </div>
-        <div class="col offset-1">
-            <q-btn color="primary" style="margin-top:15px;" @click="open = true">Criar Títulos</q-btn>
-        </div>
     </div>
+    
+    <q-list class="row" id="baixa" round-borders>
+        <div class="col">
+            <q-field
+                icon="date_range"
+                >
+                <q-datetime v-model="conta.pagamento"
+                            type="date" 
+                            float-label="Pagamento" 
+                            color="black"
+                            format="DD/MM/YYYY"
+                            ok-label="OK" 
+                            clear-label="Limpar" 
+                            cancel-label="Cancelar"
+                            :day-names="dias"
+                            :month-names="meses"
+                            :disable="disable"
+                            @change="conta.valorPago = conta.valorTitulo"
+                            
+                />
+
+            </q-field>  
+        </div>
+        <div class="col">
+            <q-field
+                helper="Valor Pago"
+                >
+                <money v-model="conta.valorPago"
+                       v-bind="money"
+                       class="mdInput"
+                       style="margin-top:12px"
+                       :disabled="disable"
+                />
+            </q-field> 
+        </div>
+        <div class="col" v-if="visivel" style="text-align: center;">
+            <q-btn color="primary" 
+                   style="margin-top:15px;" 
+                   @click="baixar"
+                   >Baixar Título
+            </q-btn>
+        </div>
+        <div v-else id="baixado">
+            Título Baixado
+        </div>
+    </q-list>
     
     
     <!--<div class="row">
@@ -274,14 +317,14 @@
             </q-btn>
         </div>
     </div>-->
-    
+    <!--
     <q-collapsible icon="monetization_on" 
                    label="Títulos" 
                    style="background-color:white;
                           margin-top:30px;"
                    :opened="open"
                    >
-        <!--Data tables HTML-->
+        Data tables HTML
         <h6 style="margin-top:30px">Parcelas</h6>
         <div class="row" id="table">
             <table style="margin-top: 30px;" class="q-table" :class="computedClasses">
@@ -334,71 +377,73 @@
             </table>  
 
         </div>
-    </q-collapsible>
+    </q-collapsible>-->
     
 </div>
     
 </template>
 
 <script>
-//import axios from 'axios'
+import axios from 'axios'
 //import VMasker from 'vanilla-masker'
 
 import { required, minLength } from 'vuelidate/lib/validators'
-import { Dialog, Toast } from 'quasar'
+import { Dialog, Toast, Loading } from 'quasar'
 
+//dev
+const API = 'http://192.168.0.200/WSV3/'
 
+//debug
+//const API = 'http://192.168.0.200:29755/'
+    
 export default {
-  name: 'clientes',
+  name: 'contas',
   data () {
     return {
-        tipo: '',
-        fornecedor: '',
-        desc: '',
-        cat: '',
-        sub: '',
-        forma: '',
+        tipos: [
+            {
+              label: 'Despesa',
+              value: 'CP'
+            },
+            {
+              label: 'Receita',
+              value: 'CR'
+            }
+        ],
+        fornecedores: [],
+        conta: {
+            
+            codFornecedor: '', //não nulo
+            codTipo: 1, //não nulo
+            codSubTipoDespesa: 1, //não nulo
+            tipo: 'CP', 
+            pagtoTitulo: 0,
+            codigoCab: 0,
+            codigoVZC: 0,
+            contaFixa: false,
+            formaPgto: 1,
+            numeroDocumento: '',
+            vencimento: '', //não nulo
+            pagamento: '',
+            valorTitulo: '',
+            valorPago: '',
+            valorDesc: '',
+            valorJuros: '',
+            codigoUsuario: 1, //não nulo
+            
+        },
+        qtdParcelas: 1,
+        intervalo: 30,
+        cat: [],
+        sub: [],
+        formas: [],
         doc: '',
         tipoDoc: '',
         vencimento: '',
         valor: '',
-        qtdTitulos: 1,
-        intervalo: 0,
         select: '',
         checked: false,
         open: false,
-        //datatime
-        dias: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
-        meses: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
-        //table
-        styles: [
-            '',
-            'bordered',
-            'horizontal-separator',
-            'vertical-separator',
-            'cell-separator',
-            'striped-odd',
-            'striped-even',
-            'highlight',
-            'compact',
-            'loose',
-            'flipped'
-        ],
-        misc: [],
-        separator: 'cell', //none, horizontal, vertical, cell
-        stripe: 'odd', //none, odd, even
-        type: 'none', //none, flipped, responsive
-        gutter: 'none', //none, compact, loose
-        tipos: [
-            {
-              label: 'Despesa',
-              value: 'd'
-            },
-            {
-              label: 'Receita',
-              value: 'r'
-            }
-        ],
         options: [
             {
               label: 'Google',
@@ -469,9 +514,50 @@ export default {
               value: 'recibo'
             }
         ],
+        geraParcela: true,
+        visivel: true,
+        
+        
+        //v-money
+        money: {
+            decimal: ',',
+            thousands: '.',
+            prefix: 'R$ ',
+            //suffix: ' #',
+            precision: 2,
+            masked: false /* doesn't work with directive */
+        },
+        
+        //datatime
+        dias: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
+        meses: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+        
+        //table
+        styles: [
+            '',
+            'bordered',
+            'horizontal-separator',
+            'vertical-separator',
+            'cell-separator',
+            'striped-odd',
+            'striped-even',
+            'highlight',
+            'compact',
+            'loose',
+            'flipped'
+        ],
+        misc: [],
+        separator: 'cell', //none, horizontal, vertical, cell
+        stripe: 'odd', //none, odd, even
+        type: 'none', //none, flipped, responsive
+        gutter: 'none', //none, compact, loose
+        disable: false,
+        
+        // btn Voltar
         canGoBack: window.history.length > 1,
     }
   },
+  
   computed: {
     computedClasses () {
       let classes = []
@@ -494,7 +580,69 @@ export default {
         classes.push(this.gutter)
       }
       return classes
-    }
+    },
+    listaFornecedores: function () {
+      var a = this.fornecedores
+      var lista = []
+      
+      for (let i=0; i < a.length; i++) {
+          if(a[i].codTipo === 2){
+              let n = a[i].nome
+              let c = a[i].codigo
+              lista.push({label: n, value: c})  
+          }  
+      }
+      //console.log(lista)
+      return lista
+    
+    }, 
+    listaCategorias: function () {
+      var a = this.cat
+      var lista = []
+      
+      for (let i=0; i < a.length; i++) {
+          let n = a[i].nome
+          let c = a[i].codigo
+          lista.push({label: n, value: c})   
+      }
+      //console.log(lista)
+      return lista
+    
+    }, 
+    listaSubCategorias: function () {
+      var a = this.sub
+      var lista = []
+      
+      for (let i=0; i < a.length; i++) {
+          let n = a[i].nome
+          let c = a[i].codigo
+          lista.push({label: n, value: c}) 
+      }
+      //console.log(lista)
+      return lista
+    
+    }, 
+    listaFormas: function () {
+      var a = this.formas
+      var lista = []
+      
+      for (let i=0; i < a.length; i++) {
+          let n = a[i].nome
+          let c = a[i].codigo
+          lista.push({label: n, value: c}) 
+      }
+      //console.log(lista)
+      return lista
+    
+    },
+    /*disable: function (){
+      if(this.conta.valorPago>0){
+        return true
+      }
+      else {
+       return false
+      }
+    }*/
   },
   validations: {
     nome: {
@@ -507,24 +655,66 @@ export default {
     }
   },
   methods: {
+    
     goBack(){
       window.history.go(-1)
     },
-    limpar () {
-      this.tipo = ''
-      this.fornecedor = ''
-      this.desc = ''
-      this.cat = ''
-      this.sub = ''
-      this.forma = ''
-      this.doc = ''
-      this.tipoDoc = ''
-    },
     salvar(){
-        Toast.create.positive({
-        html: 'Salvo com sucesso',
-        icon: 'done'
-      })
+        Loading.show({message: 'Enviando Dados...'})
+        axios.post(API + 'conta/gravarConta', [this.conta, this.qtdParcelas, this.intervalo])
+          .then((res)=>{
+            Loading.hide()
+            Toast.create.positive({
+                html: 'Sucesso',
+                icon: 'done'
+            })
+            //console.log(res)
+            console.log(res.data)
+            console.log(res.response)
+            console.log('sucesso')
+            this.$router.push('contas')
+          })
+          .catch((e)=>{
+            Loading.hide()
+            //console.log('error')
+            console.log(e)
+            console.log(String(e))
+            let error = e.response.data
+            console.log(error)
+            for(var i=0; error.length; i++){
+                Toast.create.negative(error[i].value)
+            }
+        })
+      
+    },
+    baixar(){
+        Loading.show({message: 'Enviando Dados...'})
+        axios.post(API + 'conta/pagarContas', [this.conta])
+          .then((res)=>{
+            Loading.hide()
+            Toast.create.positive({
+                html: 'Titulo baixado com sucesso',
+                icon: 'done'
+            })
+            //console.log(res)
+            console.log(res.data)
+            console.log(res.response)
+            console.log('sucesso')
+            this.listarContas()
+            //this.$router.push('contas')
+          })
+          .catch((e)=>{
+            Loading.hide()
+            //console.log('error')
+            console.log(e)
+            console.log(String(e))
+            let error = e.response.data
+            console.log(error)
+            for(var i=0; error.length; i++){
+                Toast.create.negative(error[i].value)
+            }
+        })
+      
     },
     excluir(){
         Dialog.create({
@@ -552,8 +742,181 @@ export default {
           ]
         })
     },
+    listarContas(){
+      Loading.show({message: 'Aguardando Dados...'})
+      axios.get(API + 'conta/obterContas?codigo=' + parseInt(localStorage.getItem('codConta')))
+      .then((res)=>{
+          console.log(res)
+          this.conta = res.data
+          this.geraParcela = false
+          if(this.conta.valorPago>0) {
+              this.visivel = false
+              this.disable = true
+          }
+          Loading.hide()
+      })
+      .catch((e)=>{
+        console.log(e)
+      })  
+    },
+    listarPessoas(){
+      Loading.show({message: 'Aguardando Dados...'})
+      axios.get(API + 'pessoa/obterpessoa?codtipo=2')
+      .then((res)=>{
+          //console.log(res.data)
+          this.fornecedores = res.data
+          Loading.hide()
+      })
+      .catch((e)=>{
+        console.log(e)
+        Loading.hide()
+      })  
+    },
+    cadFornecedor(){
+        localStorage.setItem('cadMode', 'save')
+        localStorage.setItem('tela', 'fornContas')
+        this.$router.push('/cadcliente')
+    },
+    listarTipos(){
+      Loading.show({message: 'Aguardando Dados...'})
+      axios.get(API + 'conta/obterContasTipo')
+      .then((res)=>{
+          //console.log(res.data)
+          this.cat = res.data
+          Loading.hide()
+      })
+      .catch((e)=>{
+        console.log(e)
+        Loading.hide()
+      })  
+    },
+    novoTipo(){
+        Dialog.create({
+          title: 'Novo Tipo de Conta',
+          message: 'Digite o nome da novo tipo e clique em ok.',
+          form: {
+            nome: {
+              type: 'text',
+              label: 'Nome',
+              model: ''
+            }
+          },
+          buttons: [
+            'Cancel',
+            {
+              label: 'Ok',
+              handler: (data) => {
+                //console.log(data)
+                if(data.nome === null || data.nome === ''){
+                    Toast.create.negative('O tipo não pode ser cadastrado com nome nulo') 
+                    return
+                }
+                axios.post(API + 'conta/gravarContaTipo', data)
+                  .then((res)=>{
+                    //console.log(res)
+                    //console.log(res.data)
+                    console.log('sucesso')
+                    //Toast.create('Returned ' + JSON.stringify(data))
+                    Toast.create.positive('Tipo ' + JSON.stringify(data.nome) + ' cadastrado com sucesso')
+                    this.listarTipos()
+                  })
+                  .catch((e)=>{
+                    console.log('error')
+                    console.log(e)
+                  })
+                
+              }
+            }
+          ]
+        })
     
-   
+    },
+    listarSubtipos(){
+      Loading.show({message: 'Aguardando Dados...'})
+      axios.get(API + 'conta/obterContasSubTipo?codTipo=' + this.conta.codTipo)
+      .then((res)=>{
+          //console.log(res.data)
+          this.sub = res.data
+          Loading.hide()
+      })
+      .catch((e)=>{
+        console.log(e)
+        Loading.hide()
+      })  
+    },
+    novoSubTipo(){
+        Dialog.create({
+          title: 'Novo Subtipo de Conta',
+          message: 'Certifique-se que o Tipo já esteja selecionado para criar um subtipo para o mesmo, digite o nome do subtipo e depois clique em ok',
+          form: {
+            nome: {
+              type: 'text',
+              label: 'Nome',
+              model: ''
+            },
+            codTipo: {
+              model: this.conta.codTipo
+            }
+          },
+          buttons: [
+            'Cancel',
+            {
+              label: 'Ok',
+              handler: (data) => {
+                //console.log(data)
+                if(data.nome === null || data.nome === ''){
+                    Toast.create.negative('O subtipo não pode ser cadastrado com nome nulo') 
+                    return
+                }
+                axios.post(API + 'conta/gravarContaSubTipo', data)
+                  .then((res)=>{
+                    //console.log(res)
+                    //console.log(res.data)
+                    console.log('sucesso')
+                    //Toast.create('Returned ' + JSON.stringify(data))
+                    Toast.create.positive('Tipo ' + JSON.stringify(data.nome) + ' cadastrado com sucesso')
+                    this.listarSubtipos()
+                  })
+                  .catch((e)=>{
+                    console.log('error')
+                    console.log(e)
+                  })
+                
+              }
+            }
+          ]
+        })
+    
+    },
+    listarFormasPgto(){
+      Loading.show({message: 'Aguardando Dados...'})
+      axios.get(API + 'conta/obterformaspgto')
+      .then((res)=>{
+          //console.log(res.data)
+          this.formas = res.data
+          Loading.hide()
+      })
+      .catch((e)=>{
+        console.log(e)
+        Loading.hide()
+      })  
+    },
+    
+  },
+  
+  created (){
+    let t = this
+    
+    if(localStorage.getItem('cadMode') === 'edit'){
+        t.listarContas()   
+    }
+    
+    t.listarPessoas()
+    t.listarTipos()
+    t.listarSubtipos()
+    t.listarFormasPgto()
+    
+
   }
  
 }
@@ -570,16 +933,6 @@ export default {
         font-size: 12px
     }
     
-    .topo {
-        margin-top: 50px;
-		padding: 10px 10px;
-		width: 100%; 
-		position: fixed;
-		top: 0; 
-        left: 0;
-		text-align: center;
-        z-index: 5;
-	}
     
     .mdInput {
         /*margin-top: 10px;
@@ -601,5 +954,17 @@ export default {
         width: 100%;
     }
     
+    #baixa {
+        background-color: white;
+        margin-top: 30px;
+        padding: 10px;
+        
+    }
+    #baixado {
+        text-align: center;
+        margin-top: 30px;
+        font-weight: bold;
+        color: darkgoldenrod;
+    }
     
 </style>

@@ -1,9 +1,11 @@
 <template>
   <div>
-      <q-list inset-separator>
+      <q-list inset-separator style="background-color: white">
         <q-collapsible icon="mail" label="Configuações Gerais" sublabel="Configurações essenciais do sistema">
           <div>
-            Tela cheia <q-checkbox v-model="check" />
+            Tela cheia <q-checkbox v-model="check" /><br>
+            <q-collapsible icon="mail" label="Tabela de Preços" sublabel="Cadastrar, Editar e Excluir">
+            </q-collapsible>
           </div>
         </q-collapsible>
         <q-collapsible icon="view_list" label="Listas" sublabel="Configure globalmente a exibição das listas">
@@ -367,7 +369,29 @@ export default {
         this.bancosDados = []
         this.listarBancos()
     },
-    
+    storageAvailable(type) {
+        try {
+            var storage = window[type],
+                x = '__storage_test__';
+            storage.setItem(x, x);
+            storage.removeItem(x);
+            return true;
+        }
+        catch(e) {
+            return e instanceof DOMException && (
+                // everything except Firefox
+                e.code === 22 ||
+                // Firefox
+                e.code === 1014 ||
+                // test name field too, because code might not be present
+                // everything except Firefox
+                e.name === 'QuotaExceededError' ||
+                // Firefox
+                e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
+                // acknowledge QuotaExceededError only if there's something already stored
+                storage.length !== 0;
+        }
+    }
     
   },
   created (){

@@ -7,7 +7,7 @@
 
            round
            color="primary" 
-           @click="$router.push('/cadproduto')">
+           @click="novo">
            <q-icon name="add" />
         </q-btn>
     </q-fixed-position>
@@ -148,7 +148,7 @@
 </template>
 
 <script>
-import { Loading, clone } from 'quasar'
+import { Dialog, Toast, Loading, clone } from 'quasar'
 import axios from 'axios'
 const API = 'http://192.168.0.200/WSV3/' 
   
@@ -187,7 +187,7 @@ export default {
           rows: 'Linhas',
           selected: {
             singular: 'item selecionado.',
-            plural: 'items selecionado.'
+            plural: 'itens selecionados.'
           },
           clear: 'limpar seleção',
           search: 'Buscar',
@@ -197,7 +197,7 @@ export default {
       colunas: [
         {
           label: 'Código',
-          field: '$id',
+          field: 'codigo',
           filter: true,
           sort: true,
           type: 'string',
@@ -223,15 +223,24 @@ export default {
           field: 'valor',
           filter: true,
           sort: true,
-          type: 'string',
-          width: '80px'
+          type: 'number',
+          width: '80px',
+          format (value) {
+            function numberToReal(numero) {
+                numero = numero.toFixed(2).split('.');
+                numero[0] = "R$ " + numero[0].split(/(?=(?:...)*$)/).join('.');
+                return numero.join(',');
+            }
+            let x = numberToReal(value);
+            return x
+          }
         },
         {
           label: 'Estoque',
-          field: 'estoqueAtual',
+          field: 'qtd',
           sort: true,
           filter: true,
-          type: 'string',
+          type: 'number',
           width: '80px'
         },
         {
@@ -239,7 +248,7 @@ export default {
           field: 'codBarra',
           sort: true,
           filter: true,
-          type: 'string',
+          type: 'number',
           width: '100px'
         }
       ],
@@ -283,13 +292,58 @@ export default {
       })
     },
     deleteRow (props) {
-      props.rows.forEach(row => {
-        this.table.splice(row.index, 1)
+      let row = props.rows
+      console.log(row)
+      this.excluidos = row
+      Dialog.create({
+          title: 'Excluir',
+          message: 'Tem certeza que deseja excluir ' + this.excluidos.length + ' registro(s)?',
+          buttons: [
+            {
+              label: 'Não! Cancela',
+              color: 'negative',
+              raised: true,
+              style: 'margin-top: 20px',
+              handler () {
+                Toast.create('Cancelado...')
+              }
+            },
+            {
+              label: 'Sim! Pode excluir',
+              color: 'positive',
+              raised: true,
+              style: 'margin-top: 20px',
+              handler: () => {
+                  let a = this.excluidos
+                  let obj = {}
+
+                  for (let i=0; i < a.length; i++) {
+                      obj = a[i].data
+                      obj.excluido = true
+                      console.log(obj)
+                      Loading.show({message: 'Aguardando Dados...'})
+                      axios.post(API + 'produto/excluirProduto?codProduto=' + obj.codigo)
+                          .then((res)=>{
+                              //console.log(res)
+                              Toast.create('Excluido com sucesso')
+                              Loading.hide()
+                              this.listarProdutos()
+                          })
+                          .catch((e)=>{
+                            console.log(e)
+                            Loading.hide()
+                            return
+                          })  
+                      
+                  }
+              }
+            }
+          ]
       })
     },
     refresh (done) {
       this.timeout = setTimeout(() => {
-        done()
+        this.listarProdutos()
       }, 5000)
     },
     selection (number, rows) {
@@ -297,6 +351,9 @@ export default {
     },
     rowClick (row) {
       console.log('clicked on a row', row)
+      localStorage.setItem('codProduto', row.codigo)
+      localStorage.setItem('cadMode', 'edit')
+      this.$router.push({ path: '/cadproduto' })
     },
     listarProdutos(){
       Loading.show({message: 'Aguardando Dados...'})
@@ -307,8 +364,13 @@ export default {
           Loading.hide()
       })
       .catch((e)=>{
+        Loading.hide()
         console.log(e)
       })  
+    },
+    novo(){
+      localStorage.setItem('cadMode', 'save')
+      this.$router.push('/cadproduto')
     }
   },
 
