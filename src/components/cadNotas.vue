@@ -399,7 +399,7 @@
         
       <!--Duplicatas-->
       <q-collapsible v-if="cabecalho.vendaPrazo===true" :opened="open.dup" icon="local_atm" label="Duplicatas">
-          
+          <div v-if="visivel">
             <div class="row">
                 <div class="col">
                     <q-field>
@@ -464,7 +464,8 @@
                     <q-field>
                         <q-input
                             float-label="Quantidade Parcelas"
-                            v-model="detItem.qtd"   
+                            v-model.number="qtdParcelas"
+                            @blur="dividir"
                         />
                     </q-field>
                 </div>
@@ -479,16 +480,16 @@
                     >
                         <q-input
                             
-                            v-model="detItem.qtd"
+                            v-model="intervalo"
                             class="mdInput"
                         />
                     </q-field>
                 </div>
                 <div class="col-md-6">
                     <q-field
-                        helper="Valor Titulo"
+                        helper="Valor Parcelas"
                     >
-                        <money v-model="detItem.frete" 
+                        <money v-model="duplicata.valorTitulo" 
                                v-bind="money"
                                class="mdInput"
                                style="margin-top: 2px"
@@ -496,44 +497,36 @@
                     </q-field>
                 </div>
             </div>
-            
-        
-        <div class="row">
-            <div class="col" style="margin:10px">
-                <q-btn color="secondary" @click="addDup()">Adicionar Duplicata</q-btn>
-            </div>   
+           
         </div>
-          
-        <!--Data tables HTML-->
-        <div class="row" id="tableDup">
-            <table style="margin-top: 30px;" class="q-table" :class="computedClasses">
-              <thead>
-                <tr>
-                  <th class="text-center">Vencimento</th>
-                  <th class="text-center">Valor</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="dup in CadNotas.titulos">
-                  <td class="text-left">{{dup.vencimento | formatDates}}</td>
-                  <td class="text-right">{{dup.valorTitulo | formatMoney}}</td>
-                  <td class="text-center">
-                    <q-btn round outline small color="info" icon="edit"></q-btn>    
-                  </td>
-                  <td class="text-center">
-                    <q-btn round outline small color="negative" icon="delete_forever"></q-btn>  
-                  </td>
+        <div v-else>
+            <!--Data tables HTML-->
+            <div class="row" id="tableDup">
+                <table style="margin-top: 30px;" class="q-table" :class="computedClasses">
+                  <thead>
+                    <tr>
+                      <th class="text-center">Vencimento</th>
+                      <th class="text-center">Valor Parcela</th>
+                      <th class="text-center">Pagamento</th>
+                      <th class="text-center">Valor Pago</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="dup in titulos">
+                      <td class="text-left">{{dup.vencimento | formatDates}}</td>
+                      <td class="text-right">{{dup.valorTitulo | formatMoney}}</td>
+                      <td class="text-left">{{dup.pagamento | formatDates}}</td>
+                      <td class="text-right">{{dup.valorPago | formatMoney}}</td>
+                    </tr>
 
-                </tr>
-                
-              </tbody>
-            </table>  
+                  </tbody>
+                </table>  
 
-        </div>
-        <div class="col-6" style="margin-top:30px">
-            <strong>Total Duplicatas: </strong>{{ somaContas | formatMoney}}
-        </div>
-          
+            </div>
+            <div class="col-6" style="margin-top:30px">
+                <strong>Total Duplicatas: </strong>{{ somaContas | formatMoney}}
+            </div>
+        </div> 
       </q-collapsible>
         
     </q-list>
@@ -838,9 +831,8 @@ export default {
   name: 'cadEntradasNFe',
   data () {
     return {
-        //Classe Cadnotas
+        //Objeto Cadastro de notas
         CadNotas:{
-            Cab:{},
             det:[],
             formasPgto:[
                 {
@@ -901,6 +893,7 @@ export default {
             }       
         },
         
+        //Objetos Auxiliares
         cabecalho:{ //cab
             vendaPrazo: false,
             tipoNotaE: '', //4
@@ -955,7 +948,7 @@ export default {
             impresso: ''
         },
         duplicata: {
-            codForncedor: '', //não nulo
+            codFornecedor: '', //não nulo
             codTipo: 1, //não nulo
             codSubTipoDespesa: 1, //não nulo
             tipo: 'CP', 
@@ -974,8 +967,11 @@ export default {
             valorJuros: '',
             codigoUsuario: 1, //não nulo
         },
+        titulos: [],
+        qtdParcelas: 1,
+        intervalo: 30,
         tipoEntradaEstoque: 'compra', // { Compra, OrdemCompra, LancarProducao }
-        visivel: false,
+        visivel: true,
         tipoCod: 'nome',
         ref: 'layoutModal',
         modal: false,
@@ -994,6 +990,8 @@ export default {
         danfe: '',
         cfop: '',
         listaCFOP,
+        
+        //itens
         estoque: '0',
         item: {
             ncm: '',
@@ -1056,28 +1054,6 @@ export default {
             {
               label: 'Receita',
               value: 'r'
-            }
-        ],
-        options: [
-            {
-              label: 'Google',
-              value: 'goog'
-            },
-            {
-              label: 'Facebook',
-              value: 'fb'
-            },
-            {
-              label: 'Twitter',
-              value: 'twtr'
-            },
-            {
-              label: 'Apple Inc.',
-              value: 'appl'
-            },
-            {
-              label: 'Oracle',
-              value: 'ora'
             }
         ],
         formasPagto: [
@@ -1297,8 +1273,10 @@ export default {
       return value
     },
     somaContas(value){
-      if(this.CadNotas.det.length === 0){ return 0 }
-      let a = this.CadNotas.titulos
+      
+      if(this.titulos.length === 0){ return 0 }
+      
+      let a = this.titulos
       let lista = []
 
       for (let i=0; i < a.length; i++) {
@@ -1310,10 +1288,13 @@ export default {
         return a + b;
       });
       return value
-    },
+    }
+    
   },
+  
   filters: {
     formatMoney: function (value) {
+        if(value === null) {return 'R$ 0,00'}
         function numberToReal(numero) {
             numero = numero.toFixed(2).split('.');
             numero[0] = "R$ " + numero[0].split(/(?=(?:...)*$)/).join('.');
@@ -1323,6 +1304,7 @@ export default {
         return x
     },
     formatDates: function (value) {
+        if(value === null) {return null}
         return new Date(value).toLocaleString('pt-BR', {year: 'numeric',month: '2-digit',day: '2-digit'})
     }
   },
@@ -1340,19 +1322,7 @@ export default {
         localStorage.setItem('cadMode', 'save')
         this.$router.push('/cadcliente')
     },
-    listarPessoas(){
-      Loading.show({message: 'Aguardando Dados...'})
-      axios.get(API + 'pessoa/obterpessoa')
-      .then((res)=>{
-          //console.log(res.data)
-          this.pessoas = res.data
-          Loading.hide()
-      })
-      .catch((e)=>{
-        console.log(e)
-        Loading.hide()
-      })  
-    },
+    
     /*
     visualizarDanfe() {
       if(this.doc!==''){
@@ -1388,12 +1358,13 @@ export default {
     */
     
     salvar(){
-        
-        //if(this.CadNotas.cab.caixa ===
-        let qtdParcelas = 12
-        let intervalo = 30
+        Object.assign(this.CadNotas, {cab: this.cabecalho})
+        if(this.cabecalho.vendaPrazo === true) {
+            this.duplicata.codFornecedor = this.cabecalho.codPessoaEmissor
+            this.CadNotas.titulos.push(this.duplicata)
+        }
         Loading.show({message: 'Enviando Dados...'})
-        axios.post(API + 'pedido/gravarPedido', [this.CadNotas, this.tipoEntradaEstoque, qtdParcelas, intervalo])
+        axios.post(API + 'pedido/gravarPedido', [this.CadNotas, this.tipoEntradaEstoque, this.qtdParcelas, this.intervalo])
           .then((res)=>{
             Loading.hide()
             Toast.create.positive({
@@ -1454,7 +1425,7 @@ export default {
         this.detItem.totalItem = this.detItem.custo * this.detItem.qtd
         Object.assign(this.detItem, {nomeProduto: this.produto.nome})
         this.CadNotas.det.push(this.detItem)
-        
+        this.duplicata.valorTitulo = this.somaNota
         this.detItem = {
             codTabPreco: 2,
             codigoProduto: '',
@@ -1491,44 +1462,35 @@ export default {
             this.CadNotas.det.splice(index,1)
         }
     },
-    limpar(){
-        
-        this.$set('detItem',{
-            codTabPreco: 2,
-            codigoProduto: '',
-            codigoUsuario: 1,
-            codigoComputador: '',    
-            custo: 0.00,    
-            custoTrib: 0.00,    
-            desconto: 0.00,    
-            venda: 0.00,    
-            acrescimo: 0.00,    
-            unMedCom: '',    
-            unMedTrib: '',    
-            encargos: 0.00,    
-            IPI: 0.00,    
-            frete: 0.00,    
-            seguro: 0.00,    
-            outro: 0.00,    
-            qtd: 1,    
-            qtdCom: 1,    
-            tipoSaida: 'V',    
-            qtdDevolvida: 0.00,    
-            totalItem: 0.00,    
-            cancelado: '',    
-            codPessoaEmpregado: '',
-            OBS: '',    
-            impresso: ''
-        })
-        
-    },
      
     addDup(){
         this.CadNotas.titulos.push(this.duplicata)
     },
       
-    //====== LISTAS ======================================================================
+    dividir(){
+        if(this.somaNota === 0){
+            Toast.create('Você não pode gerar parcelas de uma nota sem itens')
+        }
+        let d = this.somaNota / this.qtdParcelas
+        this.duplicata.valorTitulo = d    
+    },
+    
       
+    //====== LISTAS ======================================================================
+    
+    listarPessoas(){
+      Loading.show({message: 'Aguardando Dados...'})
+      axios.get(API + 'pessoa/obterpessoa')
+      .then((res)=>{
+          //console.log(res.data)
+          this.pessoas = res.data
+          Loading.hide()
+      })
+      .catch((e)=>{
+        console.log(e)
+        Loading.hide()
+      })  
+    },
     listarProdutos(){
       if(this.search === ''){
         this.search = 0
@@ -1682,15 +1644,33 @@ export default {
         Loading.hide()
       })  
     },
+    listarContas(){
+      Loading.show({message: 'Aguardando Dados...'})
+      axios.get(API + 'conta/obterContas?codigoCab=' + localStorage.getItem('codCab'))
+      .then((res)=>{
+          //console.log(res.data)
+          this.titulos = res.data
+          Loading.hide()
+      })
+      .catch((e)=>{
+        console.log(e)
+        Loading.hide()
+      })  
+    },
     
     
     
   },
-  
+  mounted: function () {
+    // Código que irá rodar apenas após toda a árvore do componente ter sido renderizada
+    
+  },
   created(){
     let t = this
     if(localStorage.getItem('cadMode') === 'edit'){
-        t.listarNotas()   
+        t.listarNotas()
+        t.listarContas()
+        this.visivel = false
     }
     t.listarPessoas()
     t.todosProdutos()
@@ -1698,6 +1678,8 @@ export default {
     t.listarTipos()
     t.listarSubtipos()
     t.listarFormasPgto()
+      
+    //console.log(this.CadNotas.titulos.length)
     
     
   }

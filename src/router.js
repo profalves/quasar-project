@@ -41,6 +41,7 @@ export default new VueRouter({
     { path: '/dialog', component: load('Dialogs') },
     { path: '/test', component: load('Test') },
     { path: '/vuex', component: load('VuexContent') },
+    { path: '/dash', component: load('dashboard') },
 
     // Always leave this last one
     { path: '*', component: load('Error404') }, // Not found
