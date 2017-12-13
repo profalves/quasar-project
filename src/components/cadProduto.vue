@@ -325,14 +325,30 @@
                   <tbody>
                     <tr v-for="item in tabPreco">
                       <td class="text-left">{{ item.nome }}</td>
-                      <td class="text-right">{{ item.ml }}</td>
-                      <td class="text-left" width="100px">
+                      <td class="text-left">
                         <money v-model="preco"
-                               v-bind="money"
+                               v-bind="perc"
+                               class="mdInput"
                         />  
                       </td>
-                      <td class="text-left">{{ item.mLminima }}</td>
-                      <td class="text-left">0,00</td>
+                      <td class="text-left">
+                        <money v-model="preco"
+                               v-bind="money"
+                               class="mdInput"
+                        />  
+                      </td>
+                      <td class="text-left">
+                        <money v-model="preco"
+                               v-bind="perc"
+                               class="mdInput"
+                        />  
+                      </td>
+                      <td class="text-left">
+                        <money v-model="preco"
+                               v-bind="money"
+                               class="mdInput"
+                        />  
+                      </td>
                       <td class="text-center">
                         <a @click="" color="info"><i class="material-icons fa-2x">mode_edit</i></a>   
                       </td>
@@ -411,7 +427,7 @@
             
             <div class="row">
                 <div class="col">
-                    <q-checkbox v-model="checked" label="Conversão padrão de entrada" />
+                    <q-checkbox v-model="checked" label="Conversão padrão para NF de entrada" />
                 </div>
             </div>
             
@@ -422,6 +438,106 @@
                         color="primary" 
                         @click="salvarFator"
                     >adicionar fator
+                    </q-btn>
+                </div>
+            </div><br>
+            
+            <div class="row" id="table">    
+                <table class="q-table" :class="computedClasses">
+                  <thead>
+                    <tr>
+                      <th class="text-left">Un. Medida</th>
+                      <th class="text-left">Fator Conv.</th>
+                      <th class="text-left">Entrada</th>
+                      <th class="text-left">ML</th>
+                      <th class="text-left">Custo</th>
+                      <th class="text-left">Venda</th>
+                      <th class="text-left">Editar</th>
+                      <th class="text-left">Excluir</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="item in fatores">
+                      <td class="text-left">{{ item.unMed }}</td>
+                      <td class="text-right">{{ item.fatorConversao }}</td>
+                      <td class="text-left">{{ item.conversaoEntrada | boolString }}</td>
+                      <td class="text-left">{{ item.ml | decimal }}</td>
+                      <td class="text-left">{{ CadProduto.produto.custo | decimal }}</td>
+                      <td class="text-left">{{ item.valorVenda | decimal }}</td>
+                      <td class="text-center">
+                        <a @click="" color="info"><i class="material-icons fa-2x">mode_edit</i></a>   
+                      </td>
+                      <td class="text-center">
+                        <i class="material-icons fa-2x mHover text-negative" @click="" color="negative">delete_forever</i> 
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+            </div>
+        </q-collapsible>
+           
+        <q-collapsible icon="add_circle" label="Matéria-Prima">
+            <div class="row">
+                <div class="col">
+                    <q-field
+                        icon="format_color_fill"
+                     >
+                        <q-select
+                            float-label="Matéria-Prima"
+                            filter
+                            v-model="matPrima.produto"
+                            :options="listaProdutos"
+                        />
+                    </q-field>   
+                </div>
+            </div>
+            <div class="row">
+                <div class="col" style="margin: 11px 5px 0 0">
+                    <q-field helper="Valor de Custo R$">
+                        <money v-model="CadProduto.produto.custo"
+                               v-bind="money"
+                               class="mdInput"
+                        />
+                    </q-field> 
+                </div>
+                <div class="col">
+                    <q-field
+                        icon="library_books"
+                     >
+                        <q-input
+                            float-label="Fator de conversão"
+                            v-model="matPrima.FatorConversao"
+                        />
+                    </q-field>   
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <q-field helper="Margem de Lucro %">
+                        <money v-model="CadProduto.produto.percLucro"
+                               v-bind="perc"
+                               class="mdInput"
+                        />
+                    </q-field> 
+                </div>
+
+                <div class="col-4">
+                    <q-field helper="Valor de Venda R$">
+                        <money v-model="valorVenda"
+                               v-bind="money"
+                               class="mdInput"
+                        />
+                    </q-field>
+                </div>        
+            </div>
+            
+            <div class="row btn-plus left">
+                <div class="col">
+                    <q-btn 
+                        rounded
+                        color="primary" 
+                        @click="salvarFator"
+                    >adicionar Produto
                     </q-btn>
                 </div>
             </div><br>
@@ -521,6 +637,7 @@ export default {
                 }
             ]
         },
+        produtos: [],
         /*ProdutosTbPrecoDet: {
             codigoCab: 2,
             codProduto: 0,
@@ -570,6 +687,15 @@ export default {
         
         },
         fatores: [],
+        matPrima: {
+            produto: '',
+            FatorConversao: '',
+            qteProd: 0.00,
+            custo: 0.00,
+            qteUtil: 0.00,
+            CodigoUsuario: parseInt(localStorage.getItem('codUser'))
+        
+        },
         
         //tabela
         misc: 'bordered', //[{value: 'bordered'},{value: 'highlight'}]
@@ -668,6 +794,18 @@ export default {
       for (let i=0; i < a.length; i++) {
           let n = a[i].significado
           let c = a[i].nome
+          lista.push({label: n, value: c})    
+      }
+      //console.log(lista)
+      return lista
+    },
+    listaProdutos: function () {
+      var a = this.produtos
+      var lista = []
+      
+      for (let i=0; i < a.length; i++) {
+          let n = a[i].nome
+          let c = a[i].codigo
           lista.push({label: n, value: c})    
       }
       //console.log(lista)
@@ -1005,6 +1143,21 @@ export default {
           })
       }
     },
+    todosProdutos(){
+      if (localStorage.getItem('cadMode')==='edit'){
+          Loading.show({message: 'Aguardando Dados...'})
+          axios.get(API + 'produto/obterproduto')
+          .then((res)=>{
+              Loading.hide()
+              //console.log(res.data)
+              this.produtos = res.data 
+          })
+          .catch((e)=>{
+            Loading.hide()
+            console.log(e.response)
+          })
+      }
+    },
     
     listarFatoresConv(){
       axios.get(API + 'produto/obterProdutosOutrasEmb?codProduto=' + parseInt(localStorage.getItem('codProduto')))
@@ -1055,6 +1208,7 @@ export default {
     t.listarTabelasPreco()
     t.listarFatoresConv()
     t.listarProdutos()
+    t.todosProdutos()
 
   }
  
@@ -1073,8 +1227,8 @@ export default {
     }
     
     .mdInput {
-        /*margin-top: 10px;
-        width: 90%;*/
+        /*margin-top: 10px;*/
+        width: 100%;
         background:transparent;
         outline:none;
         border: 0px;

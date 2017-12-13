@@ -7,7 +7,14 @@
         
       <q-fixed-position class="over" corner="top-right" :offset="[18, 18]">
         
-        <q-icon name="settings" class="fa-2x" @click="$router.push('/config')" />
+        <q-icon 
+            name="settings" 
+            class="fa-2x" 
+            @click="$router.push({
+                path:'/config', 
+                query:{config:true}
+            })" 
+        />
         
       </q-fixed-position>
       <img src="../../img/logo2.png" width="100%" />
@@ -54,7 +61,7 @@
       <q-field>
         <q-btn icon="person" 
                color="faded" 
-               @click="$router.push('/home')"
+               @click="login"
                >Entrar</q-btn>
       </q-field>
           
@@ -74,16 +81,15 @@ export default {
             pass: ''
         }
     },
-    components: {
-    },
-    computed: {
-        lista () {
-          function nomes(user) {
-            return this.table.name;
-          }
-            return this.listaCFOP.filter(nomes)
+    methods:{
+        login(){
+            localStorage.setItem('tela', 'principal')
+            this.$router.push('/')
         }
     },
+    created(){
+        localStorage.setItem('tela', 'login')
+    }
 }
 </script>
 

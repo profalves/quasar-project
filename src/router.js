@@ -38,6 +38,20 @@ export default new VueRouter({
     { path: '/cadusuario', component: load('cadUsuario') },
     { path: '/login', component: load('Login') },
     { path: '/config', component: load('Config') },
+      
+    //Relatorios
+    { path: '/relcaixa', component: load('relCaixa') },
+    { path: '/caixaperiodo', component: load('relPeriodoCaixa') },
+    { path: '/caixames', component: load('relCaixaMes') },
+    { path: '/fechamento', component: load('relFechamentoCaixa') },
+    { path: '/relatorioestoque', component: load('relEstoque') },
+    { path: '/relatoriomov', component: load('relMovimentacoes') },
+    { path: '/relatoriocontas', component: load('relContas') },
+    { path: '/relatoriolucro', component: load('relLucro') },
+    { path: '/relFormas', component: load('relFormas') },
+      
+    
+    // Ambientes testes
     { path: '/dialog', component: load('Dialogs') },
     { path: '/test', component: load('Test') },
     { path: '/vuex', component: load('VuexContent') },

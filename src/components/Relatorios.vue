@@ -3,7 +3,7 @@
     <div class="row">
       
     <div class="col-6">
-        <router-link to="/relatorios">
+        <router-link to="/relcaixa">
             <q-card color="primary" class="col-sm-6">
               <q-card-title></q-card-title>
               <q-card-main>
@@ -48,7 +48,7 @@
     </div>    
     
     <div class="col-6">
-        <router-link to="/relatorios">
+        <router-link to="/relatoriocontas">
             <q-card color="warning" class="col-sm-6">
               <q-card-title></q-card-title>
               <q-card-main>

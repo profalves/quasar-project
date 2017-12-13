@@ -355,6 +355,17 @@
             >
                 Adicionar item
             </q-btn>
+        </div>
+        <div class="col col-md-3">
+            <q-btn
+                color="secondary"
+                push
+                :key="modal"
+                @click="enviarItem"
+                
+            >
+                Enviar item
+            </q-btn>
         </div>  
         <br>
         <!--Data tables HTML-->
@@ -1289,7 +1300,6 @@ export default {
       });
       return value
     }
-    
   },
   
   filters: {
@@ -1475,6 +1485,57 @@ export default {
         this.duplicata.valorTitulo = d    
     },
     
+    enviarItem(){
+        let Fiscal = false
+        let VendasDet = {
+            codTabPreco: 2,
+            codigoProduto: 1,
+            codigoUsuario: 1,
+            codigoComputador: '',    
+            custo: 5.00,    
+            custoTrib: 0.00,    
+            desconto: 3.00,    
+            venda: 10.00,    
+            acrescimo: 0.00,    
+            unMedCom: '',    
+            unMedTrib: '',    
+            encargos: 0.00,    
+            IPI: 0.00,    
+            frete: 0.00,    
+            seguro: 0.00,    
+            outro: 10.00,    
+            qtd: 2,    
+            qtdCom: 2,    
+            tipoSaida: 'V',    
+            qtdDevolvida: 0.00,    
+            totalItem: 0.00,    
+            cancelado: '',    
+            codPessoaEmpregado: '',
+            OBS: '',    
+            impresso: ''
+        
+        }
+        let VendasDetImp = {}
+        let FatorConversao = 1.00
+        let tipoEntradaEstoque = 'compra'
+        Loading.show()
+        axios.post(API + 'vendasDet/retornaMvVendasDet', [
+            Fiscal,
+            VendasDet,
+            VendasDetImp,
+            FatorConversao,
+            tipoEntradaEstoque
+        ])
+        .then((res)=>{
+          console.log(res.data)
+          //this.pessoas = res.data
+          Loading.hide()
+        })
+        .catch((e)=>{
+          console.log(e)
+          Loading.hide()
+        })
+    },
       
     //====== LISTAS ======================================================================
     
@@ -1667,6 +1728,10 @@ export default {
   },
   created(){
     let t = this
+    if(this.$route.query.q === 'save'){
+      localStorage.setItem('cadMode', 'save')        
+    }
+    
     if(localStorage.getItem('cadMode') === 'edit'){
         t.listarNotas()
         t.listarContas()

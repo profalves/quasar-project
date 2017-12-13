@@ -10,7 +10,7 @@
            <q-icon name="add" />
         </q-btn>
     </q-fixed-position>
-  <i>Para editar um registro, basta apenas clicar no produto</i>
+  
   <div id="lista">
     <!--<div class="row">
         <q-field
@@ -25,6 +25,7 @@
     
     
     <q-data-table
+      ref="dtable"
       :data="pessoas"
       :config="config"
       :columns="colunas"
@@ -34,7 +35,9 @@
       style="background-color:white;"
     >
       <template slot="selection" scope="props">
-        
+        <q-btn flat color="primary" @click="editar(props)" v-if="visivel">
+          <q-icon name="edit" />
+        </q-btn>
         <q-btn flat color="primary" @click="deleteRow(props)">
           <q-icon name="delete" />
         </q-btn>
@@ -158,7 +161,7 @@
 </template>
 
 <script>
-import { Dialog, Toast, Loading, clone } from 'quasar'
+import { Alert, Dialog, Toast, Loading, clone } from 'quasar'
 import axios from 'axios'
 const API = 'http://192.168.0.200/WSV3/' 
   
@@ -182,6 +185,7 @@ export default {
         },
 
       ],
+      visivel: true,
       
       //LISTA
       config: {
@@ -295,6 +299,13 @@ export default {
         Loading.hide()
       })  
     },
+    editar (props) {
+      console.log(props.rows[0].data.codigo)
+      let row = props.rows[0].data
+      localStorage.setItem('codCab', row.codigo)
+      localStorage.setItem('cadMode', 'edit')
+      this.$router.push({ path: '/cadcliente' }) 
+    },
     deleteRow (props) {
       let row = props.rows
       console.log(row)
@@ -325,11 +336,12 @@ export default {
                       obj = a[i].data
                       obj.excluido = true
                       obj.cpf = 0
+                      let cliente  = obj.nome
                       console.log(obj)
                       Loading.show({message: 'Aguardando Dados...'})
                       axios.post(API + 'pessoa/excluirPessoa?codPessoa=' + obj.codigo)
                           .then((res)=>{
-                              Toast.create('Excluido com sucesso')
+                              Toast.create(cliente + ' foi excluido com sucesso')
                               console.log(res)
                               Loading.hide()
                               this.listarPessoas()
@@ -352,18 +364,57 @@ export default {
     },
     selection (number, rows) {
       console.log(rows)
+      //console.log(rows.length)
+      if(rows.length > 1){
+        this.visivel = false
+      }
+      else{
+        this.visivel = true
+      }
       console.log(`selecionou ${number}: ${rows}`)
+      
     },
     rowClick (row) {
       console.log('clicked on a row', row)
       localStorage.setItem('codPessoa', row.codigo)
       localStorage.setItem('cadMode', 'edit')
-      this.$router.push({ path: '/cadcliente' })  
+      //this.$router.push({ path: '/cadcliente' })
+        Alert.create({
+          name: 'Pessoa' + row.tipo,
+          enter: 'bounceInRight',
+          leave: 'bounceOutRight',
+          color: 'positive',
+          icon: 'tag_faces',
+          html: `Nome: ` + row.nome + `<br>`,
+          position: 'bottom-center',
+          actions: [
+            {
+              label: 'Abrir',
+              handler: () => {
+                this.$router.push({ path: '/cadcliente' })
+                console.log('acting')
+              }
+            },
+            {
+              label: 'Fechar',
+              handler: () => {
+                alert.close()
+                console.log('aborting')
+              }
+            }
+          ]
+        })
     },
     novo(){
       localStorage.setItem('cadMode', 'save')
       this.$router.push('/cadcliente')
-    }
+    },
+    verificarUser(){
+        if(localStorage.getItem('user') === null){
+          this.$router.push('/login')
+        }
+    },
+    
   },
   beforeDestroy () {
     clearTimeout(this.timeout)
@@ -397,6 +448,7 @@ export default {
   },
   created(){
     this.listarPessoas()
+    this.verificarUser()
   }
 }
 </script>

@@ -107,20 +107,30 @@ export default {
     return {
     }
   },
+  methods:{
+    verificarUser(){
+        if(localStorage.getItem('user') === null){
+          this.$router.push('/login')
+        }
+    },
+    vibrarNotif(){
+        let options = {
+          body: 'Seja bem vindo!',
+          vibrate: [200, 100, 200]
+        }
+        let n = new Notification('Retaguarda Web (Test Notification)', options)
+
+        function expression(statement) { 
+         'use strict'
+         return statement;
+        }
+        expression(n.vibrate) // ESLint ignore line
+    }
+  },
   created(){
-    //vibração
-    let options = {
-      body: 'Seja bem vindo!',
-      vibrate: [200, 100, 200]
-    }
-    let n = new Notification('Retaguarda Web (Test Notification)', options)
-    
-    function expression(statement) { 
-     'use strict'
-     return statement;
-    }
-    expression(n.vibrate) // ESLint ignore line
-    
+    let t = this
+    t.verificarUser()
+    t.vibrarNotif()
   }
 }
 </script>

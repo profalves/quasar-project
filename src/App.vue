@@ -8,17 +8,14 @@
     :left-class="{'bg-grey-2': true}"
   >      
       
-    <q-toolbar slot="header" color="black">
-      <q-btn
-        flat
-        @click="$refs.layout.toggleLeft()"
-      >
+    <q-toolbar slot="header" color="black" v-if="$route.path !== '/login' && !$route.query.config">
+      <q-btn flat @click="$refs.layout.toggleLeft()">
         <q-icon name="menu" />
       </q-btn>
 
       <q-toolbar-title>
-        Retaguarda Web
-        <div slot="subtitle">7Virtual</div>
+        7 Virtual Supervisor
+        <div slot="subtitle">{{ Empresa }}</div>
       </q-toolbar-title>
         
       <q-btn flat @click="toggleFullscreen" v-if="visivel">
@@ -26,93 +23,11 @@
       </q-btn>
     </q-toolbar>
 
-    <div slot="left">
-      <!--
-        Use <q-side-link> component
-        instead of <q-item> for
-        internal vue-router navigation
-      -->
-
-      <q-list no-border link inset-delimiter>
-        <q-list-header>Menu</q-list-header>
-        <q-item>
-          <q-item-side icon="star" />
-          <q-side-link to="/">
-              Inicio
-          </q-side-link>
-        </q-item>
-        <q-item>
-          <q-item-side icon="people" />
-          <q-side-link to="/clientes">
-              <q-item-main label="Pessoas" sublabel="Cadastros de clientes, fornecedores, etc." />
-          </q-side-link>
-        </q-item>
-        <q-item>
-          <q-item-side icon="assignment_turned_in" />
-          <q-side-link to="/produtos">
-               <q-item-main label="Produtos" sublabel="Cadastros de Produtos" />
-          </q-side-link>
-        </q-item>
-        <q-item>
-          <q-item-side icon="account_balance_wallet" />
-          <q-side-link to="/contas">
-               <q-item-main label="Contas" sublabel="Cadastros Financeiros" />
-          </q-side-link>
-          
-        </q-item>
-        <q-item>
-          <q-item-side icon="insert_drive_file" />
-          <q-side-link to="/cadnotas">
-               <q-item-main label="Entradas de Notas" sublabel="Cadastros de NFe de Compras" />
-          </q-side-link>
-        </q-item>
-        <q-item>
-          <q-item-side icon="dashboard" />
-          <q-side-link to="/relatorios">
-                <q-item-main label="Relatórios" sublabel="Relatórios Gerais" />
-          </q-side-link>
-        </q-item>
-        <q-item>
-          <q-item-side icon="person" />
-          <q-side-link to="/usuarios">
-                <q-item-main label="Usuários" sublabel="Cadastros de Usuários, Alteração de Senhas, etc." />
-          </q-side-link>
-          
-        </q-item>
-        <q-item>
-          <q-item-side icon="settings" />
-          <q-side-link to="/config">
-                <q-item-main label="Configurações" sublabel="Configurações Gerais" />
-          </q-side-link>
-          
-        </q-item>
-        <q-item>
-          <q-item-side icon="exit_to_app" />
-          <q-side-link to="/login">
-                <q-item-main label="Sair" />
-          </q-side-link>
-        </q-item>  
-        
-        <!-- 
-        <q-item>
-          <q-side-link to="/">Início</q-side-link>
-        </q-item>
-        <q-item>
-          <q-side-link to="/repos">Ver Repositórios</q-side-link>
-        </q-item>
-         
-        <q-item @click="launch('https://github.com/profalves')">
-          
-          <q-item-side class="fa fa-github fa-2x"/>
-          <q-item-main label="Acessar o Github" sublabel="quasar-framework.org" />
-        </q-item>-->
-        
-        
-      </q-list>
-    </div>
-    <div class="container">
-        <router-view />
-    </div>
+    <menuLeft slot="left" v-if="$route.path !== '/login' && !$route.query.config"></menuLeft>
+    
+    <transition name="fade" mode="out-in">   
+        <router-view class="container"></router-view>    
+    </transition>
     
   </q-layout>
   </div>
@@ -120,15 +35,22 @@
 
 <script>
 import { openURL, AppFullscreen } from 'quasar'
+import menuLeft from './components/menu.vue'
 
 export default {
   name: 'index',
   components: {
-    openURL
+    openURL,
+    menuLeft
   },
   data () {
     return {
-        visivel: true
+        visivel: true,
+    }
+  },
+  computed:{
+    Empresa(){
+        return localStorage.getItem('nomeEmpresa')
     }
   },
   methods: {
@@ -138,10 +60,6 @@ export default {
     toggleFullscreen () {
       AppFullscreen.toggle()
     },
-    novo(){
-      localStorage.setItem('cadMode', 'save')
-      this.$router.push('/cadContas')
-    },
     onResize (size) {
       //console.log(size)
       if(size.width < 430 || size.height < 400){
@@ -149,10 +67,15 @@ export default {
       }
       else{
         this.visivel = true
-      }
-      
+      } 
     }
   },
+  created (){
+    if(!localStorage.getItem('user')){
+        this.$router.push('/login')
+    }
+  }
+  
 }
 </script>
 <style>
@@ -199,6 +122,28 @@ export default {
     
     #table {
         overflow: scroll;
+    }
+    
+    /*transitions router*/
+    .fade-enter-active, .fade-leave-active {
+      transition: opacity .5s ease;
+    }
+    .fade-enter, .fade-leave-active {
+      opacity: 0
+    }
+    .child-view {
+      position: absolute;
+      transition: all .5s cubic-bezier(.55,0,.1,1);
+    }
+    .slide-left-enter, .slide-right-leave-active {
+      opacity: 0;
+      -webkit-transform: translate(30px, 0);
+      transform: translate(30px, 0);
+    }
+    .slide-left-leave-active, .slide-right-enter {
+      opacity: 0;
+      -webkit-transform: translate(-30px, 0);
+      transform: translate(-30px, 0);
     }
 
 </style>

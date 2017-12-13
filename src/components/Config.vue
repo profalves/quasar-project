@@ -1,13 +1,48 @@
 <template>
   <div>
       <q-list inset-separator style="background-color: white">
-        <q-collapsible icon="mail" label="Configuações Gerais" sublabel="Configurações essenciais do sistema">
+        <!-- GERAIS -->
+        <q-collapsible icon="settings" label="Configuações Gerais" sublabel="Configurações essenciais do sistema">
           <div>
-            Tela cheia <q-checkbox v-model="check" /><br>
+           <q-field label="Tipo de Gráfico a Exibir">
+            <q-select
+                  v-model="tipoGrafico"
+                  class="col-xs-6 col-sm"
+                  @change="alterarGrafico"
+                  :options="[
+                    {
+                      label: 'Linha',
+                      icon: 'show_chart',
+                      value: 'line'
+                    },
+                    {
+                      label: 'Barra',
+                      icon: 'insert_chart',
+                      value: 'bar'
+                    },
+                    {
+                      label: 'Pizza',
+                      icon: 'pie_chart',
+                      value: 'pie'
+                    },
+                    {
+                      label: 'Donut',
+                      icon: 'donut_large',
+                      value: 'donut'
+                    },
+                   ]"/>
+             </q-field>
+             <p class="caption">
+                Altura
+             </p>
+             <q-slider :label-value="`${height}px`" v-model="height" :min="10" :max="600" :step="10" label-always color="teal" @change="alterarTamGrafico" />
+             
+             
             <q-collapsible icon="mail" label="Tabela de Preços" sublabel="Cadastrar, Editar e Excluir">
             </q-collapsible>
           </div>
         </q-collapsible>
+        <!-- LISTAS -->
         <q-collapsible icon="view_list" label="Listas" sublabel="Configure globalmente a exibição das listas">
           <div>
               <q-field
@@ -90,7 +125,8 @@
               
           </div>
         </q-collapsible>
-        <q-collapsible icon="drafts" label="Banco de Dados" sublabel="Configure a Empresa ao qual deseja conectar">
+        <!-- BANCOS -->
+        <q-collapsible icon="device_hub" label="Banco de Dados" sublabel="Configure a Empresa ao qual deseja conectar">
           <div class="row">
             <div class="col-md-6">
               <q-field
@@ -119,6 +155,16 @@
                 helper="Nome do Banco de Dados"
               >
                 <q-input v-model.trim="banco" clearable />
+              </q-field>   
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <q-field
+                icon="vpn_key"
+                helper="Senha do Banco de Dados"
+              >
+                <q-input v-model.trim="senha" type="password" clearable />
               </q-field>   
             </div> 
             <div class="col-2 btn-plus" >
@@ -175,6 +221,8 @@ export default {
   data () {
     return {
       //Gerais
+      tipoGrafico: localStorage.getItem('tipoGrafico'),
+      height: parseInt(localStorage.getItem('alturaGrafico')),
       check: false,
       //config. das tabelas
       config: { 
@@ -194,11 +242,13 @@ export default {
       ip: '',
       porta: '',
       banco: '',
+      senha: '',
       bancoID: '',
       bancosDados: [],
       filtro: '',
       indice: '',
       edit: false,
+        
       //tabela
       misc: 'bordered', //[{value: 'bordered'},{value: 'highlight'}]
       separator: 'cell', // none, horizontal, vertical, cell
@@ -233,6 +283,17 @@ export default {
     }
   },
   methods: {
+    //Gerais
+    alterarGrafico(){
+        localStorage.setItem('tipoGrafico', this.tipoGrafico)
+    },
+    alterarTamGrafico(){
+        parseInt(localStorage.setItem('alturaGrafico', this.height))
+    },
+    resetGerais(){
+        /* associar valores Default nos atributos de Gerais */
+    
+    },
     //Listas
     salvarConfig(){
         localStorage.setItem('refresh', this.config.refresh)

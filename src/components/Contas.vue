@@ -346,6 +346,7 @@ export default {
       })
       .catch((e)=>{
         console.log(e)
+        Loading.hide()
       })  
     },
     deleteRow (props) {

@@ -371,7 +371,12 @@ export default {
     novo(){
       localStorage.setItem('cadMode', 'save')
       this.$router.push('/cadproduto')
-    }
+    },
+    verificarUser(){
+        if(localStorage.getItem('user') === null){
+          this.$router.push('/login')
+        }
+    },
   },
 
   beforeDestroy () {

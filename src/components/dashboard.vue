@@ -1,101 +1,114 @@
 <template>
   <div class="layout-padding ">
-    <div class="flex wrap gutter">
-      <div class="width-1of3 sm-auto">
-        <cardTotal
-          title="Total Posts"
-          background-color="bg-teal-9"
-          icon-name="local_post_office"
-          :total="totalPosts">
-        </cardTotal>
+      <div slot="header" class="toolbar">
+        <q-toolbar-title :padding="1">
+            Exemplo de Gráficos
+        </q-toolbar-title>
       </div>
-      <div class="width-1of3 sm-auto">
-        <cardTotal
-          title="Total comments"
-          background-color="bg-teal-7"
-          icon-name="comment"
-          :total="totalComments">
-        </cardTotal>
+      
+      <div class="layout-view">
+           <q-select
+              v-model="tipo"
+              float-label="Tipo de Gráfico"
+              :options="[
+                {
+                  label: 'Linha',
+                  icon: 'show_chart',
+                  value: 'line'
+                },
+                {
+                  label: 'Barra',
+                  icon: 'insert_chart',
+                  value: 'bar'
+                },
+                {
+                  label: 'Pizza',
+                  icon: 'pie_chart',
+                  value: 'pie'
+                },
+                {
+                  label: 'Donut',
+                  icon: 'donut_large',
+                  value: 'donut'
+                },
+                {
+                  label: 'PolarArea',
+                  icon: 'track_changes',
+                  value: 'polar'
+                },
+                {
+                  label: 'RadarArea',
+                  icon: 'multiline_chart',
+                  value: 'radar'
+                },
+                {
+                  label: 'Bolhas',
+                  icon: 'bubble_chart',
+                  value: 'bolha'
+                },
+               ]"
+           />
+         
+          <chartLine :width="width" :height="height" :data="data" v-if="tipo === 'line'"></chartLine>
+          <bar :data="data" v-if="tipo === 'bar'"></bar>
+          <pie :data="data" v-if="tipo === 'pie'"></pie>
+          <donut :data="data" v-if="tipo === 'donut'"></donut>
+          <polar :data="data" v-if="tipo === 'polar'"></polar>
+          <radar :data="data" v-if="tipo === 'radar'"></radar>
+          <bubble :data="data" v-if="tipo === 'bolha'"></bubble>
       </div>
-      <div class="width-1of3 sm-auto">
-        <cardTotal
-          title="Static total"
-          background-color="bg-teal-5"
-          icon-name="repeat_one"
-          :total="50004">
-        </cardTotal>
-      </div>
-    </div>
-    <div class="flex wrap gutter">
-      <div class="width-1of2 lg-width-1of3 sm-auto">
-        <card-chart
-          card-title="Total Graph"
-          :data="dataForGraph"
-        ></card-chart>
-      </div>
-      <div class="auto">
-        <knob-statistics
-          card-title="General statistics">
-        </knob-statistics>
-      </div>
-    </div>
-    <div class="flex wrap gutter">
-      <div class="width-4of5 sm-width-1of1">
-        <card-todo
-          card-title="Generic todos"
-          api="todos">
-        </card-todo>
-      </div>
-    </div>
+    
+      
+      
   </div>
 </template>
 <script type="text/javascript">
-  import cardChart from './dashboard/cardChart.vue'
-  import cardTotal from './dashboard/cardTotal.vue'
-  import cardTodo from './dashboard/cardTodo.vue'
-  import knobStatistics from './dashboard/knobStatistics.vue'
-  import { mapMutations } from 'vuex'
+  import chartLine from './charts/Line.js'
+  import bar from './charts/Bar.js'
+  import pie from './charts/Pizza.js'
+  import donut from './charts/Donuts.js'
+  import polar from './charts/Polar.js'
+  import radar from './charts/Radar.js'
+  import bubble from './charts/Bubble.js'
   export default {
-    name: 'Home',
-    mounted () {
-      // Axios.all not working
-      Promise.all([
-        this.$http.jsonplaceholder.get('posts'),
-        this.$http.jsonplaceholder.get('comments'),
-        this.$http.jsonplaceholder.get('todos')
-      ])
-        .then(response => {
-          this.setPosts(response[0].data)
-          this.totalPosts = response[0].data.length
-          this.totalComments = response[1].data.length
-          this.totalTodos = response[2].data.length
-        })
+    name: 'CaixaRelatorios',
+    components: {
+        chartLine,
+        bar,
+        pie,
+        donut,
+        polar,
+        radar,
+        bubble
     },
     data () {
       return {
-        totalPosts: 0,
-        totalComments: 0,
-        totalTodos: 0
-      }
-    },
-    computed: {
-      dataForGraph () {
-        return {
-          posts: this.totalPosts,
-          todos: this.totalTodos,
-          comments: this.totalComments
+        tipo: localStorage.getItem('tipoGrafico'),
+        width: 100,
+        height: parseInt(localStorage.getItem('alturaGrafico')),
+        data: {
+          labels:  ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+          datasets: [
+            {
+              label: 'Ano Atual',
+              backgroundColor: '#80CBC4',
+              data: [40, 20, 12, 39, 10, 70, 39, 80, 40, 20, 12, 11]
+            },
+            {
+              label: 'Ano Anterior',
+              backgroundColor: '#05CBE1',
+              data: [40, 50, 72, 30, 20, 10, 29, 90, 32, 24, 52, 15]
+            }
+          ],
+          option: {
+              options: '200px',
+              backgroundColor: 'grey'
+          }
         }
       }
     },
-    methods: {
-      ...mapMutations(['setPosts'])
-    },
-    components: {
-      cardTotal,
-      cardChart,
-      cardTodo,
-      knobStatistics
-    }
+    
+    
   }
 </script>
 <style></style>
