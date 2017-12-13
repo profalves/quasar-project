@@ -96,14 +96,14 @@ export default {
       this.$router.push('/cadContas')
     },
     verificarUser(){
-        if(localStorage.getItem('user') === null){
+        if(!localStorage.getItem('codUser')){
           this.$router.push('/login')
         }
     },
   },
   created(){
-    //let t = this
-    //t.verificarUser()
+    let t = this
+    t.verificarUser()
   }
 }
 </script>

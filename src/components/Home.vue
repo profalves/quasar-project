@@ -109,7 +109,7 @@ export default {
   },
   methods:{
     verificarUser(){
-        if(localStorage.getItem('user') === null){
+        if(!localStorage.getItem('codUser')){
           this.$router.push('/login')
         }
     },
@@ -129,7 +129,7 @@ export default {
   },
   created(){
     let t = this
-    t.verificarUser()
+    //t.verificarUser()
     t.vibrarNotif()
   }
 }

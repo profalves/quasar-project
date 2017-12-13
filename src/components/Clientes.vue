@@ -408,12 +408,7 @@ export default {
     novo(){
       localStorage.setItem('cadMode', 'save')
       this.$router.push('/cadcliente')
-    },
-    verificarUser(){
-        if(localStorage.getItem('user') === null){
-          this.$router.push('/login')
-        }
-    },
+    }
     
   },
   beforeDestroy () {
@@ -448,7 +443,6 @@ export default {
   },
   created(){
     this.listarPessoas()
-    this.verificarUser()
   }
 }
 </script>

@@ -17,26 +17,23 @@
         />
         
       </q-fixed-position>
-      <img src="../../img/logo2.png" width="100%" />
+      
+      <img src="../../img/logo2.png" width="100%" id="logo"/>
       <q-field
-
         helper="Empresa"
       >
         <q-select
-            label="Empresa"
+            align="center"
             v-model="bd"
-            :options="[
-                { label: 'Star Wars', value: 1 },
-                { label: 'Star Trek', value: 2 }
-            ]"   
+            :options="listaEmpresas" 
+            @change="setBancoAtual"  
         />
       </q-field>
       <q-field
-
         helper="Usuário"
       >
         <q-select
-            label="Usuário"
+            align="center"
             v-model="user"
             :options="[
                 { label: 'Luke Skywalker', value: 1 },
@@ -44,15 +41,17 @@
                 { label: 'C-3PO', value: 3 },
                 { label: 'R2-D2', value: 4 },
                 { label: 'Leia Organa', value: 5 },
-            ]"   
+            ]"
+            filter
+            filter-placeholder="Procurar..."
+            autofocus-filter
         />
       </q-field>
       <q-field
-
         helper="Senha"
       >
         <q-input
-            label="Usuário"
+            align="center"
             v-model="pass"
             type="password"
             clearable
@@ -78,21 +77,83 @@ export default {
             table,
             bd: '',
             user: '',
-            pass: ''
+            pass: '',
+            bancosDados: []
         }
+    },
+    computed:{
+        listaEmpresas(){
+            let lista = []
+            let l = ''
+            //let v = '' // usando ip no value
+            let a = ''
+            
+            for (let i=0; i < localStorage.length; i++) {
+                if(localStorage.getItem('banco'+i)){
+                    l = localStorage.getItem('banco'+i)   
+                }
+                /*if(localStorage.getItem('ip'+i) && localStorage.getItem('ip'+i)){
+                    v = localStorage.getItem('ip'+i)    
+                }*/
+                if(l !== '' && a !== l){
+                    lista.push({
+                        label: l,
+                        value: i
+                    })
+                }
+                a = l 
+            }
+            
+            return lista
+        },
+        
     },
     methods:{
         login(){
             localStorage.setItem('tela', 'principal')
+            localStorage.setItem('codUser', 1)
             this.$router.push('/')
+        },
+        /*listarBancos(){
+            var i
+            for (i = 1; i <= localStorage.getItem('bancoCont'); i++) {
+                var lista = { 
+                                IdBanco : localStorage.getItem('IdBanco' + i),
+                                ip : localStorage.getItem('ip' + i),
+                                porta: localStorage.getItem('porta' + i),
+                                banco: localStorage.getItem('banco' + i),
+                                senha: localStorage.getItem('senhaBD' + i)
+                            }
+                if(lista.IdBanco!==null){
+                    this.bancosDados.push(lista)
+                }
+            }
+
+        },*/
+        setBancoAtual(){
+            let port = ''
+            if(localStorage.getItem('porta'+this.bd)){
+                port=':' + localStorage.getItem('porta'+this.bd)     
+            }
+            let sv = localStorage.getItem('ip'+this.bd)
+            localStorage.setItem('_wsAtual', 'http://' + sv + port + '/' )    
         }
     },
     created(){
         localStorage.setItem('tela', 'login')
+        localStorage.removeItem('codUser')
+        //this.listarBancos()
     }
 }
 </script>
 
 <style scoped>
+    #logo {
+        margin-bottom: 30px;
+    }
+    .login {
+        text-align: center;
+    }
+    
     
 </style>

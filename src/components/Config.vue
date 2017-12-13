@@ -164,7 +164,7 @@
                 icon="vpn_key"
                 helper="Senha do Banco de Dados"
               >
-                <q-input v-model.trim="senha" type="password" clearable />
+                <q-input v-model.trim="senhaBd" type="password" clearable />
               </q-field>   
             </div> 
             <div class="col-2 btn-plus" >
@@ -172,7 +172,8 @@
                    rounded
                    color="primary" 
                    @click="salvarBanco">
-                   <q-icon name="add" />
+                   <q-icon name="check" v-if="edit"/>
+                   <q-icon name="add" v-else/>
                 </q-btn>
             </div>
           </div>
@@ -195,8 +196,8 @@
                 <tr v-for="(item, index) in bancosDados">
                   <td class="text-left">{{ item.IdBanco }}</td>
                   <td class="text-left">{{ item.banco }}</td>
-                  <td class="text-right">{{ item.ip }}</td>
-                  <td class="text-right">{{ item.porta }}</td>
+                  <td class="text-left">{{ item.ip }}</td>
+                  <td class="text-left">{{ item.porta }}</td>
                   <td class="text-center">
                     <a @click="editar(item)" color="info"><i class="material-icons fa-2x" >mode_edit</i></a>   
                   </td>
@@ -242,7 +243,7 @@ export default {
       ip: '',
       porta: '',
       banco: '',
-      senha: '',
+      senhaBd: '',
       bancoID: '',
       bancosDados: [],
       filtro: '',
@@ -280,7 +281,30 @@ export default {
         classes.push(this.gutter)
       }
       return classes
-    }
+    },
+    /*storageAvailable: function(type) {
+        try {
+            var storage = window[type],
+                x = '__storage_test__';
+            storage.setItem(x, x);
+            //storage.removeItem(x);
+            return true;
+        }
+        catch(e) {
+            return e instanceof DOMException && (
+                // everything except Firefox
+                e.code === 22 ||
+                // Firefox
+                e.code === 1014 ||
+                // test name field too, because code might not be present
+                // everything except Firefox
+                e.name === 'QuotaExceededError' ||
+                // Firefox
+                e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
+                // acknowledge QuotaExceededError only if there's something already stored
+                storage.length !== 0;
+        }
+    }*/
   },
   methods: {
     //Gerais
@@ -370,13 +394,18 @@ export default {
 
     },
     salvarBanco(){
-        if(this.edit === true){
+        if(this.edit === true){//editar
             localStorage.setItem('ip' + this.filtro, this.ip)
-            localStorage.setItem('porta' + this.filtro, this.porta)
+            if(this.porta > 0){
+                localStorage.setItem('porta' + this.filtro, this.porta)
+            }
             localStorage.setItem('banco' + this.filtro, this.banco)
+            localStorage.setItem('senhaBD' + this.filtro, this.senhaBd)
             this.ip = ''
             this.porta = ''
             this.banco = ''
+            this.senhaBd = ''
+            this.edit = false
             Toast.create.positive({
                 html: 'Configurações salvas com sucesso',
                 icon: 'done'
@@ -393,11 +422,15 @@ export default {
             localStorage.setItem('bancoCont', cont)
             localStorage.setItem('IdBanco' + localStorage.getItem('bancoCont'), cont)
             localStorage.setItem('ip' + localStorage.getItem('bancoCont'), this.ip)
-            localStorage.setItem('porta' + localStorage.getItem('bancoCont'), this.porta)
+            if(this.porta > 0){
+                localStorage.setItem('porta' + localStorage.getItem('bancoCont'), this.porta)
+            }
             localStorage.setItem('banco' + localStorage.getItem('bancoCont'), this.banco)
+            localStorage.setItem('senhaBD' + localStorage.getItem('bancoCont'), this.senhaBd)
             this.ip = ''
             this.porta = ''
             this.banco = ''
+            this.senhaBd = ''
             Toast.create.positive({
                 html: 'Configurações salvas com sucesso',
                 icon: 'done'
@@ -412,6 +445,7 @@ export default {
         this.ip = localStorage.getItem('ip' + this.filtro)
         this.porta = localStorage.getItem('porta' + this.filtro)
         this.banco = localStorage.getItem('banco' + this.filtro)
+        this.senhaBd = localStorage.getItem('senhaBD' + this.filtro)
         
     },
     excluir(item, index) {
@@ -426,33 +460,12 @@ export default {
         localStorage.removeItem('ip' + this.filtro)
         localStorage.removeItem('porta' + this.filtro)
         localStorage.removeItem('banco' + this.filtro)
+        localStorage.removeItem('senhaBD' + this.filtro)
         
         this.bancosDados = []
         this.listarBancos()
     },
-    storageAvailable(type) {
-        try {
-            var storage = window[type],
-                x = '__storage_test__';
-            storage.setItem(x, x);
-            storage.removeItem(x);
-            return true;
-        }
-        catch(e) {
-            return e instanceof DOMException && (
-                // everything except Firefox
-                e.code === 22 ||
-                // Firefox
-                e.code === 1014 ||
-                // test name field too, because code might not be present
-                // everything except Firefox
-                e.name === 'QuotaExceededError' ||
-                // Firefox
-                e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
-                // acknowledge QuotaExceededError only if there's something already stored
-                storage.length !== 0;
-        }
-    }
+    
     
   },
   created (){

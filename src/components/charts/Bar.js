@@ -15,8 +15,14 @@ export default {
                 }
             }
         }
-    },
+    }, 
     mounted: function (){
         this.renderChart(this.data, this.options)
+    },
+    watch: {
+        data: function () {
+          this._chart.destroy()
+          this.renderChart(this.data, this.options)
+        }
     }
 }

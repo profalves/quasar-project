@@ -1108,8 +1108,8 @@ export default {
       return classes
     },
     listaEstados: function () {
-      var a = this.estados
-      var lista = []
+      let a = this.estados
+      let lista = []
       
       for (let i=0; i < a.length; i++) {
           let n = a[i].nome
