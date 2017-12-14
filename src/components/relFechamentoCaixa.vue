@@ -230,7 +230,7 @@ import axios from 'axios'
 import { Dialog, Loading } from 'quasar'
 import bar from './charts/Bar.js' 
     
-const API = 'http://192.168.0.200/WSV3/' 
+const API = localStorage.getItem('wsAtual')
   
 //debug
 //const API = 'http://192.168.0.200:29755/' 

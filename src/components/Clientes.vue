@@ -163,10 +163,11 @@
 <script>
 import { Alert, Dialog, Toast, Loading, clone } from 'quasar'
 import axios from 'axios'
-const API = 'http://192.168.0.200/WSV3/' 
+
+const API = localStorage.getItem('wsAtual')
   
 //debug
-//const API = 'http://192.168.0.200:29755/' 
+//const API = localStorage.getItem('wsAtual')
 
 export default { 
   data () {

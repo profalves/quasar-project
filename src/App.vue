@@ -69,11 +69,6 @@ export default {
         this.visivel = true
       } 
     }
-  },
-  created (){
-    if(!localStorage.getItem('user')){
-        this.$router.push('/login')
-    }
   }
   
 }
@@ -83,7 +78,7 @@ export default {
         background-color: aliceblue;
     }
     .container {
-        margin: 20px;
+        margin: 20px 20px 0 20px;
     }
     
     .topo {
@@ -144,6 +139,10 @@ export default {
       opacity: 0;
       -webkit-transform: translate(-30px, 0);
       transform: translate(-30px, 0);
+    }
+    
+    .fixo{
+        z-index: 5
     }
 
 </style>

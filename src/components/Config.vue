@@ -1,6 +1,16 @@
 <template>
   <div>
-      <q-list inset-separator style="background-color: white">
+     
+      <q-fixed-position class="fixo" corner="bottom-left" :offset="[18, 18]">
+        <q-btn 
+           round
+           color="primary" 
+           @click="goBack">
+           <q-icon name="chevron_left" />
+        </q-btn>
+      </q-fixed-position>
+      
+      <q-list inset-separator style="background-color: white; margin-bottom: 40px;">
         <!-- GERAIS -->
         <q-collapsible icon="settings" label="Configuações Gerais" sublabel="Configurações essenciais do sistema">
           <div>
@@ -126,7 +136,11 @@
           </div>
         </q-collapsible>
         <!-- BANCOS -->
-        <q-collapsible icon="device_hub" label="Banco de Dados" sublabel="Configure a Empresa ao qual deseja conectar">
+        <q-collapsible  icon="device_hub" 
+                        label="Banco de Dados" 
+                        sublabel="Configure a Empresa ao qual deseja conectar"
+                        :opened="bdConfig"
+                        >
           <div class="row">
             <div class="col-md-6">
               <q-field
@@ -167,7 +181,7 @@
                 <q-input v-model.trim="senhaBd" type="password" clearable />
               </q-field>   
             </div> 
-            <div class="col-2 btn-plus" >
+            <div class="col-2 btn-plus" style="text-align:center">
                 <q-btn 
                    rounded
                    color="primary" 
@@ -211,7 +225,8 @@
         
         </q-collapsible>
       </q-list>
-      
+    
+    <br><br><br>
   </div>
 </template>
 
@@ -221,6 +236,9 @@ import { Dialog, Toast } from 'quasar'
 export default {
   data () {
     return {
+      //btn voltar
+      canGoBack: window.history.length > 1,
+      
       //Gerais
       tipoGrafico: localStorage.getItem('tipoGrafico'),
       height: parseInt(localStorage.getItem('alturaGrafico')),
@@ -249,6 +267,7 @@ export default {
       filtro: '',
       indice: '',
       edit: false,
+      bdConfig: false,
         
       //tabela
       misc: 'bordered', //[{value: 'bordered'},{value: 'highlight'}]
@@ -282,13 +301,12 @@ export default {
       }
       return classes
     },
-    /*storageAvailable: function(type) {
+    storageAvailable: function(type) {
         try {
-            var storage = window[type],
-                x = '__storage_test__';
-            storage.setItem(x, x);
-            //storage.removeItem(x);
-            return true;
+            let x = '__storage_test__';
+            localStorage.setItem(x, x);
+            localStorage.removeItem(x);
+            return localStorage;
         }
         catch(e) {
             return e instanceof DOMException && (
@@ -302,11 +320,15 @@ export default {
                 // Firefox
                 e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
                 // acknowledge QuotaExceededError only if there's something already stored
-                storage.length !== 0;
+                localStorage.length !== 0;
         }
-    }*/
+    }
   },
   methods: {
+    goBack(){
+      window.history.go(-1)
+    },
+      
     //Gerais
     alterarGrafico(){
         localStorage.setItem('tipoGrafico', this.tipoGrafico)
@@ -318,6 +340,7 @@ export default {
         /* associar valores Default nos atributos de Gerais */
     
     },
+    
     //Listas
     salvarConfig(){
         localStorage.setItem('refresh', this.config.refresh)
@@ -394,7 +417,11 @@ export default {
 
     },
     salvarBanco(){
-        if(this.edit === true){//editar
+        if(this.ip === ''){ 
+            Toast.create.negative('Não pode salvar com as informações de Banco de dados vazias')
+            return
+        }
+        if(this.edit === true){ //editar
             localStorage.setItem('ip' + this.filtro, this.ip)
             if(this.porta > 0){
                 localStorage.setItem('porta' + this.filtro, this.porta)
@@ -413,7 +440,7 @@ export default {
             this.bancosDados = []
             this.listarBancos()
         }
-        else{
+        else{ //novo
             var bancoCont = parseInt(localStorage.getItem('bancoCont'))
             if(isNaN(bancoCont)) {
                 bancoCont = 0
@@ -470,6 +497,9 @@ export default {
   },
   created (){
     this.listarBancos()
+    if(this.$route.query.bdConfig === true){
+        this.bdConfig = true
+    }
   }
   
 }
@@ -479,5 +509,10 @@ export default {
     #config {
         overflow: scroll;
     }
-    
+    .low{
+        margin-bottom: 50px
+    }
+    .fixo{
+        z-index: 
+    }
 </style>

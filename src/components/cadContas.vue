@@ -391,7 +391,7 @@ import { required, minLength } from 'vuelidate/lib/validators'
 import { Dialog, Toast, Loading } from 'quasar'
 
 //dev
-const API = 'http://192.168.0.200/WSV3/'
+const API = localStorage.getItem('wsAtual')
 
 //debug
 //const API = 'http://192.168.0.200:29755/'

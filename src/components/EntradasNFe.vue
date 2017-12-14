@@ -107,7 +107,7 @@ function numberToReal(numero) {
 }
     
     
-const API = 'http://192.168.0.200/WSV3/'
+const API = localStorage.getItem('wsAtual')
   
 //debug
 //const API = 'http://192.168.0.200:29755/' 

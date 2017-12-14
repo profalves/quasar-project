@@ -258,7 +258,7 @@
               <q-field 
                 icon="location_city"
               >
-                <q-select v-model="CadPessoa.pessoa.codigoIBGECidade"
+                <q-select v-model="CadPessoa.pessoa.codigoIBGE"
                           :options="listaCidades"
                           float-label="Cidade"
                           filter
@@ -896,7 +896,7 @@ import { required, minLength, maxLength, email } from 'vuelidate/lib/validators'
 import { Dialog, Toast, Loading } from 'quasar'
 
 //dev
-const API = 'http://192.168.0.200/WSV3/'
+const API = localStorage.getItem('wsAtual')
 
 //debug
 //const API = 'http://192.168.0.200:29755/'
@@ -929,7 +929,7 @@ export default {
                 numero : '',
                 bairro : '',
                 cep : '',
-                codigoIBGECidade : '', //not null
+                codigoIBGE : '', //not null
                 codigoUF : 29,  //not null
                 limiteCredito : 0.00, //not null
                 telResid : '',
@@ -1216,18 +1216,18 @@ export default {
           this.getCep = res.data
           this.estado = this.getCep.estado
           this.listarCidades()
-          this.Pessoas.endereco = this.getCep.logradouro
-          this.Pessoas.bairro = this.getCep.bairro
-          this.Pessoas.cep = this.getCep.cep
+          this.CadPessoa.pessoa.endereco = this.getCep.logradouro
+          this.CadPessoa.pessoa.bairro = this.getCep.bairro
+          this.CadPessoa.pessoa.cep = this.getCep.cep
           this.cidade = this.getCep.cidade
-          this.Pessoas.codigoIBGECidade = parseInt(this.getCep.cidade_info.codigo_ibge)
-          this.Pessoas.CodigoUF = parseInt(this.getCep.estado_info.codigo_ibge)
+          this.CadPessoa.pessoa.codigoIBGECidade = parseInt(this.getCep.cidade_info.codigo_ibge)
+          this.CadPessoa.pessoa.CodigoUF = parseInt(this.getCep.estado_info.codigo_ibge)
       })
       .catch((e)=>{
         this.error = e.response
         Dialog.create({
           title: 'CEP inexistente',
-          message: this.error.statusText,
+          message: this.error,
           buttons: [
             {
               label: 'Ok',
@@ -1236,9 +1236,9 @@ export default {
             }
           ]
         })
-        this.cep = ''
-        this.$refs.cep.focus();
-        console.log(e.response)
+        //this.cep = ''
+        //this.$refs.cep.focus();
+        console.log(e)
       })  
     },
     buscarCepADD(){
@@ -1765,7 +1765,7 @@ export default {
               Loading.hide()
               //console.log(res.data)
               this.CadPessoa.pessoa = res.data
-              this.estado = this.CadPessoa.pessoa.uf
+              this.cidade = this.CadPessoa.pessoa.codigoIBGE
               this.nome = this.CadPessoa.pessoa.nome
               if(this.CadPessoa.pessoa.cnpj!==""){
                 this.cpf = this.CadPessoa.pessoa.cnpj
