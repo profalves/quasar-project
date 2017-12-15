@@ -18,6 +18,7 @@
         push big
         @click="excluir"
         style="margin-left: 5px"
+        v-if="btnDelete"
       >
         <i class="material-icons">delete</i>
       </q-btn>
@@ -1060,6 +1061,7 @@ export default {
         error: '',
         visivel: true,
         setTipo: false,
+        btnDelete: false,
         
         //v-money
         money: {
@@ -1346,7 +1348,6 @@ export default {
         
     },
     excluir(){
-        this.Pessoas.excluido = true
         Dialog.create({
           title: 'Excluir',
           message: 'Tem certeza que deseja excluir este registro?',
@@ -1366,9 +1367,19 @@ export default {
               raised: true,
               style: 'margin-top: 20px',
               handler: () => {
-                this.salvar()
-                this.listarPessoas()
-                Toast.create('Excluído!')
+                let nome = this.CadPessoa.pessoa.nome
+                Loading.show({message: 'Aguardando Dados...'})
+                axios.post(API + 'pessoa/excluirPessoa?codPessoa=' + this.CadPessoa.pessoa.codigo)
+                  .then((res)=>{
+                      Toast.create(nome + ' foi excluido com sucesso')
+                      console.log(res)
+                      Loading.hide()
+                  })
+                  .catch((e)=>{
+                    console.log(e)
+                    Loading.hide()
+                    return
+                  })
                 this.$router.push('clientes')
               }
             }
@@ -1858,7 +1869,7 @@ export default {
         this.visivel = false
     }
     else {
-        
+        this.btnDelete = true
         t.listarPessoas()
         t.listarEnderecos()
         t.listarTelefones()

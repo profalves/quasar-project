@@ -171,10 +171,14 @@ export default {
             }
             let port = ''
             if(localStorage.getItem('porta' + this.bd)){
-                port=':' + localStorage.getItem('porta'+this.bd)     
+                port = ':' + localStorage.getItem('porta'+this.bd)     
+            }
+            let DB = ''
+            if(localStorage.getItem('banco' + this.bd)){
+                DB = '/' + localStorage.getItem('banco'+this.bd)     
             }
             let sv = localStorage.getItem('ip' + this.bd)
-            localStorage.setItem('wsAtual', 'http://' + sv + port + '/' )
+            localStorage.setItem('wsAtual', 'http://' + sv + DB + port + '/' )
             
             API = localStorage.getItem('wsAtual')
         },
@@ -187,7 +191,7 @@ export default {
                 localStorage.setItem('responsive', false)
                 localStorage.setItem('selection', 'multiple')
                 localStorage.setItem('pagination', true)
-                localStorage.setItem('rowHeight', 38)
+                localStorage.setItem('rowHeight', 45)
                 localStorage.setItem('bodyHeightProp', 'auto')
                 localStorage.setItem('bodyHeight', 200)
                 localStorage.setItem('alturaGrafico', 100)
@@ -196,6 +200,7 @@ export default {
             
         },
         listarUsuarios(){
+          if(this.bd === 0){ return }
           API = localStorage.getItem('wsAtual')
           Loading.show({message: 'Carregando Usuários...'})
           axios.get(API + 'usuario/obterUsuario')

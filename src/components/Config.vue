@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="row justify-center">
      
       <q-fixed-position class="fixo" corner="bottom-left" :offset="[18, 18]">
         <q-btn 
@@ -142,6 +142,16 @@
                         :opened="bdConfig"
                         >
           <div class="row">
+            <div class="col">
+              <q-field
+                icon="domain"
+                helper="Nome da Empresa"
+              >
+                <q-input v-model.trim="empresa" clearable />
+              </q-field>   
+            </div>
+          </div>
+          <div class="row">
             <div class="col-md-6">
               <q-field
                 icon="pin_drop"
@@ -199,7 +209,8 @@
               <thead>
                 <tr>
                   <th class="text-left">ID</th>
-                  <th class="text-left">Nome</th>
+                  <th class="text-left">Empresa</th>
+                  <th class="text-left">Banco de Dados</th>
                   <th class="text-left">IP/Host</th>
                   <th class="text-left">Porta</th>
                   <th class="text-left">Editar</th>
@@ -209,6 +220,7 @@
               <tbody>
                 <tr v-for="(item, index) in bancosDados">
                   <td class="text-left">{{ item.IdBanco }}</td>
+                  <td class="text-left">{{ item.empresa }}</td>
                   <td class="text-left">{{ item.banco }}</td>
                   <td class="text-left">{{ item.ip }}</td>
                   <td class="text-left">{{ item.porta }}</td>
@@ -258,6 +270,7 @@ export default {
       bodyHeight: parseInt(localStorage.getItem('bodyHeight')),
       
       // config. Banco de Dados
+      empresa: '',
       ip: '',
       porta: '',
       banco: '',
@@ -364,7 +377,7 @@ export default {
         this.config.responsive = false
         this.config.selection = 'multiple'
         this.pagination = true
-        this.rowHeight = 38
+        this.rowHeight = 45
         this.bodyHeightProp = 'auto'
         this.bodyHeight = 200
         
@@ -408,7 +421,8 @@ export default {
                             IdBanco : localStorage.getItem('IdBanco' + i),
                             ip : localStorage.getItem('ip' + i),
                             porta: localStorage.getItem('porta' + i),
-                            banco: localStorage.getItem('banco' + i)
+                            banco: localStorage.getItem('banco' + i),
+                            empresa: localStorage.getItem('Empresa' + i)
                         }
             if(lista.IdBanco!==null){
                 this.bancosDados.push(lista)
@@ -422,12 +436,14 @@ export default {
             return
         }
         if(this.edit === true){ //editar
+            localStorage.setItem('Empresa' + this.filtro, this.empresa)
             localStorage.setItem('ip' + this.filtro, this.ip)
             if(this.porta > 0){
                 localStorage.setItem('porta' + this.filtro, this.porta)
             }
             localStorage.setItem('banco' + this.filtro, this.banco)
             localStorage.setItem('senhaBD' + this.filtro, this.senhaBd)
+            this.empresa = ''
             this.ip = ''
             this.porta = ''
             this.banco = ''
@@ -448,12 +464,14 @@ export default {
             var cont = bancoCont + 1
             localStorage.setItem('bancoCont', cont)
             localStorage.setItem('IdBanco' + localStorage.getItem('bancoCont'), cont)
+            localStorage.setItem('Empresa' + localStorage.getItem('bancoCont'), this.empresa)
             localStorage.setItem('ip' + localStorage.getItem('bancoCont'), this.ip)
             if(this.porta > 0){
                 localStorage.setItem('porta' + localStorage.getItem('bancoCont'), this.porta)
             }
             localStorage.setItem('banco' + localStorage.getItem('bancoCont'), this.banco)
             localStorage.setItem('senhaBD' + localStorage.getItem('bancoCont'), this.senhaBd)
+            this.empresa = ''
             this.ip = ''
             this.porta = ''
             this.banco = ''
@@ -469,6 +487,7 @@ export default {
     editar(item, index) {
         this.filtro = item.IdBanco
         this.edit = true
+        this.empresa = localStorage.getItem('Empresa' + this.filtro)
         this.ip = localStorage.getItem('ip' + this.filtro)
         this.porta = localStorage.getItem('porta' + this.filtro)
         this.banco = localStorage.getItem('banco' + this.filtro)
@@ -483,6 +502,7 @@ export default {
             this.bancosDados.splice(index,1)
         }
         
+        localStorage.removeItem('Empresa' + this.filtro)
         localStorage.removeItem('IdBanco' + this.filtro)
         localStorage.removeItem('ip' + this.filtro)
         localStorage.removeItem('porta' + this.filtro)

@@ -399,6 +399,56 @@ export default {
           ]
       })
     },
+    deleteAll (props) {
+      let row = props.rows
+      console.log(row)
+      this.excluidos = row
+      Dialog.create({
+          title: 'Excluir',
+          message: 'Tem certeza que deseja excluir ' + this.excluidos.length + ' registro(s)?',
+          buttons: [
+            {
+              label: 'Não! Cancela',
+              color: 'negative',
+              raised: true,
+              style: 'margin-top: 20px',
+              handler () {
+                Toast.create('Cancelado...')
+              }
+            },
+            {
+              label: 'Sim! Pode excluir',
+              color: 'positive',
+              raised: true,
+              style: 'margin-top: 20px',
+              handler: () => {
+                  let a = this.excluidos
+                  let obj = {}
+
+                  for (let i=0; i < a.length; i++) {
+                      obj = a[i].data
+                      obj.excluido = true
+                      console.log(obj)
+                      Loading.show({message: 'Aguardando Dados...'})
+                      axios.post(API + 'conta/excluirConta?codigoCab=' + obj.codigoCab)
+                          .then((res)=>{
+                              //console.log(res)
+                              Toast.create('Excluido com sucesso')
+                              Loading.hide()
+                              this.listarContas()
+                          })
+                          .catch((e)=>{
+                            console.log(e)
+                            Loading.hide()
+                            return
+                          })  
+                      
+                  }
+              }
+            }
+          ]
+      })
+    },
     baixarTitulos (props) {
       let row = props.rows
       console.log(row)

@@ -1,6 +1,7 @@
 <template>
 <div id="cadEntradasNFe">
     <div style="margin-top:60px"></div>
+    
     <div class="row topo" style="margin-bottom:20px">
       <q-btn
         v-if="canGoBack"
@@ -16,28 +17,10 @@
         push big
         @click="excluir"
         style="margin-left:5px;"
+        v-if="btnDelete"
       >
         <i class="material-icons">delete</i>
       </q-btn>
-        
-      <!--<q-btn
-        style="background: white; 
-               color: black"
-        push
-        @click="limpar"  
-      >
-        limpar
-      </q-btn>
-      
-      <q-btn
-        style="background: white; 
-               color: black"
-        push big
-        @click=""
-        
-      >
-        <i class="material-icons">edit</i>
-      </q-btn>-->
       
       <q-btn
         color="positive"
@@ -1117,6 +1100,7 @@ export default {
         ],
         
         canGoBack: window.history.length > 1,
+        btnDelete: false,
         
         //v-money
         money: {
@@ -1736,6 +1720,7 @@ export default {
         t.listarNotas()
         t.listarContas()
         this.visivel = false
+        this.btnDelete = true
     }
     t.listarPessoas()
     t.todosProdutos()

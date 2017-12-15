@@ -322,11 +322,12 @@ export default {
                       obj = a[i].data
                       obj.excluido = true
                       console.log(obj)
+                      let produto  = obj.nome
                       Loading.show({message: 'Aguardando Dados...'})
                       axios.post(API + 'produto/excluirProduto?codProduto=' + obj.codigo)
                           .then((res)=>{
                               //console.log(res)
-                              Toast.create('Excluido com sucesso')
+                              Toast.create(produto + ' foi excluido com sucesso')
                               Loading.hide()
                               this.listarProdutos()
                           })
@@ -372,12 +373,7 @@ export default {
     novo(){
       localStorage.setItem('cadMode', 'save')
       this.$router.push('/cadproduto')
-    },
-    verificarUser(){
-        if(localStorage.getItem('user') === null){
-          this.$router.push('/login')
-        }
-    },
+    }
   },
 
   beforeDestroy () {

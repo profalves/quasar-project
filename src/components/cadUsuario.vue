@@ -18,28 +18,10 @@
         push big
         @click="excluir"
         style="margin-left: 5px"
+        v-if="btnDelete"
       >
         <i class="material-icons">delete</i>
       </q-btn>
-        
-      <!--<q-btn
-        style="background: white; 
-               color: black"
-        push
-        @click="limpar"  
-      >
-        limpar
-      </q-btn>
-      
-      <q-btn
-        style="background: white; 
-               color: black"
-        push big
-        @click=""
-        
-      >
-        <i class="material-icons">edit</i>
-      </q-btn>-->
       
       <q-btn
         color="positive"
@@ -295,10 +277,10 @@ export default {
         canGoBack: window.history.length > 1,
         error: '',
         visivel: false,
+        btnDelete: false,
         vendedor: '',
         pessoas: [],
-        usuarios: [],
-        ultimoUser: [],
+        usuarios: []
     }
   },
     
@@ -355,9 +337,6 @@ export default {
     salvar(){
         this.usuario.nome = this.nome
         this.usuario.senha = this.senha
-        if(this.usuario.codigoIdentificacao===null || this.usuario.codigoIdentificacao === ''){
-            this.usuario.codigoIdentificacao = this.ultimoUser.codigoIdentificacao+1
-        }
       
         Loading.show({message: 'Enviando Dados...'})
         axios.post(API + 'usuario/gravarUsuario', this.usuario)
@@ -432,7 +411,6 @@ export default {
           //console.log(res)
           this.usuarios = res.data
           Loading.hide()
-          this.ultimoUser = this.usuarios.slice(-1)[0]
       })
       .catch((e)=>{
         console.log(e)
@@ -459,6 +437,7 @@ export default {
     let t = this
     if(localStorage.getItem('cadMode')==='edit'){
         t.editarUsuario()
+        t.btnDelete = true
     }
     else {
         t.listarUsuarios()

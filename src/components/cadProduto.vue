@@ -18,6 +18,7 @@
         push big
         @click="excluir"
         style="margin-left: 5px"
+        v-if="btnDelete"
       >
         <i class="material-icons">delete</i>
       </q-btn>
@@ -677,6 +678,8 @@ export default {
         canGoBack: window.history.length > 1,
         error: '',
         visivel: false,
+        btnDelete: false,
+        
         fatorConv: {
             CodigoProduto: parseInt(localStorage.getItem('codProduto')),
             UnMed: '',
@@ -886,8 +889,22 @@ export default {
               color: 'positive',
               raised: true,
               style: 'margin-top: 20px',
-              handler () {
-                Toast.create('Excluído!')
+              handler: () => {
+                let produto  = this.CadProduto.produto.nome
+                Loading.show({message: 'Aguardando Dados...'})
+                axios.post(API + 'produto/excluirProduto?codProduto=' + this.CadProduto.produto.codigo)
+                  .then((res)=>{
+                      //console.log(res)
+                      Toast.create(produto + ' foi excluido com sucesso')
+                      Loading.hide()
+                      this.listarProdutos()
+                  })
+                  .catch((e)=>{
+                    console.log(e)
+                    Loading.hide()
+                    return
+                  })
+                this.$router.push('produtos')
               }
             }
           ]
@@ -1209,6 +1226,10 @@ export default {
     t.listarFatoresConv()
     t.listarProdutos()
     t.todosProdutos()
+      
+    if(localStorage.getItem('cadMode') === 'edit'){
+        this.btnDelete = true
+    }
 
   }
  
