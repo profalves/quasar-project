@@ -1,5 +1,5 @@
 <template>
-  <div class="row justify-center">
+  <div>
      
       <q-fixed-position class="fixo" corner="bottom-left" :offset="[18, 18]">
         <q-btn 
@@ -237,8 +237,8 @@
         
         </q-collapsible>
       </q-list>
-    
     <br><br><br>
+    
   </div>
 </template>
 
@@ -291,6 +291,7 @@ export default {
       
     }
   },
+    
   computed: {
     computedClasses () {
       let classes = []
@@ -319,7 +320,7 @@ export default {
             let x = '__storage_test__';
             localStorage.setItem(x, x);
             localStorage.removeItem(x);
-            return localStorage;
+            return true;
         }
         catch(e) {
             return e instanceof DOMException && (
@@ -335,6 +336,18 @@ export default {
                 // acknowledge QuotaExceededError only if there's something already stored
                 localStorage.length !== 0;
         }
+    },
+    localStorage(){
+        let total = 0;
+        for(let x in localStorage) {
+            if(x !== 'length'){
+                var quantidade = (localStorage[x].length * 2) / 1024;
+                total += quantidade ;
+                //console.log( x + " = " + quantidade .toFixed(2) + " KB");
+            }
+        }
+        console.log( "Total armazenado no localStorage: " + total.toFixed(2) + " KB");
+        return total.toFixed(2) + " KB"
     }
   },
   methods: {
@@ -482,6 +495,21 @@ export default {
             })
             this.bancosDados = []
             this.listarBancos()
+            
+            if(this.bancosDados.length === 1){
+                let port = ''
+                if(localStorage.getItem('porta1')){
+                    port = ':' + localStorage.getItem('porta1')     
+                }
+                let DB = ''
+                if(localStorage.getItem('banco1')){
+                    DB = '/' + localStorage.getItem('banco1')     
+                }
+                let sv = localStorage.getItem('ip1')
+                localStorage.setItem('wsAtual', 'http://' + sv + port + DB + '/' )
+
+                //API = localStorage.getItem('wsAtual')
+            }
         }
     },
     editar(item, index) {
@@ -519,6 +547,17 @@ export default {
     this.listarBancos()
     if(this.$route.query.bdConfig === true){
         this.bdConfig = true
+        Dialog.create({
+          title: 'Bem-vindo às Configurações',
+          message: 'Você foi redirecionado para esta tela. Configure um banco de dados com as informações necessárias para a sua conexão.',
+          buttons: [
+            {
+              label: 'Ok',
+              color: 'info',
+              raised: true
+            }
+          ]
+        })
     }
   }
   

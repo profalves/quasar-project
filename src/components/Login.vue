@@ -19,6 +19,8 @@
       </q-fixed-position>
       
       <img src="../../img/logo2.png" width="80%" id="logo"/>
+      
+      <form @submit.prevent="login">
       <q-field
         helper="Empresa"
       >
@@ -58,14 +60,14 @@
                @click="login"
                >Entrar</q-btn>
       </q-field>
-          
+    </form>    
     </div>
 </div>
 </template>
 
 <script>
 import axios from 'axios'
-import { Dialog, Loading } from 'quasar'
+import { Alert, Dialog, Loading } from 'quasar'
 
 //dev
 let API = localStorage.getItem('wsAtual')
@@ -91,8 +93,8 @@ export default {
             let a = ''
             
             for (let i=0; i < localStorage.length; i++) {
-                if(localStorage.getItem('banco'+i)){
-                    l = localStorage.getItem('banco'+i)   
+                if(localStorage.getItem('Empresa'+i)){
+                    l = localStorage.getItem('Empresa'+i)   
                 }
                 /*if(localStorage.getItem('ip'+i) && localStorage.getItem('ip'+i)){
                     v = localStorage.getItem('ip'+i)    
@@ -108,6 +110,10 @@ export default {
             if(lista.length === 0){
                 return [{label: 'Precisa configurar uma empresa ...', value: 'none'}]
             }
+            if(lista.length === 1){
+                this.bd = 1
+                this.listarUsuarios()
+            }
             return lista
         },
         listaUsuarios: function () {
@@ -122,14 +128,63 @@ export default {
           }
           
           return lista
-        }
-        
+        }    
     },
     methods:{
         login(){
+          if(this.bd === ''){
+              Alert.create({
+                  html: 'Selecione uma empresa antes do Login',
+                  enter: 'bounceInLeft',
+                  leave: 'bounceOutLeft',
+                  position: 'bottom-center',
+                  //color: 'warning'
+              })
+              return 
+          }
+          if(this.user === ''){
+              Alert.create({
+                  html: 'Antes preencha o usuário e a senha, depois clique em ENTRAR',
+                  enter: 'bounceInLeft',
+                  leave: 'bounceOutLeft',
+                  position: 'bottom-center',
+                  //color: 'warning'
+              })
+              return
+          }
+          if(this.pass === ''){
+              Alert.create({
+                  html: 'Antes preencha a senha e só depois clique em ENTRAR',
+                  enter: 'bounceInLeft',
+                  leave: 'bounceOutLeft',
+                  position: 'bottom-center',
+                  //color: 'warning'
+              })
+              return
+          }
+          API = localStorage.getItem('wsAtual')
+          axios.get(API + 'usuario/obterUsuario?usuario='+ this.user + '&senha=' + this.pass)
+          .then((res)=>{
             localStorage.setItem('tela', 'principal')
-            localStorage.setItem('codUser', 1)
+            localStorage.setItem('codUser', res.data.codigo)
+            localStorage.setItem('nomeEmpresa', localStorage.getItem('Empresa' + this.bd))
+            //console.log(res.data)
+            Loading.hide()
             this.$router.push('/')
+          })
+          .catch((e)=>{
+            Alert.create({
+              html: e.response.data[0].value,
+              enter: 'bounceInLeft',
+              leave: 'bounceOutLeft',
+              position: 'bottom-center',
+              //color: 'warning'
+                
+            })
+            //console.log(e.response)
+            Loading.hide()
+          })
+            
         },
         /*listarBancos(){
             var i
@@ -155,19 +210,6 @@ export default {
                             bdConfig: true
                           }
                 })
-                
-                Dialog.create({
-                  title: 'Bem-vindo às Configurações',
-                  message: 'Você foi redirecionado para esta tela. Configure um banco de dados com as informações necessárias para a sua conexão.',
-                  buttons: [
-                    {
-                      label: 'Ok',
-                      color: 'info',
-                      raised: true
-                    }
-                  ]
-                })            
-                
             }
             let port = ''
             if(localStorage.getItem('porta' + this.bd)){
@@ -178,7 +220,7 @@ export default {
                 DB = '/' + localStorage.getItem('banco'+this.bd)     
             }
             let sv = localStorage.getItem('ip' + this.bd)
-            localStorage.setItem('wsAtual', 'http://' + sv + DB + port + '/' )
+            localStorage.setItem('wsAtual', 'http://' + sv + port + DB + '/' )
             
             API = localStorage.getItem('wsAtual')
         },
@@ -200,7 +242,7 @@ export default {
             
         },
         listarUsuarios(){
-          if(this.bd === 0){ return }
+          if(this.bd === 'none'){ return }
           API = localStorage.getItem('wsAtual')
           Loading.show({message: 'Carregando Usuários...'})
           axios.get(API + 'usuario/obterUsuario')
@@ -211,6 +253,19 @@ export default {
           })
           .catch((e)=>{
             console.log(e.response)
+            if(this.bd !== 'none'){
+                Dialog.create({
+                  title: 'Sem Conexão',
+                  message: 'Não foi possivel carregar os usuários, vá para configurações e corrija a informações de Banco de Dados',
+                  buttons: [
+                    {
+                      label: 'Ok',
+                      color: 'info',
+                      raised: true
+                    }
+                  ]
+                })
+            }
             Loading.hide()
           })
         },

@@ -394,7 +394,6 @@ export default {
         ],
         fornecedores: [],
         conta: {
-            
             codFornecedor: '', //não nulo
             codTipo: 1, //não nulo
             codSubTipoDespesa: 1, //não nulo
@@ -411,8 +410,7 @@ export default {
             valorPago: '',
             valorDesc: '',
             valorJuros: '',
-            codigoUsuario: 1, //não nulo
-            
+            codigoUsuario: parseInt(localStorage.getItem('codUser')), //não nulo    
         },
         qtdParcelas: 1,
         intervalo: 30,
@@ -718,8 +716,20 @@ export default {
               color: 'positive',
               raised: true,
               style: 'margin-top: 20px',
-              handler () {
-                Toast.create('Excluído!')
+              handler: () => {
+                Loading.show({message: 'Aguardando Dados...'})
+                axios.post(API + 'conta/excluirConta?codigo=' + this.conta.codigo)
+                  .then((res)=>{
+                      //console.log(res)
+                      Toast.create('Parcela foi excluida com sucesso')
+                      Loading.hide()
+                      this.$router.push('contas')
+                  })
+                  .catch((e)=>{
+                    console.log(e)
+                    Loading.hide()
+                    return
+                  })    
               }
             }
           ]

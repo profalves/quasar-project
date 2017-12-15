@@ -1309,7 +1309,6 @@ export default {
             this.CadPessoa.pessoa.codigoIBGECidade = 2930501
         }
         
-        
         //, this.fones, this.emails, this.endAdd
         
         Loading.show({message: 'Enviando Dados...'})

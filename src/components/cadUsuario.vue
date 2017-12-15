@@ -383,8 +383,20 @@ export default {
               color: 'positive',
               raised: true,
               style: 'margin-top: 20px',
-              handler () {
-                Toast.create('Excluído!')
+              handler: () => {
+                Loading.show({message: 'Aguardando Dados...'})
+                axios.post(API + 'usuario/excluirUsuario?codUsuario=' + this.usuario.codigo)
+                  .then((res)=>{
+                      //console.log(res)
+                      Toast.create('Usuário ' + this.usuario.nome + ' foi excluido com sucesso')
+                      Loading.hide()
+                      this.$router.push('usuarios')
+                  })
+                  .catch((e)=>{
+                    console.log(e)
+                    Loading.hide()
+                    return
+                  })    
               }
             }
           ]

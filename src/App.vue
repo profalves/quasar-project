@@ -46,11 +46,7 @@ export default {
   data () {
     return {
         visivel: true,
-    }
-  },
-  computed:{
-    Empresa(){
-        return localStorage.getItem('nomeEmpresa')
+        Empresa: localStorage.getItem('nomeEmpresa')
     }
   },
   methods: {

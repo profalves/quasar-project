@@ -930,7 +930,7 @@ export default {
               model: ''
             },
             codigoUsuario: {
-              model: 1
+              model: parseInt(localStorage.getItem('codUser'))
             }
           },
           buttons: [
@@ -983,7 +983,7 @@ export default {
               model: ''
             },
             codigoUsuario: {
-              model: 1
+              model: parseInt(localStorage.getItem('codUser'))
             }
           },
           buttons: [
@@ -1038,7 +1038,7 @@ export default {
               model: ''
             },
             codigoUsuario: {
-              model: 1
+              model: parseInt(localStorage.getItem('codUser'))
             }
           },
           buttons: [
@@ -1097,7 +1097,7 @@ export default {
               model: ''
             },
             codigoUsuario: {
-              model: 1
+              model: parseInt(localStorage.getItem('codUser'))
             }
           },
           buttons: [

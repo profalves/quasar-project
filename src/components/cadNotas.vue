@@ -836,7 +836,7 @@ export default {
                     codigoTransacao: 1,
                     codigoOperacao: 1,
                     codigoCaixa: 1,
-                    codigoUsuario: 1,
+                    codigoUsuario: parseInt(localStorage.getItem('codUser')),
                     codigoEmpresa: 1,
                     dataVencimento: '',
                     codigoOpCartao: 1,
@@ -858,7 +858,7 @@ export default {
                     numeroAgencia: '',
                     numeroConta: '',
                     dataVcto: '',
-                    codigoUsuario: 1,
+                    codigoUsuario: parseInt(localStorage.getItem('codUser')),
 
                 }
             ],
@@ -870,7 +870,7 @@ export default {
                     valorParcela: 0.00,
                     taxaOP: '',
                     taxaMensal: '',
-                    codigoUsuario: 1
+                    codigoUsuario: parseInt(localStorage.getItem('codUser'))
                 }
             ],
             Transporte: {
@@ -908,7 +908,7 @@ export default {
             codigoParcelamento: 1,
             codigoDependente: '',
             codigoEmpresa: 1,
-            codigoUsuario: 1,
+            codigoUsuario: parseInt(localStorage.getItem('codUser')),
             codigoVendedor: 1,
             codigoStatus: '',
             OBS: '',
@@ -917,7 +917,7 @@ export default {
         detItem: { //det 
             codTabPreco: 2,
             codigoProduto: '',
-            codigoUsuario: 1,
+            codigoUsuario: parseInt(localStorage.getItem('codUser')),
             codigoComputador: '',    
             custo: 0.00,    
             custoTrib: 0.00,    
@@ -959,7 +959,7 @@ export default {
             valorPago: '',
             valorDesc: '',
             valorJuros: '',
-            codigoUsuario: 1, //não nulo
+            codigoUsuario: parseInt(localStorage.getItem('codUser')), //não nulo
         },
         titulos: [],
         qtdParcelas: 1,
@@ -1423,7 +1423,7 @@ export default {
         this.detItem = {
             codTabPreco: 2,
             codigoProduto: '',
-            codigoUsuario: 1,
+            codigoUsuario: parseInt(localStorage.getItem('codUser')),
             codigoComputador: '',    
             custo: 0.00,    
             custoTrib: 0.00,    
@@ -1474,7 +1474,7 @@ export default {
         let VendasDet = {
             codTabPreco: 2,
             codigoProduto: 1,
-            codigoUsuario: 1,
+            codigoUsuario: parseInt(localStorage.getItem('codUser')),
             codigoComputador: '',    
             custo: 5.00,    
             custoTrib: 0.00,    

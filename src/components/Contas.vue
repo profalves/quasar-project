@@ -74,8 +74,15 @@
                @click="baixarTitulos(props)">
           Baixar
         </q-btn>
-        <q-btn flat color="primary" @click="deleteRow(props)">
-          <q-icon name="delete" />
+        <q-btn flat 
+               color="primary" 
+               @click="deleteRow(props)">
+          <q-icon name="delete" /> Excluir parcela
+        </q-btn>
+        <q-btn v-if="selecionados < 2 && codigoCab > 0"
+               flat color="primary" 
+               @click="deleteAll(props)">
+          <q-icon name="delete_forever" /> Excluir conta
         </q-btn>
       </template>
     </q-data-table>
@@ -220,7 +227,9 @@ export default {
       subtipo: false,
       subDesp: true,
       text: 'text',
-      excluidos: '',  
+      excluidos: '',
+      codigoCab: '',
+      selecionados: '',
       
       config: {
         title: '',
@@ -310,7 +319,23 @@ export default {
           sort: true,
           type: 'string',
           width: '100px'
+        }, 
+          
+        {
+          label: 'Origem',
+          field: 'codigoCab',
+          filter: true,
+          sort: true,
+          type: 'number',
+          width: '85px',
+          format (value) {
+            if (value <= 0) {
+              return '<strong>AVULSA</strong>'
+            }
+            return '<strong>NOTA</strong>'
+          },
         },
+        
         {
           label: 'Total',
           field: 'valorTitulo',
@@ -333,6 +358,20 @@ export default {
       rowHeight: parseInt(localStorage.getItem('rowHeight')),
       bodyHeightProp: localStorage.getItem('bodyHeightProp'),
       bodyHeight: parseInt(localStorage.getItem('bodyHeight'))
+    }
+  },
+  computed: {
+    listaCodCab(){
+        let a = this.contas
+        let lista = []
+        
+        for(let i=0; i < a.length; i++){
+            if(this.contas[i].codigoCab > 0){
+                lista.push(this.contas[i])
+            }
+        }
+        
+        return lista
     }
   },
   methods: {
@@ -377,13 +416,13 @@ export default {
 
                   for (let i=0; i < a.length; i++) {
                       obj = a[i].data
-                      obj.excluido = true
-                      console.log(obj)
+                      let f = obj.fornecedor
+                      let p = obj.numeroDocumento.split('/').pop()
                       Loading.show({message: 'Aguardando Dados...'})
                       axios.post(API + 'conta/excluirConta?codigo=' + obj.codigo)
                           .then((res)=>{
                               //console.log(res)
-                              Toast.create('Excluido com sucesso')
+                              Toast.create('Parcela ' + p + ' de ' + f + ' foi excluida com sucesso')
                               Loading.hide()
                               this.listarContas()
                           })
@@ -405,7 +444,7 @@ export default {
       this.excluidos = row
       Dialog.create({
           title: 'Excluir',
-          message: 'Tem certeza que deseja excluir ' + this.excluidos.length + ' registro(s)?',
+          message: 'Tem certeza que deseja excluir a conta de ' + this.excluidos[0].data.fornecedor + ' e suas parcelas?',
           buttons: [
             {
               label: 'Não! Cancela',
@@ -423,27 +462,21 @@ export default {
               style: 'margin-top: 20px',
               handler: () => {
                   let a = this.excluidos
-                  let obj = {}
-
-                  for (let i=0; i < a.length; i++) {
-                      obj = a[i].data
-                      obj.excluido = true
-                      console.log(obj)
-                      Loading.show({message: 'Aguardando Dados...'})
-                      axios.post(API + 'conta/excluirConta?codigoCab=' + obj.codigoCab)
-                          .then((res)=>{
-                              //console.log(res)
-                              Toast.create('Excluido com sucesso')
-                              Loading.hide()
-                              this.listarContas()
-                          })
-                          .catch((e)=>{
-                            console.log(e)
-                            Loading.hide()
-                            return
-                          })  
-                      
-                  }
+                  let obj = a[0].data
+                  let f = obj.fornecedor
+                  Loading.show({message: 'Aguardando Dados...'})
+                  axios.post(API + 'conta/excluirConta?codigoCab=' + obj.codigoCab)
+                      .then((res)=>{
+                          //console.log(res)
+                          Toast.create('Conta de ' + f + ' foi excluida com sucesso')
+                          Loading.hide()
+                          this.listarContas()
+                      })
+                      .catch((e)=>{
+                        console.log(e)
+                        Loading.hide()
+                        return
+                      })
               }
             }
           ]
@@ -512,6 +545,8 @@ export default {
     selection (number, rows) {
       console.log(rows)
       console.log(`selecionou ${number}: ${rows}`)
+      this.codigoCab = rows[0].data.codigoCab
+      this.selecionados = number
     },
     rowClick (row) {
       console.log('clicked on a row', row)
