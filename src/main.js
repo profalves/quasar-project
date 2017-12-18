@@ -43,7 +43,12 @@ Vue.use(VueTheMask)
 
 import money from 'v-money'
 // register directive v-money and component <money>
-Vue.use(money, {precision:4})
+Vue.use(money)
+
+import JsPDF from 'jspdf'
+Vue.use(JsPDF)
+
+//============= FILTERS============================
 
 Vue.filter('formatMoney', function (value) {
         if(value === null) {return 'R$ 0,00'}
@@ -62,6 +67,7 @@ Vue.filter('formatDate', function (value) {
 })
 
 
+//============== STARTING QUASAR ==============
 
 Quasar.start(() => {
   /* eslint-disable no-new */

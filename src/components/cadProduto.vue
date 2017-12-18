@@ -243,7 +243,7 @@
                 <q-select
                     float-label="Unidade de Medida"
                     filter
-                    v-model="CadProduto.produto.unMed"
+                    v-model="CadProduto.produto.unmed"
                     :options="listaMedidas"
                 />
             </q-field>   
@@ -619,7 +619,7 @@ export default {
                 referencia: '',
                 posicaoFisica: '',
                 aplicacao: '',
-                unMed: 'UN'
+                unmed: 'UN'
             },
             precos: [
                 {
@@ -842,8 +842,9 @@ export default {
         }
         
         if(this.valor>0){
-            this.CadProduto.precos[1] = this.valor
+            this.CadProduto.precos[1].valor = this.valor
         }
+        
         Loading.show({message: 'Enviando Dados...'})
         axios.post(API + 'produto/gravarProduto', this.CadProduto)
           .then((res)=>{

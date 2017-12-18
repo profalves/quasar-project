@@ -270,15 +270,10 @@ export default {
           })
         },
     },
-    mounted(){
-        //this.listarUsuarios()
-    },
     created(){
         this.loadConfig()
         localStorage.setItem('tela', 'login')
         localStorage.removeItem('codUser')
-        
-        //this.listarBancos()
     }
 }
 </script>

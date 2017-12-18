@@ -115,10 +115,6 @@ const API = localStorage.getItem('wsAtual')
       }
     },
     computed:{
-        dadosFiltrados(){
-            
-        },
-        
         somaDespPagar(value){
           if(this.despPagar.length === 0){ return 0 }
           let a = this.despPagar
@@ -173,8 +169,7 @@ const API = localStorage.getItem('wsAtual')
         receitas(){
             return this.somaRecPagar + this.somaRecPagas
         }
-        
-        
+       
     },
     methods:{
         listarDespesasAPagar(){
@@ -241,7 +236,7 @@ const API = localStorage.getItem('wsAtual')
             this.visivel = true
         }
     },
-    created(){
+    mounted(){
         let t = this
         t.listarDespesasAPagar()
         t.listarDespesasPagas()

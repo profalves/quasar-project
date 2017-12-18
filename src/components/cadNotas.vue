@@ -773,7 +773,7 @@
                     <q-card-title>Lucro</q-card-title>
                         <input v-model="item.desconto"
                                class="boxInput"
-                               max-decimals="2"
+                               v-money="perc"
                         />
                         <br>
                   </center>
@@ -784,8 +784,9 @@
                 <q-card color="positive" class="col-sm-6">
                   <center>
                     <q-card-title>Venda</q-card-title>
-                        <input v-model="detItem.venda"
+                        <money v-model="detItem.venda"
                                class="boxInput"
+                               :money="money"
                         />
                   </center>
                 </q-card>
@@ -990,7 +991,7 @@ export default {
         item: {
             ncm: '',
             cfop: '',
-            fator: '0,00',
+            fator: 1,
             qtd: 1,
             estoque: '0',
             vUnit: '',
@@ -1108,6 +1109,14 @@ export default {
             thousands: '.',
             prefix: 'R$ ',
             //suffix: ' #',
+            precision: 2,
+            masked: false /* doesn't work with directive */
+        },
+        perc: {
+            decimal: ',',
+            thousands: '.',
+            //prefix: 'R$ ',
+            suffix: ' %',
             precision: 2,
             masked: false /* doesn't work with directive */
         },
@@ -1416,11 +1425,31 @@ export default {
             return
         }
         this.detItem.codigoProduto = this.produto.codigo
-        this.detItem.totalItem = this.detItem.custo * this.detItem.qtd
+        //this.detItem.totalItem = this.detItem.custo * this.detItem.qtd
         Object.assign(this.detItem, {nomeProduto: this.produto.nome})
-        this.CadNotas.det.push(this.detItem)
-        this.duplicata.valorTitulo = this.somaNota
-        this.detItem = {
+        
+        this.enviarItem()
+            
+    },
+    enviarItem(){ //calcular impostos dos itens
+        let Fiscal = false //depois transformar em vaiável global
+        let VendasDet = this.detItem
+        let VendasDetImp = {}
+        let FatorConversao = this.item.fator
+        let tipoEntradaEstoque = 'compra'
+        Loading.show()
+        axios.post(API + 'vendasDet/retornaMvVendasDet', [
+            Fiscal,
+            VendasDet,
+            VendasDetImp,
+            FatorConversao,
+            tipoEntradaEstoque
+        ])
+        .then((res)=>{
+          console.log(res.data)
+          this.CadNotas.det.push(res.data)
+          this.duplicata.valorTitulo = this.somaNota
+          this.detItem = {
             codTabPreco: 2,
             codigoProduto: '',
             codigoUsuario: parseInt(localStorage.getItem('codUser')),
@@ -1446,8 +1475,13 @@ export default {
             codPessoaEmpregado: '',
             OBS: '',    
             impresso: ''
-        }
-        
+          }
+          Loading.hide()
+        })
+        .catch((e)=>{
+          console.log(e.response)
+          Loading.hide()
+        })
     },
     excluirItem(index){
         this.indice = index
@@ -1469,57 +1503,6 @@ export default {
         this.duplicata.valorTitulo = d    
     },
     
-    enviarItem(){
-        let Fiscal = false
-        let VendasDet = {
-            codTabPreco: 2,
-            codigoProduto: 1,
-            codigoUsuario: parseInt(localStorage.getItem('codUser')),
-            codigoComputador: '',    
-            custo: 5.00,    
-            custoTrib: 0.00,    
-            desconto: 3.00,    
-            venda: 10.00,    
-            acrescimo: 0.00,    
-            unMedCom: '',    
-            unMedTrib: '',    
-            encargos: 0.00,    
-            IPI: 0.00,    
-            frete: 0.00,    
-            seguro: 0.00,    
-            outro: 10.00,    
-            qtd: 2,    
-            qtdCom: 2,    
-            tipoSaida: 'V',    
-            qtdDevolvida: 0.00,    
-            totalItem: 0.00,    
-            cancelado: '',    
-            codPessoaEmpregado: '',
-            OBS: '',    
-            impresso: ''
-        
-        }
-        let VendasDetImp = {}
-        let FatorConversao = 1.00
-        let tipoEntradaEstoque = 'compra'
-        Loading.show()
-        axios.post(API + 'vendasDet/retornaMvVendasDet', [
-            Fiscal,
-            VendasDet,
-            VendasDetImp,
-            FatorConversao,
-            tipoEntradaEstoque
-        ])
-        .then((res)=>{
-          console.log(res.data)
-          //this.pessoas = res.data
-          Loading.hide()
-        })
-        .catch((e)=>{
-          console.log(e)
-          Loading.hide()
-        })
-    },
       
     //====== LISTAS ======================================================================
     
@@ -1704,10 +1687,6 @@ export default {
     },
     
     
-    
-  },
-  mounted: function () {
-    // Código que irá rodar apenas após toda a árvore do componente ter sido renderizada
     
   },
   created(){

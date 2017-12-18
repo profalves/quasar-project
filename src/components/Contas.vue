@@ -545,7 +545,8 @@ export default {
     selection (number, rows) {
       console.log(rows)
       console.log(`selecionou ${number}: ${rows}`)
-      this.codigoCab = rows[0].data.codigoCab
+      //console.log(rows[0].data.codigoCab)
+      this.codigoCab = rows[0]
       this.selecionados = number
     },
     rowClick (row) {

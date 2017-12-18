@@ -4,11 +4,11 @@
       
     <div class="col-6">
         <router-link to="/relcaixa">
-            <q-card color="primary" class="col-sm-6">
+            <q-card color="positive" class="col-sm-6">
               <q-card-title></q-card-title>
               <q-card-main>
                 <center id="card">
-                    <i class="fa fa-user fa-5x center"></i><br>
+                    <i class="fa fa-usd fa-5x center"></i><br>
                     <p>Caixas</p>
                 </center>
               </q-card-main>
@@ -19,7 +19,7 @@
     
     <div class="col-6">
         <router-link to="/relatorios">
-            <q-card color="secondary" class="col-sm-6">
+            <q-card color="primary" class="col-sm-6">
               <q-card-title></q-card-title>
               <q-card-main>
                 <center id="card">
@@ -49,7 +49,7 @@
     
     <div class="col-6">
         <router-link to="/relatoriocontas">
-            <q-card color="warning" class="col-sm-6">
+            <q-card color="tertiary" class="col-sm-6">
               <q-card-title></q-card-title>
               <q-card-main>
                 <center id="card">
@@ -63,7 +63,7 @@
     
     <div class="col">
         <router-link to="/relatorios">
-            <q-card color="positive" class="col-sm-6">
+            <q-card color="secondary" class="col-sm-6">
               <q-card-title></q-card-title>
               <q-card-main>
                 <center id="card">
@@ -78,7 +78,7 @@
     
     <div class="col">
         <router-link to="/relatorios">
-            <q-card color="tertiary" class="col-sm-6">
+            <q-card color="warning" class="col-sm-6">
               <q-card-title></q-card-title>
               <q-card-main>
                 <center id="card">

@@ -886,6 +886,8 @@
       </div>
     </q-modal>-->
     
+    <br><br><br>
+    
 </div>
     
 </template>
@@ -1934,6 +1936,5 @@ export default {
         text-align: center;
         margin-top: 15px;
     }
-    
     
 </style>
