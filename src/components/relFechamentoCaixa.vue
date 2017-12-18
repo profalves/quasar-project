@@ -451,17 +451,16 @@ export default {
     getFechamento(){
       Loading.show({message: 'Aguardando Dados...'})
       axios.get(API + 'caixa/gravarFechamentoCaixa?codigocaixa=' + this.idCaixa)
-      .then((res)=>{
+      .then((res)=>{  
+        Loading.hide()
         //console.log(res.data)
         this.relFechamento = res.data
-        this.nomeUsuario = this.relFechamento.abertura.nomeUsuario
+        /* this.nomeUsuario = this.relFechamento.abertura.nomeUsuario
         this.numeroCaixa = this.relFechamento.abertura.numeroCaixa
         let d = this.relFechamento.abertura
         let di = new Date(d.dataInicio).toLocaleString('pt-BR', {year: 'numeric',month: '2-digit',day: '2-digit'})
         let df = new Date(d.dataFechamento).toLocaleString('pt-BR', {year: 'numeric',month: '2-digit',day: '2-digit'})
-        this.periodo = di + ' a ' + df
-          
-        Loading.hide()
+        this.periodo = di + ' a ' + df */
       })
       .catch((e)=>{
         console.log(e)
