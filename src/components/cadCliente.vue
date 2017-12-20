@@ -467,10 +467,10 @@
                   <q-item>
                     <div class="row">
                         <div class="col-6">
-                            <a @click="" color="info"><i class="material-icons fa-2x">mode_edit</i></a>
+                            <a color="info"><i class="material-icons fa-2x">mode_edit</i></a>
                         </div>
                         <div class="col-6">
-                            <i class="material-icons fa-2x mHover text-negative" @click="" color="negative">delete_forever</i>
+                            <i class="material-icons fa-2x mHover text-negative" color="negative">delete_forever</i>
                         </div>
                     </div>
                   </q-item>
@@ -533,12 +533,12 @@
                 :error="$v.email.$error"
               >
                 <q-input 
-                     v-model="email" 
-                     type="email"
-                     @input="$v.email.$touch()"
-                     placeholder="@email.com"
-                     clearable
-                     @blur="colapEmail"
+                  v-model="email" 
+                  type="email"
+                  @input="$v.email.$touch()"
+                  placeholder="@email.com"
+                  clearable
+                  @blur="colapEmail"
                 />
 
                  <span v-if="!$v.email.email">Digite um email válido</span>
@@ -546,10 +546,10 @@
             </div>
             <div class="col-2 offset-1 btn-plus" >
                 <q-btn 
-                   rounded
-                   color="primary" 
-                   @click="novoEmail">
-                   <q-icon name="add" />
+                  rounded
+                  color="primary" 
+                  @click="novoEmail">
+                  <q-icon name="add" />
                 </q-btn>
             </div>
         </div>
@@ -569,10 +569,10 @@
                   <q-item>
                     <div class="row">
                         <div class="col-6">
-                            <a @click="" color="info"><i class="material-icons fa-2x">mode_edit</i></a>
+                            <a color="info"><i class="material-icons fa-2x">mode_edit</i></a>
                         </div>
                         <div class="col-6">
-                            <i class="material-icons fa-2x mHover text-negative" @click="" color="negative">delete_forever</i>
+                            <i class="material-icons fa-2x mHover text-negative" color="negative">delete_forever</i>
                         </div>
                     </div>
                   </q-item>

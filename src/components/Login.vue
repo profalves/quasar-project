@@ -167,6 +167,7 @@ export default {
           .then((res)=>{
             localStorage.setItem('tela', 'principal')
             localStorage.setItem('codUser', res.data.codigo)
+            localStorage.setItem('nameUser', res.data.nome)
             localStorage.setItem('nomeEmpresa', localStorage.getItem('Empresa' + this.bd))
             //console.log(res.data)
             Loading.hide()

@@ -102,20 +102,20 @@
                     <tr>
                       <td class="text-left"><i class="material-icons">send</i></td>
                       <td class="text-left">Saldo do Caixa:</td>
-                      <td class="text-left" :class="isNegative">{{somaDiferenca | formatMoney}}</td> <!--  -->
+                      <td class="text-left" :class="status">{{somaDiferenca | formatMoney}}</td> <!--  -->
                     </tr>
                   </tbody>
                 </table>
             </q-item>
           </q-collapsible>
-          <q-item-separator />
+          <q-item-separator v-if="checked === true" />
           <q-collapsible opened label="Formas de Pagamento">
             <q-item>
               <table class="q-table responsive">
                   <tbody>
                     <tr v-for="item in relFechamento.formasPgto">
                       <td class="text-left"><i class="material-icons">send</i></td>
-                      <td class="text-left">{{item.nome}}</td>
+                      <td class="text-left">{{item.formaPgtoNome}}</td>
                       <td class="text-left">{{item.valor | formatMoney}}</td>
                     </tr>
 
@@ -166,8 +166,9 @@
                   <tbody>
                     <tr v-for="item in relFechamento.recebimentosCrediario">
                       <td class="text-left"><i class="material-icons">send</i></td>
-                      <td class="text-left">{{item.motivo}}</td>
+                      <td class="text-left">{{item.forma_Pgto}}</td>
                       <td class="text-left">{{item.valor | formatMoney}}</td>
+                      <td class="text-left">{{item.nomeCliente}}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -182,9 +183,9 @@
                 <table class="q-table responsive">
                   <tbody>
                     <tr v-for="item in relFechamento.vendasCrediario">
-                      <td class="text-left"><i class="material-icons">send</i></td>
-                      <td class="text-left">{{item.motivo}}</td>
+                      <td class="text-left">{{item.forma_Pgto}}</td>
                       <td class="text-left">{{item.valor | formatMoney}}</td>
+                      <td class="text-left">{{item.nomeCliente}}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -247,8 +248,8 @@ export default {
         nomeUsuario: '',
         numeroCaixa: '',
         periodo: '',
+        status: '',
         canGoBack: window.history.length > 1,
-        
         
         vendedores: { // gráfico
           labels: [],
@@ -268,11 +269,13 @@ export default {
       let lista = []
 
       for (let i=0; i < a.length; i++) {
-          let di = new Date(a[i].dataInicio).toLocaleString('pt-BR', {year: 'numeric',month: '2-digit',day: '2-digit'})
-          let df = new Date(a[i].dataFechamento).toLocaleString('pt-BR', {year: 'numeric',month: '2-digit',day: '2-digit'})
-          let n = a[i].usuario + ' (Inicio: ' + di + ' - Fechamento: ' + df + ')'
-          let c = a[i].codigo
-          lista.push({label: n, value: c})
+          if(a[i].usuario){
+              let di = new Date(a[i].dataInicio).toLocaleString('pt-BR', {year: 'numeric',month: '2-digit',day: '2-digit'})
+              let df = new Date(a[i].dataFechamento).toLocaleString('pt-BR', {year: 'numeric',month: '2-digit',day: '2-digit'})
+              let n = a[i].usuario + ' (Inicio: ' + di + ' - Fechamento: ' + df + ')'
+              let c = a[i].codigo
+              lista.unshift({label: n, value: c})
+          }
       }
       
       return lista
@@ -382,7 +385,7 @@ export default {
     somaConferencias(value){
       if(this.relFechamento.length === 0){ return 0 }
       let a = this.relFechamento.fechamento
-      console.log('sangrias', a.length);
+      console.log('conferencias', a.length);
       if(a.length === 0){ return 0 }
       let lista = []
 
@@ -399,7 +402,7 @@ export default {
     somaDiferenca(value){
       /*if(this.relFechamento.length === 0){ return 0 }
       let a = this.relFechamento.fechamento
-      console.log('sangrias', a.length);
+      console.log('diferencias', a.length);
       if(a.length === 0){ return 0 }
       let lista = []
 
@@ -412,13 +415,22 @@ export default {
         return a + b;
       });
       return value * -1*/
+      
       value = this.somaConferencias - this.somaSaldo
+        
+      if(value < 0){
+        this.status = 'isNegative'
+      }
+      else{
+        this.status = 'isPositive'
+      }
+      
       return value
     },
     somaSaldo(value){
       if(this.relFechamento.length === 0){ return 0 }
       let a = this.relFechamento.fechamento
-      console.log('sangrias', a.length);
+      console.log('saldo', a.length);
       if(a.length === 0){ return 0 }
       let lista = []
 
@@ -436,11 +448,29 @@ export default {
         value = new Date()
         return new Date(value).toLocaleString('pt-BR', {weekday: 'long',year: 'numeric',month: '2-digit',day: '2-digit'})
     },
-    isNegative(value){
-        if(this.somaDiferenca > 0){
-            value = true
-        }
-        return value
+    listaVendedoresNomes(){
+      let a = this.relFechamento.vendasVendedor
+      if(!this.relFechamento.vendasVendedor){ return [] }
+      let lista = []
+
+      for (let i=0; i < a.length; i++) {
+          let n = a[i].nomeUsuario
+          lista.push(n)
+      }
+      
+      return lista    
+    },
+    listaVendedoresResult(){
+      let a = this.relFechamento.vendasVendedor
+      if(!this.relFechamento.vendasVendedor){ return [] }
+      let lista = []
+
+      for (let i=0; i < a.length; i++) {
+          let n = a[i].valor
+          lista.push(n)
+      }
+      
+      return lista    
     }
     
   },
@@ -450,17 +480,17 @@ export default {
     },
     getFechamento(){
       Loading.show({message: 'Aguardando Dados...'})
-      axios.get(API + 'caixa/gravarFechamentoCaixa?codigocaixa=' + this.idCaixa)
+      axios.get(API + 'caixa/obterFechamentoCaixa?codigocaixa=' + this.idCaixa + '&FechamentoTodos=true')
       .then((res)=>{  
         Loading.hide()
         //console.log(res.data)
         this.relFechamento = res.data
-        /* this.nomeUsuario = this.relFechamento.abertura.nomeUsuario
+        this.nomeUsuario = this.relFechamento.abertura.nomeUsuario
         this.numeroCaixa = this.relFechamento.abertura.numeroCaixa
         let d = this.relFechamento.abertura
         let di = new Date(d.dataInicio).toLocaleString('pt-BR', {year: 'numeric',month: '2-digit',day: '2-digit'})
         let df = new Date(d.dataFechamento).toLocaleString('pt-BR', {year: 'numeric',month: '2-digit',day: '2-digit'})
-        this.periodo = di + ' a ' + df */
+        this.periodo = di + ' a ' + df
       })
       .catch((e)=>{
         console.log(e)
@@ -483,14 +513,14 @@ export default {
       Loading.show({message: 'Aguardando Dados...'})
       axios.get(API + 'caixa/obterCaixaCab?aberto=' + this.abertos)
       .then((res)=>{
+        Loading.hide()
         //console.log(res.data)
         this.caixa = res.data
-        Loading.hide()
       })
       .catch((e)=>{
+        Loading.hide()
         console.log(e.response)
         Dialog.create('Não há dados para exibir')
-        Loading.hide()
       })
     },
     obterCaixasFechados(){
@@ -523,9 +553,6 @@ export default {
     let t = this
     t.getCaixa()
     t.abrirCaixa()
-    
-    
-
   }
 }
 </script>
@@ -538,9 +565,14 @@ export default {
         z-index: 5
     }
     .isNegative{
-        color: red
-    }.
+        color: red;
+        font-weight: bold
+    }
+    .isPositive{
+        color: limegreen;
+        font-weight: bold
+    }
     table{
-       margin-left: -15px 
+       margin-left: -15px
     }    
 </style>

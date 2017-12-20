@@ -443,7 +443,7 @@ export default {
     },
     listarResumo(){
       Loading.show({message: 'Aguardando Dados...'})
-      axios.get(API + '/caixa/obterResumoCaixa?DataInicial=' + this.dataInicial + '&DataFinal=' + this.dataFinal)
+      axios.get(API + '/caixa/obterResumoCaixa?datainicial=' + this.dataInicial + '&datafinal=' + this.dataFinal)
       .then((res)=>{
           console.log(res.data)
           //zerando dados
@@ -475,6 +475,10 @@ export default {
           })
           
           //obtendo grafico por formas de pagamento
+          
+          this.formasGrafVendas.datasets = []
+          this.formasGrafRec.datasets = []
+          
           
           this.formasVendas()
           this.formasRecs()

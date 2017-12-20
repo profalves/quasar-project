@@ -18,6 +18,7 @@ import store from './vuex/store'
 
 
 Vue.config.productionTip = false
+
 Vue.use(Quasar) // Install Quasar Framework
 
 

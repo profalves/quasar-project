@@ -115,16 +115,17 @@ export default {
     },
     vibrarNotif(){
         let options = {
-          body: 'Seja bem vindo!',
+          body: 'Seja bem vindo! ' + localStorage.getItem('nameUser'),
           vibrate: [200, 100, 200]
         }
-        let n = new Notification('Retaguarda Web (Test Notification)', options)
+        let n = new Notification('Retaguarda Web', options)
 
         function expression(statement) { 
          'use strict'
          return statement;
         }
         expression(n.vibrate) // ESLint ignore line
+        //navigator.vibrate([100,30,100,30,100,200,200,30,200,30,200,200,100,30,100,30,100]) // Vibrate 'SOS' in Morse.
     }
   },
   created(){

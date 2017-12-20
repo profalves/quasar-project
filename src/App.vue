@@ -14,7 +14,7 @@
       </q-btn>
 
       <q-toolbar-title>
-        7 Virtual Supervisor
+        7Virtual Supervisor
         <div slot="subtitle">{{ Empresa }}</div>
       </q-toolbar-title>
         
