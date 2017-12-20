@@ -443,7 +443,7 @@ export default {
     },
     listarResumo(){
       Loading.show({message: 'Aguardando Dados...'})
-      axios.get(API + '/caixa/obterResumoCaixa?datainicial=' + this.dataInicial + '&datafinal=' + this.dataFinal)
+      axios.get(API + 'caixa/obterResumoCaixa?datainicial=' + this.dataInicial + '&datafinal=' + this.dataFinal)
       .then((res)=>{
           console.log(res.data)
           //zerando dados

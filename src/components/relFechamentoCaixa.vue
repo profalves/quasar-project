@@ -35,6 +35,7 @@
         <q-btn color="primary"
                rounded
                v-if="checked === false"
+               @click="alertaAoFechar"
                >fechar este caixa
         </q-btn><br><br>
 
@@ -212,6 +213,13 @@
             </q-item>
           </q-collapsible>
           <q-item-separator />
+          <q-collapsible label="Gráfico Vendas Vendedor" 
+                         icon="insert_chart"
+                         v-if="visivel"
+                         >
+            <bar :data="data"></bar>
+          </q-collapsible>
+          <q-item-separator v-if="visivel"/>
           <q-item>
             <q-item-main>
                 <center class="bold">{{hoje}}</center>
@@ -229,7 +237,7 @@
 <script>
 import axios from 'axios'
 import { Dialog, Loading } from 'quasar'
-import bar from './charts/Bar.js' 
+import bar from './charts/Bar2.js' 
     
 const API = localStorage.getItem('wsAtual')
   
@@ -249,12 +257,14 @@ export default {
         numeroCaixa: '',
         periodo: '',
         status: '',
+        view: '',
         canGoBack: window.history.length > 1,
         
-        vendedores: { // gráfico
-          labels: [],
+        data: { // gráfico
+          labels:  [],
           datasets: []
         },
+        visivel: false,
         width: 100,
         height: parseInt(localStorage.getItem('alturaGrafico')),
         tipo: '',
@@ -267,11 +277,17 @@ export default {
     listaCaixas(){
       let a = this.caixa
       let lista = []
+      let di, df = ''
 
       for (let i=0; i < a.length; i++) {
           if(a[i].usuario){
-              let di = new Date(a[i].dataInicio).toLocaleString('pt-BR', {year: 'numeric',month: '2-digit',day: '2-digit'})
-              let df = new Date(a[i].dataFechamento).toLocaleString('pt-BR', {year: 'numeric',month: '2-digit',day: '2-digit'})
+              di = new Date(a[i].dataInicio).toLocaleString('pt-BR', {year: 'numeric',month: '2-digit',day: '2-digit'})
+              if(a[i].dataFechamento !== null){
+                df = new Date(a[i].dataFechamento).toLocaleString('pt-BR', {year: 'numeric',month: '2-digit',day: '2-digit'})
+              }
+              else {
+                df = ''
+              }
               let n = a[i].usuario + ' (Inicio: ' + di + ' - Fechamento: ' + df + ')'
               let c = a[i].codigo
               lista.unshift({label: n, value: c})
@@ -448,7 +464,7 @@ export default {
         value = new Date()
         return new Date(value).toLocaleString('pt-BR', {weekday: 'long',year: 'numeric',month: '2-digit',day: '2-digit'})
     },
-    listaVendedoresNomes(){
+    VendedoresNomes(){
       let a = this.relFechamento.vendasVendedor
       if(!this.relFechamento.vendasVendedor){ return [] }
       let lista = []
@@ -459,8 +475,9 @@ export default {
       }
       
       return lista    
+    
     },
-    listaVendedoresResult(){
+    VendedoresResult(){
       let a = this.relFechamento.vendasVendedor
       if(!this.relFechamento.vendasVendedor){ return [] }
       let lista = []
@@ -470,13 +487,45 @@ export default {
           lista.push(n)
       }
       
-      return lista    
-    }
+      return lista 
+        
+    },
     
-  },
+    
+  },  
   methods: {
     goBack(){
       window.history.go(-1)
+    },
+    listaVendedoresNomes(){
+      let a = this.relFechamento.vendasVendedor
+      if(!this.relFechamento.vendasVendedor){ return [] }
+      let lista = []
+
+      for (let i=0; i < a.length; i++) {
+          let n = a[i].nomeUsuario
+          lista.push(n)
+      }
+      
+      this.data.labels = lista
+    
+    },
+    listaVendedoresResult(){
+      let a = this.relFechamento.vendasVendedor
+      if(!this.relFechamento.vendasVendedor){ return [] }
+      let lista = []
+
+      for (let i=0; i < a.length; i++) {
+          let n = a[i].valor
+          lista.push(Math.round(n))
+      }
+      
+      this.data.datasets.push({
+                                label: 'Vendedores',
+                                backgroundColor: '#80CBC4',
+                                data: lista
+      })
+        
     },
     getFechamento(){
       Loading.show({message: 'Aguardando Dados...'})
@@ -491,21 +540,14 @@ export default {
         let di = new Date(d.dataInicio).toLocaleString('pt-BR', {year: 'numeric',month: '2-digit',day: '2-digit'})
         let df = new Date(d.dataFechamento).toLocaleString('pt-BR', {year: 'numeric',month: '2-digit',day: '2-digit'})
         this.periodo = di + ' a ' + df
+        //grafico  
+        this.listaVendedoresNomes()
+        this.listaVendedoresResult()
+        this.visivel = true
+
       })
       .catch((e)=>{
-        console.log(e)
-        console.log(this.relFechamento[0].key)
-        console.log(this.relFechamento[0].value)
-        
-        Dialog.create({
-          title: this.relFechamento[0].key.toString(),
-          message: this.relFechamento[0].value.toString(),
-          buttons: [
-            {
-              label: 'OK'
-            }
-          ]
-        })
+        console.log(e.response)
         Loading.hide()
       })
     },
@@ -548,6 +590,62 @@ export default {
             this.getFechamento()
         }
     },
+    alertaAoFechar(){
+        if(this.relFechamento.length === 0){
+            Dialog.create({title: 'Você não pode fechar um caixa antes de obtê-lo.',
+                           message: 'Faça selecione um caixa acima <i class="fa fa-hand-o-up" aria-hidden="true"></i>',
+                           buttons: [
+                                        {
+                                          label: 'OK',
+                                          raised: true,
+                                        }
+                                    ]
+                          })
+            return
+        }
+        
+        Dialog.create({
+          title: '<i class="material-icons text-negative">warning</i>' + ' Atenção!',
+          message: 'Você está prestes a fechar este caixa, tem certeza?',
+          buttons: [
+            {
+              label: 'Não',
+              color: 'negative',
+              raised: true,
+            },
+            {
+              label: 'Sim',
+              color: 'positive',
+              raised: true,
+              handler: () => {
+                this.fecharCaixa()
+              }
+            }
+          ]
+        })    
+    },
+    fecharCaixa(){
+      Loading.show({message: 'Aguardando Dados...'})
+      axios.post(API + 'caixa/GRAVARFechamentoCaixa?codigocaixa=' + this.idCaixa)
+      .then((res)=>{  
+        Loading.hide()
+        console.log(res.data)
+        this.relFechamento = res.data
+        this.nomeUsuario = this.relFechamento.abertura.nomeUsuario
+        this.numeroCaixa = this.relFechamento.abertura.numeroCaixa
+        let d = this.relFechamento.abertura
+        let di = new Date(d.dataInicio).toLocaleString('pt-BR', {year: 'numeric',month: '2-digit',day: '2-digit'})
+        let df = new Date(d.dataFechamento).toLocaleString('pt-BR', {year: 'numeric',month: '2-digit',day: '2-digit'})
+        this.periodo = di + ' a ' + df
+        this.checked = true
+
+      })
+      .catch((e)=>{
+        console.log(e.response)
+        Loading.hide()
+      })
+    
+    }
   },
   created(){
     let t = this

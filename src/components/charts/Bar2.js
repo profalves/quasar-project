@@ -16,6 +16,12 @@ export default {
             }
         }
     },
+    watch: {
+        data: function () {
+          this._chart.destroy()
+          this.renderChart(this.data, this.options)
+        }
+    },
     mounted: function (){
         this.renderChart(this.data, this.options)
     }
