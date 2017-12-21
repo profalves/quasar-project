@@ -246,7 +246,7 @@ const API = localStorage.getItem('wsAtual')
   }
 </script>
 
-<style>
+<style scoped>
     .datas{
         padding: 0 10px
     }

@@ -20,7 +20,7 @@
       
       <img src="../../img/logo2.png" width="80%" id="logo"/>
       
-      <form @submit.prevent="login">
+      <form>
       <q-field
         helper="Empresa"
       >
@@ -68,6 +68,7 @@
 <script>
 import axios from 'axios'
 import { Alert, Dialog, Loading } from 'quasar'
+import { AtomSpinner } from 'epic-spinners'
 
 //dev
 let API = localStorage.getItem('wsAtual')
@@ -84,6 +85,9 @@ export default {
             usuarios: [],
             bancosDados: []
         }
+    },
+    components:{
+        AtomSpinner
     },
     computed:{
         listaEmpresas(){
@@ -163,17 +167,19 @@ export default {
               return
           }
           API = localStorage.getItem('wsAtual')
+          Loading.show({ spinner: AtomSpinner })
           axios.get(API + 'usuario/obterUsuario?usuario='+ this.user + '&senha=' + this.pass)
           .then((res)=>{
+            Loading.hide()
             localStorage.setItem('tela', 'principal')
             localStorage.setItem('codUser', res.data.codigo)
             localStorage.setItem('nameUser', res.data.nome)
             localStorage.setItem('nomeEmpresa', localStorage.getItem('Empresa' + this.bd))
             //console.log(res.data)
-            Loading.hide()
             this.$router.push('/')
           })
           .catch((e)=>{
+            Loading.hide()
             Alert.create({
               html: e.response.data[0].value,
               enter: 'bounceInLeft',
@@ -182,8 +188,7 @@ export default {
               //color: 'warning'
                 
             })
-            //console.log(e.response)
-            Loading.hide()
+            console.log(e.response)
           })
             
         },

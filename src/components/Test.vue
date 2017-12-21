@@ -1,5 +1,6 @@
 <template>
   <div>
+    
      <div id="pdf">
          <q-btn icon="create" 
                 big 
@@ -41,32 +42,176 @@
             >WhatsApp All</q-btn>
      <br>Enviar para todos uma mensagem<br>
      
-        <table class="q-table" :class="computedClasses" style="margin-top: 50px">
-          <thead>
-            <tr>
-              <th class="text-left">Name</th>
-              <th class="text-right">Price</th>
-              <th class="text-right">In Stock</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="text-left">Item #1</td>
-              <td class="text-right">$10.11</td>
-              <td class="text-right">101</td>
-            </tr>
-            <tr>
-              <td class="text-left">Item #2</td>
-              <td class="text-right">$8.88</td>
-              <td class="text-right">34</td>
-            </tr>
-            <tr>
-              <td class="text-left">Item #3</td>
-              <td class="text-right">$0.15</td>
-              <td class="text-right">1670</td>
-            </tr>
-          </tbody>
-        </table> 
+    <table class="q-table" :class="computedClasses" style="margin-top: 50px">
+      <thead>
+        <tr>
+          <th class="text-left">Name</th>
+          <th class="text-right">Price</th>
+          <th class="text-right">In Stock</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="text-left">Item #1</td>
+          <td class="text-right">$10.11</td>
+          <td class="text-right">101</td>
+        </tr>
+        <tr>
+          <td class="text-left">Item #2</td>
+          <td class="text-right">$8.88</td>
+          <td class="text-right">34</td>
+        </tr>
+        <tr>
+          <td class="text-left">Item #3</td>
+          <td class="text-right">$0.15</td>
+          <td class="text-right">1670</td>
+        </tr>
+      </tbody>
+    </table>
+    <hr> 
+    <h1>Spinners</h1>
+      
+    <flower-spinner
+      :animation-duration="2500"
+      :size="70"
+      :color="'#ff1d5e'"
+      @click="FlowerSpinner"
+    />
+    <br>    
+    <pixel-spinner
+      :animation-duration="2000"
+      :pixel-size="70"
+      :color="'#ff1d5e'"
+      @click="PixelSpinner"
+    />
+    <br>
+    <hollow-dots-spinner
+      :animation-duration="1000"
+      :dot-size="15"
+      :dots-num="3"
+      :color="'#ff1d5e'"
+      @click="HollowDotsSpinner"
+    />
+    <br>
+    <intersecting-circles-spinner
+      :animation-duration="1200"
+      :size="70"
+      :color="'#ff1d5e'"
+      @click="IntersectingCirclesSpinner"
+    />
+    <br>
+    <orbit-spinner
+      :animation-duration="1200"
+      :size="55"
+      :color="'#ff1d5e'"
+      @click="OrbitSpinner"
+    />
+    <br>
+    <radar-spinner
+      :animation-duration="2000"
+      :size="60"
+      :color="'#ff1d5e'"
+      @click="RadarSpinner"
+    />
+    <br>
+    <scaling-squares-spinner
+      :animation-duration="1250"
+      :size="65"
+      :color="'#ff1d5e'"
+      @click="ScalingSquaresSpinner"
+    />
+    <br>
+    <half-circle-spinner
+      :animation-duration="1000"
+      :size="60"
+      :color="'#ff1d5e'"
+      @click="HalfCircleSpinner"
+    />
+    <br>
+    <trinity-rings-spinner
+      :animation-duration="1500"
+      :size="66"
+      :color="'#ff1d5e'"
+      @click="TrinityRingsSpinner"
+    />
+    <br>
+    <fulfilling-square-spinner
+      :animation-duration="4000"
+      :size="50"
+      :color="'#ff1d5e'"
+      @click="FulfillingSquareSpinner"
+    />
+    <br>
+    <circles-to-rhombuses-spinner
+      :animation-duration="1200"
+      :circles-num="3"
+      :circle-size="15"
+      :color="'#ff1d5e'"
+      @click="CirclesToRhombusesSpinner"
+    />
+    <br>
+    <semipolar-spinner
+      :animation-duration="2000"
+      :size="65"
+      :color="'#ff1d5e'"
+      @click="SemipolarSpinner"
+    />
+    <br>
+    <self-building-square-spinner
+      :animation-duration="6000"
+      :size="40"
+      :color="'#ff1d5e'"
+      @click="SelfBuildingSquareSpinner"
+    />
+    <br>
+    <swapping-squares-spinner
+      :animation-duration="1000"
+      :size="65"
+      :color="'#ff1d5e'"
+      @click="SwappingSquaresSpinner"
+    />
+    <br>
+    <fulfilling-bouncing-circle-spinner
+      :animation-duration="4000"
+      :size="60"
+      :color="'#ff1d5e'"
+      @click="FulfillingBouncingCircleSpinner"
+    />
+    <br>
+    <fingerprint-spinner
+      :animation-duration="1500"
+      :size="64"
+      :color="'#ff1d5e'"
+      @click="FingerprintSpinner"
+    />
+    <br>
+    <spring-spinner
+      :animation-duration="3000"
+      :size="60"
+      :color="'#ff1d5e'"
+      @click="SpringSpinner"
+    />
+    <br>
+    <atom-spinner
+      :animation-duration="1000"
+      :size="60"
+      :color="'#ff1d5e'"
+      @click="AtomSpinner"
+    />
+    <br>
+    <looping-rhombuses-spinner
+      :animation-duration="2500"
+      :rhombus-size="15"
+      :color="'#ff1d5e'"        
+      @click="LoopingRhombusesSpinner"
+    />
+    <br>
+    <breeding-rhombus-spinner
+      :animation-duration="2000"
+      :size="65"
+      :color="'#ff1d5e'"        
+      @click="BreedingRhombusSpinner"
+    />
       
   </div>
 </template>
@@ -76,15 +221,40 @@ import JsPDF from 'jspdf'
 //import autoTable from 'jspdf-autotable/jspdf.plugin.autotable'
 import table from 'data/table.json'
 //import axios from 'axios'
-import { openURL } from 'quasar'
+import { openURL, Loading } from 'quasar'
 const $ = require("jquery");
     
 const doc = new JsPDF()
 require('jspdf-autotable');
+    
+import {
+    AtomSpinner,
+    FlowerSpinner,
+    HollowDotsSpinner,
+    PixelSpinner,
+    IntersectingCirclesSpinner,
+    OrbitSpinner,
+    FingerprintSpinner,
+    TrinityRingsSpinner,
+    FulfillingSquareSpinner,
+    CirclesToRhombusesSpinner,
+    SemipolarSpinner,
+    BreedingRhombusSpinner,
+    SwappingSquaresSpinner,
+    ScalingSquaresSpinner,
+    FulfillingBouncingCircleSpinner,
+    RadarSpinner,
+    SelfBuildingSquareSpinner,
+    SpringSpinner,
+    LoopingRhombusesSpinner,
+    HalfCircleSpinner
+} from 'epic-spinners'
+
 
 export default {
   data () {
     return {
+        spinnerColor: '#ff1d5e',
         table,
         misc: 'bordered', //[{value: 'bordered'},{value: 'highlight'}]
         separator: 'cell', // none, horizontal, vertical, cell
@@ -92,6 +262,28 @@ export default {
         type: 'none', // flipped, responsive
         gutter: 'none', // compact, loose
     }
+  },
+  components: {
+    AtomSpinner,
+    FlowerSpinner,
+    HollowDotsSpinner,
+    PixelSpinner,
+    IntersectingCirclesSpinner,
+    OrbitSpinner,
+    FingerprintSpinner,
+    TrinityRingsSpinner,
+    FulfillingSquareSpinner,
+    CirclesToRhombusesSpinner,
+    SemipolarSpinner,
+    BreedingRhombusSpinner,
+    SwappingSquaresSpinner,
+    ScalingSquaresSpinner,
+    FulfillingBouncingCircleSpinner,
+    RadarSpinner,
+    SelfBuildingSquareSpinner,
+    SpringSpinner,
+    LoopingRhombusesSpinner,
+    HalfCircleSpinner
   },
   computed: {
     computedClasses(){
@@ -150,10 +342,208 @@ export default {
             'elementHandlers':specialElementHandlers
         });
         doc.save('html.pdf');
+    },
+    AtomSpinner(){
+      Loading.show({
+        spinner: AtomSpinner,
+        spinnerSize: 140,
+        message: 'AtomSpinner'
+      })
+      setTimeout(() => {
+        Loading.hide()
+      }, 5000)
+    },
+    FlowerSpinner(){
+      Loading.show({
+        spinner: FlowerSpinner,
+        spinnerSize: 140,
+        message: 'FlowerSpinner'
+      })
+      setTimeout(() => {
+        Loading.hide()
+      }, 5000)
+    },
+    HollowDotsSpinner(){
+      Loading.show({
+        spinner: HollowDotsSpinner,
+        spinnerSize: 140,
+        message: 'HollowDotsSpinner'
+      })
+      setTimeout(() => {
+        Loading.hide()
+      }, 5000)
+    },
+    PixelSpinner(){
+      Loading.show({
+        spinner: PixelSpinner,
+        spinnerSize: 140,
+        message: 'PixelSpinner'
+      })
+      setTimeout(() => {
+        Loading.hide()
+      }, 5000)
+    },
+    IntersectingCirclesSpinner(){
+      Loading.show({
+        spinner: IntersectingCirclesSpinner,
+        spinnerSize: 140,
+        message: 'IntersectingCirclesSpinner'
+      })
+      setTimeout(() => {
+        Loading.hide()
+      }, 5000)
+    },
+    OrbitSpinner(){
+      Loading.show({
+        spinner: OrbitSpinner,
+        spinnerSize: 140,
+        message: 'OrbitSpinner'
+      })
+      setTimeout(() => {
+        Loading.hide()
+      }, 5000)
+    },
+    FingerprintSpinner(){    
+      Loading.show({
+        spinner: FingerprintSpinner,
+        spinnerSize: 140,
+        message: 'FingerprintSpinner'
+      })
+      setTimeout(() => {
+        Loading.hide()
+      }, 5000)
+    },
+    TrinityRingsSpinner(){
+      Loading.show({
+        spinner: TrinityRingsSpinner,
+        spinnerSize: 140,
+        message: 'TrinityRingsSpinner'
+      })
+      setTimeout(() => {
+        Loading.hide()
+      }, 5000)
+    },
+    FulfillingSquareSpinner(){
+      Loading.show({
+        spinner: FulfillingSquareSpinner,
+        spinnerSize: 140,
+        message: 'FulfillingSquareSpinner'
+      })
+      setTimeout(() => {
+        Loading.hide()
+      }, 5000)
+    },
+    CirclesToRhombusesSpinner(){
+      Loading.show({
+        spinner: CirclesToRhombusesSpinner,
+        spinnerSize: 140,
+        message: 'CirclesToRhombusesSpinner'
+      })
+      setTimeout(() => {
+        Loading.hide()
+      }, 5000)
+    },
+    SemipolarSpinner(){
+      Loading.show({
+        spinner: SemipolarSpinner,
+        spinnerSize: 140,
+        message: 'SemipolarSpinner'
+      })
+      setTimeout(() => {
+        Loading.hide()
+      }, 5000)
+    },
+    BreedingRhombusSpinner(){
+      Loading.show({
+        spinner: BreedingRhombusSpinner,
+        spinnerSize: 140,
+        message: 'BreedingRhombusSpinner'
+      })
+      setTimeout(() => {
+        Loading.hide()
+      }, 5000)
+    },
+    SwappingSquaresSpinner(){
+      Loading.show({
+        spinner: SwappingSquaresSpinner,
+        spinnerSize: 140,
+        message: 'SwappingSquaresSpinner'
+      })
+      setTimeout(() => {
+        Loading.hide()
+      }, 5000)
+    },
+    ScalingSquaresSpinner(){
+      Loading.show({
+        spinner: ScalingSquaresSpinner,
+        spinnerSize: 140,
+        message: 'ScalingSquaresSpinner'
+      })
+      setTimeout(() => {
+        Loading.hide()
+      }, 5000)
+    },
+    FulfillingBouncingCircleSpinner(){
+      Loading.show({
+        spinner: FulfillingBouncingCircleSpinner,
+        spinnerSize: 140,
+        message: 'FulfillingBouncingCircleSpinner'
+      })
+      setTimeout(() => {
+        Loading.hide()
+      }, 5000)
+    },
+    RadarSpinner(){
+      Loading.show({
+        spinner: RadarSpinner,
+        spinnerSize: 140,
+        message: 'RadarSpinner'
+      })
+      setTimeout(() => {
+        Loading.hide()
+      }, 5000)
+    },
+    SelfBuildingSquareSpinner(){
+      Loading.show({
+        spinner: SelfBuildingSquareSpinner,
+        spinnerSize: 140,
+        message: 'SelfBuildingSquareSpinner'
+      })
+      setTimeout(() => {
+        Loading.hide()
+      }, 5000)
+    },
+    SpringSpinner(){
+      Loading.show({
+        spinner: SpringSpinner,
+        spinnerSize: 140,
+        message: 'SpringSpinner'
+      })
+      setTimeout(() => {
+        Loading.hide()
+      }, 5000)
+    },
+    LoopingRhombusesSpinner(){
+      Loading.show({
+        spinner: LoopingRhombusesSpinner,
+        spinnerSize: 140,
+        message: 'LoopingRhombusesSpinner'
+      })
+      setTimeout(() => {
+        Loading.hide()
+      }, 5000)
+    },
+    HalfCircleSpinner(){
+      Loading.show({
+        spinner: HalfCircleSpinner,
+        spinnerSize: 140,
+        message: 'HalfCircleSpinner'
+      })
+      setTimeout(() => {
+        Loading.hide()
+      }, 5000)
     }
-  }
+  },
+  
 }
 </script>
-
-<style>
-</style>

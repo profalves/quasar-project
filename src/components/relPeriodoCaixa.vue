@@ -558,7 +558,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
     #total{
         margin: 10px; 
         font-size: 20px

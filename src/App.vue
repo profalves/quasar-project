@@ -115,6 +115,10 @@ export default {
         overflow: scroll;
     }
     
+    .fixo{
+        z-index: 5
+    }
+    
     /*transitions router*/
     .fade-enter-active, .fade-leave-active {
       transition: opacity .5s ease;
@@ -137,8 +141,4 @@ export default {
       transform: translate(-30px, 0);
     }
     
-    .fixo{
-        z-index: 5
-    }
-
 </style>

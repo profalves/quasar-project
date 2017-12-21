@@ -9,7 +9,7 @@
       <q-list no-border link inset-delimiter>
         <q-list-header>Menu</q-list-header>
         <q-item>
-          <q-item-side icon="star" />
+          <q-item-side icon="flag" />
           <q-side-link to="/">
               Inicio
           </q-side-link>
@@ -40,7 +40,7 @@
           </q-side-link>
         </q-item>
         <q-item>
-          <q-item-side icon="dashboard" />
+          <q-item-side icon="insert_chart" />
           <q-side-link to="/relatorios">
                 <q-item-main label="Relatórios" sublabel="Relatórios Gerais" />
           </q-side-link>
@@ -107,6 +107,3 @@ export default {
   }
 }
 </script>
-
-<style>
-</style>
