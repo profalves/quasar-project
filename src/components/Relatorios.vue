@@ -18,13 +18,13 @@
     </div>    
     
     <div class="col-6">
-        <router-link to="/relatorios">
+        <router-link to="/relVendas">
             <q-card color="primary" class="col-sm-6">
               <q-card-title></q-card-title>
               <q-card-main>
                 <center id="card">
                     <i class="fa fa-shopping-basket fa-5x center"></i><br>
-                    <p>Estoque</p>
+                    <p>Vendas</p>
                 </center>
               </q-card-main>
             </q-card>

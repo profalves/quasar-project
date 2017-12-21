@@ -44,11 +44,13 @@ export default new VueRouter({
     { path: '/caixaperiodo', component: load('relPeriodoCaixa') },
     { path: '/caixames', component: load('relCaixaMes') },
     { path: '/fechamento', component: load('relFechamentoCaixa') },
-    { path: '/relatorioestoque', component: load('relEstoque') },
-    { path: '/relatoriomov', component: load('relMovimentacoes') },
     { path: '/relatoriocontas', component: load('relContas') },
+    { path: '/relVendas', component: load('relVendas') },
+    { path: '/relVendasEstoque', component: load('relEstoque') },
+    { path: '/relatoriomov', component: load('relMovimentacoes') },
     { path: '/relatoriolucro', component: load('relLucro') },
     { path: '/relFormas', component: load('relFormas') },
+    { path: '/relVendasNota', component: load('relVendasNota') },
       
     
     // Ambientes testes
