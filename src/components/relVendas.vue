@@ -18,13 +18,13 @@
         </q-item-main>
       </q-item>
       
-      <q-item link to="/">
+      <!--<q-item link to="/">
         <q-item-side />
         <q-item-main>
           <q-item-tile label>Caixa Periodo</q-item-tile>
           <q-item-tile sublabel>Totais de vendas e recebimentos por período</q-item-tile>
         </q-item-main>
-      </q-item>
+      </q-item>-->
       
     </q-list> 
     

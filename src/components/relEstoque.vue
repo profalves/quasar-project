@@ -1,7 +1,7 @@
 <template>
   <div>
     
-    <h5>Estoque</h5>
+    <h5>Vendas Estoque</h5>
     <!-- Botão flutuante -->
     <q-fixed-position class="over" corner="bottom-left" :offset="[18, 18]">
         <q-btn 
@@ -13,7 +13,13 @@
     </q-fixed-position>
 
     <div id="lista">
-      <q-collapsible opened icon="filter_list" label="Filtros">
+      <q-collapsible :opened="opened" 
+                     icon="filter_list" 
+                     label="Filtros"
+                     @open="collapse"
+                     @close="collapse"
+                     @click="collapse"
+                     >
         <div class="row">
             <div class="col">
                 <q-select
@@ -53,6 +59,7 @@
                   float-label="Produto"
                   :options="listaProdutos"
                   filter
+                  clearable
                 />
             </div>
         </div>
@@ -64,7 +71,7 @@
                         {label: 'Ordem alfabetica', value: 'Ordem alfabetica'},
                         {label: 'Categoria', value: 'Categoria'},
                         {label: 'Marca', value: 'Marca'},
-                        {label: 'Família', value: 'Família'},
+                        {label: 'Família', value: 'familia'},
                     ]"
         />
         
@@ -100,7 +107,7 @@
 
         </div>
         
-        
+        <q-checkbox v-model="composicao" label="Filtrar somente composições de produtos" /><br><br>
         
         <q-btn color="primary"
                @click="getEstoque"
@@ -114,7 +121,7 @@
     <!--periodo-->
           
         <q-data-table
-          :data="estoque"
+          :data="itens"
           :config="config"
           :columns="colunas"
           style="background-color:white;"
@@ -128,18 +135,9 @@
           label="Opções"
           icon="settings"
           style="background-color:white;
-                 margin-bottom:100px;"
+                 margin-bottom:20px;"
           class="shadow-2"
         >
-
-          <!--<q-field
-            icon="title"
-            label="Nome da Tabela"
-            :label-width="4"
-          >
-            <q-input v-model="config.title" />
-          </q-field>-->
-
 
           <q-field
             icon="widgets"
@@ -154,51 +152,6 @@
               <q-checkbox v-model="config.noHeader" label="Sem Cabeçário" />
             </div>
           </q-field>
-
-          <q-field
-            icon="check box"
-            label="Tipo de Seleção"
-            :label-width="4"
-          >
-            <q-select
-              v-model="config.selection"
-              class="col-xs-12 col-sm"
-              float-label="Seleção"
-              :options="[
-                {label: 'Nenhuma', value: false},
-                {label: 'Singular', value: 'single'},
-                {label: 'Multipla', value: 'multiple'}
-              ]"
-            />
-          </q-field>
-
-          <!--<q-field
-            icon="place"
-            label="Sticky Columns"
-            :label-width="4"
-          >
-            <q-select
-              v-model="config.leftStickyColumns"
-              class="col-xs-12 col-sm"
-              float-label="Left Sticky Columns"
-              :options="[
-                {label: 'None', value: 0},
-                {label: '1', value: 1},
-                {label: '2', value: 2}
-              ]"
-            />
-            <br>
-            <q-select
-              v-model="config.rightStickyColumns"
-              class="col-xs-12 col-sm"
-              float-label="Right Sticky Columns"
-              :options="[
-                {label: 'None', value: 0},
-                {label: '1', value: 1},
-                {label: '2', value: 2}
-              ]"
-            />
-          </q-field>-->
 
           <q-field
             icon="format_line_spacing"
@@ -230,7 +183,34 @@
             </div>
           </q-field>
         </q-collapsible>
-        <br><br>
+        
+        
+        <q-card style="background-color:white">
+          <q-card-title>
+            Formas de Pagamento:
+          </q-card-title>
+          <q-card-separator />
+          <q-card-main>
+              
+            <table class="q-table">
+              <thead>
+                <tr>
+                  <th class="text-left">Pagamento</th>
+                  <th class="text-left">Valor Pago</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="item in formas">
+                  <td class="text-left">{{ item.formaPgto }}</td>
+                  <td class="text-left">{{ item.valorPgto | formatMoney }}</td>
+                </tr>
+              </tbody>
+            </table> 
+              
+          </q-card-main>
+        </q-card>
+        <br><br><br><br>
+        
         
     </div>
   </div>
@@ -255,13 +235,16 @@ export default {
           vendedores: [],
           dataInicial: '',
           dataFinal: '',
-          agrup: '', // agrp: cat, marca, familia, todos
+          agrup: '', // agrp: cat, marca, familia, ordem alfab.
           familia: '',
           vendedor: '',
           produto: '',
           codTipo: '',
-          composicao: '',
+          composicao: false,
+          opened: true,
           Produtos: [],
+          itens: [],
+          formas: [],
           config: {
             title: '',
             refresh: (localStorage.getItem('refresh') === 'true'),
@@ -276,7 +259,6 @@ export default {
               rowsPerPage: 15,
               options: [5, 10, 15, 30, 50, 100]
             },
-            selection: 'none',
             messages: {
               noData: '<i class="material-icons">warning</i> Não há dados para exibir.',
               noDataAfterFiltering: '<i class="material-icons">warning</i> Sem resultados. Por favor, redefina suas buscas.'
@@ -298,15 +280,23 @@ export default {
           colunas: [
             {
               label: 'Código',
-              field: 'codigo',
+              field: 'codEmpresa',
               filter: true,
               sort: true,
               type: 'string',
               width: '60px'
             },
             {
+              label: 'Cód. Barras',
+              field: 'codBarra',
+              sort: true,
+              filter: true,
+              type: 'number',
+              width: '100px'
+            },
+            {
               label: 'Nome',
-              field: 'nome',
+              field: 'produto',
               width: '150px',
               sort: true,
               filter: true,
@@ -318,10 +308,17 @@ export default {
                 return new Date(value).toLocaleString()
               }*/
             },
-
+            {
+              label: 'Qtd.',
+              field: 'qtd',
+              sort: true,
+              filter: true,
+              type: 'number',
+              width: '80px'
+            },
             {
               label: 'Preço',
-              field: 'valor',
+              field: 'valorVenda',
               filter: true,
               sort: true,
               type: 'number',
@@ -337,21 +334,24 @@ export default {
               }
             },
             {
-              label: 'Estoque',
-              field: 'qtd',
-              sort: true,
+              label: 'total',
+              field: 'totalItem',
               filter: true,
+              sort: true,
               type: 'number',
-              width: '80px'
+              width: '80px',
+              format (value) {
+                function numberToReal(numero) {
+                    numero = numero.toFixed(2).split('.');
+                    numero[0] = "R$ " + numero[0].split(/(?=(?:...)*$)/).join('.');
+                    return numero.join(',');
+                }
+                let x = numberToReal(value);
+                return x
+              }
             },
-            {
-              label: 'Cód. Barras',
-              field: 'codBarra',
-              sort: true,
-              filter: true,
-              type: 'number',
-              width: '100px'
-            }
+            
+            
           ],
           pagination: (localStorage.getItem('pagination') === 'true'),
           rowHeight: parseInt(localStorage.getItem('rowHeight')),
@@ -439,36 +439,54 @@ export default {
             Toast.create.negative('Selecione um período antes')
             return
         }
+        let v = ''
+        if(this.vendedor !== ''){
+            v = '&codVendedor=' + this.vendedor
+        }
+        let tipo = ''
+        if(this.codTipo !== ''){
+            tipo = '&codcodTipo=' + this.codTipo
+        }
         let fam = ''
         if(this.familia !== ''){
             fam = '&codFamilia=' + this.familia
         }
+        let produto = ''
+        if(this.produto !== ''){
+            produto = '&agrupamento=' + this.produto
+        }
+        let agrup = ''
+        if(this.agrup !== ''){
+            agrup = '&agrupamento=' + this.agrup
+        }
         Loading.show({message: 'Aguardando Dados...'})
         axios.get(API + 'relatorio/obterVendasPorProduto?' +
                 'dataInicial=' + this.dataInicial +
-                '&dataFinal=' + this.dataFinal +
-                '&agrupamento=todos' +
-                fam + 
-                /*'&codVendedor= ' + 
-                '&produto= ' + 
-                '&codTipo= ' +*/
-                '&SomenteComposicoes=false')
+                '&dataFinal=' + this.dataFinal + 
+                fam + v + tipo + agrup + produto +
+                '&SomenteComposicoes=' + this.composicao)
         .then((res)=>{
-        console.log(res.data)
-        this.estoque = res.data
-        Loading.hide()
+            console.log(res.data)
+            this.estoque = res.data
+            this.itens = this.estoque[0].itens
+            this.formas = this.estoque[0].formasPgto
+            this.opened = false
+            Loading.hide()
         })
         .catch((e)=>{
-        console.log(e.response)
-        Loading.hide()
+            console.log(e.response)
+            Loading.hide()
         })
       },
       listarFamilias(){
+          Loading.show({message: 'Aguardando Dados...'})
           axios.get(API + 'produto/obterProdutosFamilia')
           .then((res)=>{
+            Loading.hide()
             this.familias = res.data
           })
           .catch((e)=>{
+            Loading.hide()
             console.log(e)
           })
       },
@@ -499,6 +517,14 @@ export default {
             console.log(e)
           })
       },
+      collapse(){
+        if(this.opened === true){
+            this.opened = false
+        }
+        else{
+            this.opened = true
+        }
+      }
   },
   created(){
       let t = this
