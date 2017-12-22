@@ -54,13 +54,17 @@
                             style="margin: 30px 0 0 10px" />
             </div>
             
+        </div><br>
+        
+        <div class="row">
+            <div class="col">
+              Número do Cupom  
+            </div>
         </div>
         
         <div class="row">
             <div class="col">
-              <q-field
-                label="N. Cupom"
-              >
+              <q-field>
                 <q-input
                   v-model="text"
                   float-label="De:"
@@ -68,9 +72,7 @@
               </q-field>    
             </div>
             <div class="col">
-              <q-field
-                label="N. Cupom"
-              >
+              <q-field>
                 <q-input
                   v-model="text"
                   float-label="Até:"
@@ -78,9 +80,6 @@
               </q-field>    
             </div>
         </div>
-        
-        
-  
         
         <div class="row">
            <div class="col">
@@ -114,10 +113,10 @@
 
         </div>
         
-        
+        <br>
         
         <q-btn color="primary"
-               @click="getEstoque"
+               @click="getNotas"
                rounded
                style="margin-bottom: 20px"
                >
@@ -128,7 +127,7 @@
     <!--periodo-->
           
         <q-data-table
-          :data="itens"
+          :data="Produtos"
           :config="config"
           :columns="colunas"
           style="background-color:white;"
@@ -493,7 +492,7 @@ export default {
   },
   created(){
       let t = this
-      t.listaClientes()
+      t.listarClientes()
       t.listarVendedores()
       t.todosProdutos()
   }

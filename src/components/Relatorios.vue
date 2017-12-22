@@ -34,7 +34,7 @@
 
     
     <div class="col-12">
-        <router-link to="/relatorios">
+        <router-link to="/relatoriomov">
             <q-card color="info" class="col-sm-6">
               <q-card-title></q-card-title>
               <q-card-main>
@@ -62,7 +62,7 @@
     </div>    
     
     <div class="col">
-        <router-link to="/relatorios">
+        <router-link to="/relatoriolucro">
             <q-card color="secondary" class="col-sm-6">
               <q-card-title></q-card-title>
               <q-card-main>

@@ -455,18 +455,16 @@ export default {
         if(this.produto !== ''){
             produto = '&agrupamento=' + this.produto
         }
-        let agrup = ''
-        if(this.agrup !== ''){
-            agrup = '&agrupamento=' + this.agrup
-        }
+        
         Loading.show({message: 'Aguardando Dados...'})
         axios.get(API + 'relatorio/obterVendasPorProduto?' +
                 'dataInicial=' + this.dataInicial +
                 '&dataFinal=' + this.dataFinal + 
-                fam + v + tipo + agrup + produto +
+                fam + v + tipo + produto +
+                '&agrupamento=' + this.agrup +
                 '&SomenteComposicoes=' + this.composicao)
         .then((res)=>{
-            console.log(res.data)
+            console.log(res)
             this.estoque = res.data
             this.itens = this.estoque[0].itens
             this.formas = this.estoque[0].formasPgto
