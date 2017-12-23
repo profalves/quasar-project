@@ -6,7 +6,7 @@
         <q-item-side />
         <q-item-main>
           <q-item-tile label>Vendas por Estoque</q-item-tile>
-          <q-item-tile sublabel>Produtos vendidos em um determinado período</q-item-tile>
+          <q-item-tile sublabel>Totais de produtos vendidos em um determinado período</q-item-tile>
         </q-item-main>
       </q-item>
       
@@ -15,6 +15,14 @@
         <q-item-main>
           <q-item-tile label>Vendas por Nota</q-item-tile>
           <q-item-tile sublabel>Totais de vendas por período determinado de notas</q-item-tile>
+        </q-item-main>
+      </q-item>
+      
+      <q-item link to="/relVendasCliente">
+        <q-item-side />
+        <q-item-main>
+          <q-item-tile label>Vendas por Cliente</q-item-tile>
+          <q-item-tile sublabel>Totais de vendas por Clientes em um determinado período</q-item-tile>
         </q-item-main>
       </q-item>
       

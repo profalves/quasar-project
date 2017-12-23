@@ -51,6 +51,7 @@ export default new VueRouter({
     { path: '/relatoriolucro', component: load('relLucro') },
     { path: '/relFormas', component: load('relFormas') },
     { path: '/relVendasNota', component: load('relVendasNota') },
+    { path: '/relVendasCliente', component: load('relVendasCliente') },
       
     
     // Ambientes testes

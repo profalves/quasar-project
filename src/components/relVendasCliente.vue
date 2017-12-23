@@ -1,7 +1,7 @@
 <template>
   <div>
     
-    <h5>Movimentações</h5>
+    <h5>Vendas por Cliente</h5>
     <!-- Botão flutuante -->
     <q-fixed-position class="over" corner="bottom-left" :offset="[18, 18]">
         <q-btn 
@@ -20,54 +20,14 @@
                      @close="collapse"
                      @click="collapse"
                      >
+        
         <div class="row">
             <div class="col">
                 <q-select
-                  v-model="tipoMov"
-                  float-label="Tipo Movimentação"
-                  :options="movs"
-                />
-            </div>
-            <div class="col-xs-12 col-md-6">
-                <q-select
-                  v-if="tipoMov === 'saida manual'"
-                  v-model="tipoSai"
-                  float-label="Tipo Saída"
-                  :options="[
-                    {
-                        label:'saida manual',
-                        value:'SAIDA MANUAL'
-                    },
-                    {
-                        label:'transferência',
-                        value:'TRANSFERENCIA'
-                    },
-                    {
-                        label:'outras saídas',
-                        value:'OUTRAS SAIDAS'
-                    }
-                  ]"
+                  v-model="vendedor"
+                  float-label="Vendedor"
+                  :options="listaVendedores"
                   filter
-                  clearable
-                />
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <q-select
-                  v-model="cliente"
-                  float-label="Clientes"
-                  :options="listaClientes"
-                  filter
-                />
-            </div>
-            <div class="col-xs-12 col-md-6">
-                <q-select
-                  v-model="produto"
-                  float-label="Produto"
-                  :options="listaProdutos"
-                  filter
-                  clearable
                 />
             </div>
         </div>
@@ -202,61 +162,7 @@ export default {
   data () {
       return {
           canGoBack: window.history.length > 1,
-          movs: [ //obter essa lista na requisição: vendascab/obterVendasCabOP
-            {
-                label:'venda finalizada',
-                value:'venda finalizada'
-            },
-            {
-                label:'saida manual',
-                value:'saida manual'
-            },
-            {
-                label:'orçamento',
-                value:'orçamento'
-            },
-            {
-                label:'venda em andamento',
-                value:'venda em andamento'
-            },
-            {
-                label:'venda cancelada',
-                value:'venda cancelada'
-            },
-            {
-                label:'Entrada manual',
-                value:'Entrada manual'
-            },
-            {
-                label:'NF entrada',
-                value:'NF entrada'
-            },
-            {
-                label:'devolução de mercadoria',
-                value:'devolução de mercadoria'
-            },
-            {
-                label:'pedido mobile',
-                value:'pedido mobile'
-            },
-            {
-                label:'lançamento de produção',
-                value:'lançamento de produção'
-            },
-            {
-                label:'remessa garantia',
-                value:'remessa garantia'
-            },
-            {
-                label:'inutilização da nota',
-                value:'inutilização da nota'
-            },
-            {
-                label:'nota denegada',
-                value:'nota denegada'
-            }     
-          ],
-          notas: [],
+          vendas: [],
           clientes: [],
           categorias: [],
           itens: [],
@@ -393,40 +299,15 @@ export default {
       }
   },
   computed: {
-      listaClientes(){
-          let a = this.clientes
+      listaVendedores: function () {
+          let a = this.vendedores
           let lista = []
           
           lista = a.map(row => ({
               label: row.nome, 
-              value: row.codigo
+              value: row.codigoIdentificacao
           }))
           
-          //console.log(lista)
-          return lista
-      },
-      listaProdutos: function () {
-          let a = this.Produtos
-          let lista = []
-
-          for (let i=0; i < a.length; i++) {
-              let n = a[i].nome
-              let c = a[i].codigo
-              lista.push({label: n, value: c})    
-          }
-          //console.log(lista)
-          return lista
-      },
-      listaVendedores: function () {
-          let a = this.vendedores
-          let lista = []
-
-          for (let i=0; i < a.length; i++) {
-              let n = a[i].nome
-              let c = a[i].codigoIdentificacao
-              lista.push({label: n, value: c})    
-          }
-          //console.log(lista)
           return lista
     
       }
@@ -468,27 +349,24 @@ export default {
             return
         }
         
+        let v = ''
+        if(this.vendedor !== ''){
+            v = '&codVendedor=' + this.vendedor
+        }
+          
         Loading.show({message: 'Aguardando Dados...'})
-        axios.get(API + 'relatorio/obterRptMovDiversas?' +
+        axios.get(API + 'relatorio/obterRptPorCliente?' +
                 'dataInicial=' + this.dataInicial +
-                '&dataFinal=' + this.dataFinal + 
-                '&CodTipoMovimentacao=1'
-                /*
-                '&tipoSaida=' + 
-                '&CodTipoMovimentacao= ' + 
-                '&CodCliente= ' + 
-                '&CodProduto= ' +
-                '&numerocupomde=' +
-                '&numerocupomate='
-                */)
+                '&dataFinal=' + this.dataFinal + v)
         .then((res)=>{
         console.log(res.data)
-        //this.notas = res.data
-        Loading.hide()
+            console.log(res.data)
+            this.vendas = res.data
+            Loading.hide()
         })
         .catch((e)=>{
-        console.log(e.response)
-        Loading.hide()
+            console.log(e.response)
+            Loading.hide()
         })
       },
       listarClientes(){

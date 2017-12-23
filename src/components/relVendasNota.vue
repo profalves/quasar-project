@@ -48,8 +48,8 @@
                   filter
                 />
             </div>
-            <div class="col">
-                <q-checkbox v-model="composicao" 
+            <div class="col-xs-12 col-md-6">
+                <q-checkbox v-model="ocultarCanceladas" 
                             label="Ocultar vendas canceladas"
                             style="margin: 30px 0 0 10px" />
             </div>
@@ -57,7 +57,7 @@
         </div><br>
         
         <div class="row">
-            <div class="col">
+            <div class="col label">
               Número do Cupom  
             </div>
         </div>
@@ -66,7 +66,8 @@
             <div class="col">
               <q-field>
                 <q-input
-                  v-model="text"
+                  type="number"
+                  v-model="nCupomDe"
                   float-label="De:"
                 />
               </q-field>    
@@ -74,7 +75,8 @@
             <div class="col">
               <q-field>
                 <q-input
-                  v-model="text"
+                  type="number"
+                  v-model="nCupomAte"
                   float-label="Até:"
                 />
               </q-field>    
@@ -123,83 +125,81 @@
                Visualizar</q-btn>  
         
       </q-collapsible>
-   
-    <!--periodo-->
-          
-        <q-data-table
-          :data="Produtos"
-          :config="config"
-          :columns="colunas"
-          style="background-color:white;"
-        >
-        </q-data-table>
-
-
-
-        <!-- Configurações -->
-        <q-collapsible
-          label="Opções"
-          icon="settings"
-          style="background-color:white;
-                 margin-bottom:20px;"
-          class="shadow-2"
-        >
-
-          <q-field
-            icon="widgets"
-            label="Recursos"
-            :label-width="4"
-          >
-            <div class="column group" style="margin: -5px -7px">
-              <q-checkbox v-model="config.refresh" label="Atualizar tabela (refresh)" />
-              <q-checkbox v-model="config.columnPicker" label="Selecionar colunas" />
-              <q-checkbox v-model="pagination" label="Paginação" />
-              <q-checkbox v-model="config.responsive" label="Responsiva" />
-              <q-checkbox v-model="config.noHeader" label="Sem Cabeçário" />
-            </div>
-          </q-field>
-
-          <q-field
-            icon="format_line_spacing"
-            label="Altura das linhas"
-            :label-width="4"
-          >
-            <q-slider v-model="rowHeight" :min="50" :max="200" label-always :label-value="`${rowHeight}px` "/>
-          </q-field>
-
-          <q-field
-            icon="content_paste"
-            label="Tamanho"
-            :label-width="4"
-          >
-            <div class="row no-wrap items-center">
-              <div class="col-auto" style="margin-top: 10px">
-                <q-select
-                  v-model="bodyHeightProp"
-                  float-label="Style"
-                  :options="[
-                    {label: 'Auto', value: 'auto'},
-                    {label: 'Altura', value: 'height'},
-                    {label: 'Altura Min', value: 'minHeight'},
-                    {label: 'Altura Max', value: 'maxHeight'}
-                  ]"
-                />
-              </div>
-              <q-slider class="col" v-model="bodyHeight" :min="100" :max="700" label-always :disable="bodyHeightProp === 'auto'" :label-value="`${bodyHeight}px`" />
-            </div>
-          </q-field>
-        </q-collapsible>
-        
-        <br><br><br><br>
-        
-        
     </div>
+      
+    
+      
+    <q-list v-for="item in notas" 
+            :key="item.cab.codigo"
+            style="background-color: white;">
+      <q-list-header>Nota Fiscal</q-list-header>
+      <q-item>
+        <q-item-main>
+          <q-item-tile label>{{item.cab.nomePessoaDestina}}</q-item-tile>
+          <q-item-tile sublabel>{{item.cab.numeroDocPessoaDestina}}</q-item-tile>
+        </q-item-main>
+        <q-item-side right>
+          <q-item-tile>Data: {{item.cab.dataVenda | formatDate}}</q-item-tile>
+        </q-item-side>
+      </q-item>
+      <q-item>
+        <q-item-main>
+          <q-item-tile label>Numero da Nota:</q-item-tile>
+          <q-item-tile sublabel>{{item.cab.numeroNotaE}}</q-item-tile>
+        </q-item-main>
+      </q-item>
+      <q-item-separator />
+      <q-list-header>Produtos</q-list-header>
+      <q-item>
+        <q-collapsible>
+           
+           <div id="table">
+            <table class="q-table" :class="computedClasses">
+              <thead>
+                <tr>                  
+                  <th class="text-left">Codigo</th>
+                  <th class="text-left">Nome</th>
+                  <th class="text-left">Qtd.</th>
+                  <th class="text-left">Preço</th>
+                  <th class="text-left">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="produto in item.det">
+                  <td class="text-left">{{produto.codBarra}}</td>
+                  <td class="text-left">{{produto.nomeProduto}}</td>
+                  <td class="text-right">{{produto.qtd}}</td>
+                  <td class="text-right">{{produto.venda | formatMoney}}</td>
+                  <td class="text-right">{{produto.totalItem | formatMoney}}</td>
+                </tr>
+              </tbody>
+            </table>
+           </div>
+               
+        </q-collapsible>
+      </q-item>
+      <q-item-separator />
+      <q-list-header>Forma de Pagamento</q-list-header>
+      <q-item v-for="forma in item.formasPgto" :key="item.formasPgto.codigo">
+        <q-item-main>
+          <q-item-tile label>{{forma.forma_Pgto}}</q-item-tile>
+        </q-item-main>
+        <q-item-side right>
+          <q-item-tile>{{forma.valor | formatMoney}}</q-item-tile>
+        </q-item-side>
+      </q-item>
+    </q-list>
+   
+    
+        
+    <br><br><br><br>
+        
   </div>
 </template>
 
 <script>
     
-import { Loading, Toast, clone } from 'quasar'
+import { Loading, Toast } from 'quasar'
 import axios from 'axios'
     
 const API = localStorage.getItem('wsAtual')
@@ -213,132 +213,36 @@ export default {
           canGoBack: window.history.length > 1,
           notas: [],
           clientes: [],
-          categorias: [],
-          marcas: [],
           Produtos: [], 
           vendedores: [],
           dataInicial: '',
           dataFinal: '',
-          agrup: '',
+          nCupomDe: '',
+          nCupomAte: '',
           cliente: '',
           vendedor: '',
           produto: '',
-          codTipo: '',
-          composicao: '',
+          ocultarCanceladas: false,
           opened: true,
-          text: '',
-          config: {
-            title: '',
-            refresh: (localStorage.getItem('refresh') === 'true'),
-            noHeader: (localStorage.getItem('noHeader') === 'true'),
-            columnPicker: (localStorage.getItem('columnPicker') === 'true'),
-            bodyStyle: {
-              maxHeight: '500px'
-            },
-            rowHeight: localStorage.getItem('rowHeight') + 'px',
-            responsive: (localStorage.getItem('responsive') === 'true'),
-            pagination: {
-              rowsPerPage: 15,
-              options: [5, 10, 15, 30, 50, 100]
-            },
-            messages: {
-              noData: '<i class="material-icons">warning</i> Não há dados para exibir.',
-              noDataAfterFiltering: '<i class="material-icons">warning</i> Sem resultados. Por favor, redefina suas buscas.'
-            },
-            // (optional) Override default labels. Useful for I18n.
-            labels: {
-              columns: 'Colunas',
-              allCols: 'Todas',
-              rows: 'Linhas',
-              selected: {
-                singular: 'item selecionado.',
-                plural: 'itens selecionados.'
-              },
-              clear: 'limpar seleção',
-              search: 'Buscar',
-              all: 'Todos'
-            }
-          },
-          colunas: [
-            {
-              label: 'Código',
-              field: 'codEmpresa',
-              filter: true,
-              sort: true,
-              type: 'string',
-              width: '60px'
-            },
-            {
-              label: 'Cód. Barras',
-              field: 'codBarra',
-              sort: true,
-              filter: true,
-              type: 'number',
-              width: '100px'
-            },
-            {
-              label: 'Nome',
-              field: 'produto',
-              width: '150px',
-              sort: true,
-              filter: true,
-              type: 'string',
-              /* sort (a, b) {
-                return (new Date(a)) - (new Date(b))
-              },
-              format (value) {
-                return new Date(value).toLocaleString()
-              }*/
-            },
-            {
-              label: 'Qtd.',
-              field: 'qtd',
-              sort: true,
-              filter: true,
-              type: 'number',
-              width: '80px'
-            },
-            {
-              label: 'Preço',
-              field: 'valorVenda',
-              filter: true,
-              sort: true,
-              type: 'number',
-              width: '80px',
-              format (value) {
-                function numberToReal(numero) {
-                    numero = numero.toFixed(2).split('.');
-                    numero[0] = "R$ " + numero[0].split(/(?=(?:...)*$)/).join('.');
-                    return numero.join(',');
-                }
-                let x = numberToReal(value);
-                return x
-              }
-            },
-            {
-              label: 'total',
-              field: 'totalItem',
-              filter: true,
-              sort: true,
-              type: 'number',
-              width: '80px',
-              format (value) {
-                function numberToReal(numero) {
-                    numero = numero.toFixed(2).split('.');
-                    numero[0] = "R$ " + numero[0].split(/(?=(?:...)*$)/).join('.');
-                    return numero.join(',');
-                }
-                let x = numberToReal(value);
-                return x
-              }
-            },
-            
-            
+          
+          styles: [
+            '',
+            'bordered',
+            'horizontal-separator',
+            'vertical-separator',
+            'cell-separator',
+            'striped-odd',
+            'striped-even',
+            'highlight',
+            'compact',
+            'loose',
+            'flipped'
           ],
-          pagination: (localStorage.getItem('pagination') === 'true'),
-          rowHeight: parseInt(localStorage.getItem('rowHeight')),
-          bodyHeightProp: localStorage.getItem('bodyHeightProp'),
-          bodyHeight: parseInt(localStorage.getItem('bodyHeight')),
+          misc: [],
+          separator: 'cell', //none, horizontal, vertical, cell
+          stripe: 'odd', //none, odd, even
+          type: 'none', //none, flipped, responsive
+          gutter: 'none', //none, compact, loose
           
           //datatime
           dias: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
@@ -347,6 +251,28 @@ export default {
       }
   },
   computed: {
+      computedClasses () {
+          let classes = []
+          if (this.misc.includes('bordered')) {
+            classes.push('bordered')
+          }
+          if (this.misc.includes('highlight')) {
+            classes.push('highlight')
+          }
+          if (this.separator !== 'none') {
+            classes.push(this.separator + '-separator')
+          }
+          if (this.stripe !== 'none') {
+            classes.push('striped-' + this.stripe)
+          }
+          if (this.type !== 'none') {
+            classes.push(this.type)
+          }
+          if (this.gutter !== 'none') {
+            classes.push(this.gutter)
+          }
+          return classes
+      },
       listaClientes(){
           let a = this.clientes
           let lista = []
@@ -356,60 +282,40 @@ export default {
               value: row.codigo
           }))
           
-          //console.log(lista)
           return lista
       },
       listaProdutos: function () {
           let a = this.Produtos
           let lista = []
 
-          for (let i=0; i < a.length; i++) {
-              let n = a[i].nome
-              let c = a[i].codigo
-              lista.push({label: n, value: c})    
-          }
-          //console.log(lista)
+          lista = a.map(row => ({
+              label: row.nome, 
+              value: row.codigo
+          }))
+          
           return lista
       },
       listaVendedores: function () {
           let a = this.vendedores
           let lista = []
-
-          for (let i=0; i < a.length; i++) {
-              let n = a[i].nome
-              let c = a[i].codigoIdentificacao
-              lista.push({label: n, value: c})    
-          }
-          //console.log(lista)
+          
+          lista = a.map(row => ({
+              label: row.nome, 
+              value: row.codigoIdentificacao
+          }))
+          
           return lista
     
       }
   },
-  watch: {
-      pagination (value) {
-          if (!value) {
-            this.oldPagination = clone(this.config.pagination)
-            this.config.pagination = false
-            return
-          }
-          this.config.pagination = this.oldPagination
-      },
-      rowHeight (value) {
-          this.config.rowHeight = value + 'px'
-      },
-      bodyHeight (value) {
-          let style = {}
-          if (this.bodyHeightProp !== 'auto') {
-            style[this.bodyHeightProp] = value + 'px'
-          }
-          this.config.bodyStyle = style
-      },
-      bodyHeightProp (value) {
-          let style = {}
-          if (value !== 'auto') {
-            style[value] = this.bodyHeight + 'px'
-          }
-          this.config.bodyStyle = style
+  filters:{
+      notNull: function (value) {
+        if(value === null) {
+            return 'Não tem'
+        }
+        else {
+            return value
+        }
       }
   },
   methods:{
@@ -422,27 +328,51 @@ export default {
             return
         }
         
+        let c = ''
+        if(this.cliente !== ''){
+            c = '&CodCliente=' + this.cliente
+        }
+        let p = ''
+        if(this.produto !== ''){
+            p = '&CodProduto=' + this.produto
+        }
+        let v = ''
+        if(this.vendedor !== ''){
+            v = '&CodVendedor=' + this.vendedor
+        }
+        let NumeroCupomDe = ''
+        if(this.nCupomDe !== ''){
+            NumeroCupomDe = '&NumeroCupomDe=' + this.nCupomDe
+        }
+        let NumeroCupomAte = ''
+        if(this.nCupomAte !== ''){
+            NumeroCupomAte = '&NumeroCupomDe=' + this.nCupomAte
+        }
+        
+        
         Loading.show({message: 'Aguardando Dados...'})
         axios.get(API + 'relatorio/obterRptPorNota?' +
                 'dataInicial=' + this.dataInicial +
                 '&dataFinal=' + this.dataFinal +
+                c + p + v +
+                NumeroCupomDe +
+                NumeroCupomAte +
                 /*
-                '&codCliente=' + 
-                '&codVendedor= ' + 
-                '&produto= ' + 
                 '&tipoNota= ' +
-                '&numerocupomde=' +
-                '&numerocupomate=' +
+                '&CodUsuario=' + 
+                '&fiscal=false' + 
+                '&tipoNotaE=false' + 
+                '&NumeroNotaE=false' + 
                 */
-                '&ocultarExcluidos=false')
+                '&ocultarExcluidos=' + this.ocultarCanceladas)
         .then((res)=>{
-        console.log(res.data)
-        this.notas = res.data
-        Loading.hide()
+            console.log(res.data)
+            this.notas = res.data
+            Loading.hide()
         })
         .catch((e)=>{
-        console.log(e.response)
-        Loading.hide()
+            console.log(e.response)
+            Loading.hide()
         })
       },
       listarClientes(){
@@ -502,5 +432,8 @@ export default {
 <style>
     .over{
         z-index: 5;
+    }
+    .label{
+        color: #878B8F;
     }
 </style>
