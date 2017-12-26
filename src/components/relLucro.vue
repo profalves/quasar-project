@@ -16,11 +16,12 @@
         <q-collapsible :opened="opened" 
                      icon="filter_list" 
                      label="Filtros"
-                     @open="collapse"
-                     @close="collapse"
-                     @click="collapse"
                      >
                      
+            <q-radio v-model="ordem" val="PorReais" label="Ordenar por mais vendidos em reais" /><br>
+            <q-radio v-model="ordem" val="PorQtd" label="Ordenar por quantidade vendida" /><br>
+            <q-radio v-model="ordem" val="PorNome" label="Ordenar por nome" />
+               
             <div class="row">
                 <div class="col">
                     <q-select
@@ -83,7 +84,7 @@
 
 
             <q-btn color="primary"
-                   @click="getEstoque"
+                   @click="getLucro"
                    rounded
                    style="margin-bottom: 20px"
                    >
@@ -92,31 +93,33 @@
         </q-collapsible>
         
         
-   
-        Família: <br>
-         
-        Periodo: <br>
          
         <br>
          
         <center>
-            <h4>Totais Gerais</h4> <br>
+            <h4>Totais Gerais</h4>
             
-            <table class="q-table">
+            {{lucro.periodo}} <br>
+            
+            <table class="q-table responsive">
               <thead>
                 <tr>
-                  <th class="text-center">Custo Médio</th>
-                  <th class="text-center">Venda Média</th>
+                  <th class="text-center">Custo Total</th>
+                  <th class="text-center">Venda Total</th>
+                  <th class="text-center">Lucro</th>
                   <th class="text-center">ML Média</th>
                   <th class="text-center">Total Vendido</th>
+                  <th class="text-center">Qtde Vendida</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td class="text-center">Item #1</td>
-                  <td class="text-center">$10.11</td>
-                  <td class="text-center">101</td>
-                  <td class="text-center">101</td>
+                  <td data-th="Custo Total" class="text-center">{{lucro.totalCusto | formatMoney}}</td>
+                  <td data-th="Venda Total" class="text-center">{{lucro.totalVendas | formatMoney}}</td>
+                  <td data-th="Lucro" class="text-center">{{lucro.lucroRS | formatMoney}}</td>
+                  <td data-th="ML Média" class="text-center">{{lucro.mlMedia | formatPerc}}</td>
+                  <td data-th="Total Vendido" class="text-center">{{lucro.totalItensVendidos | formatMoney}}</td>
+                  <td data-th="Qtde Vendida" class="text-center">{{lucro.qtdVendida}}</td>
                 </tr>
               </tbody>
             </table>
@@ -201,6 +204,12 @@
 import { Loading, Toast, clone } from 'quasar'
 import axios from 'axios'
     
+function numberToReal(numero) {
+  numero = numero.toFixed(2).split('.');
+  numero[0] = "R$ " + numero[0].split(/(?=(?:...)*$)/).join('.');
+  return numero.join(',');
+}
+    
 const API = localStorage.getItem('wsAtual')
   
 //debug
@@ -225,6 +234,7 @@ export default {
           Produtos: [],
           itens: [],
           formas: [],
+          ordem: 'PorReais',
           config: {
             title: '',
             refresh: (localStorage.getItem('refresh') === 'true'),
@@ -259,14 +269,6 @@ export default {
           },
           colunas: [
             {
-              label: 'Código',
-              field: 'codEmpresa',
-              filter: true,
-              sort: true,
-              type: 'string',
-              width: '60px'
-            },
-            {
               label: 'Cód. Barras',
               field: 'codBarra',
               sort: true,
@@ -276,7 +278,7 @@ export default {
             },
             {
               label: 'Nome',
-              field: 'produto',
+              field: 'nomeProduto',
               width: '150px',
               sort: true,
               filter: true,
@@ -298,17 +300,12 @@ export default {
             },
             {
               label: 'Preço',
-              field: 'valorVenda',
+              field: 'venda',
               filter: true,
               sort: true,
               type: 'number',
               width: '80px',
               format (value) {
-                function numberToReal(numero) {
-                    numero = numero.toFixed(2).split('.');
-                    numero[0] = "R$ " + numero[0].split(/(?=(?:...)*$)/).join('.');
-                    return numero.join(',');
-                }
                 let x = numberToReal(value);
                 return x
               }
@@ -321,11 +318,6 @@ export default {
               type: 'number',
               width: '80px',
               format (value) {
-                function numberToReal(numero) {
-                    numero = numero.toFixed(2).split('.');
-                    numero[0] = "R$ " + numero[0].split(/(?=(?:...)*$)/).join('.');
-                    return numero.join(',');
-                }
                 let x = numberToReal(value);
                 return x
               }
@@ -414,7 +406,7 @@ export default {
       goBack(){
         window.history.go(-1)
       },
-      getEstoque(){
+      getLucro(){
         if(this.dataInicial === ''){
             Toast.create.negative('Selecione um período antes')
             return
@@ -422,7 +414,7 @@ export default {
         
         let tipo = ''
         if(this.codTipo !== ''){
-            tipo = '&codcodTipo=' + this.codTipo
+            tipo = '&codTipo=' + this.codTipo
         }
         let fam = ''
         if(this.familia !== ''){
@@ -434,10 +426,15 @@ export default {
                 'dataInicial=' + this.dataInicial +
                 '&dataFinal=' + this.dataFinal + 
                 fam + tipo +
-                '&PorNome=true')
+                '&' + this.ordem + '=true')
         .then((res)=>{
             console.log(res.data)
             this.lucro = res.data
+            if(this.lucro.value){
+                Toast.create.negative(this.lucro.value)
+                return
+            }
+            this.itens = this.lucro.vDet
             this.opened = false
             Loading.hide()
         })

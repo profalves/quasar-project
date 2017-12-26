@@ -583,8 +583,10 @@ export default {
         }
         
         if(localStorage.getItem('cadMode') === 'edit'){
-            this.abertos = false
-            this.checked = true
+            if(!this.$route.query.a){
+                this.checked = true
+                this.abertos = false
+            }
             this.getCaixa()
             this.idCaixa = parseInt(localStorage.getItem('codCaixa'))
             this.getFechamento()
@@ -592,15 +594,16 @@ export default {
     },
     alertaAoFechar(){
         if(this.relFechamento.length === 0){
-            Dialog.create({title: 'Você não pode fechar um caixa antes de obtê-lo.',
-                           message: 'Faça selecione um caixa acima <i class="fa fa-hand-o-up" aria-hidden="true"></i>',
-                           buttons: [
-                                        {
-                                          label: 'OK',
-                                          raised: true,
-                                        }
+            Dialog.create({
+                title: 'Você não pode fechar um caixa antes de obtê-lo.',
+                message: 'Selecione um caixa acima <i class="fa fa-hand-o-up" aria-hidden="true"></i>',
+                buttons: [
+                            {
+                               label: 'OK',
+                               raised: true,
+                            }
                                     ]
-                          })
+                })
             return
         }
         

@@ -62,6 +62,17 @@ Vue.filter('formatMoney', function (value) {
         return x
 })
 
+Vue.filter('formatPerc', function (value) {
+        if(!value) {return 'R$ 0,00'}
+        function numberToReal(numero) {
+            numero = numero.toFixed(2).split('.');
+            numero[0] = numero[0].split(/(?=(?:...)*$)/).join('.');
+            return numero.join(',') + ' %';
+        }
+        let x = numberToReal(value);
+        return x
+})
+
 Vue.filter('formatDate', function (value) {
         if(value === null) {return null}
         return new Date(value).toLocaleString('pt-BR', {year: 'numeric',month: '2-digit',day: '2-digit'})

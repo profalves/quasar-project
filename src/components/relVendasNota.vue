@@ -16,9 +16,6 @@
       <q-collapsible :opened="opened" 
                      icon="filter_list" 
                      label="Filtros"
-                     @open="collapse"
-                     @close="collapse"
-                     @click="collapse"
                      >
         <div class="row">
             <div class="col">
@@ -357,7 +354,7 @@ export default {
                 c + p + v +
                 NumeroCupomDe +
                 NumeroCupomAte +
-                /*
+                /* [Fiscal]
                 '&tipoNota= ' +
                 '&CodUsuario=' + 
                 '&fiscal=false' + 
@@ -368,6 +365,7 @@ export default {
         .then((res)=>{
             console.log(res.data)
             this.notas = res.data
+            this.opened = false
             Loading.hide()
         })
         .catch((e)=>{

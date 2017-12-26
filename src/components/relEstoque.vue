@@ -16,9 +16,6 @@
       <q-collapsible :opened="opened" 
                      icon="filter_list" 
                      label="Filtros"
-                     @open="collapse"
-                     @close="collapse"
-                     @click="collapse"
                      >
         <div class="row">
             <div class="col">
@@ -453,7 +450,7 @@ export default {
         }
         let produto = ''
         if(this.produto !== ''){
-            produto = '&agrupamento=' + this.produto
+            produto = '&codProduto=' + this.produto
         }
         
         Loading.show({message: 'Aguardando Dados...'})
@@ -468,7 +465,7 @@ export default {
             this.estoque = res.data
             this.itens = this.estoque[0].itens
             this.formas = this.estoque[0].formasPgto
-            //this.opened = false
+            this.opened = false
             Loading.hide()
         })
         .catch((e)=>{

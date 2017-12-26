@@ -8,7 +8,7 @@
     />
     
     <div id="table">
-        <table class="q-table" :class="computedClasses">
+        <table class="q-table" :class="computedClasses" style="margin-left:1px">
           <thead>
             <tr>
               <th>Abertura</th>
@@ -157,7 +157,13 @@ export default {
     irFechamento(item){
       localStorage.setItem('codCaixa', item.codigo)
       localStorage.setItem('cadMode', 'edit')
-      this.$router.push({ path: '/fechamento' })
+      if(item.status === 'OK'){
+        this.$router.push({ path: '/fechamento' })
+      }
+      else {
+        this.$router.push({ path: '/fechamento?a=aberto' })
+      }
+      
     }
   },
   

@@ -16,9 +16,6 @@
       <q-collapsible :opened="opened" 
                      icon="filter_list" 
                      label="Filtros"
-                     @open="collapse"
-                     @close="collapse"
-                     @click="collapse"
                      >
         
         <div class="row">
@@ -330,7 +327,7 @@ export default {
         .then((res)=>{
             console.log(res.data)
             this.vendas = res.data
-            //this.opened = false
+            this.opened = false
             Loading.hide()
         })
         .catch((e)=>{
