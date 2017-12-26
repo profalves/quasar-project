@@ -13,7 +13,7 @@
     </q-fixed-position>
 
     <div id="lista">
-      <q-collapsible :opened="opened" 
+      <q-collapsible :opened="filtroColap" 
                      icon="filter_list" 
                      label="Filtros"
                      @open="collapse"
@@ -25,25 +25,25 @@
                 <q-select
                   v-model="tipoMov"
                   float-label="Tipo Movimentação"
-                  :options="movs"
+                  :options="listaMovs"
                 />
             </div>
             <div class="col-xs-12 col-md-6">
                 <q-select
-                  v-if="tipoMov === 'saida manual'"
+                  v-if="tipoMov === 2"
                   v-model="tipoSai"
                   float-label="Tipo Saída"
                   :options="[
                     {
-                        label:'saida manual',
+                        label:'SAIDA MANUAL',
                         value:'SAIDA MANUAL'
                     },
                     {
-                        label:'transferência',
+                        label:'TRANSFERENCIA',
                         value:'TRANSFERENCIA'
                     },
                     {
-                        label:'outras saídas',
+                        label:'OUTRAS SAIDAS',
                         value:'OUTRAS SAIDAS'
                     }
                   ]"
@@ -116,69 +116,62 @@
       </q-collapsible>
    
     <!--periodo-->
+         
+         
+        <center>
+            <h4>Totais Gerais</h4>
+            
+            {{ relMovs.periodo }}<br>
+            
+            <table class="q-table">
+              <thead>
+                <tr>
+                  <th class="text-center">Custo</th>
+                  <th class="text-center">Venda</th>
+                  <th class="text-center">Lucro</th>
+                  <th class="text-center">Percentual</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="text-center">{{relMovs.totalCusto | formatMoney}}</td>
+                  <td class="text-center">{{relMovs.totalVenda | formatMoney}}</td>
+                  <td class="text-center">{{relMovs.lucroRS | formatMoney}}</td>
+                  <td class="text-center">{{relMovs.percLucro | formatPerc}}</td>
+                </tr>
+              </tbody>
+            </table>
+            
+        </center><br>
           
         <q-data-table
-          :data="itens"
+          :data="pedidos"
           :config="config"
           :columns="colunas"
+          @selection="selection"
           style="background-color:white;"
         >
         </q-data-table>
 
 
 
-        <!-- Configurações -->
+        <!-- itens -->
         <q-collapsible
-          label="Opções"
-          icon="settings"
+          label="Itens"
+          icon="local_mall"
           style="background-color:white;
                  margin-bottom:20px;"
           class="shadow-2"
+          :opened="itensCollap"
         >
-
-          <q-field
-            icon="widgets"
-            label="Recursos"
-            :label-width="4"
-          >
-            <div class="column group" style="margin: -5px -7px">
-              <q-checkbox v-model="config.refresh" label="Atualizar tabela (refresh)" />
-              <q-checkbox v-model="config.columnPicker" label="Selecionar colunas" />
-              <q-checkbox v-model="pagination" label="Paginação" />
-              <q-checkbox v-model="config.responsive" label="Responsiva" />
-              <q-checkbox v-model="config.noHeader" label="Sem Cabeçário" />
-            </div>
-          </q-field>
-
-          <q-field
-            icon="format_line_spacing"
-            label="Altura das linhas"
-            :label-width="4"
-          >
-            <q-slider v-model="rowHeight" :min="50" :max="200" label-always :label-value="`${rowHeight}px` "/>
-          </q-field>
-
-          <q-field
-            icon="content_paste"
-            label="Tamanho"
-            :label-width="4"
-          >
-            <div class="row no-wrap items-center">
-              <div class="col-auto" style="margin-top: 10px">
-                <q-select
-                  v-model="bodyHeightProp"
-                  float-label="Style"
-                  :options="[
-                    {label: 'Auto', value: 'auto'},
-                    {label: 'Altura', value: 'height'},
-                    {label: 'Altura Min', value: 'minHeight'},
-                    {label: 'Altura Max', value: 'maxHeight'}
-                  ]"
-                />
-              </div>
-              <q-slider class="col" v-model="bodyHeight" :min="100" :max="700" label-always :disable="bodyHeightProp === 'auto'" :label-value="`${bodyHeight}px`" />
-            </div>
-          </q-field>
+            <q-data-table
+              :data="itens"
+              :config="config2"
+              :columns="colunas2"
+              style="background-color:white;"
+            >
+            </q-data-table>
+          
         </q-collapsible>
         
         <br><br><br><br>
@@ -193,6 +186,12 @@
 import { Loading, Toast, clone } from 'quasar'
 import axios from 'axios'
     
+function numberToReal(numero) {
+  numero = numero.toFixed(2).split('.');
+  numero[0] = "R$ " + numero[0].split(/(?=(?:...)*$)/).join('.');
+  return numero.join(',');
+}
+    
 const API = localStorage.getItem('wsAtual')
   
 //debug
@@ -202,76 +201,22 @@ export default {
   data () {
       return {
           canGoBack: window.history.length > 1,
-          movs: [ //obter essa lista na requisição: vendascab/obterVendasCabOP
-            {
-                label:'venda finalizada',
-                value:'venda finalizada'
-            },
-            {
-                label:'saida manual',
-                value:'saida manual'
-            },
-            {
-                label:'orçamento',
-                value:'orçamento'
-            },
-            {
-                label:'venda em andamento',
-                value:'venda em andamento'
-            },
-            {
-                label:'venda cancelada',
-                value:'venda cancelada'
-            },
-            {
-                label:'Entrada manual',
-                value:'Entrada manual'
-            },
-            {
-                label:'NF entrada',
-                value:'NF entrada'
-            },
-            {
-                label:'devolução de mercadoria',
-                value:'devolução de mercadoria'
-            },
-            {
-                label:'pedido mobile',
-                value:'pedido mobile'
-            },
-            {
-                label:'lançamento de produção',
-                value:'lançamento de produção'
-            },
-            {
-                label:'remessa garantia',
-                value:'remessa garantia'
-            },
-            {
-                label:'inutilização da nota',
-                value:'inutilização da nota'
-            },
-            {
-                label:'nota denegada',
-                value:'nota denegada'
-            }     
-          ],
-          notas: [],
+          tipoMovs: [],
+          relMovs: [],
           clientes: [],
-          categorias: [],
+          pedidos: [],
           itens: [],
+          itensCollap: false,
           Produtos: [], 
-          vendedores: [],
           dataInicial: '',
           dataFinal: '',
-          tipoMov: '',
+          tipoMov: 1,
           tipoSai: '',
           cliente: '',
-          vendedor: '',
           produto: '',
           codTipo: '',
           composicao: '',
-          opened: true,
+          filtroColap: true,
           text: '',
           config: {
             title: '',
@@ -284,9 +229,10 @@ export default {
             rowHeight: localStorage.getItem('rowHeight') + 'px',
             responsive: (localStorage.getItem('responsive') === 'true'),
             pagination: {
-              rowsPerPage: 15,
+              rowsPerPage: 5,
               options: [5, 10, 15, 30, 50, 100]
             },
+            selection: 'single',
             messages: {
               noData: '<i class="material-icons">warning</i> Não há dados para exibir.',
               noDataAfterFiltering: '<i class="material-icons">warning</i> Sem resultados. Por favor, redefina suas buscas.'
@@ -307,79 +253,171 @@ export default {
           },
           colunas: [
             {
-              label: 'Código',
-              field: 'codEmpresa',
+              label: 'N. Nota',
+              field: 'numeroCupom',
               filter: true,
               sort: true,
-              type: 'string',
-              width: '60px'
-            },
-            {
-              label: 'Cód. Barras',
-              field: 'codBarra',
-              sort: true,
-              filter: true,
               type: 'number',
               width: '100px'
             },
             {
-              label: 'Nome',
-              field: 'produto',
-              width: '150px',
+              label: 'Total Custo',
+              field: 'totalCusto',
               sort: true,
               filter: true,
-              type: 'string',
-              /* sort (a, b) {
-                return (new Date(a)) - (new Date(b))
-              },
+              type: 'number',
+              width: '80px',
               format (value) {
-                return new Date(value).toLocaleString()
-              }*/
+                let x = numberToReal(value);
+                return x
+              }
+            },
+            {
+              label: 'Total Venda',
+              field: 'totalVenda',
+              sort: true,
+              filter: true,
+              type: 'number',
+              width: '80px',
+              format (value) {
+                let x = numberToReal(value);
+                return x
+              }
             },
             {
               label: 'Qtd.',
-              field: 'qtd',
+              field: 'totalQtde',
               sort: true,
               filter: true,
               type: 'number',
-              width: '80px'
+              width: '60px'
             },
             {
-              label: 'Preço',
-              field: 'valorVenda',
+              label: 'Total',
+              field: 'total',
               filter: true,
               sort: true,
               type: 'number',
               width: '80px',
               format (value) {
-                function numberToReal(numero) {
-                    numero = numero.toFixed(2).split('.');
-                    numero[0] = "R$ " + numero[0].split(/(?=(?:...)*$)/).join('.');
-                    return numero.join(',');
-                }
+                let x = numberToReal(value);
+                return x
+              }
+            },
+            
+            
+            
+          ],
+          config2: {
+            title: '',
+            refresh: (localStorage.getItem('refresh') === 'true'),
+            noHeader: (localStorage.getItem('noHeader') === 'true'),
+            columnPicker: (localStorage.getItem('columnPicker') === 'true'),
+            bodyStyle: {
+              maxHeight: '500px'
+            },
+            rowHeight: localStorage.getItem('rowHeight') + 'px',
+            responsive: (localStorage.getItem('responsive') === 'true'),
+            pagination: {
+              rowsPerPage: 5,
+              options: [5, 10, 15, 30, 50, 100]
+            },
+            messages: {
+              noData: '<i class="material-icons">warning</i> Não há dados para exibir.',
+              noDataAfterFiltering: '<i class="material-icons">warning</i> Sem resultados. Por favor, redefina suas buscas.'
+            },
+            // (optional) Override default labels. Useful for I18n.
+            labels: {
+              columns: 'Colunas',
+              allCols: 'Todas',
+              rows: 'Linhas',
+              selected: {
+                singular: 'item selecionado.',
+                plural: 'itens selecionados.'
+              },
+              clear: 'limpar seleção',
+              search: 'Buscar',
+              all: 'Todos'
+            }
+          },
+          colunas2: [
+            {
+              label: 'Codigo',
+              field: 'codigoProduto',
+              filter: true,
+              sort: true,
+              type: 'number',
+              width: '90px'
+            },
+            {
+              label: 'Cod Barras',
+              field: 'codBarra',
+              filter: true,
+              sort: true,
+              type: 'number',
+              width: '90px'
+            },
+            {
+              label: 'Produto',
+              field: 'nomeProduto',
+              filter: true,
+              sort: true,
+              type: 'string',
+              width: '100px'
+            },
+            {
+              label: 'Custo',
+              field: 'custo',
+              sort: true,
+              filter: true,
+              type: 'number',
+              width: '80px',
+              format (value) {
                 let x = numberToReal(value);
                 return x
               }
             },
             {
-              label: 'total',
+              label: 'Valor',
+              field: 'venda',
+              sort: true,
+              filter: true,
+              type: 'number',
+              width: '80px',
+              format (value) {
+                let x = numberToReal(value);
+                return x
+              }
+            },
+            {
+              label: 'Qtd.',
+              field: 'totalQtde',
+              sort: true,
+              filter: true,
+              type: 'number',
+              width: '60px'
+            },
+            {
+              label: 'Total',
               field: 'totalItem',
-              filter: true,
               sort: true,
+              filter: true,
               type: 'number',
               width: '80px',
               format (value) {
-                function numberToReal(numero) {
-                    numero = numero.toFixed(2).split('.');
-                    numero[0] = "R$ " + numero[0].split(/(?=(?:...)*$)/).join('.');
-                    return numero.join(',');
-                }
                 let x = numberToReal(value);
                 return x
               }
             },
-            
-            
+            {
+              label: 'nota.',
+              field: 'numeroCupom',
+              sort: true,
+              filter: true,
+              type: 'number',
+              width: '60px'
+            },
+              
           ],
           pagination: (localStorage.getItem('pagination') === 'true'),
           rowHeight: parseInt(localStorage.getItem('rowHeight')),
@@ -405,27 +443,39 @@ export default {
           //console.log(lista)
           return lista
       },
+      listaMovs(){
+          let a = this.tipoMovs
+          let lista = []
+          
+          lista = a.map(row => ({
+              label: row.nome, 
+              value: row.codigo
+          }))
+          
+          //console.log(lista)
+          return lista
+      },
       listaProdutos: function () {
           let a = this.Produtos
           let lista = []
 
-          for (let i=0; i < a.length; i++) {
-              let n = a[i].nome
-              let c = a[i].codigo
-              lista.push({label: n, value: c})    
-          }
+          lista = a.map(row => ({
+              label: row.nome, 
+              value: row.codigo
+          }))
+          
           //console.log(lista)
           return lista
       },
       listaVendedores: function () {
           let a = this.vendedores
           let lista = []
-
-          for (let i=0; i < a.length; i++) {
-              let n = a[i].nome
-              let c = a[i].codigoIdentificacao
-              lista.push({label: n, value: c})    
-          }
+          
+          lista = a.map(row => ({
+              label: row.nome, 
+              value: row.codigoIdentificacao
+          }))
+          
           //console.log(lista)
           return lista
     
@@ -458,6 +508,18 @@ export default {
           this.config.bodyStyle = style
       }
   },
+  filters:{
+      formatPerc: function (value) {
+        if(!value){return '0,00 %'}
+            function numberToReal(numero) {
+                numero = numero.toFixed(2).split('.');
+                numero[0] = numero[0].split(/(?=(?:...)*$)/).join('.');
+                return numero.join(',') + ' %';
+            }
+            let x = numberToReal(value);
+            return x
+      }
+  },
   methods:{
       goBack(){
         window.history.go(-1)
@@ -468,35 +530,46 @@ export default {
             return
         }
         
+        let tipoSai = ''
+        if(this.tipoSai !== ''){
+            tipoSai = '&tipoSaida=' + this.tipoSai
+        }
+        let c = ''
+        if(this.cliente !== ''){
+            c = '&codCliente=' + this.cliente
+        }  
+        let p = ''
+        if(this.produto !== ''){
+            p = '&codProduto=' + this.produto
+        }
+        
         Loading.show({message: 'Aguardando Dados...'})
         axios.get(API + 'relatorio/obterRptMovDiversas?' +
                 'dataInicial=' + this.dataInicial +
                 '&dataFinal=' + this.dataFinal + 
-                '&CodTipoMovimentacao=1'
-                /*
-                '&tipoSaida=' + 
-                '&CodTipoMovimentacao= ' + 
-                '&CodCliente= ' + 
-                '&CodProduto= ' +
-                '&numerocupomde=' +
-                '&numerocupomate='
-                */)
+                '&CodTipoMovimentacao=' + this.tipoMov +
+                tipoSai + c + p)
         .then((res)=>{
-        console.log(res.data)
-        //this.notas = res.data
-        Loading.hide()
+            console.log(res.data)
+            this.relMovs = res.data
+            this.pedidos = this.relMovs.pedidos
+            Loading.hide()
         })
         .catch((e)=>{
-        console.log(e.response)
-        Loading.hide()
+            console.log(e.response)
+            Loading.hide()
+            this.filtroColap = true
         })
       },
       listarClientes(){
+          Loading.show({message: 'Aguardando Dados...'})
           axios.get(API + 'pessoa/obterpessoa')
           .then((res)=>{
+            Loading.hide()
             this.clientes = res.data
           })
           .catch((e)=>{
+            Loading.hide()
             console.log(e)
           })
       },
@@ -527,20 +600,47 @@ export default {
             console.log(e)
           })
       },
+      listarMovs(){
+          Loading.show({message: 'Aguardando Dados...'})
+          axios.get(API + 'vendascab/obterVendasCabOP')
+          .then((res)=>{
+            Loading.hide()
+            this.tipoMovs = res.data
+            //console.log(res.data)
+          })
+          .catch((e)=>{
+            Loading.hide()
+            console.log(e)
+          })
+      },
       collapse(){
-        if(this.opened === true){
-            this.opened = false
+        if(this.filtroColap === true){
+            this.filtroColap = false
         }
         else{
-            this.opened = true
+            this.filtroColap = true
         }
-      }
+      },
+      selection (number, rows) {
+          console.log(number)
+          console.log(rows)
+          if(rows.length > 0){
+            this.itens = rows[0].data.itens
+            this.itensCollap = true
+          }
+          else {
+            this.itens = []
+            this.itensCollap = false
+          }
+          
+      },
   },
   created(){
       let t = this
       t.listarClientes()
       t.listarVendedores()
       t.todosProdutos()
+      t.listarMovs()
   }
 }
 </script>

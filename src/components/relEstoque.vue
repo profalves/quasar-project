@@ -235,7 +235,7 @@ export default {
           vendedores: [],
           dataInicial: '',
           dataFinal: '',
-          agrup: '', // agrp: cat, marca, familia, ordem alfab.
+          agrup: 'Ordem alfabetica', // agrp: cat, marca, familia, ordem alfab.
           familia: '',
           vendedor: '',
           produto: '',
@@ -468,7 +468,7 @@ export default {
             this.estoque = res.data
             this.itens = this.estoque[0].itens
             this.formas = this.estoque[0].formasPgto
-            this.opened = false
+            //this.opened = false
             Loading.hide()
         })
         .catch((e)=>{

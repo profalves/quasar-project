@@ -52,7 +52,7 @@ Vue.use(JsPDF)
 //============= FILTERS============================
 
 Vue.filter('formatMoney', function (value) {
-        if(value === null) {return 'R$ 0,00'}
+        if(!value) {return 'R$ 0,00'}
         function numberToReal(numero) {
             numero = numero.toFixed(2).split('.');
             numero[0] = "R$ " + numero[0].split(/(?=(?:...)*$)/).join('.');

@@ -67,18 +67,19 @@
         
         
         <q-btn color="primary"
-               @click="getMD"
+               @click="getVendas"
                rounded
                style="margin-bottom: 20px"
                >
                Visualizar</q-btn>  
         
       </q-collapsible>
+      
    
     <!--periodo-->
           
         <q-data-table
-          :data="itens"
+          :data="vendas"
           :config="config"
           :columns="colunas"
           style="background-color:white;"
@@ -152,6 +153,12 @@
     
 import { Loading, Toast, clone } from 'quasar'
 import axios from 'axios'
+
+function numberToReal(numero) {
+  numero = numero.toFixed(2).split('.');
+  numero[0] = "R$ " + numero[0].split(/(?=(?:...)*$)/).join('.');
+  return numero.join(',');
+}
     
 const API = localStorage.getItem('wsAtual')
   
@@ -163,22 +170,11 @@ export default {
       return {
           canGoBack: window.history.length > 1,
           vendas: [],
-          clientes: [],
-          categorias: [],
-          itens: [],
-          Produtos: [], 
           vendedores: [],
           dataInicial: '',
           dataFinal: '',
-          tipoMov: '',
-          tipoSai: '',
-          cliente: '',
           vendedor: '',
-          produto: '',
-          codTipo: '',
-          composicao: '',
           opened: true,
-          text: '',
           config: {
             title: '',
             refresh: (localStorage.getItem('refresh') === 'true'),
@@ -213,77 +209,50 @@ export default {
           },
           colunas: [
             {
-              label: 'Código',
-              field: 'codEmpresa',
+              label: 'Vendedor',
+              field: 'vendedor',
               filter: true,
               sort: true,
               type: 'string',
-              width: '60px'
+              width: '120px'
             },
             {
-              label: 'Cód. Barras',
-              field: 'codBarra',
+              label: 'Cliente',
+              field: 'cliente',
+              filter: true,
+              sort: true,
+              type: 'string',
+              width: '200px'
+            },
+            {
+              label: 'qtd. Clientes',
+              field: 'qtdClientes',
               sort: true,
               filter: true,
               type: 'number',
               width: '100px'
             },
             {
-              label: 'Nome',
-              field: 'produto',
+              label: 'qtd. Notas',
+              field: 'qtdNotas',
+              sort: true,
+              filter: true,
+              type: 'number',
+              width: '100px'
+            },
+            {
+              label: 'Total',
+              field: 'totalVenda',
               width: '150px',
               sort: true,
               filter: true,
-              type: 'string',
-              /* sort (a, b) {
-                return (new Date(a)) - (new Date(b))
-              },
-              format (value) {
-                return new Date(value).toLocaleString()
-              }*/
-            },
-            {
-              label: 'Qtd.',
-              field: 'qtd',
-              sort: true,
-              filter: true,
               type: 'number',
-              width: '80px'
-            },
-            {
-              label: 'Preço',
-              field: 'valorVenda',
-              filter: true,
-              sort: true,
-              type: 'number',
-              width: '80px',
               format (value) {
-                function numberToReal(numero) {
-                    numero = numero.toFixed(2).split('.');
-                    numero[0] = "R$ " + numero[0].split(/(?=(?:...)*$)/).join('.');
-                    return numero.join(',');
-                }
                 let x = numberToReal(value);
                 return x
               }
             },
-            {
-              label: 'total',
-              field: 'totalItem',
-              filter: true,
-              sort: true,
-              type: 'number',
-              width: '80px',
-              format (value) {
-                function numberToReal(numero) {
-                    numero = numero.toFixed(2).split('.');
-                    numero[0] = "R$ " + numero[0].split(/(?=(?:...)*$)/).join('.');
-                    return numero.join(',');
-                }
-                let x = numberToReal(value);
-                return x
-              }
-            },
+            
             
             
           ],
@@ -343,7 +312,7 @@ export default {
       goBack(){
         window.history.go(-1)
       },
-      getMD(){
+      getVendas(){
         if(this.dataInicial === ''){
             Toast.create.negative('Selecione um período antes')
             return
@@ -359,38 +328,15 @@ export default {
                 'dataInicial=' + this.dataInicial +
                 '&dataFinal=' + this.dataFinal + v)
         .then((res)=>{
-        console.log(res.data)
             console.log(res.data)
             this.vendas = res.data
+            //this.opened = false
             Loading.hide()
         })
         .catch((e)=>{
             console.log(e.response)
             Loading.hide()
         })
-      },
-      listarClientes(){
-          axios.get(API + 'pessoa/obterpessoa')
-          .then((res)=>{
-            this.clientes = res.data
-          })
-          .catch((e)=>{
-            console.log(e)
-          })
-      },
-      todosProdutos(){
-          Loading.show({message: 'Aguardando Dados...'})
-          axios.get(API + 'produto/obterproduto')
-          .then((res)=>{
-              Loading.hide()
-              //console.log(res.data)
-              this.Produtos = res.data 
-          })
-          .catch((e)=>{
-            Loading.hide()
-            console.log(e.response)
-          })
-          
       },
       listarVendedores(){
           Loading.show({message: 'Aguardando Dados...'})
@@ -416,9 +362,7 @@ export default {
   },
   created(){
       let t = this
-      t.listarClientes()
       t.listarVendedores()
-      t.todosProdutos()
   }
 }
 </script>

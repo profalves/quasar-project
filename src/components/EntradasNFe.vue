@@ -84,9 +84,7 @@
           @refresh="refresh"
           style="background-color:white;"
         ></q-data-table>
-        
-
-
+    
     </q-collapsible>
     <br><br><br>
     
@@ -214,14 +212,6 @@ export default {
         },
       ],
       colunas2: [
-        {
-          label: 'Codigo',
-          field: 'codigoDet',
-          width: '85px',
-          sort: true,
-          filter: true,
-          type: 'number',
-        },
         {
           label: 'CodBarras',
           field: 'codBarra',
