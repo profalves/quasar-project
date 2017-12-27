@@ -74,6 +74,16 @@
       
    
     <!--periodo-->
+        <center>
+           <h5>{{totalizadores.vendedor}}</h5>
+           
+           <strong>Qtd. Notas:</strong> {{totalizadores.qtdNotas}}<br> 
+           <strong>Qtd. Clientes:</strong> {{totalizadores.qtdClientes}}<br>
+           <strong>Total Vendas:</strong> {{totalizadores.totalVenda | formatMoney}}<br>
+           <strong>Comissão:</strong> {{totalizadores.comissaoVendedor | formatMoney}}<br>
+        </center>
+        <br> 
+        
           
         <q-data-table
           :data="vendas"
@@ -167,6 +177,7 @@ export default {
       return {
           canGoBack: window.history.length > 1,
           vendas: [],
+          totalizadores: '',
           vendedores: [],
           dataInicial: '',
           dataFinal: '',
@@ -265,7 +276,7 @@ export default {
       }
   },
   computed: {
-      listaVendedores: function () {
+      listaVendedores(){
           let a = this.vendedores
           let lista = []
           
@@ -325,8 +336,9 @@ export default {
                 'dataInicial=' + this.dataInicial +
                 '&dataFinal=' + this.dataFinal + v)
         .then((res)=>{
-            console.log(res.data)
+            //console.log(res.data)
             this.vendas = res.data
+            this.totalizadores = this.vendas.shift()
             this.opened = false
             Loading.hide()
         })

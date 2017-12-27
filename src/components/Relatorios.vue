@@ -77,7 +77,7 @@
     </div>    
     
     <div class="col">
-        <router-link to="/relatorios">
+        <router-link to="/relFormas">
             <q-card color="warning" class="col-sm-6">
               <q-card-title></q-card-title>
               <q-card-main>

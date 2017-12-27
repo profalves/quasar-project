@@ -4,9 +4,9 @@
           <q-toolbar-title>
               Contas
           </q-toolbar-title>
-        </div> 
+        </div><br>
         <q-list style="background-color:white">
-          <!--<div class="row datas">
+          <div class="row datas">
            <div class="col" >
             <q-datetime v-model="dataInicial"
                         type="date" 
@@ -32,12 +32,12 @@
                         cancel-label="Cancelar"
                         :day-names="dias"
                         :month-names="meses"
-                        @change=""
+                        @change="getContas"
             />  
 
            </div>
 
-          </div>-->
+          </div>
           <q-collapsible label="Exibir gráfico" @open="montarGrafico">
             <div>
               <div class="layout-view">
@@ -85,6 +85,8 @@ const API = localStorage.getItem('wsAtual')
         recPagar: [],
         recPagas: [],
         visivel: false,
+        dataInicial: '',
+        dataFinal: '',
           
         //datatime
         dias: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
@@ -117,7 +119,7 @@ const API = localStorage.getItem('wsAtual')
     computed:{
         somaDespPagar(value){
           if(this.despPagar.length === 0){ return 0 }
-          let a = this.despPagar
+          let a = this.despPagar.filter(d => d.vencimento >= this.dataInicial && d.vencimento <= this.dataFinal)
           let lista = []
           
           lista = a.map(row => row.valorTitulo)
@@ -128,8 +130,8 @@ const API = localStorage.getItem('wsAtual')
           return value
         },
         somaDespPagas(value){
-          if(this.despPagar.length === 0){ return 0 }
-          let a = this.despPagas
+          if(this.despPagas.length === 0){ return 0 }
+          let a = this.despPagas.filter(d => d.vencimento >= this.dataInicial && d.vencimento <= this.dataFinal)
           let lista = []
           
           lista = a.map(row => row.valorPago)
@@ -140,8 +142,8 @@ const API = localStorage.getItem('wsAtual')
           return value
         },
         somaRecPagar(value){
-          if(this.despPagar.length === 0){ return 0 }
-          let a = this.recPagar
+          if(this.recPagar.length === 0){ return 0 }
+          let a = this.recPagar.filter(d => d.vencimento >= this.dataInicial && d.vencimento <= this.dataFinal)
           let lista = []
           
           lista = a.map(row => row.valorTitulo)
@@ -152,8 +154,8 @@ const API = localStorage.getItem('wsAtual')
           return value
         },
         somaRecPagas(value){
-          if(this.despPagar.length === 0){ return 0 }
-          let a = this.recPagas
+          if(this.recPagas.length === 0){ return 0 }
+          let a = this.recPagas.filter(d => d.vencimento >= this.dataInicial && d.vencimento <= this.dataFinal)
           let lista = []
           
           lista = a.map(row => row.valorPago)
@@ -176,7 +178,7 @@ const API = localStorage.getItem('wsAtual')
           Loading.show({message: 'Aguardando Dados...'})
           axios.get(API + 'conta/obterContas?tipo=CP&pagas=false')
           .then((res)=>{
-              console.log(res)
+              //console.log(res)
               this.despPagar = res.data
               Loading.hide()
           })
@@ -189,7 +191,7 @@ const API = localStorage.getItem('wsAtual')
           Loading.show({message: 'Aguardando Dados...'})
           axios.get(API + 'conta/obterContas?tipo=CP&pagas=true')
           .then((res)=>{
-              console.log(res)
+              //console.log(res)
               this.despPagas = res.data
               Loading.hide()
           })
@@ -202,7 +204,7 @@ const API = localStorage.getItem('wsAtual')
           Loading.show({message: 'Aguardando Dados...'})
           axios.get(API + 'conta/obterContas?tipo=CR&pagas=false')
           .then((res)=>{
-              console.log(res)
+              //console.log(res)
               this.recPagar = res.data
               Loading.hide()
           })
@@ -215,7 +217,7 @@ const API = localStorage.getItem('wsAtual')
           Loading.show({message: 'Aguardando Dados...'})
           axios.get(API + 'conta/obterContas?tipo=CR&pagas=true')
           .then((res)=>{
-              console.log(res)
+              //console.log(res)
               this.recPagas = res.data
               Loading.hide()
           })
@@ -228,20 +230,19 @@ const API = localStorage.getItem('wsAtual')
             let a = this.data.datasets[0].data
             let b = this.data.datasets[1].data
             
-            
-            a.push(this.despesas)
-            
-            b.push(this.receitas)
+            a.push(this.despesas.toFixed(2))
+            b.push(this.receitas.toFixed(2))
             
             this.visivel = true
+        },
+        getContas(){
+            let t = this
+            t.listarDespesasAPagar()
+            t.listarDespesasPagas()
+            t.listarReceitasAPagar()
+            t.listarReceitasPagas()
+            t.visivel = true
         }
-    },
-    mounted(){
-        let t = this
-        t.listarDespesasAPagar()
-        t.listarDespesasPagas()
-        t.listarReceitasAPagar()
-        t.listarReceitasPagas()
     }
   }
 </script>
