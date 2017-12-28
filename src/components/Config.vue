@@ -22,8 +22,8 @@
       <div class="row">
         <div class="col-xl-6">
           <q-list inset-separator style="background-color: white; margin-bottom: 40px;">
-            <!-- GERAIS -->
-            <q-collapsible icon="settings" label="Configuações Gerais" sublabel="Configurações essenciais do sistema">
+            <!-- GRAFICOS -->
+            <q-collapsible icon="settings" label="Configuações de Gráficos" sublabel="Configurações de exibição de gráficos no sistema">
               <div>
                <q-field label="Tipo de Gráfico a Exibir">
                 <q-select
@@ -57,10 +57,7 @@
                     Altura
                  </p>
                  <q-slider :label-value="`${height}px`" v-model="height" :min="10" :max="600" :step="10" label-always color="teal" @change="alterarTamGrafico" />
-
-
-                <q-collapsible icon="mail" label="Tabela de Preços" sublabel="Cadastrar, Editar e Excluir">
-                </q-collapsible>
+                 
               </div>
             </q-collapsible>
             <!-- LISTAS -->
@@ -257,7 +254,7 @@
 
 <script>
 import { Dialog, Toast } from 'quasar'
-//import { mapState } from 'vuex'
+
 export default {
   data () {
     return {

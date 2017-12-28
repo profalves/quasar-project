@@ -339,7 +339,7 @@
                 Adicionar item
             </q-btn>
         </div>
-        <div class="col col-md-3">
+        <!--<div class="col col-md-3">
             <q-btn
                 color="secondary"
                 push
@@ -349,7 +349,7 @@
             >
                 Enviar item
             </q-btn>
-        </div>  
+        </div> -->
         <br>
         <!--Data tables HTML-->
         <div class="row" id="table">

@@ -10,58 +10,77 @@
         <q-list-header>Menu</q-list-header>
         <q-item>
           <q-item-side icon="flag" />
-          <q-side-link to="/">
+          <q-side-link to="/" class="link">
               Inicio
           </q-side-link>
         </q-item>
         <q-item>
           <q-item-side icon="people" />
-          <q-side-link to="/clientes">
+          <q-side-link to="/clientes" class="link">
               <q-item-main label="Pessoas" sublabel="Cadastros de clientes, fornecedores, etc." />
           </q-side-link>
         </q-item>
-        <q-item>
-          <q-item-side icon="assignment_turned_in" />
-          <q-side-link to="/produtos">
-               <q-item-main label="Produtos" sublabel="Cadastros de Produtos" />
+        <q-collapsible icon="assignment_turned_in" label="Produtos" sublabel="Opções de Produtos">
+          <q-list highlight no-border>
+            <q-item>
+            
+                <q-item-side />
+                <q-item-main>
+                  <q-item-tile label>John Doe</q-item-tile>
+                  <q-item-tile sublabel>Quasar enthusiast</q-item-tile>
+                </q-item-main>
+                <q-item-side right>
+                  <q-item-tile icon="chat_bubble" color="green" />
+                </q-item-side>
+            </q-item>
+          </q-list>
+          <q-side-link to="/produtos" >
+             <q-item-main label="Cadastro de Produtos" />
           </q-side-link>
-        </q-item>
+          <q-side-link to="/transFiliais" >
+             <q-item-main label="Transferencias" />
+          </q-side-link>
+          <q-side-link to="/" >
+             <q-item-main label="Tabelas de Peços" />
+          </q-side-link>
+        </q-collapsible>
+        
         <q-item>
-          <q-item-side icon="account_balance_wallet" />
-          <q-side-link to="/contas">
+          <q-item-side icon="account_balance_wallet"/>
+          <q-side-link to="/contas" class="link">
                <q-item-main label="Contas" sublabel="Cadastros Financeiros" />
           </q-side-link>
           
         </q-item>
         <q-item>
           <q-item-side icon="insert_drive_file" />
-          <q-side-link to="/cadnotas?q=save">
+          <q-side-link to="/cadnotas?q=save" class="link">
                <q-item-main label="Entradas de Notas" sublabel="Cadastros de NFe de Compras" />
           </q-side-link>
         </q-item>
         <q-item>
           <q-item-side icon="insert_chart" />
-          <q-side-link to="/relatorios">
+          <q-side-link to="/relatorios" class="link">
                 <q-item-main label="Relatórios" sublabel="Relatórios Gerais" />
           </q-side-link>
         </q-item>
         <q-item>
           <q-item-side icon="person" />
-          <q-side-link to="/usuarios">
+          <q-side-link to="/usuarios" class="link">
                 <q-item-main label="Usuários" sublabel="Cadastros de Usuários, Alteração de Senhas, etc." />
           </q-side-link>
           
         </q-item>
         <q-item>
           <q-item-side icon="settings" />
-          <q-side-link to="/config">
+          <q-side-link to="/config" class="link">
                 <q-item-main label="Configurações" sublabel="Configurações Gerais" />
           </q-side-link>
           
         </q-item>
         <q-item>
           <q-item-side icon="exit_to_app" />
-          <q-side-link to="/login">
+          <q-side-link to="/login" class="link">
                 <q-item-main label="Sair" />
           </q-side-link>
         </q-item>  
@@ -107,3 +126,8 @@ export default {
   }
 }
 </script>
+<style scoped>
+    .link{
+        margin-left: 10px
+    }
+</style>
