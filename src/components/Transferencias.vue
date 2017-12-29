@@ -66,7 +66,10 @@
     
     <div class="row">
         <div class="col col-xl-4">
-            <q-input v-model="qtd" type=number float-label="Quantidade" />    
+            <q-input v-model="qtd" 
+                     type=number 
+                     float-label="Quantidade"
+                     @keyup.enter="alertAdd" />    
         </div>    
         <div class="col button">
             <q-btn color="blue-9" @click="alertAdd">Adicionar Produto</q-btn>    
@@ -91,7 +94,7 @@
                 <tr v-for="item in transferencias">
                   <td class="text-left">{{item.nome}}</td>
                   <td class="text-right">{{item.qtd}}</td>
-                  <td class="text-center"><i class="material-icons text-negative iconSize" @click="excluirProduto(index)">delete</i></td>
+                  <td class="text-center"><i class="material-icons text-negative icon" @click="excluirProduto(index)">delete_forever</i></td>
                 </tr>
               </tbody>
             </table>  
@@ -125,14 +128,8 @@
 </template>
 
 <script>
-import { Loading, Toast } from 'quasar'
+import { Loading, Toast, Dialog } from 'quasar'
 import axios from 'axios'
-
-/*function numberToReal(numero) {
-  numero = numero.toFixed(2).split('.');
-  numero[0] = "R$ " + numero[0].split(/(?=(?:...)*$)/).join('.');
-  return numero.join(',');
-}*/
     
 const API = localStorage.getItem('wsAtual')
   
@@ -229,7 +226,6 @@ export default {
             nome: localStorage.getItem('Empresa'+this.dest),
             codigo: this.dest
         }
-        
       }
       else{
         this.$router.push('/')
@@ -306,6 +302,7 @@ export default {
                 label: 'Continuar',
                 handler:() => {
                   this.addProduto()
+                  this.limpar()
                 },
                 color: 'yellow'
               }
@@ -323,6 +320,7 @@ export default {
                 label: 'Continuar',
                 handler:() => {
                   this.addProduto()
+                  this.limpar()
                 },
                 color: 'yellow'
               }
@@ -330,43 +328,46 @@ export default {
             return
         }
         
-        for(let i=0; i < this.transferencias.length; i++){
-            if(this.produto.codigo === this.transferencias[i].codigo){
-                Toast.create({
-                  html: 'Você está prestes a adicionar um produto que já consta na lista, deseja somar a sua quantidade?',
-                  icon: 'error',
-                  timeout: 10000,
-                  //color: '#f8c1c1',
-                  //bgColor: 'white',
-                  button: {
-                    label: 'Continuar',
-                    handler:() => {
-                      let s = this.transferencias[i].qtd + this.qtd
-                      this.transferencias[i].qtd = s
-                      this.limpar()
-                      return
-                    },
-                    color: 'yellow'
-                  }
-                })
-                return
-            }   
-        }
-        
         this.addProduto()
+        this.limpar()
     },
     addProduto(){
+        let qtd = this.qtd //armazenar antes de limpar os campos
+        for(let i=0; i < this.transferencias.length; i++){ //verificar duplicidade
+            if(this.produto.codigo === this.transferencias[i].codigo){
+                Dialog.create({
+                  title: 'Você está prestes a adicionar um produto que já consta na lista, deseja somar a sua quantidade?',
+                  icon: 'error',
+                  timeout: 10000,
+                  buttons: [
+                      {
+                        label: 'Cancelar',
+                        color: 'negative'
+                      },
+                      {
+                        label: 'Continuar',
+                        handler:() => {
+                          let s = this.transferencias[i].qtd + qtd
+                          this.transferencias[i].qtd = s
+                          this.limpar()
+                        },
+                        color: 'positive'
+                      }
+                    
+                  ]
+                })
+                return
+            }  
+        }
         this.transferencias.push({
             codigo: this.produto.codigo,
             nome: this.produto.nome,
             qtd: this.qtd
         })
-        this.limpar()
-        
     },
     limpar(){
         this.search = ''
-        this.produto.nome = 'Próximo Produto'
+        this.produto.nome = 'Próximo Produto...'
         this.produto.qtd = ''
         this.produto.codigo = ''
         this.qtd = 1
@@ -391,7 +392,8 @@ export default {
     .button {
         margin: 15px 0 0 20px;
     }
-    .iconSize{
+    .icon{
+        cursor: pointer;
         font-size: 25px;
     }
 </style>

@@ -23,26 +23,21 @@
         <q-collapsible icon="assignment_turned_in" label="Produtos" sublabel="Opções de Produtos">
           <q-list highlight no-border>
             <q-item>
-            
-                <q-item-side />
-                <q-item-main>
-                  <q-item-tile label>John Doe</q-item-tile>
-                  <q-item-tile sublabel>Quasar enthusiast</q-item-tile>
-                </q-item-main>
-                <q-item-side right>
-                  <q-item-tile icon="chat_bubble" color="green" />
-                </q-item-side>
+              <q-side-link to="/produtos">
+                <q-item-main label="Lista de Produtos" sublabel="Listagem e Cadastro de Produtos" />
+              </q-side-link>
             </q-item>
-          </q-list>
-          <q-side-link to="/produtos" >
-             <q-item-main label="Cadastro de Produtos" />
-          </q-side-link>
-          <q-side-link to="/transFiliais" >
-             <q-item-main label="Transferencias" />
-          </q-side-link>
-          <q-side-link to="/" >
-             <q-item-main label="Tabelas de Peços" />
-          </q-side-link>
+            <q-item>
+              <q-side-link to="/transFiliais" >
+                <q-item-main label="Transferencias" sublabel="Transferencias entre filiais" />
+              </q-side-link>
+            </q-item>
+            <q-item>
+              <q-side-link to="/tabprecos" >
+                <q-item-main label="Tabelas de Peços" sublabel="Cadastrar tabelas de Preços" />
+              </q-side-link>   
+            </q-item>
+          </q-list>  
         </q-collapsible>
         
         <q-item>

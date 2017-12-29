@@ -28,6 +28,7 @@ export default new VueRouter({
     { path: '/cadcliente', component: load('cadCliente') },
     { path: '/produtos', component: load('Produtos') },
     { path: '/transFiliais', component: load('Transferencias') },
+    { path: '/tabprecos', component: load('TabelaPreco') },
     { path: '/cadproduto', component: load('cadProduto') },
     { path: '/contas', component: load('Contas') },
     { path: '/cadcontas', component: load('cadContas') },
