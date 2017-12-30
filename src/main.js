@@ -63,7 +63,7 @@ Vue.filter('formatMoney', function (value) {
 })
 
 Vue.filter('formatPerc', function (value) {
-    if(!value) {return 'R$ 0,00'}
+    if(!value) {return '0,00 %'}
     function numberToReal(numero) {
         numero = numero.toFixed(2).split('.');
         numero[0] = numero[0].split(/(?=(?:...)*$)/).join('.');

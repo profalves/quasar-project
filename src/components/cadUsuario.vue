@@ -289,14 +289,11 @@ export default {
       var a = this.pessoas
       var lista = []
       
-      for (let i=0; i < a.length; i++) {
-          if(a[i].codTipo === 4){
-              let n = a[i].nome
-              let c = a[i].codigo
-              lista.push({label: n, value: c})  
-          }  
-      }
-      //console.log(lista)
+      lista = a.map(row => ({
+          label: row.nome, 
+          value: row.codigo
+      }))
+      
       return lista
     
     }  

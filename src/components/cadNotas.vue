@@ -1172,14 +1172,11 @@ export default {
       let a = this.pessoas
       let lista = []
       
-      for (let i=0; i < a.length; i++) {
-          if(a[i].codTipo === 2){
-              let n = a[i].nome
-              let c = a[i].codigo
-              lista.push({label: n, value: c})  
-          }  
-      }
-      //console.log(lista)
+      lista = a.map(row => ({
+          label: row.nome, 
+          value: row.codigo
+      }))
+      
       return lista
     
     }, 
@@ -1187,14 +1184,11 @@ export default {
       let a = this.pessoas
       let lista = []
       
-      for (let i=0; i < a.length; i++) {
-          //if(a[i].codigo === 1){
-          let n = a[i].nome
-          let c = a[i].codigo
-          lista.push({label: n, value: c})  
-          //}  
-      }
-      //console.log(lista)
+      lista = a.map(row => ({
+          label: row.nome, 
+          value: row.codigo
+      }))
+      
       return lista
     
     },
@@ -1202,36 +1196,33 @@ export default {
       var a = this.produtos
       var lista = []
       
-      for (let i=0; i < a.length; i++) {
-          let n = a[i].nome
-          let c = a[i].codigo
-          lista.push({label: n, value: c})    
-      }
-      //console.log(lista)
+      lista = a.map(row => ({
+          label: row.nome, 
+          value: row.codigo
+      }))
+      
       return lista
     },
     listaMedidas: function () {
       var a = this.unidades
       var lista = []
       
-      for (let i=0; i < a.length; i++) {
-          let n = a[i].significado
-          let c = a[i].nome
-          lista.push({label: n, value: c})    
-      }
-      //console.log(lista)
+      lista = a.map(row => ({
+          label: row.nome, 
+          value: row.codigo
+      }))
+      
       return lista
     },
     listaCategorias: function () {
       var a = this.cat
       var lista = []
       
-      for (let i=0; i < a.length; i++) {
-          let n = a[i].nome
-          let c = a[i].codigo
-          lista.push({label: n, value: c})   
-      }
-      //console.log(lista)
+      lista = a.map(row => ({
+          label: row.nome, 
+          value: row.codigo
+      }))
+      
       return lista
     
     }, 
@@ -1239,12 +1230,11 @@ export default {
       var a = this.sub
       var lista = []
       
-      for (let i=0; i < a.length; i++) {
-          let n = a[i].nome
-          let c = a[i].codigo
-          lista.push({label: n, value: c}) 
-      }
-      //console.log(lista)
+      lista = a.map(row => ({
+          label: row.nome, 
+          value: row.codigo
+      }))
+      
       return lista
     
     }, 
@@ -1252,12 +1242,11 @@ export default {
       var a = this.formas
       var lista = []
       
-      for (let i=0; i < a.length; i++) {
-          let n = a[i].nome
-          let c = a[i].codigo
-          lista.push({label: n, value: c}) 
-      }
-      //console.log(lista)
+      lista = a.map(row => ({
+          label: row.nome, 
+          value: row.codigo
+      }))
+      
       return lista
     
     },
@@ -1265,12 +1254,9 @@ export default {
       if(this.CadNotas.det.length === 0){ return 0 }
       let a = this.CadNotas.det
       let lista = []
-
-      for (let i=0; i < a.length; i++) {
-          let n = a[i].totalItem
-          lista.push(n)
-      }
-       
+      
+      lista = a.map(row => row.totalItem )
+      
       value = lista.reduce(function(a, b) {
         return a + b;
       });
@@ -1282,11 +1268,8 @@ export default {
       
       let a = this.titulos
       let lista = []
-
-      for (let i=0; i < a.length; i++) {
-          let n = a[i].valorTitulo
-          lista.push(n)
-      }
+      
+      lista = a.map(row => row.valorTitulo )
        
       value = lista.reduce(function(a, b) {
         return a + b;

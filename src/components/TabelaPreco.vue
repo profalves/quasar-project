@@ -1,6 +1,6 @@
 <template>
   <div>
-     
+      <q-window-resize-observable @resize="onResize" />
       <q-fixed-position class="fixo" corner="bottom-left" :offset="[18, 18]">
         <q-btn 
            round
@@ -26,7 +26,12 @@
                   <q-field
                     icon="assignment"
                   >
-                    <q-input v-model.trim="empresa" float-label="Nome da Tabela" clearable />
+                    <q-input v-model="nome" 
+                             float-label="Nome da Tabela" 
+                             clearable
+                             @input="$v.nome.$touch()"
+                             :error="$v.nome.$error" />
+                    <span style="color:#DB2828; font-weight: bold" v-if="$v.$error">O Campo Nome é requerido</span>
                   </q-field>   
                 </div>
               </div>
@@ -36,7 +41,7 @@
                     icon="show_chart"
                     helper="Margem de Lucro"
                   >
-                    <money v-model="ip"
+                    <money v-model="ml"
                            v-bind="perc"
                            class="mdInput"
                     />
@@ -47,7 +52,7 @@
                     icon="multiline_chart"
                     helper="Margem de Lucro Minima"
                   >
-                    <money v-model="ip"
+                    <money v-model="mlMin"
                            v-bind="money"
                            class="mdInput"
                     />
@@ -60,23 +65,31 @@
                     icon="monetization_on"
                     helper="Desconto Máximo"
                   >
-                    <money v-model="ip"
+                    <money v-model="descMax"
                            v-bind="perc"
                            class="mdInput"
                     />
                   </q-field>   
                 </div> 
-                <div class="col btn-plus" style="text-align:center">
+                <div class="col btn-plus">
                     <q-btn 
                        rounded
                        color="primary" 
-                       @click="salvarBanco">
+                       @click="salvarTabela">
                        Adicionar
                     </q-btn>
                 </div>
               </div>
               <br>
-              Tabelas de Preços salvas: <br><br>
+            <strong>Tabelas de Preços salvas:</strong><br><br>
+             
+            <q-checkbox v-model="check"
+                        v-if="visivel"
+                        label="Exibição Vertical"
+                        left-label
+                        class="check"
+                        @change="responsiva" />
+              
 
             <div class="row" id="config">    
                 <table class="q-table" :class="computedClasses" style="width: 100%">
@@ -84,7 +97,7 @@
                     <tr>
                       <th class="text-left">Cód.</th>
                       <th class="text-left">Nome</th>
-                      <th class="text-left">Margem de Lucro</th>
+                      <th class="text-left">Margem Lucro</th>
                       <th class="text-left">ML Min.</th>
                       <th class="text-left">Desconto Máx</th>
                       <th class="text-left">Editar</th>
@@ -92,17 +105,21 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="(item, index) in bancosDados">
-                      <td class="text-left">{{ item.IdBanco }}</td>
-                      <td class="text-left">{{ item.empresa }}</td>
-                      <td class="text-left">{{ item.banco }}</td>
-                      <td class="text-left">{{ item.ip }}</td>
-                      <td class="text-left">{{ item.porta }}</td>
+                    <tr v-for="(item, index) in tabs">
+                      <td class="text-left">{{ item.codigo }}</td>
+                      <td class="text-left">{{ item.nome }}</td>
+                      <td class="text-left">{{ item.ml | formatPerc }}</td>
+                      <td class="text-left">{{ item.mLminima | formatMoney }}</td>
+                      <td class="text-left">{{ item.descontoMax | formatPerc }}</td>
                       <td class="text-center">
                         <a @click="editar(item)" color="info"><i class="material-icons fa-2x" >mode_edit</i></a>   
                       </td>
                       <td class="text-center">
-                        <i class="material-icons fa-2x mHover text-negative" @click="excluir(item, index)" color="negative">delete_forever</i> 
+                        <i class="material-icons fa-2x mHover text-negative" 
+                           @click="excluir(item, index)" 
+                           color="negative"
+                           v-if="item.codigo !== 1 && item.codigo !== 2"
+                           >delete_forever</i> 
                       </td>
                     </tr>
                   </tbody>
@@ -121,6 +138,7 @@
 
 <script>
 import { Dialog, Toast, Loading } from 'quasar'
+import { required } from 'vuelidate/lib/validators'
 import axios from 'axios'
     
 const API = localStorage.getItem('wsAtual')
@@ -134,19 +152,16 @@ export default {
       //btn voltar
       canGoBack: window.history.length > 1,
       tabs: [],
-            
-      // config. Banco de Dados
-      empresa: '',
-      ip: '',
-      porta: '',
-      banco: '',
-      senhaBd: '',
-      bancoID: '',
-      bancosDados: [],
+      nome: '',
+      ml: 0,
+      mlMin: 0,
+      descMax: 0,
+      codigo: '',
       filtro: '',
       indice: '',
       edit: false,
-      bdConfig: false,
+      check: false,
+      visivel: false,
         
       money: {
         decimal: ',',
@@ -174,7 +189,9 @@ export default {
       
     }
   },
-    
+  validations: {
+    nome: { required },
+  },
   computed: {
     computedClasses () {
       let classes = []
@@ -203,68 +220,6 @@ export default {
     goBack(){
       window.history.go(-1)
     },
-    
-    
-    //Listas
-    salvarConfig(){
-        localStorage.setItem('refresh', this.config.refresh)
-        localStorage.setItem('noHeader', this.config.noHeader)
-        localStorage.setItem('columnPicker', this.config.columnPicker)
-        localStorage.setItem('responsive', this.config.responsive)
-        localStorage.setItem('selection', this.config.selection)
-        localStorage.setItem('pagination', this.pagination)
-        localStorage.setItem('rowHeight', this.rowHeight)
-        localStorage.setItem('bodyHeightProp', this.bodyHeightProp)
-        localStorage.setItem('bodyHeight', this.bodyHeight)
-        Toast.create.positive({
-            html: 'Configurações salvas com sucesso',
-            icon: 'done'
-        })    
-    },
-    resetConfig(){
-        this.config.refresh = false
-        this.config.noHeader = false
-        this.config.columnPicker = false
-        this.config.responsive = false
-        this.config.selection = 'multiple'
-        this.pagination = true
-        this.rowHeight = 45
-        this.bodyHeightProp = 'auto'
-        this.bodyHeight = 200
-        
-        this.salvarConfig()
-    
-    },
-    alertReset(){
-        let t = this
-        Dialog.create({
-          title: 'Tem certeza que deseja voltar para as configurações iniciais de listas?',
-          message: 'Depois de confirmado, esta ação não poderá ser revertida...',
-          buttons: [
-            {
-              label: 'Não',
-              color: 'negative',
-              raised: true,
-              style: 'margin-top: 20px',
-              handler () {
-                Toast.create('NÃO RESETADO: As configurações de listas continuam as mesmas')
-              }
-            },
-            {
-              label: 'Sim',
-              color: 'positive',
-              raised: true,
-              style: 'margin-top: 20px',
-              handler () {
-                t.resetConfig()
-                Toast.create('configurações de listas retornaram para as configurações iniciais')
-              }
-            }
-          ]
-        })
-    },
-    
-    //Bancos
     listarTabs (){
         Loading.show({message: 'Aguardando dados...'})
         axios.get(API + 'produto/obterProdutosTbPrecoCab')
@@ -284,104 +239,112 @@ export default {
             })
           })
     },
-    salvarBanco(){
-        if(this.ip === ''){ 
-            Toast.create.negative('Não pode salvar com as informações de Banco de dados vazias')
-            return
+    salvarTabela(){
+        
+        let tab = {
+            Nome: this.nome.trim(),
+            ML: this.ml,
+            MLminima: this.mlMin,
+            DescontoMax: this.descMax,
+            CodigoUsuario: localStorage.getItem('codUser')
         }
-        if(this.edit === true){ //editar
-            localStorage.setItem('Empresa' + this.filtro, this.empresa)
-            localStorage.setItem('ip' + this.filtro, this.ip)
-            if(this.porta > 0){
-                localStorage.setItem('porta' + this.filtro, this.porta)
-            }
-            localStorage.setItem('banco' + this.filtro, this.banco)
-            localStorage.setItem('senhaBD' + this.filtro, this.senhaBd)
-            this.empresa = ''
-            this.ip = ''
-            this.porta = ''
-            this.banco = ''
-            this.senhaBd = ''
-            this.edit = false
-            Toast.create.positive({
-                html: 'Configurações salvas com sucesso',
-                icon: 'done'
-            })
-            this.bancosDados = []
-            this.listarBancos()
+        
+        if(this.codigo){
+            Object.assign(tab,{Codigo: this.codigo})
         }
-        else{ //novo
-            var bancoCont = parseInt(localStorage.getItem('bancoCont'))
-            if(isNaN(bancoCont)) {
-                bancoCont = 0
+        
+        Loading.show({message: 'Aguardando dados...'})
+        axios.post(API + 'produto/gravarTabPrecoCab', tab)
+          .then((res)=>{
+            Loading.hide()
+            console.log(res)
+            this.listarTabs()
+            Toast.create.positive('A tabela ' + tab.Nome + ' foi salva com sucesso')
+            this.limpar()
+          })
+          .catch((e)=>{
+            Loading.hide()
+            console.log(e.response)
+            let error = e.response.data
+            for(var i=0; error.length; i++){
+                Toast.create.negative(error[i].value)
             }
-            var cont = bancoCont + 1
-            localStorage.setItem('bancoCont', cont)
-            localStorage.setItem('IdBanco' + localStorage.getItem('bancoCont'), cont)
-            localStorage.setItem('Empresa' + localStorage.getItem('bancoCont'), this.empresa)
-            localStorage.setItem('ip' + localStorage.getItem('bancoCont'), this.ip)
-            if(this.porta > 0){
-                localStorage.setItem('porta' + localStorage.getItem('bancoCont'), this.porta)
-            }
-            localStorage.setItem('banco' + localStorage.getItem('bancoCont'), this.banco)
-            localStorage.setItem('senhaBD' + localStorage.getItem('bancoCont'), this.senhaBd)
-            this.empresa = ''
-            this.ip = ''
-            this.porta = ''
-            this.banco = ''
-            this.senhaBd = ''
-            Toast.create.positive({
-                html: 'Configurações salvas com sucesso',
-                icon: 'done'
-            })
-            this.bancosDados = []
-            this.listarBancos()
-            
-            if(this.bancosDados.length === 1){
-                let port = ''
-                if(localStorage.getItem('porta1')){
-                    port = ':' + localStorage.getItem('porta1')     
-                }
-                let DB = ''
-                if(localStorage.getItem('banco1')){
-                    DB = '/' + localStorage.getItem('banco1')     
-                }
-                let sv = localStorage.getItem('ip1')
-                localStorage.setItem('wsAtual', 'http://' + sv + port + DB + '/' )
-
-                //API = localStorage.getItem('wsAtual')
-            }
-        }
+          })
+        
     },
     editar(item, index) {
-        this.filtro = item.IdBanco
-        this.edit = true
-        this.empresa = localStorage.getItem('Empresa' + this.filtro)
-        this.ip = localStorage.getItem('ip' + this.filtro)
-        this.porta = localStorage.getItem('porta' + this.filtro)
-        this.banco = localStorage.getItem('banco' + this.filtro)
-        this.senhaBd = localStorage.getItem('senhaBD' + this.filtro)
+        let t = this
+        t.codigo = item.codigo
+        t.nome = item.nome
+        t.ml = item.ml
+        t.mlMin = item.mLminima
+        t.descMax = item.descontoMax
         
+    },
+    limpar(){
+        this.nome = ' ' //o espaço evita o erro requerido depois de salvar :D
+        this.ml = ''
+        this.mlMin = ''
+        this.descMax = ''
     },
     excluir(item, index) {
-        this.filtro = item.IdBanco
-        this.indice = index
+        item.excluido = true
+        Dialog.create({
+          title: '<i class="material-icons text-negative">warning</i> Atenção!',
+          message: 'Deseja excluir a tabela ' + item.nome + '?',
+          buttons: [
+            {
+              label: 'Cancelar',
+              raised: true,
+              color: 'faded',
+              handler: () => { return }
+            },
+            {
+              label: 'Excluir',
+              raised: true,
+              color: 'negative',
+              handler: () => {
+                Loading.show({message: 'Excluindo tabela...'})
+                axios.post(API + 'produto/gravarTabPrecoCab', item)
+                  .then((res)=>{
+                    Loading.hide()
+                    console.log(res)
+                    this.listarTabs()
+                    Toast.create('A tabela ' + item.nome + ' foi excluida com sucesso')
+                  })
+                  .catch((e)=>{
+                    Loading.hide()
+                    console.log(e.response)
+                    let error = e.response.data
+                    for(var i=0; error.length; i++){
+                        Toast.create.negative(error[i].value)
+                    }
+                  })
+              }
+            }
+          ]
+        })
         
-        if(this.indice !== -1) {
-            this.bancosDados.splice(index,1)
-        }
-        
-        localStorage.removeItem('Empresa' + this.filtro)
-        localStorage.removeItem('IdBanco' + this.filtro)
-        localStorage.removeItem('ip' + this.filtro)
-        localStorage.removeItem('porta' + this.filtro)
-        localStorage.removeItem('banco' + this.filtro)
-        localStorage.removeItem('senhaBD' + this.filtro)
-        
-        this.bancosDados = []
-        this.listarBancos()
+          
     },
-    
+    onResize (size) {
+      //console.log(size)
+      if(size.width < 430){
+        this.visivel = true
+      }
+      else{
+        this.visivel = false
+      }
+      
+    },
+    responsiva(){
+        if(this.check === true){
+            this.type = 'responsive'
+        }
+        else {
+            this.type = 'none'
+        }
+    }
     
   },
   mounted(){
@@ -392,14 +355,24 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
     #config {
         overflow: scroll;
     }
     .low{
-        margin-bottom: 50px
+        margin-bottom: 50px;
+        font-weight: 
     }
     .fixo{
         z-index: 
+    }
+    .btn-plus{
+        margin: 10px 0 0 45px
+    }
+    .check{
+        margin-bottom: 10px
+    }
+    .right{
+        margin-left: 10px
     }
 </style>

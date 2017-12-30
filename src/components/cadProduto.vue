@@ -758,60 +758,55 @@ export default {
       var a = this.familias
       var lista = []
       
-      for (let i=0; i < a.length; i++) {
-          let n = a[i].nome
-          let c = a[i].codigo
-          lista.push({label: n, value: c})    
-      }
-      //console.log(lista)
+      lista = a.map(row => ({
+          label: row.nome, 
+          value: row.codigo
+      }))
+      
       return lista
     },
     listaCategorias: function () {
       var a = this.categorias
       var lista = []
       
-      for (let i=0; i < a.length; i++) {
-          let n = a[i].nome
-          let c = a[i].codigo
-          lista.push({label: n, value: c})    
-      }
-      //console.log(lista)
+      lista = a.map(row => ({
+          label: row.nome, 
+          value: row.codigo
+      }))
+      
       return lista
     },
     listaMarcas: function () {
       var a = this.marcas
       var lista = []
       
-      for (let i=0; i < a.length; i++) {
-          let n = a[i].nome
-          let c = a[i].codigo
-          lista.push({label: n, value: c})    
-      }
-      //console.log(lista)
+      lista = a.map(row => ({
+          label: row.nome, 
+          value: row.codigo
+      }))
+      
       return lista
     },
     listaMedidas: function () {
       var a = this.unidades
       var lista = []
       
-      for (let i=0; i < a.length; i++) {
-          let n = a[i].significado
-          let c = a[i].nome
-          lista.push({label: n, value: c})    
-      }
-      //console.log(lista)
+      lista = a.map(row => ({
+          label: row.nome, 
+          value: row.codigo
+      }))
+      
       return lista
     },
     listaProdutos: function () {
       var a = this.produtos
       var lista = []
       
-      for (let i=0; i < a.length; i++) {
-          let n = a[i].nome
-          let c = a[i].codigo
-          lista.push({label: n, value: c})    
-      }
-      //console.log(lista)
+      lista = a.map(row => ({
+          label: row.nome, 
+          value: row.codigo
+      }))
+      
       return lista
     },
     valorVenda(){

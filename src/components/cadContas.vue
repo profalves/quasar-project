@@ -581,12 +581,11 @@ export default {
       var a = this.cat
       var lista = []
       
-      for (let i=0; i < a.length; i++) {
-          let n = a[i].nome
-          let c = a[i].codigo
-          lista.push({label: n, value: c})   
-      }
-      //console.log(lista)
+      lista = a.map(row => ({
+          label: row.nome, 
+          value: row.codigo
+      }))
+      
       return lista
     
     }, 
@@ -594,12 +593,11 @@ export default {
       var a = this.sub
       var lista = []
       
-      for (let i=0; i < a.length; i++) {
-          let n = a[i].nome
-          let c = a[i].codigo
-          lista.push({label: n, value: c}) 
-      }
-      //console.log(lista)
+      lista = a.map(row => ({
+          label: row.nome, 
+          value: row.codigo
+      }))
+        
       return lista
     
     }, 
@@ -607,12 +605,11 @@ export default {
       var a = this.formas
       var lista = []
       
-      for (let i=0; i < a.length; i++) {
-          let n = a[i].nome
-          let c = a[i].codigo
-          lista.push({label: n, value: c}) 
-      }
-      //console.log(lista)
+      lista = a.map(row => ({
+          label: row.nome, 
+          value: row.codigo
+      }))
+      
       return lista
     
     },

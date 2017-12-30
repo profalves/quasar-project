@@ -119,7 +119,7 @@
                          :error="$v.nome.$error"
                 />
 
-                 <span style="color:#878B8F" v-if="!$v.nome.required">Nome é requerido</span>
+                 <span style="color:#878B8F" v-if="!$v.nome.required">O Campo Nome é requerido</span>
                  <span v-if="!$v.nome.minLength">Este campo deve conter mais que {{$v.nome.$params.minLength.min}} caracteres.</span>
 
               </q-field>   
@@ -1115,28 +1115,23 @@ export default {
       let a = this.estados
       let lista = []
       
-      for (let i=0; i < a.length; i++) {
-          let n = a[i].nome
-          let u = a[i].uf
-          let c = a[i].codUF
-          lista.push({label: n, 
-                      value: u, 
-                      codigoUF: c
-                     })    
-      }
-      //console.log(lista)
+      lista = a.map(row => ({
+          label: row.nome, 
+          value: row.uf,
+          codigoUF: row.codUF
+      }))
+      
       return lista
     },
     listaCidades: function () {
       var a = this.cidades
       var lista = []
       
-      for (let i=0; i < a.length; i++) {
-          let n = a[i].nome
-          let c = a[i].codigoIBGE
-          lista.push({label: n, value: c})    
-      }
-      //console.log(lista)
+      lista = a.map(row => ({
+          label: row.nome, 
+          value: row.codigoIBGE
+      }))
+      
       return lista
     
     },
@@ -1144,12 +1139,11 @@ export default {
       var a = this.familias
       var lista = []
       
-      for (let i=0; i < a.length; i++) {
-          let n = a[i].nome
-          let c = a[i].codigo
-          lista.push({label: n, value: c})    
-      }
-      //console.log(lista)
+      lista = a.map(row => ({
+          label: row.nome, 
+          value: row.codigo
+      }))
+      
       return lista
     
     },
@@ -1157,12 +1151,11 @@ export default {
       var a = this.vendedores
       var lista = []
       
-      for (let i=0; i < a.length; i++) {
-          let n = a[i].nome
-          let c = a[i].codigoIdentificacao
-          lista.push({label: n, value: c})    
-      }
-      //console.log(lista)
+      lista = a.map(row => ({
+          label: row.nome, 
+          value: row.codigoIdentificacao
+      }))
+      
       return lista
     
     }
