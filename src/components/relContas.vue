@@ -2,7 +2,7 @@
     <div class="layout-padding">
         <div slot="header" class="toolbar">
           <q-toolbar-title>
-              Contas
+              <h5>Contas</h5>
           </q-toolbar-title>
         </div><br>
         <q-list style="background-color:white">

@@ -225,6 +225,14 @@ export default {
       },
       colunas: [
         {
+          label: 'Cód.',
+          field: 'codigo',
+          filter: true,
+          sort: true,
+          type: 'number',
+          width: '50px'
+        },
+        {
           label: 'Nome',
           field: 'nome',
           width: '150px',
@@ -251,15 +259,6 @@ export default {
           },
           width: '100px'
         },*/
-        
-        {
-          label: 'n. Doc',
-          field: 'codigo',
-          filter: true,
-          sort: true,
-          type: 'number',
-          width: '60px'
-        },
         
         {
           label: 'Telefone',

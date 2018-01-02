@@ -377,6 +377,24 @@ export default {
             this.transferencias.splice(index,1)
         }
     },
+    enviar(){
+        Loading.show({message: 'Enviando dados...'})
+        axios.post(API + 'produto/obterproduto')
+          .then((res)=>{
+            Loading.hide()
+            //console.log(res)
+          })
+          .catch((e)=>{
+            Loading.hide()
+            console.log(e)
+            Toast.create({
+                html: 'Sem Conexão',
+                timeout: 6000,
+                bgColor: '#f44242',
+                icon: 'mood_bad'
+            })
+          })
+    },
   },
   mounted(){
     this.$refs.modal.open()

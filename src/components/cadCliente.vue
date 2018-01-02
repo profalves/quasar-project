@@ -176,7 +176,6 @@
               >
                 <q-input float-label="CEP"
                          v-model.number="cep"
-                         type="number"
                          @blur="listarCidades"
                          clearable
                          @input="$v.cep.$touch()"
@@ -210,7 +209,7 @@
                 <q-input v-model="CadPessoa.pessoa.endereco" float-label="Endereço"/>
               </q-field>   
             </div>
-            <div class="col-lg-2 col-md-3 col-sm-12">
+            <div class="col-md-3 col-sm-12">
               <q-field
                 icon="location_on"
               >
@@ -376,7 +375,7 @@
       <q-collapsible :opened="open.tel" icon="contact_phone" label="Telefones">
         <i>Para salvar um telefone, o mesmo deve ser digitado e depois clicar no botão de adicionar (+)</i><br>
         
-        <q-list v-for="(item, index) in fones" :key="index" style="margin-top:15px">
+        <q-list v-for="(item, index) in CadPessoa.pessoasTelefone" :key="index" style="margin-top:15px">
           
           <q-list-header>Telefone: {{item.index}}</q-list-header>
           <q-item>
@@ -386,7 +385,12 @@
                         <strong>Fone:</strong> {{item.Numero | fone}}
                     </div>
                     <div class="col-2">
-                        <i class="material-icons fa-2x mHover text-negative" @click="fones.splice(index, 1)" color="negative">delete_forever</i>
+                        <i class="material-icons fa-2x mHover text-negative" @click="CadPessoa.pessoasTelefone.splice(index, 1)" color="negative">delete_forever</i>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col left" style="margin-top:7px;">
+                        <strong>Móvel:</strong> {{item.movel | b2S}}
                     </div>
                 </div>
             </q-item-main>
@@ -457,9 +461,10 @@
                   <q-list-header>Telefone: {{item.$id}}</q-list-header>
                   <q-item>
                     <q-item-main>
-                        <div >
-                            <strong>Numero:</strong> {{item.numero}}
-                            <strong>Tipo:</strong> {{item.tipo}}
+                        <div>
+                            <strong>Numero:</strong> {{item.numero | fone}}<br>
+                            <strong>Tipo:</strong> {{item.tipo}}<br>
+                            <strong>Móvel:</strong> {{item.movel | b2S}}<br>
                         </div>
                     </q-item-main>
                   </q-item>
@@ -483,7 +488,7 @@
         
         <i>Para salvar um email, o mesmo deve ser digitado e depois clicar no botão de adicionar (+)</i><br>
         
-        <q-list v-for="(item, index) in emails" :key="index" style="margin-top:15px">
+        <q-list v-for="(item, index) in CadPessoa.enderecoElet" :key="index" style="margin-top:15px">
           
           <q-list-header>Email: {{item.index}}</q-list-header>
           <q-item>
@@ -548,7 +553,7 @@
                 <q-btn 
                   rounded
                   color="primary" 
-                  @click="novoEmail">
+                  @click="salvarEmail">
                   <q-icon name="add" />
                 </q-btn>
             </div>
@@ -755,7 +760,6 @@
               >
                 <q-input float-label="CEP"
                          v-model.number="cep2"
-                         type="number"
                          @blur="listarCidades"
                          clearable
                          @input="$v.cep.$touch()"
@@ -902,13 +906,12 @@ import { Dialog, Toast, Loading } from 'quasar'
 const API = localStorage.getItem('wsAtual')
 
 //debug
-//const API = 'http://192.168.0.200:29755/'
+//onst API = 'http://192.168.0.200:29755/'
 
 export default {
   name: 'clientes',
   data () {
     return {
-        
         estados: [],
         estadoNovo: [],
         enderecos: [],
@@ -922,7 +925,7 @@ export default {
                 codRegimeTribut : 1,
                 codTipo : 1,
                 codFamilia : 1,
-                nome : 'TESTE 3011', //requerido
+                nome : '', //requerido
                 apelido : '',
                 contato : '',
                 cpf : 0, //requerido
@@ -1162,7 +1165,15 @@ export default {
   },
   filters: {
     fone: function (value) {
-        return VMasker.toPattern(value, '(99) 999999999')
+        return VMasker.toPattern(value.toString(), '(99) 999999999')
+    },
+    b2S: function (value) {
+        if(value === true){
+            return 'Sim'
+        }
+        else{
+            return 'Não'
+        }
     }
   },
   /*watch: {
@@ -1194,7 +1205,6 @@ export default {
   },
     
   methods: {
-    
     verificaPessoa(){
         if(this.setTipo === false){
             if(this.cpf.length>11){
@@ -1207,9 +1217,11 @@ export default {
         
     },
     buscarCep(){
+      Loading.show({message: 'Enviando Dados...'})
       axios.get('http://api.postmon.com.br/v1/cep/' + this.cep)
       .then((res)=>{
-          console.log(res.response)
+          Loading.hide()
+          console.log(res)
           this.getCep = res.data
           this.estado = this.getCep.estado
           this.listarCidades()
@@ -1217,11 +1229,12 @@ export default {
           this.CadPessoa.pessoa.bairro = this.getCep.bairro
           this.CadPessoa.pessoa.cep = this.getCep.cep
           this.cidade = this.getCep.cidade
-          this.CadPessoa.pessoa.codigoIBGECidade = parseInt(this.getCep.cidade_info.codigo_ibge)
+          this.CadPessoa.pessoa.codigoIBGE = parseInt(this.getCep.cidade_info.codigo_ibge)
           this.CadPessoa.pessoa.CodigoUF = parseInt(this.getCep.estado_info.codigo_ibge)
       })
       .catch((e)=>{
-        this.error = e.response
+        Loading.hide()
+        this.error = e.response.statusText
         Dialog.create({
           title: 'CEP inexistente',
           message: this.error,
@@ -1233,14 +1246,16 @@ export default {
             }
           ]
         })
-        //this.cep = ''
+        this.cep = ''
         //this.$refs.cep.focus();
         console.log(e)
       })  
     },
     buscarCepADD(){
+      Loading.show({message: 'Enviando Dados...'})
       axios.get('http://api.postmon.com.br/v1/cep/' + this.cep2)
       .then((res)=>{
+          Loading.hide()
           console.log(res.response)
           this.getCep = res.data
           this.estado = this.getCep.estado
@@ -1258,10 +1273,11 @@ export default {
           this.endAdicional.CodigoUF = parseInt(this.getCep.estado_info.codigo_ibge)
       })
       .catch((e)=>{
-        this.error = e.response
+        Loading.hide()
+        this.error = e.response.statusText
         Dialog.create({
           title: 'CEP inexistente',
-          message: this.error.statusText,
+          message: this.error,
           buttons: [
             {
               label: 'Ok',
@@ -1271,7 +1287,7 @@ export default {
           ]
         })
         this.cep = ''
-        console.log(e.response)
+        console.log(e)
       })  
     },
     goBack(){
@@ -1551,18 +1567,20 @@ export default {
             //console.log(res)
             console.log(res.data)
             console.log(res.response)
-            //console.log(res.data)
             console.log('sucesso')
             //Toast.create('Returned ' + JSON.stringify(data))
             Toast.create.positive('cadastrado com sucesso')
+            this.listarTelefones()
 
           })
           .catch((e)=>{
             Loading.hide()
-            console.log('error')
             console.log(e)
-            console.log(e.body)
-            console.log(e.response)
+            let error = e.response.data
+            console.log(error)
+            for(var i=0; error.length; i++){
+                Toast.create.negative(error[i].value)
+            }
           })
     },
     novoTel (){
@@ -1572,7 +1590,7 @@ export default {
        }
        this.foneADD.Numero = this.fone
        this.foneADD.index = this.foneADD.index+1
-       this.fones.push(this.foneADD)
+       this.CadPessoa.pessoasTelefone.push(this.foneADD)
        this.fone = ''
        this.foneADD = {
             CodTipo:1,
@@ -1610,8 +1628,11 @@ export default {
     //EMAILS  
     adicionarEmail(){
         this.emailADD.Endereco = this.email
+        this.emailADD.CodPessoa = localStorage.getItem('codPessoa')
+        Loading.show({message: 'Enviando Dados...'})
         axios.post(API + 'pessoaEnd/gravarPessoaEndEletronico', this.emailADD)
           .then((res)=>{
+            Loading.hide()
             //console.log(res)
             console.log(res.data)
             console.log(res.response)
@@ -1619,13 +1640,17 @@ export default {
             console.log('sucesso')
             //Toast.create('Returned ' + JSON.stringify(data))
             Toast.create.positive('cadastrado com sucesso')
+            this.listarEmail()
 
           })
           .catch((e)=>{
-            console.log('error')
+            Loading.hide()
             console.log(e)
-            console.log(e.body)
-            console.log(e.response)
+            let error = e.response.data
+            console.log(error)
+            for(var i=0; error.length; i++){
+                Toast.create.negative(error[i].value)
+            }
           })
     },
     novoEmail (){
@@ -1635,7 +1660,7 @@ export default {
        }
        this.emailADD.Endereco = this.email
        this.emailADD.index = this.emailADD.index+1
-       this.emails.push(this.emailADD)
+       this.CadPessoa.enderecoElet.push(this.emailADD)
        this.email = ''
        this.emailADD = {
             CodTipo:1,
@@ -1784,6 +1809,7 @@ export default {
               }
               
               this.cep = this.CadPessoa.pessoa.cep
+              
               if(this.CadPessoa.pessoa.sexoFeminino!==null){
                 this.sexo = this.CadPessoa.pessoa.sexoFeminino.toString()
               }

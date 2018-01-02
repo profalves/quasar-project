@@ -118,7 +118,7 @@ export default {
           body: 'Seja bem vindo! ' + localStorage.getItem('nameUser'),
           vibrate: [200, 100, 200]
         }
-        let n = new Notification('Retaguarda Web', options)
+        let n = new Notification('Retaguarda Web - 7Virtual', options)
 
         function expression(statement) { 
          'use strict'

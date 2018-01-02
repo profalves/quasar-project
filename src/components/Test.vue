@@ -1,5 +1,7 @@
 <template>
   <div>
+   
+     <q-btn button @click="notifyMe()">Notifique me!</q-btn><br><br>
     
      <div id="pdf">
          <q-btn icon="create" 
@@ -67,7 +69,8 @@
           <td class="text-right">1670</td>
         </tr>
       </tbody>
-    </table>
+    </table>    
+    
     <hr> 
     <h1>Spinners</h1>
       
@@ -218,7 +221,6 @@
 
 <script>
 import JsPDF from 'jspdf'
-//import autoTable from 'jspdf-autotable/jspdf.plugin.autotable'
 import table from 'data/table.json'
 //import axios from 'axios'
 import { openURL, Loading } from 'quasar'
@@ -226,6 +228,15 @@ const $ = require("jquery");
     
 const doc = new JsPDF()
 require('jspdf-autotable');
+/*require( 'jszip' );
+require( 'pdfmake' );
+require( 'datatables.net' )();
+require( 'datatables.net-autofill' )();
+require( 'datatables.net-buttons' )();
+require( 'datatables.net-buttons/js/buttons.colVis.js' )();
+require( 'datatables.net-buttons/js/buttons.flash.js' )();
+require( 'datatables.net-buttons/js/buttons.html5.js' )();
+require( 'datatables.net-buttons/js/buttons.print.js' )();*/
     
 import {
     AtomSpinner,
@@ -313,35 +324,59 @@ export default {
     launch (url) {
       openURL(url)
     },
+    notifyMe() {
+      // Let's check if the browser supports notifications
+      if (!("Notification" in window)) {
+        alert("This device does not support desktop notification");
+      }
+
+      // Let's check whether notification permissions have already been granted
+      else if (Notification.permission === "granted") {
+        // If it's okay let's create a notification
+        var notification = new Notification("Hi there!");
+        return notification
+      }
+
+      // Otherwise, we need to ask the user for permission
+      else if (Notification.permission !== 'denied') {
+        Notification.requestPermission(function (permission) {
+          // If the user accepts, let's create a notification
+          if (permission === "granted") {
+            var notification = new Notification("Hi Master!");
+            return notification
+          }
+        });
+      }
+
+      // At last, if the user has denied notifications, and you 
+      // want to be respectful there is no need to bother them any more.
+    },
     pdf(){
         doc.text(10, 10, 'This is a test')
         //doc.autoPrint() //aciona a impressão automática do documento
         doc.save('autoprint.pdf')
     },
     table(){
-        var elem = document.getElementById('table');
-        var data = doc.autoTableHtmlToJson(elem);
+        let elem = document.getElementById('table');
+        let data = doc.autoTableHtmlToJson(elem);
 
-        var opts = {}; 
-        doc.autoTable(data.columns, data.rows, opts);
+        //let opts = {}; 
+        doc.autoTable(data.columns, data.rows);
 
         doc.save("table.pdf");
     },
     html(){
-        var specialElementHandlers={
-            '#editor':function(element,renderer){
-                return true;
-            },
-            '.controls':function(element,renderer){
-                return true;
-            }
-        };
-        
-        doc.fromHTML($('table.q-table').get(0),10,10,{
-            'width':500,
-            'elementHandlers':specialElementHandlers
-        });
-        doc.save('html.pdf');
+        $(document).ready(function() {
+            $('#table').DataTable( {
+                dom: 'Bfrtip',
+                buttons: [
+                    'copyHtml5',
+                    'excelHtml5',
+                    'csvHtml5',
+                    'pdfHtml5'
+                ]
+            } );
+        } );
     },
     AtomSpinner(){
       Loading.show({
