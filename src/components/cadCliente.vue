@@ -250,6 +250,7 @@
                           float-label="UF"
                           @blur="listarCidades"
                           filter
+                          filter-placeholder="Procurar..."
                 />
               </q-field>   
             </div>
@@ -262,6 +263,7 @@
                           :options="listaCidades"
                           float-label="Cidade"
                           filter
+                          filter-placeholder="Procurar..."
                 />
                   
               </q-field>   
@@ -373,8 +375,8 @@
               
       <!--Telefones-->
       <q-collapsible :opened="open.tel" icon="contact_phone" label="Telefones">
-        <p id="chip">
-          <q-chip tag closable color="black" @close="close"><i>Para salvar um banco, o mesmo deve ser digitado e depois clicar no botão adicionar(+)</i></q-chip>
+        <p ref="chip">
+          <q-chip tag closable color="black" @close="$refs.chip.remove()"><i>Para salvar um telefone, o mesmo deve ser digitado e depois clicar no botão adicionar(+)</i></q-chip>
         </p>
         
         <q-list v-for="(item, index) in CadPessoa.pessoasTelefone" :key="index" style="margin-top:15px">
@@ -488,8 +490,8 @@
       <!--Emails-->
       <q-collapsible :opened="open.email" icon="contact_mail" label="Emails">
         
-        <p id="chip">
-          <q-chip tag closable color="black" @close="close"><i>Para salvar um banco, o mesmo deve ser digitado e depois clicar no botão adicionar(+)</i></q-chip>
+        <p ref="chip2">
+          <q-chip tag closable color="black" @close="$refs.chip2.remove()"><i>Para salvar um email, o mesmo deve ser digitado e depois clicar no botão adicionar(+)</i></q-chip>
         </p>
         
         <q-list v-for="(item, index) in CadPessoa.enderecoElet" :key="index" style="margin-top:15px">
@@ -593,29 +595,24 @@
       <!--Familia/Vendedor-->
       <q-collapsible :opened="open.grup" icon="people_outline" label="Grupo/Vendedor">
           <div class="row">
-            <div class="col-xs-8 col-md-4">
+            <div class="col-xs-12 col-md-6">
                 <q-field helper="Família">
                     <q-select
                         filter
+                        filter-placeholder="Procurar..."
                         v-model="CadPessoa.pessoa.codFamilia"
                         :options="listaFamiliasPessoas"
                         @click="listarFamilias"
+                        @change="novaFamilia"
                     />
                 </q-field>
-            </div>
-            <div class="col-2 offset-1 btn-plus" >
-                <q-btn 
-                   rounded
-                   color="primary" 
-                   @click="novaFamilia">
-                   <q-icon name="add" />
-                </q-btn>
             </div>
             <div class="col">
                 <q-field helper="Vendedor">
                     <q-select
                         @blur="colapGrup"
                         filter
+                        filter-placeholder="Procurar..."
                         v-model="CadPessoa.pessoa.codigoVendedor"
                         :options="listaVendedores"
                     />
@@ -905,7 +902,7 @@ import axios from 'axios'
 import VMasker from 'vanilla-masker'
 import { required, minLength, maxLength, email } from 'vuelidate/lib/validators'
 import { Dialog, Toast, Loading } from 'quasar'
-import { RadarSpinner, SelfBuildingSquareSpinner } from 'epic-spinners'
+import { SelfBuildingSquareSpinner } from 'epic-spinners'
 
 //dev
 const API = localStorage.getItem('wsAtual')
@@ -1152,6 +1149,11 @@ export default {
           label: row.nome, 
           value: row.codigo
       }))
+      
+      lista.unshift({
+          label: 'NOVO...', 
+          value: 0
+      })
       
       return lista
     
@@ -1705,6 +1707,9 @@ export default {
     
     //FAMILIA
     novaFamilia(){
+        if(this.CadPessoa.pessoa.codFamilia !== 0){
+            return;
+        }
         Dialog.create({
           title: 'Nova Família de Clientes',
           message: 'Digite o nome da nova família e clique em salvar.',
@@ -1750,6 +1755,8 @@ export default {
             }
           ]
     })
+    
+    this.CadPessoa.pessoa.codFamilia = ''
     
     },
     listarFamilias(){
@@ -1884,9 +1891,6 @@ export default {
         this.open.obs=true
         this.open.cred=false
     },
-    close(){
-        document.getElementById('chip').remove()
-    }
     
   },
   created(){

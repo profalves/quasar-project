@@ -71,6 +71,8 @@ export default {
 </script>
 <style>
     body {
+        background-image: url("../img/fundo.png");
+        background-size: cover;
         background-color: aliceblue;
     }
     .container {

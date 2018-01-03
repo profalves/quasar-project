@@ -201,7 +201,7 @@
 </template>
 
 <script>
-import { Dialog, Toast, Loading, clone } from 'quasar'
+import { Alert, Dialog, Toast, Loading, clone, date } from 'quasar'
 import axios from 'axios'
 
 const API = 'http://192.168.0.200/WSV3/'
@@ -242,7 +242,7 @@ export default {
         rowHeight: localStorage.getItem('rowHeight') + 'px',
         responsive: (localStorage.getItem('responsive') === 'true'),
         pagination: {
-          rowsPerPage: 5,
+          rowsPerPage: parseInt(localStorage.getItem('rowsPerPage')),
           options: [5, 10, 15, 30, 50, 100]
         },
         selection: localStorage.getItem('selection'),
@@ -553,7 +553,33 @@ export default {
       console.log('clicked on a row', row)
       localStorage.setItem('codConta', row.codigo)
       localStorage.setItem('cadMode', 'edit')
-      this.$router.push({ path: '/cadContas' })  
+      let timeStamp = row.vencimento
+      let formattedDate = date.formatDate(timeStamp, 'DD/MM/YYYY')
+          
+      Alert.create({
+          enter: 'bounceInRight',
+          leave: 'bounceOutRight',
+          color: 'positive',
+          icon: 'tag_faces',
+          html: `Conta de ` + row.fornecedor + `<br>` +
+                `Venc.: ` + formattedDate,
+          position: 'bottom-center',
+          actions: [
+            {
+              label: 'Abrir',
+              handler: () => {
+                this.$router.push({ path: '/cadContas' })
+                console.log('acting')
+              }
+            },
+            {
+              label: 'Fechar',
+              handler: () => {
+                return;
+              }
+            }
+          ]
+      })
     },
     novo(){
       localStorage.setItem('cadMode', 'save')

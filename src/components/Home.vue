@@ -56,7 +56,7 @@
               <q-card-main>
                 <center id="card">
                     <i class="fa fa-file-text-o fa-5x center"></i><br>
-                    <p>Notas</p>
+                    <p>NF de Entrada</p>
                 </center>
               </q-card-main>
             </q-card>

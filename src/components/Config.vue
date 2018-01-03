@@ -1,6 +1,5 @@
 <template>
   <div>
-     
       <q-fixed-position class="fixo" corner="bottom-left" :offset="[18, 18]">
         <q-btn 
            round
@@ -103,6 +102,14 @@
                   </q-field>
 
                   <q-field
+                    icon="format_list_numbered"
+                    label="Linhas por Página"
+                    :label-width="4"
+                  >
+                    <q-slider v-model="rowsPerPage" :min="5" :max="500" :step="5" label-always :label-value="`${rowsPerPage}px` "/>
+                  </q-field>
+
+                  <q-field
                     icon="content_paste"
                     label="Tamanho"
                     :label-width="4"
@@ -149,8 +156,8 @@
                             sublabel="Configure a Empresa ao qual deseja conectar"
                             :opened="bdConfig"
                             >
-              <p id="chip">
-                <q-chip tag closable color="black" @close="close"><i>Para salvar um banco, o mesmo deve ser digitado e depois clicar no botão adicionar(+)</i></q-chip>
+              <p ref="chip">
+                <q-chip tag closable color="black" @close="$refs.chip.remove()"><i>Para salvar um banco, o mesmo deve ser digitado e depois clicar no botão adicionar(+)</i></q-chip>
               </p>
               <div class="row">
                 <div class="col">
@@ -278,6 +285,7 @@ export default {
       },
       //ainda config. das tabelas
       pagination: (localStorage.getItem('pagination') === 'true'),
+      rowsPerPage: parseInt(localStorage.getItem('rowsPerPage')),
       rowHeight: parseInt(localStorage.getItem('rowHeight')),
       bodyHeightProp: localStorage.getItem('bodyHeightProp'),
       bodyHeight: parseInt(localStorage.getItem('bodyHeight')),
@@ -391,6 +399,7 @@ export default {
         localStorage.setItem('rowHeight', this.rowHeight)
         localStorage.setItem('bodyHeightProp', this.bodyHeightProp)
         localStorage.setItem('bodyHeight', this.bodyHeight)
+        localStorage.setItem('rowsPerPage', this.rowsPerPage)
         Toast.create.positive({
             html: 'Configurações salvas com sucesso',
             icon: 'done'
@@ -406,6 +415,7 @@ export default {
         this.rowHeight = 45
         this.bodyHeightProp = 'auto'
         this.bodyHeight = 200
+        this.rowsPerPage = 5
         
         this.salvarConfig()
     
@@ -551,9 +561,6 @@ export default {
         this.bancosDados = []
         this.listarBancos()
     },
-    close(){
-        document.getElementById('chip').remove()
-    }
     
   },
   created (){

@@ -173,7 +173,7 @@ export default {
         rowHeight: localStorage.getItem('rowHeight') + 'px',
         responsive: (localStorage.getItem('responsive') === 'true'),
         pagination: {
-          rowsPerPage: 5,
+          rowsPerPage: parseInt(localStorage.getItem('rowsPerPage')),
           options: [5, 10, 15, 30, 50, 100]
         },
         selection: localStorage.getItem('selection'),

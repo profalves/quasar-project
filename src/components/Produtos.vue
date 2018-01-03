@@ -12,10 +12,7 @@
         </q-btn>
     </q-fixed-position>
     
-  <i>Para editar um registro, basta apenas clicar no produto</i>  
   <div id="lista">
-    
-    
     
     <q-data-table
       :data="Produtos"
@@ -148,8 +145,9 @@
 </template>
 
 <script>
-import { Dialog, Toast, Loading, clone } from 'quasar'
+import { Alert, Dialog, Toast, Loading, clone } from 'quasar'
 import axios from 'axios'
+import { OrbitSpinner } from 'epic-spinners'
 
 const API = localStorage.getItem('wsAtual')
   
@@ -173,7 +171,7 @@ export default {
         rowHeight: localStorage.getItem('rowHeight') + 'px',
         responsive: (localStorage.getItem('responsive') === 'true'),
         pagination: {
-          rowsPerPage: 15,
+          rowsPerPage: parseInt(localStorage.getItem('rowsPerPage')),
           options: [5, 10, 15, 30, 50, 100]
         },
         selection: localStorage.getItem('selection'),
@@ -355,10 +353,38 @@ export default {
       console.log('clicked on a row', row)
       localStorage.setItem('codProduto', row.codigo)
       localStorage.setItem('cadMode', 'edit')
-      this.$router.push({ path: '/cadproduto' })
+        
+        Alert.create({
+          enter: 'bounceInRight',
+          leave: 'bounceOutRight',
+          color: 'positive',
+          icon: 'tag_faces',
+          html: `Nome: ` + row.nome + `<br>`,
+          position: 'bottom-center',
+          actions: [
+            {
+              label: 'Abrir',
+              handler: () => {
+                this.$router.push({ path: '/cadproduto' })
+                console.log('acting')
+              }
+            },
+            {
+              label: 'Fechar',
+              handler: () => {
+                return;
+              }
+            }
+          ]
+        })
+    
     },
     listarProdutos(){
-      Loading.show({message: 'Aguardando Dados...'})
+      Loading.show({
+          spinner: OrbitSpinner,
+          spinnerSize: 140,
+          message: 'Aguardando Dados...'
+      })
       axios.get(API + 'produto/obterProduto')
       .then((res)=>{
           //console.log(res.data)

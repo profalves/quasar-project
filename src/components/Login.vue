@@ -68,7 +68,7 @@
 <script>
 import axios from 'axios'
 import { Alert, Dialog, Loading } from 'quasar'
-import { AtomSpinner } from 'epic-spinners'
+import { AtomSpinner, OrbitSpinner } from 'epic-spinners'
 
 //dev
 let API = localStorage.getItem('wsAtual')
@@ -250,7 +250,12 @@ export default {
         listarUsuarios(){
           if(this.bd === 'none'){ return }
           API = localStorage.getItem('wsAtual')
-          Loading.show({message: 'Carregando Usuários...'})
+          Loading.show({
+              spinner: OrbitSpinner,
+              spinnerSize: 140,
+              message: 'Carregando Usuários...'
+          })
+          
           axios.get(API + 'usuario/obterUsuario')
           .then((res)=>{
             this.usuarios = res.data

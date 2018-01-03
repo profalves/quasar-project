@@ -201,7 +201,7 @@ export default {
         rowHeight: localStorage.getItem('rowHeight') + 'px',
         responsive: (localStorage.getItem('responsive') === 'true'),
         pagination: {
-          rowsPerPage: 5,
+          rowsPerPage: parseInt(localStorage.getItem('rowsPerPage')),
           options: [5, 10, 15, 30, 50, 100]
         },
         selection: localStorage.getItem('selection'),
@@ -386,26 +386,24 @@ export default {
       localStorage.setItem('cadMode', 'edit')
       //this.$router.push({ path: '/cadcliente' })
         Alert.create({
-          name: 'Pessoa' + row.tipo,
           enter: 'bounceInRight',
           leave: 'bounceOutRight',
           color: 'positive',
           icon: 'tag_faces',
-          html: `Nome: ` + row.nome + `<br>`,
+          html: `Nome: ` + row.nome + `<br>` +
+                `Tipo: ` + row.tipo,
           position: 'bottom-center',
           actions: [
             {
               label: 'Abrir',
               handler: () => {
                 this.$router.push({ path: '/cadcliente' })
-                console.log('acting')
               }
             },
             {
               label: 'Fechar',
               handler: () => {
-                alert.close()
-                console.log('aborting')
+                return;
               }
             }
           ]

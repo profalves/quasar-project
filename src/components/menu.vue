@@ -50,7 +50,7 @@
         <q-item to="/cadnotas?q=save" >
           <q-item-side icon="insert_drive_file" />
           <q-side-link to="/cadnotas?q=save" class="link">
-               <q-item-main label="Entradas de Notas" sublabel="Cadastros de NFe de Compras" />
+               <q-item-main label="Entrada de Notas" sublabel="Cadastros de NFe de Compras" />
           </q-side-link>
         </q-item>
         <q-item to="/relatorios">
