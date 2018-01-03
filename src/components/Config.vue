@@ -149,6 +149,9 @@
                             sublabel="Configure a Empresa ao qual deseja conectar"
                             :opened="bdConfig"
                             >
+              <p id="chip">
+                <q-chip tag closable color="black" @close="close"><i>Para salvar um banco, o mesmo deve ser digitado e depois clicar no botão adicionar(+)</i></q-chip>
+              </p>
               <div class="row">
                 <div class="col">
                   <q-field
@@ -461,9 +464,7 @@ export default {
         if(this.edit === true){ //editar
             localStorage.setItem('Empresa' + this.filtro, this.empresa)
             localStorage.setItem('ip' + this.filtro, this.ip)
-            if(this.porta > 0){
-                localStorage.setItem('porta' + this.filtro, this.porta)
-            }
+            localStorage.setItem('porta' + this.filtro, this.porta)
             localStorage.setItem('banco' + this.filtro, this.banco)
             localStorage.setItem('senhaBD' + this.filtro, this.senhaBd)
             this.empresa = ''
@@ -550,7 +551,9 @@ export default {
         this.bancosDados = []
         this.listarBancos()
     },
-    
+    close(){
+        document.getElementById('chip').remove()
+    }
     
   },
   created (){

@@ -14,6 +14,7 @@ import Vue from 'vue'
 import Quasar from 'quasar'
 import router from './router'
 import './themes/index'
+import './themes/spinners'
 import store from './vuex/store'
 
 
@@ -26,7 +27,7 @@ if (__THEME === 'mat') {
   require('quasar-extras/roboto-font')
 }
 import 'quasar-extras/material-icons'
-// import 'quasar-extras/ionicons'
+import 'quasar-extras/ionicons'
 import 'quasar-extras/fontawesome'
 import 'quasar-extras/animate'
 
@@ -49,7 +50,8 @@ Vue.use(money)
 import JsPDF from 'jspdf'
 Vue.use(JsPDF)
 
-//============= FILTERS============================
+
+//============= FILTERS ============================
 
 Vue.filter('formatMoney', function (value) {
     if(!value) {return 'R$ 0,00'}
@@ -77,7 +79,6 @@ Vue.filter('formatDate', function (value) {
     if(value === null) {return null}
     return new Date(value).toLocaleString('pt-BR', {year: 'numeric',month: '2-digit',day: '2-digit'})
 })
-
 
 //============== STARTING QUASAR ==============
 

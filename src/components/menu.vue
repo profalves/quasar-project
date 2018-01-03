@@ -8,13 +8,13 @@
 
       <q-list no-border link inset-delimiter>
         <q-list-header>Menu</q-list-header>
-        <q-item>
+        <q-item to="/">
           <q-item-side icon="flag" />
           <q-side-link to="/" class="link">
               Inicio
           </q-side-link>
         </q-item>
-        <q-item>
+        <q-item to="/clientes">
           <q-item-side icon="people" />
           <q-side-link to="/clientes" class="link">
               <q-item-main label="Pessoas" sublabel="Cadastros de clientes, fornecedores, etc." />
@@ -40,40 +40,40 @@
           </q-list>  
         </q-collapsible>
         
-        <q-item>
+        <q-item to="/contas">
           <q-item-side icon="account_balance_wallet"/>
           <q-side-link to="/contas" class="link">
                <q-item-main label="Contas" sublabel="Cadastros Financeiros" />
           </q-side-link>
           
         </q-item>
-        <q-item>
+        <q-item to="/cadnotas?q=save" >
           <q-item-side icon="insert_drive_file" />
           <q-side-link to="/cadnotas?q=save" class="link">
                <q-item-main label="Entradas de Notas" sublabel="Cadastros de NFe de Compras" />
           </q-side-link>
         </q-item>
-        <q-item>
+        <q-item to="/relatorios">
           <q-item-side icon="insert_chart" />
           <q-side-link to="/relatorios" class="link">
                 <q-item-main label="Relatórios" sublabel="Relatórios Gerais" />
           </q-side-link>
         </q-item>
-        <q-item>
+        <q-item to="/usuarios">
           <q-item-side icon="person" />
           <q-side-link to="/usuarios" class="link">
                 <q-item-main label="Usuários" sublabel="Cadastros de Usuários, Alteração de Senhas, etc." />
           </q-side-link>
           
         </q-item>
-        <q-item>
+        <q-item to="/config">
           <q-item-side icon="settings" />
           <q-side-link to="/config" class="link">
                 <q-item-main label="Configurações" sublabel="Configurações Gerais" />
           </q-side-link>
           
         </q-item>
-        <q-item>
+        <q-item to="/login">
           <q-item-side icon="exit_to_app" />
           <q-side-link to="/login" class="link">
                 <q-item-main label="Sair" />

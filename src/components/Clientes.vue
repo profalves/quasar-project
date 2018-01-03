@@ -163,6 +163,7 @@
 <script>
 import { Alert, Dialog, Toast, Loading, clone } from 'quasar'
 import axios from 'axios'
+import { OrbitSpinner } from 'epic-spinners'
 
 const API = localStorage.getItem('wsAtual')
   
@@ -285,9 +286,14 @@ export default {
       
     }
   },
+  //components: { OrbitSpinner },
   methods: {
     listarPessoas(){
-      Loading.show({message: 'Aguardando Dados...'})
+      Loading.show({
+          spinner: OrbitSpinner,
+          spinnerSize: 140,
+          message: 'Aguardando Dados...'
+      })
       axios.get(API + 'pessoa/obterpessoa')
       .then((res)=>{
           //console.log(res.data)

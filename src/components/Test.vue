@@ -13,12 +13,6 @@
          <q-btn icon="create" 
                 big 
                 color="primary"
-                @click="table"
-                >Table PDF</q-btn>
-         <br><br>
-         <q-btn icon="create" 
-                big 
-                color="primary"
                 @click="html"
                 >html PDF</q-btn>
          <br><br>
@@ -34,7 +28,7 @@
      <q-btn icon="fa-whatsapp" 
             big 
             color="primary"
-            @click="launch('https://api.whatsapp.com/send?phone=5575991731593&text=I Love You')"
+            @click="launch('https://api.whatsapp.com/send?phone=5575991767045&text=Enviando um teste...')"
             >WhatsApp</q-btn>
      <br>Enviar para o numero especifico uma mensagem pronta<br>
      <q-btn icon="fa-whatsapp" 
@@ -44,34 +38,30 @@
             >WhatsApp All</q-btn>
      <br>Enviar para todos uma mensagem<br>
      
-    <table class="q-table" :class="computedClasses" style="margin-top: 50px">
-      <thead>
-        <tr>
-          <th class="text-left">Name</th>
-          <th class="text-right">Price</th>
-          <th class="text-right">In Stock</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="text-left">Item #1</td>
-          <td class="text-right">$10.11</td>
-          <td class="text-right">101</td>
-        </tr>
-        <tr>
-          <td class="text-left">Item #2</td>
-          <td class="text-right">$8.88</td>
-          <td class="text-right">34</td>
-        </tr>
-        <tr>
-          <td class="text-left">Item #3</td>
-          <td class="text-right">$0.15</td>
-          <td class="text-right">1670</td>
-        </tr>
-      </tbody>
-    </table>    
+    <div id="table">
+        <table class="q-table" style="margin-left: 10px">
+          <thead>
+            <tr>
+              <th class="text-left">Name</th>
+              <th class="text-right">Price</th>
+              <th class="text-right">In Stock</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="item in table">
+              <td class="text-left">{{item.name}}</td>
+              <td class="text-right">{{item.gender}}</td>
+              <td class="text-right">{{item.mass}}</td>
+            </tr>
+            
+          </tbody>
+        </table>
+    </div>    
     
-    <hr> 
+    <hr>
+    
+    <div class="row">
+    
     <h1>Spinners</h1>
       
     <flower-spinner
@@ -215,6 +205,8 @@
       :color="'#ff1d5e'"        
       @click="BreedingRhombusSpinner"
     />
+     
+    </div>
       
   </div>
 </template>
@@ -225,18 +217,7 @@ import table from 'data/table.json'
 //import axios from 'axios'
 import { openURL, Loading } from 'quasar'
 const $ = require("jquery");
-    
-const doc = new JsPDF()
-require('jspdf-autotable');
-/*require( 'jszip' );
-require( 'pdfmake' );
-require( 'datatables.net' )();
-require( 'datatables.net-autofill' )();
-require( 'datatables.net-buttons' )();
-require( 'datatables.net-buttons/js/buttons.colVis.js' )();
-require( 'datatables.net-buttons/js/buttons.flash.js' )();
-require( 'datatables.net-buttons/js/buttons.html5.js' )();
-require( 'datatables.net-buttons/js/buttons.print.js' )();*/
+
     
 import {
     AtomSpinner,
@@ -352,32 +333,47 @@ export default {
       // want to be respectful there is no need to bother them any more.
     },
     pdf(){
+        let doc = new JsPDF('p', 'pt', 'letter')
         doc.text(10, 10, 'This is a test')
         //doc.autoPrint() //aciona a impressão automática do documento
         doc.save('autoprint.pdf')
     },
-    table(){
-        let elem = document.getElementById('table');
-        let data = doc.autoTableHtmlToJson(elem);
+    html() {
+        let doc = new JsPDF('p', 'pt', 'letter')
+        // source can be HTML-formatted string, or a reference
+        // to an actual DOM element from which the text will be scraped.
+        let source = $('#table')[0];
 
-        //let opts = {}; 
-        doc.autoTable(data.columns, data.rows);
+        // we support special element handlers. Register them with jQuery-style 
+        // ID selector for either ID or node name. ("#iAmID", "div", "span" etc.)
+        // There is no support for any other type of selectors 
+        // (class, of compound) at this time.
+        let specialElementHandlers = {
+            // element with id of "bypass" - jQuery style selector
+            '#bypassme': function (element, renderer) {
+                // true = "handled elsewhere, bypass text extraction"
+                return true
+            }
+        };
+        let margins = {
+            top: 80,
+            bottom: 60,
+            left: 20,
+            width: 900
+        };
+        // all coords and widths are in jsPDF instance's declared units
+        // 'inches' in this case
+        doc.fromHTML(
+            source, // HTML string or DOM elem ref.
+            margins.left, // x coord
+            margins.top, { // y coord
+                'width': margins.width, // max width of content on PDF
+                'elementHandlers': specialElementHandlers
+        })
 
-        doc.save("table.pdf");
+        doc.save('Test.pdf');
     },
-    html(){
-        $(document).ready(function() {
-            $('#table').DataTable( {
-                dom: 'Bfrtip',
-                buttons: [
-                    'copyHtml5',
-                    'excelHtml5',
-                    'csvHtml5',
-                    'pdfHtml5'
-                ]
-            } );
-        } );
-    },
+    
     AtomSpinner(){
       Loading.show({
         spinner: AtomSpinner,

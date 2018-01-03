@@ -373,7 +373,9 @@
               
       <!--Telefones-->
       <q-collapsible :opened="open.tel" icon="contact_phone" label="Telefones">
-        <i>Para salvar um telefone, o mesmo deve ser digitado e depois clicar no botão de adicionar (+)</i><br>
+        <p id="chip">
+          <q-chip tag closable color="black" @close="close"><i>Para salvar um banco, o mesmo deve ser digitado e depois clicar no botão adicionar(+)</i></q-chip>
+        </p>
         
         <q-list v-for="(item, index) in CadPessoa.pessoasTelefone" :key="index" style="margin-top:15px">
           
@@ -486,7 +488,9 @@
       <!--Emails-->
       <q-collapsible :opened="open.email" icon="contact_mail" label="Emails">
         
-        <i>Para salvar um email, o mesmo deve ser digitado e depois clicar no botão de adicionar (+)</i><br>
+        <p id="chip">
+          <q-chip tag closable color="black" @close="close"><i>Para salvar um banco, o mesmo deve ser digitado e depois clicar no botão adicionar(+)</i></q-chip>
+        </p>
         
         <q-list v-for="(item, index) in CadPessoa.enderecoElet" :key="index" style="margin-top:15px">
           
@@ -901,6 +905,7 @@ import axios from 'axios'
 import VMasker from 'vanilla-masker'
 import { required, minLength, maxLength, email } from 'vuelidate/lib/validators'
 import { Dialog, Toast, Loading } from 'quasar'
+import { RadarSpinner, SelfBuildingSquareSpinner } from 'epic-spinners'
 
 //dev
 const API = localStorage.getItem('wsAtual')
@@ -1090,6 +1095,7 @@ export default {
         gutter: 'none', // compact, loose
     }
   },
+  //components: { OrbitSpinner },
   computed: {
     // uma função "getter" computada (computed getter)
     computedClasses () {
@@ -1217,7 +1223,11 @@ export default {
         
     },
     buscarCep(){
-      Loading.show({message: 'Enviando Dados...'})
+      Loading.show({
+          spinner: SelfBuildingSquareSpinner,
+          spinnerSize: 150,
+          message: 'Consultando CEP...'
+      })
       axios.get('http://api.postmon.com.br/v1/cep/' + this.cep)
       .then((res)=>{
           Loading.hide()
@@ -1874,6 +1884,9 @@ export default {
         this.open.obs=true
         this.open.cred=false
     },
+    close(){
+        document.getElementById('chip').remove()
+    }
     
   },
   created(){
