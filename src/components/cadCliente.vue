@@ -475,10 +475,16 @@
                   <q-item-separator />
                   <q-item>
                     <div class="row">
-                        <div class="col-6">
+                        <div class="col">
+                            <a :href='`tel:${item.numero}`'><i class="fa fa-phone fa-2x text-primary whats"></i></a>
+                        </div>
+                        <div class="col-2 offset-1">
+                            <a @click="enviar(item)"><i class="fa fa-whatsapp fa-2x text-positive whats"></i></a>
+                        </div>
+                        <div class="col-2 offset-1">
                             <a color="info"><i class="material-icons fa-2x">mode_edit</i></a>
                         </div>
-                        <div class="col-6">
+                        <div class="col-2 offset-1">
                             <i class="material-icons fa-2x mHover text-negative" color="negative">delete_forever</i>
                         </div>
                     </div>
@@ -579,10 +585,13 @@
                   <q-item-separator />
                   <q-item>
                     <div class="row">
-                        <div class="col-6">
+                        <div class="col-4">
+                            <a :href='`mailto:${email.endereco}`'><i class="fa fa-envelope fa-2x text-primary whats"></i></a>
+                        </div>
+                        <div class="col-3 offset-1">
                             <a color="info"><i class="material-icons fa-2x">mode_edit</i></a>
                         </div>
-                        <div class="col-6">
+                        <div class="col-3 offset-1">
                             <i class="material-icons fa-2x mHover text-negative" color="negative">delete_forever</i>
                         </div>
                     </div>
@@ -604,6 +613,7 @@
                         :options="listaFamiliasPessoas"
                         @click="listarFamilias"
                         @change="novaFamilia"
+                        
                     />
                 </q-field>
             </div>
@@ -680,7 +690,7 @@
                     helper="Limite"
                   >
                     
-                    <money v-model="CadPessoa.pessoa.limiteCredito" 
+                    <money v-model.number="CadPessoa.pessoa.limiteCredito"
                            @blur="colapCred"
                            v-bind="money"
                            class="mdInput"
@@ -901,7 +911,7 @@
 import axios from 'axios'
 import VMasker from 'vanilla-masker'
 import { required, minLength, maxLength, email } from 'vuelidate/lib/validators'
-import { Dialog, Toast, Loading } from 'quasar'
+import { Dialog, Toast, Loading, openURL } from 'quasar'
 import { SelfBuildingSquareSpinner } from 'epic-spinners'
 
 //dev
@@ -947,7 +957,7 @@ export default {
                 email : '',
                 skype : '',
                 site : '',
-                codigoVendedor : 1, //not null
+                codigoVendedor : parseInt(localStorage.getItem('codIdUser')), //not null
                 observacoes : '',
                 pj : false, //not null
                 dataNasc : '',
@@ -1146,7 +1156,7 @@ export default {
       var lista = []
       
       lista = a.map(row => ({
-          label: row.nome, 
+          label: row.nome,
           value: row.codigo
       }))
       
@@ -1891,6 +1901,28 @@ export default {
         this.open.obs=true
         this.open.cred=false
     },
+    enviar(item) {
+        Dialog.create({
+          title: 'Enviar mensagem via Whatsapp',
+          message: 'Digite a sua mensagem aqui abaixo e clique em enviar.',
+          form: {
+            msg: {
+              type: 'textarea',
+              label: 'Mensagem',
+              model: ''
+            }
+          },
+          buttons: [
+            'Cancel',
+            {
+              label: 'Ok',
+              handler: (data) => {  
+                openURL('https://api.whatsapp.com/send?phone=' + 55 + item.numero + '&text=' + data.msg)
+              }
+            }
+          ]
+        })
+    },
     
   },
   created(){
@@ -1971,6 +2003,10 @@ export default {
     #genero {
         text-align: center;
         margin-top: 15px;
+    }
+    
+    .whats {
+        cursor: pointer;
     }
     
 </style>

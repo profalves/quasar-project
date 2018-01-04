@@ -35,6 +35,10 @@
       style="background-color:white;"
     >
       <template slot="selection" scope="props">
+        
+        <q-btn flat color="primary" @click="whatsapp(props)">
+          <q-icon class="fa fa-whatsapp fa-2x" />
+        </q-btn>
         <q-btn flat color="primary" @click="editar(props)" v-if="visivel">
           <q-icon name="edit" />
         </q-btn>
@@ -161,9 +165,9 @@
 </template>
 
 <script>
-import { Alert, Dialog, Toast, Loading, clone } from 'quasar'
+import { Alert, Dialog, Toast, Loading, clone, openURL } from 'quasar'
 import axios from 'axios'
-import { OrbitSpinner } from 'epic-spinners'
+import { AtomSpinner } from 'epic-spinners'
 
 const API = localStorage.getItem('wsAtual')
   
@@ -231,7 +235,7 @@ export default {
           filter: true,
           sort: true,
           type: 'number',
-          width: '50px'
+          width: '60px'
         },
         {
           label: 'Nome',
@@ -264,9 +268,17 @@ export default {
         {
           label: 'Telefone',
           field: 'telResid',
-          //sort: true,
+          sort: true,
           filter: true,
-          type: 'string',
+          type: 'number',
+          width: '100px'
+        },
+        {
+          label: 'Celular',
+          field: 'celular1',
+          sort: true,
+          filter: true,
+          type: 'number',
           width: '100px'
         },
         
@@ -290,7 +302,7 @@ export default {
   methods: {
     listarPessoas(){
       Loading.show({
-          spinner: OrbitSpinner,
+          spinner: AtomSpinner,
           spinnerSize: 140,
           message: 'Aguardando Dados...'
       })
@@ -308,7 +320,7 @@ export default {
     editar (props) {
       console.log(props.rows[0].data.codigo)
       let row = props.rows[0].data
-      localStorage.setItem('codCab', row.codigo)
+      localStorage.setItem('codPessoa', row.codigo)
       localStorage.setItem('cadMode', 'edit')
       this.$router.push({ path: '/cadcliente' }) 
     },
@@ -362,6 +374,87 @@ export default {
             }
           ]
       })
+    },
+    whatsapp (props) {
+      let row = props.rows
+      
+      Dialog.create({
+          title: 'Enviar mensagem via Whatsapp',
+          message: 'Digite a sua mensagem aqui abaixo e clique em enviar.',
+          form: {
+            msg: {
+              type: 'textarea',
+              label: 'Mensagem',
+              model: ''
+            }
+          },
+          buttons: [
+            'Cancel',
+            {
+              label: 'Ok',
+              handler: (data) => {
+                  let a = row
+                  let obj = {}
+
+                  for (let i=0; i < a.length; i++) {
+                      obj = a[i].data
+                      let numero  = obj.celular1
+                      /*console.log(obj)
+                      console.log(numero)
+                      console.log(data.msg)*/
+                      openURL('https://api.whatsapp.com/send?phone=' + 55 + numero + '&text=' + data.msg)
+                      
+                  }
+              }
+            }
+          ]
+      })
+      /*Dialog.create({
+          title: 'Excluir',
+          message: 'Tem certeza que deseja excluir ' + this.excluidos.length + ' registro(s)?',
+          buttons: [
+            {
+              label: 'Não! Cancela',
+              color: 'negative',
+              raised: true,
+              style: 'margin-top: 20px',
+              handler () {
+                Toast.create('Cancelado...')
+              }
+            },
+            {
+              label: 'Sim! Pode excluir',
+              color: 'positive',
+              raised: true,
+              style: 'margin-top: 20px',
+              handler: () => {
+                  let a = this.excluidos
+                  let obj = {}
+
+                  for (let i=0; i < a.length; i++) {
+                      obj = a[i].data
+                      obj.excluido = true
+                      obj.cpf = 0
+                      let cliente  = obj.nome
+                      console.log(obj)
+                      Loading.show({message: 'Aguardando Dados...'})
+                      axios.post(API + 'pessoa/excluirPessoa?codPessoa=' + obj.codigo)
+                          .then((res)=>{
+                              Toast.create(cliente + ' foi excluido com sucesso')
+                              console.log(res)
+                              Loading.hide()
+                              this.listarPessoas()
+                          })
+                          .catch((e)=>{
+                            console.log(e)
+                            return
+                          })  
+                      
+                  }
+              }
+            }
+          ]
+      })*/
     },
     refresh (done) {
       this.timeout = setTimeout(() => {

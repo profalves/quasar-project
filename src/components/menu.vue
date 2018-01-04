@@ -8,11 +8,9 @@
 
       <q-list no-border link inset-delimiter>
         <q-list-header>Menu</q-list-header>
-        <q-item to="/">
+        <q-item to="/home">
           <q-item-side icon="flag" />
-          <q-side-link to="/" class="link">
-              Inicio
-          </q-side-link>
+          <q-item-main label="Inicio" />
         </q-item>
         <q-item to="/clientes">
           <q-item-side icon="people" />

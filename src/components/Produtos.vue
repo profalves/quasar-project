@@ -147,7 +147,7 @@
 <script>
 import { Alert, Dialog, Toast, Loading, clone } from 'quasar'
 import axios from 'axios'
-import { OrbitSpinner } from 'epic-spinners'
+import { AtomSpinner } from 'epic-spinners'
 
 const API = localStorage.getItem('wsAtual')
   
@@ -381,7 +381,7 @@ export default {
     },
     listarProdutos(){
       Loading.show({
-          spinner: OrbitSpinner,
+          spinner: AtomSpinner,
           spinnerSize: 140,
           message: 'Aguardando Dados...'
       })

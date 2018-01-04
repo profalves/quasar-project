@@ -254,6 +254,16 @@
             </div>
 
             </q-collapsible>
+            <q-collapsible  icon="delete_forever" 
+                            label="Restaurar Configurações iniciais" 
+                            sublabel="Resetar todas as configurações">
+                <q-btn
+                    color="negative"
+                    icon="warning"
+                    @click="resetarTudo"
+                >Resetar Tudo</q-btn>    
+                                
+            </q-collapsible>
           </q-list>
       </div>
     </div>
@@ -561,6 +571,35 @@ export default {
         this.bancosDados = []
         this.listarBancos()
     },
+    resetarTudo(){
+        Dialog.create({
+          title: 'Você tem certeza que deseja voltar TODAS para as configurações iniciais do sistema?',
+          message: 'Depois de confirmado, esta ação irá excluir todas as configurações e NÃO poderá ser revertida...',
+          buttons: [
+            {
+              label: 'Não',
+              color: 'negative',
+              raised: true,
+              style: 'margin-top: 20px',
+              handler () {
+                Toast.create('NÃO RESETADO: As configurações do aplicativo continuam as mesmas')
+              }
+            },
+            {
+              label: 'Sim',
+              color: 'positive',
+              raised: true,
+              style: 'margin-top: 20px',
+              handler: () => {
+                localStorage.clear()
+                this.$router.push('login')
+                Toast.create('Todas as configurações foram deletadas')
+              }
+            }
+          ]
+        })
+        
+    }
     
   },
   created (){

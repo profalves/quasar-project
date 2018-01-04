@@ -1,7 +1,7 @@
 <template>
   <div>
     
-    <h5>Vendas Estoque</h5>
+    <h5>Vendas Por Produtos</h5>
     <!-- Botão flutuante -->
     <q-fixed-position class="over" corner="bottom-left" :offset="[18, 18]">
         <q-btn 

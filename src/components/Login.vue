@@ -21,46 +21,46 @@
       <img src="../../img/logo2.png" width="80%" id="logo"/>
       
       <form>
-      <q-field
-        helper="Empresa"
-      >
-        <q-select
-            align="center"
-            v-model="bd"
-            :options="listaEmpresas" 
-            @change="setBancoAtual"
-            @blur="listarUsuarios" 
-        />
-      </q-field>
-      <q-field
-        helper="Usuário"
-      >
-        <q-select
-            align="center"
-            v-model="user"
-            :options="listaUsuarios"
-            filter
-            filter-placeholder="Procurar..."
-            autofocus-filter
-        />
-      </q-field>
-      <q-field
-        helper="Senha"
-      >
-        <q-input
-            align="center"
-            v-model="pass"
-            type="password"
-            clearable
-        />
-      </q-field>
-      <q-field>
-        <q-btn icon="person" 
-               color="faded" 
-               @click="login"
-               >Entrar</q-btn>
-      </q-field>
-    </form>    
+          <q-field
+            helper="Empresa"
+          >
+            <q-select
+                align="center"
+                v-model="bd"
+                :options="listaEmpresas" 
+                @change="setBancoAtual"
+                @blur="listarUsuarios" 
+            />
+          </q-field>
+          <q-field
+            helper="Usuário"
+          >
+            <q-select
+                align="center"
+                v-model="user"
+                :options="listaUsuarios"
+                filter
+                filter-placeholder="Procurar..."
+                autofocus-filter
+            />
+          </q-field>
+          <q-field
+            helper="Senha"
+          >
+            <q-input
+                align="center"
+                v-model="pass"
+                type="password"
+                clearable
+            />
+          </q-field>
+          <q-field>
+            <q-btn icon="person" 
+                   color="faded" 
+                   @click="login"
+                   >Entrar</q-btn>
+          </q-field>
+      </form>    
     </div>
 </div>
 </template>
@@ -175,6 +175,7 @@ export default {
             localStorage.setItem('codUser', res.data.codigo)
             localStorage.setItem('nameUser', res.data.nome)
             localStorage.setItem('nomeEmpresa', localStorage.getItem('Empresa' + this.bd))
+            localStorage.setItem('codIdUser', res.data.codigoIdentificacao)
             //console.log(res.data)
             this.$router.push('/')
           })
@@ -243,6 +244,7 @@ export default {
                 localStorage.setItem('bodyHeightProp', 'auto')
                 localStorage.setItem('bodyHeight', 200)
                 localStorage.setItem('alturaGrafico', 100)
+                localStorage.setItem('rowsPerPage', 5)
                 Loading.hide()
             }
             

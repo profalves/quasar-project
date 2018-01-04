@@ -174,10 +174,11 @@
                     filter
                     v-model="CadProduto.produto.codFamilia"
                     :options="listaFamiliasProdutos"
+                    @change="novaFamilia"
                 />
             </q-field>   
         </div>
-        <div class="col-2 btn-plus" >
+        <!--<div class="col-2 btn-plus" >
             
             <q-btn 
                rounded
@@ -185,12 +186,12 @@
                @click="novaFamilia">
                <q-icon name="add" />
             </q-btn>
-        </div>
+        </div>-->
         
     </div>
     
     <div class="row">
-        <div class="col-10 col-md-4">
+        <div class="col-xs-12 col-md-6">
             <q-field
                 icon="store"
              >
@@ -199,11 +200,12 @@
                     filter
                     v-model="CadProduto.produto.codCategoria"
                     :options="listaCategorias"
+                    @change="novaCategoria"
                 />
             </q-field>
             
         </div>
-        <div class="col-2 btn-plus" >
+        <!--<div class="col-2 btn-plus" >
             <q-btn 
                rounded
                color="primary" 
@@ -212,8 +214,8 @@
             </q-btn>
             
             
-        </div>
-        <div class="col-10 col-md-4">
+        </div>-->
+        <div class="col-xs-12 col-md-6">
             <q-field
                 icon="store"
              >
@@ -222,21 +224,22 @@
                     filter
                     v-model="CadProduto.produto.codMarca"
                     :options="listaMarcas"
+                    @change="novaMarca"
                 />
             </q-field>   
         </div>
-        <div class="col-2 btn-plus" >
+        <!--<div class="col-2 btn-plus" >
             <q-btn 
                rounded
                color="primary" 
                @click="novaMarca">
                <q-icon name="add" />
             </q-btn>    
-        </div>
+        </div>-->
     </div>
     
     <div class="row">
-        <div class="col-10 col-md-4">
+        <div class="col-xs-12 col-md-6">
             <q-field
                 icon="format_color_fill"
              >
@@ -245,10 +248,11 @@
                     filter
                     v-model="CadProduto.produto.unmed"
                     :options="listaMedidas"
+                    @change="novaUnidade"
                 />
             </q-field>   
         </div>
-        <div class="col-2 btn-plus" >
+        <!--<div class="col-2 btn-plus" >
             
             <q-btn 
                rounded
@@ -256,7 +260,7 @@
                @click="novaUnidade">
                <q-icon name="add" />
             </q-btn>
-        </div>
+        </div>-->
         <div class="col" id="estoque">
           <q-field
             icon="storage"
@@ -477,7 +481,10 @@
             </div>
         </q-collapsible>
            
-        <q-collapsible icon="add_circle" label="Matéria-Prima">
+        <q-collapsible icon="add_circle" 
+                       label="Matéria-Prima" 
+                       v-if="visivel"
+                       >
             <div class="row">
                 <div class="col">
                     <q-field
@@ -576,8 +583,9 @@
                 </table>
             </div>
         </q-collapsible>
+        
     </q-list>
-    
+    <div style="margin-bottom: 30px"></div>
 </div>
     
 </template>
@@ -762,6 +770,11 @@ export default {
           label: row.nome, 
           value: row.codigo
       }))
+        
+      lista.unshift({
+          label: 'NOVO...', 
+          value: 0
+      })
       
       return lista
     },
@@ -774,6 +787,11 @@ export default {
           value: row.codigo
       }))
       
+      lista.unshift({
+          label: 'NOVO...', 
+          value: 0
+      })
+        
       return lista
     },
     listaMarcas: function () {
@@ -784,6 +802,11 @@ export default {
           label: row.nome, 
           value: row.codigo
       }))
+        
+      lista.unshift({
+          label: 'NOVO...', 
+          value: 0
+      })
       
       return lista
     },
@@ -796,6 +819,11 @@ export default {
           value: row.codigo
       }))
       
+      lista.unshift({
+          label: 'NOVO...', 
+          value: 0
+      })
+        
       return lista
     },
     listaProdutos: function () {
@@ -916,6 +944,10 @@ export default {
       })
     },
     novaFamilia(){
+        if(this.CadProduto.produto.codFamilia !== 0){
+            return;
+        }
+        
         Dialog.create({
           title: 'Nova Família de Produtos',
           message: 'Digite o nome da nova família e clique em ok.',
@@ -957,6 +989,8 @@ export default {
             }
           ]
         })
+        
+        this.CadProduto.produto.codFamilia = ''
     
     },
     listarCategorias(){
@@ -969,6 +1003,10 @@ export default {
       })
     },
     novaCategoria(){
+        if(this.CadProduto.produto.codCategoria !== 0){
+            return;
+        }
+        
         Dialog.create({
           title: 'Nova Categoria',
           message: 'Digite o nome da nova categoria e clique em ok.',
@@ -1012,6 +1050,7 @@ export default {
             }
           ]
         })
+        this.CadProduto.produto.codCategoria = ''
     
     },
     listarMarcas(){
@@ -1024,6 +1063,10 @@ export default {
       })
     },
     novaMarca(){
+        if(this.CadProduto.produto.codMarca !== 0){
+            return;
+        }
+        
         Dialog.create({
           title: 'Nova Marca',
           message: 'Digite o nome da nova marca e clique em ok.',
@@ -1066,6 +1109,7 @@ export default {
             }
           ]
         })
+        this.CadProduto.produto.codMarca = ''
     
     },
     listarUnidadesMedida(){
@@ -1078,6 +1122,10 @@ export default {
       })
     },
     novaUnidade(){
+        if(this.CadProduto.produto.unmed !== 0){
+            return;
+        }
+        
         Dialog.create({
           title: 'Nova Unidade de Medida de Produtos',
           message: 'Digite o nome da nova unidade de medida (É suportado apenas 6 (seis) caracteres), depois digite o seu significado (é preferivel em 1 (uma) palavra) e clique em ok.',
@@ -1126,6 +1174,8 @@ export default {
             }
           ]
         })
+        
+        this.CadProduto.produto.unmed = ''
     
     },
       
@@ -1225,6 +1275,7 @@ export default {
       
     if(localStorage.getItem('cadMode') === 'edit'){
         this.btnDelete = true
+        this.visivel = true
     }
 
   }

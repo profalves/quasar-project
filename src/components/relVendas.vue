@@ -5,7 +5,7 @@
       <q-item link to="/relVendasEstoque">
         <q-item-side />
         <q-item-main>
-          <q-item-tile label>Vendas por Estoque</q-item-tile>
+          <q-item-tile label>Vendas por Produto</q-item-tile>
           <q-item-tile sublabel>Totais de produtos vendidos em um determinado período</q-item-tile>
         </q-item-main>
       </q-item>
