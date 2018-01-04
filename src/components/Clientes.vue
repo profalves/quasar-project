@@ -36,9 +36,9 @@
     >
       <template slot="selection" scope="props">
         
-        <q-btn flat color="primary" @click="whatsapp(props)">
+        <!--<q-btn flat color="primary" @click="whatsapp(props)">
           <q-icon class="fa fa-whatsapp fa-2x" />
-        </q-btn>
+        </q-btn>-->
         <q-btn flat color="primary" @click="editar(props)" v-if="visivel">
           <q-icon name="edit" />
         </q-btn>

@@ -328,28 +328,28 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="item in tabPreco">
+                    <tr v-for="(item, index) in tabPreco">
                       <td class="text-left">{{ item.nome }}</td>
                       <td class="text-left">
-                        <money v-model="preco"
+                        <money v-model="tabPreco[index].ml"
                                v-bind="perc"
                                class="mdInput"
                         />  
                       </td>
                       <td class="text-left">
-                        <money v-model="preco"
+                        <money v-model="CadProduto.precos[index].valor"
                                v-bind="money"
                                class="mdInput"
                         />  
                       </td>
                       <td class="text-left">
-                        <money v-model="preco"
+                        <money v-model="tabPreco[index].mLminima"
                                v-bind="perc"
                                class="mdInput"
                         />  
                       </td>
                       <td class="text-left">
-                        <money v-model="preco"
+                        <money v-model="CadProduto.precos[index].valorMinimo"
                                v-bind="money"
                                class="mdInput"
                         />  
@@ -421,7 +421,7 @@
 
                 <div class="col-4">
                     <q-field helper="Valor de Venda R$">
-                        <money v-model="valorVenda"
+                        <money v-model="CadProduto.produto.valor"
                                v-bind="money"
                                class="mdInput"
                         />
@@ -470,7 +470,7 @@
                       <td class="text-left">{{ CadProduto.produto.custo | decimal }}</td>
                       <td class="text-left">{{ item.valorVenda | decimal }}</td>
                       <td class="text-center">
-                        <a @click="" color="info"><i class="material-icons fa-2x">mode_edit</i></a>   
+                        <a @click="editarFator(item)" color="info"><i class="material-icons fa-2x">mode_edit</i></a>   
                       </td>
                       <td class="text-center">
                         <i class="material-icons fa-2x mHover text-negative" @click="" color="negative">delete_forever</i> 
@@ -660,6 +660,7 @@ export default {
         marcas: [],
         unidades: [],
         tabPreco: [],
+        tabPrecoValores: [],
         custo: 0.00,
         preco: 0.00,
         lucro: 0.00,
@@ -690,7 +691,7 @@ export default {
         
         fatorConv: {
             CodigoProduto: parseInt(localStorage.getItem('codProduto')),
-            UnMed: '',
+            unMed: '',
             FatorConversao: '',
             ValorVenda: 0.00,
             ConversaoEntrada: false,
@@ -842,6 +843,7 @@ export default {
             return this.CadProduto.produto.custo + (this.CadProduto.produto.custo*(this.CadProduto.produto.percLucro/100))
         }
     },
+    
   },
   methods: {
     goBack(){
@@ -1177,13 +1179,21 @@ export default {
         
         this.CadProduto.produto.unmed = ''
     
-    },
-      
+    }, 
     listarTabelasPreco(){
       axios.get(API + 'produto/obterProdutosTbPrecoCab')
       .then((res)=>{
         this.tabPreco = res.data
-        //console.log(res)
+      })
+      .catch((e)=>{
+        console.log(e)
+      })
+    },
+    listarTabPrecoDet(){
+      let cod = localStorage.getItem('codProduto')
+      axios.get(API + 'produto/obterProdutosTBPrecoDet?CodigoProduto=' + cod)
+      .then((res)=>{
+        this.CadProduto.precos = res.data
       })
       .catch((e)=>{
         console.log(e)
@@ -1245,7 +1255,7 @@ export default {
             console.log(res.data)
             console.log(res.response)
             console.log('sucesso')
-            //this.$router.push('produtos')
+            this.listarFatoresConv()
           })
           .catch((e)=>{
             Loading.hide()
@@ -1258,6 +1268,9 @@ export default {
                 Toast.create.negative(error[i].value)
             }
         })  
+    },
+    editarFator(item){
+        this.fatorConv = item    
     }
     
    
@@ -1274,8 +1287,9 @@ export default {
     t.todosProdutos()
       
     if(localStorage.getItem('cadMode') === 'edit'){
-        this.btnDelete = true
-        this.visivel = true
+        t.btnDelete = true
+        t.visivel = true
+        t.listarTabPrecoDet()
     }
 
   }

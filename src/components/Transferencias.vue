@@ -85,6 +85,7 @@
                 style="width: 100%">
               <thead>
                 <tr>
+                  <th class="text-left">Cód. Barras</th>
                   <th class="text-left" width="50%">Produto</th>
                   <th class="text-left">Quant.</th>
                   <th class="text-left">Excluir</th>
@@ -92,6 +93,7 @@
               </thead>
               <tbody>
                 <tr v-for="item in transferencias">
+                  <td class="text-left">{{item.codBarra}}</td>
                   <td class="text-left">{{item.nome}}</td>
                   <td class="text-right">{{item.qtd}}</td>
                   <td class="text-center"><i class="material-icons text-negative icon" @click="excluirProduto(index)">delete_forever</i></td>
@@ -130,6 +132,7 @@
 <script>
 import { Loading, Toast, Dialog } from 'quasar'
 import axios from 'axios'
+import { AtomSpinner } from 'epic-spinners'
     
 const API = localStorage.getItem('wsAtual')
   
@@ -247,7 +250,11 @@ export default {
           URL = API + 'produto/obterproduto?nomeProduto=' + this.search
       }
       
-      Loading.show()
+      Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Aguardando Dados...'
+      })
       axios.get(URL)
       .then((res)=>{
         Loading.hide()
@@ -268,7 +275,11 @@ export default {
      
     },
     todosProdutos(){
-        Loading.show({message: 'Aguardando dados...'})
+        Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Aguardando Dados...'
+        })
         axios.get(API + 'produto/obterproduto')
           .then((res)=>{
             Loading.hide()
@@ -361,6 +372,7 @@ export default {
         }
         this.transferencias.push({
             codigo: this.produto.codigo,
+            codBarra: this.produto.codBarra,
             nome: this.produto.nome,
             qtd: this.qtd
         })
@@ -378,8 +390,12 @@ export default {
         }
     },
     enviar(){
-        Loading.show({message: 'Enviando dados...'})
-        axios.post(API + 'produto/obterproduto')
+        Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Enviando Dados...'
+      })
+        axios.get(API + 'produto/obterproduto')
           .then((res)=>{
             Loading.hide()
             //console.log(res)

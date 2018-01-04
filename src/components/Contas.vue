@@ -312,14 +312,14 @@ export default {
           width: '100px'
         },
         
-        {
+        /*{
           label: 'SubCategoria',
           field: 'contaSubTipo',
           filter: true,
           sort: true,
           type: 'string',
           width: '100px'
-        }, 
+        }, */
           
         {
           label: 'Origem',

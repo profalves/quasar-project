@@ -36,8 +36,12 @@
             />  
 
            </div>
-
           </div>
+          
+          <q-btn color="primary"
+                 @click="getContas"
+                 >Visualizar</q-btn>
+          
           <q-collapsible label="Exibir gráfico" @open="montarGrafico">
             <div>
               <div class="layout-view">
@@ -84,9 +88,15 @@ const API = localStorage.getItem('wsAtual')
         despPagas: [],
         recPagar: [],
         recPagas: [],
+        somaDespPagar: 0,
+        somaDespPagas: 0,
+        somaRecPagar: 0,
+        somaRecPagas: 0,
+        despesas: 0,
+        receitas: 0,
         visivel: false,
-        dataInicial: '',
-        dataFinal: '',
+        dataInicial: '2017-07-01T00:00:00.000-03:00',
+        dataFinal: '2017-07-31T00:00:00.000-03:00',
           
         //datatime
         dias: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
@@ -116,7 +126,7 @@ const API = localStorage.getItem('wsAtual')
         }
       }
     },
-    computed:{
+    /*computed:{
         somaDespPagar(value){
           if(this.despPagar.length === 0){ return 0 }
           let a = this.despPagar.filter(d => d.vencimento >= this.dataInicial && d.vencimento <= this.dataFinal)
@@ -172,7 +182,7 @@ const API = localStorage.getItem('wsAtual')
             return this.somaRecPagar + this.somaRecPagas
         }
        
-    },
+    },*/
     methods:{
         listarDespesasAPagar(){
           Loading.show({message: 'Aguardando Dados...'})
@@ -226,6 +236,57 @@ const API = localStorage.getItem('wsAtual')
             Loading.hide()
           })  
         },
+        calcDespPagar(){
+          if(this.despPagar.length === 0){ return 0 }
+          let a = this.despPagar.filter(d => d.vencimento >= this.dataInicial && d.vencimento <= this.dataFinal)
+          let lista = []
+          
+          lista = a.map(row => row.valorTitulo)
+          
+          this.somaDespPagar = lista.reduce(function(a, b) {
+            return a + b;
+          });
+          
+        },
+        calcDespPagas(){
+          if(this.despPagas.length === 0){ return 0 }
+          let a = this.despPagas.filter(d => d.vencimento >= this.dataInicial && d.vencimento <= this.dataFinal)
+          let lista = []
+          
+          lista = a.map(row => row.valorPago)
+          
+          this.somaDespPagas = lista.reduce(function(a, b) {
+            return a + b;
+          });
+        },
+        calcRecPagar(){
+          if(this.recPagar.length === 0){ return 0 }
+          let a = this.recPagar.filter(d => d.vencimento >= this.dataInicial && d.vencimento <= this.dataFinal)
+          let lista = []
+          
+          lista = a.map(row => row.valorTitulo)
+          
+          this.somaRecPagar = lista.reduce(function(a, b) {
+            return a + b;
+          });   
+        },
+        calcRecPagas(){
+          if(this.recPagas.length === 0){ return 0 }
+          let a = this.recPagas.filter(d => d.vencimento >= this.dataInicial && d.vencimento <= this.dataFinal)
+          let lista = []
+          
+          lista = a.map(row => row.valorPago)
+          
+          this.somaRecPagas = lista.reduce(function(a, b) {
+            return a + b;
+          });
+        },
+        totalDespesas(){
+            this.despesas = this.somaDespPagar + this.somaDespPagas
+        },
+        totalReceitas(){
+            this.receitas = this.somaRecPagar + this.somaRecPagas
+        },
         montarGrafico(){
             let a = this.data.datasets[0].data
             let b = this.data.datasets[1].data
@@ -237,12 +298,22 @@ const API = localStorage.getItem('wsAtual')
         },
         getContas(){
             let t = this
-            t.listarDespesasAPagar()
-            t.listarDespesasPagas()
-            t.listarReceitasAPagar()
-            t.listarReceitasPagas()
+            
+            t.calcRecPagar()
+            t.calcRecPagas()
+            t.calcDespPagar()
+            t.calcDespPagas()
+            t.totalDespesas()
+            t.totalReceitas()
             t.visivel = true
         }
+    },
+    mounted(){
+        let t = this
+        t.listarDespesasAPagar()
+        t.listarDespesasPagas()
+        t.listarReceitasAPagar()
+        t.listarReceitasPagas()   
     }
   }
 </script>
