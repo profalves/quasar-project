@@ -366,7 +366,7 @@
             </div>
         </q-collapsible>
         
-        <q-collapsible icon="explore" label="Fator de Conversão">
+        <q-collapsible icon="explore" label="Fator de Conversão" v-if="visivel">
             <div class="row">
                 <div class="col-md-4">
                     <q-field
@@ -395,7 +395,7 @@
                      >
                         <q-input
                             float-label="Fator de conversão"
-                            v-model="fatorConv.FatorConversao"
+                            v-model="fatorConv.fatorConversao"
                         />
                     </q-field>   
                 </div>
@@ -421,7 +421,7 @@
 
                 <div class="col-4">
                     <q-field helper="Valor de Venda R$">
-                        <money v-model="CadProduto.produto.valor"
+                        <money v-model="fatorConv.valorVenda"
                                v-bind="money"
                                class="mdInput"
                         />
@@ -432,7 +432,7 @@
             
             <div class="row">
                 <div class="col">
-                    <q-checkbox v-model="checked" label="Conversão padrão para NF de entrada" />
+                    <q-checkbox v-model="fatorConv.conversaoEntrada" label="Conversão padrão para NF de entrada" />
                 </div>
             </div>
             
@@ -473,7 +473,7 @@
                         <a @click="editarFator(item)" color="info"><i class="material-icons fa-2x">mode_edit</i></a>   
                       </td>
                       <td class="text-center">
-                        <i class="material-icons fa-2x mHover text-negative" @click="" color="negative">delete_forever</i> 
+                        <i class="material-icons fa-2x mHover text-negative" @click="excluirFator(item)" color="negative">delete_forever</i> 
                       </td>
                     </tr>
                   </tbody>
@@ -487,94 +487,128 @@
                        >
             <div class="row">
                 <div class="col">
-                    <q-field
-                        icon="format_color_fill"
-                     >
-                        <q-select
-                            float-label="Matéria-Prima"
-                            filter
-                            v-model="matPrima.produto"
-                            :options="listaProdutos"
+                    <q-toolbar slot="header" inverted color="tertiary">
+                       <q-radio v-model="tipoCod" 
+                                val="barras"
+                                label="Cód. Barras" 
+                                @focus="search = ''" />
+                       <q-radio v-model="tipoCod" 
+                                val="emp" 
+                                label="Cód. Emp" 
+                                style="margin-left:20px"  
+                                @focus="search = ''" />
+                       <q-radio v-model="tipoCod" 
+                                val="nome"
+                                label="Nome" 
+                                style="margin-left:20px" 
+                                @focus="search = ''" />
+                    </q-toolbar>
+
+                    <q-search  
+                             v-model="search" 
+                             color="none" 
+                             style="margin-left: 10px"
+                             placeholder="Procurar..."
+                             @change="listarMateriaPrima"
+                             @keyup.enter="listarMateriaPrima"
+                             @blur="listarMateriaPrima"
+                             v-if="tipoCod === 'nome'"
+                             >
+                        <q-autocomplete
+                          :static-data="{field: 'label', list: listaProdutos}"
+                          @selected="listarProdutos"
                         />
-                    </q-field>   
+
+                    </q-search>
+                    <q-search
+                             v-model="search" 
+                             color="none" 
+                             style="margin-left: 10px"
+                             placeholder="Procurar..."
+                             @keyup.enter="listarMateriaPrima"
+                             @blur="listarMateriaPrima"
+                             v-else
+                             >
+
+                    </q-search> 
                 </div>
             </div>
+            
             <div class="row">
-                <div class="col" style="margin: 11px 5px 0 0">
-                    <q-field helper="Valor de Custo R$">
-                        <money v-model="CadProduto.produto.custo"
-                               v-bind="money"
-                               class="mdInput"
-                        />
+                <div class="col">
+                    <q-checkbox v-model="mtProds" label="Somente matérias primas" />
+                </div>
+            </div>
+            
+            <div class="text-center">
+                <h5>{{prodMP.nome}}</h5>
+            </div>
+                      
+            <div class="row">
+                <div class="col">
+                    <q-field helper="Valor de Custo R$" disabled>
+                        <q-input v-model="CadProduto.produto.custo" readonly />
                     </q-field> 
                 </div>
                 <div class="col">
                     <q-field
-                        icon="library_books"
+                        helper="Fator de conversão"
                      >
                         <q-input
-                            float-label="Fator de conversão"
-                            v-model="matPrima.FatorConversao"
+                            v-model="fcMatPrima"
+                            type="number"
                         />
                     </q-field>   
                 </div>
             </div>
             <div class="row">
                 <div class="col-4">
-                    <q-field helper="Margem de Lucro %">
-                        <money v-model="CadProduto.produto.percLucro"
-                               v-bind="perc"
-                               class="mdInput"
+                    <q-field helper="Qte. Produzida">
+                        <q-input
+                            v-model="qteProd"
+                            color="info"
+                            type="number"
                         />
                     </q-field> 
                 </div>
 
                 <div class="col-4">
-                    <q-field helper="Valor de Venda R$">
-                        <money v-model="valorVenda"
-                               v-bind="money"
-                               class="mdInput"
+                    <q-field helper="Qte. Utilizada">
+                        <q-input
+                            v-model="qteUtil"
+                            color="negative"
+                            type="number"
                         />
                     </q-field>
-                </div>        
-            </div>
-            
-            <div class="row btn-plus left">
-                <div class="col">
+                </div>
+                <div class="col text-center">
                     <q-btn 
                         rounded
                         color="primary" 
-                        @click="salvarFator"
+                        @click="salvarMateriaPrima"
                     >adicionar Produto
                     </q-btn>
-                </div>
+                </div>       
             </div><br>
             
             <div class="row" id="table">    
                 <table class="q-table" :class="computedClasses">
                   <thead>
                     <tr>
-                      <th class="text-left">Un. Medida</th>
-                      <th class="text-left">Fator Conv.</th>
-                      <th class="text-left">Entrada</th>
-                      <th class="text-left">ML</th>
-                      <th class="text-left">Custo</th>
-                      <th class="text-left">Venda</th>
-                      <th class="text-left">Editar</th>
+                      <th class="text-left">Matéria Prima</th>
+                      <th class="text-left">Valor Unit.</th>
+                      <th class="text-left">Qtde</th>
+                      <th class="text-left">Total</th>
                       <th class="text-left">Excluir</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="item in fatores">
+                    <tr v-for="item in composicao">
                       <td class="text-left">{{ item.unMed }}</td>
                       <td class="text-right">{{ item.fatorConversao }}</td>
                       <td class="text-left">{{ item.conversaoEntrada | boolString }}</td>
                       <td class="text-left">{{ item.ml | decimal }}</td>
-                      <td class="text-left">{{ CadProduto.produto.custo | decimal }}</td>
-                      <td class="text-left">{{ item.valorVenda | decimal }}</td>
-                      <td class="text-center">
-                        <a @click="" color="info"><i class="material-icons fa-2x">mode_edit</i></a>   
-                      </td>
+                      
                       <td class="text-center">
                         <i class="material-icons fa-2x mHover text-negative" @click="" color="negative">delete_forever</i> 
                       </td>
@@ -594,12 +628,13 @@
 import axios from 'axios'
 import { required, minLength } from 'vuelidate/lib/validators'
 import { Dialog, Toast, Loading } from 'quasar'
+import { AtomSpinner } from 'epic-spinners'
     
 //dev
-const API = localStorage.getItem('wsAtual')
+//const API = localStorage.getItem('wsAtual')
 
 //debug
-//const API = 'http://192.168.0.200:29755/'
+const API = 'http://192.168.0.200:29755/'
 
 export default {
   name: 'CadProduto',
@@ -688,26 +723,30 @@ export default {
         error: '',
         visivel: false,
         btnDelete: false,
-        
         fatorConv: {
-            CodigoProduto: parseInt(localStorage.getItem('codProduto')),
+            codigoProduto: parseInt(localStorage.getItem('codProduto')),
             unMed: '',
-            FatorConversao: '',
-            ValorVenda: 0.00,
-            ConversaoEntrada: false,
-            CodigoUsuario: parseInt(localStorage.getItem('codUser'))
+            fatorConversao: '',
+            valorVenda: 0.00,
+            conversaoEntrada: false,
+            codigoUsuario: parseInt(localStorage.getItem('codUser'))
         
         },
         fatores: [],
         matPrima: {
-            produto: '',
-            FatorConversao: '',
-            qteProd: 0.00,
-            custo: 0.00,
-            qteUtil: 0.00,
-            CodigoUsuario: parseInt(localStorage.getItem('codUser'))
+            codProduto: parseInt(localStorage.getItem('codProduto')),
+            codigoMatPrima: 6,
+            codigoUsuario: parseInt(localStorage.getItem('codUser'))
         
         },
+        composicao: [],
+        tipoCod: 'nome',
+        search: '',
+        prodMP: '',
+        fcMatPrima: 1,
+        qteProd: 1,
+        qteUtil: 1,
+        mtProds: false,
         
         //tabela
         misc: 'bordered', //[{value: 'bordered'},{value: 'highlight'}]
@@ -828,13 +867,31 @@ export default {
       return lista
     },
     listaProdutos: function () {
-      var a = this.produtos
-      var lista = []
+      let a = this.produtos
+      let lista = []
       
-      lista = a.map(row => ({
-          label: row.nome, 
-          value: row.codigo
-      }))
+      if(this.mtProds === true){
+          for(let i=0; i < a.length; i++){
+                if(a[i].codTipo === 2){
+                    let n = a[i].nome
+                    let c = a[i].codigo
+                    lista.push({
+                      label: n, 
+                      value: c
+                    })
+                }
+          }
+          
+      }
+      else{
+      
+          lista = a.map(row => ({
+              label: row.nome, 
+              value: row.codigo
+          }))
+
+          
+      }
       
       return lista
     },
@@ -1217,21 +1274,28 @@ export default {
       }
     },
     todosProdutos(){
-      if (localStorage.getItem('cadMode')==='edit'){
-          Loading.show({message: 'Aguardando Dados...'})
-          axios.get(API + 'produto/obterproduto')
+        Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Aguardando Dados...'
+        })
+        axios.get(API + 'produto/obterproduto')
           .then((res)=>{
-              Loading.hide()
-              //console.log(res.data)
-              this.produtos = res.data 
+            Loading.hide()
+            this.produtos = res.data
+            //console.log(res)
           })
           .catch((e)=>{
             Loading.hide()
-            console.log(e.response)
+            console.log(e)
+            Toast.create({
+                html: 'Sem Conexão',
+                timeout: 6000,
+                bgColor: '#f44242',
+                icon: 'mood_bad'
+            })
           })
-      }
     },
-    
     listarFatoresConv(){
       axios.get(API + 'produto/obterProdutosOutrasEmb?codProduto=' + parseInt(localStorage.getItem('codProduto')))
       .then((res)=>{
@@ -1243,7 +1307,18 @@ export default {
       })
     },
     salvarFator(){
-        Loading.show({message: 'Enviando Dados...'})
+        if(this.fatorConv.fatorConversao === '' || this.fatorConv.fatorConversao === 0){
+            Toast.create.negative('Você não pode salvar sem preencher um fator')
+            return;
+        }
+        
+        this.fatorConv.valorVenda = this.CadProduto.produto.valor
+        
+        Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Aguardando Dados...'
+        })
         axios.post(API + 'produto/gravarProdutosOutrasEmb', this.fatorConv)
           .then((res)=>{
             Loading.hide()
@@ -1255,6 +1330,15 @@ export default {
             console.log(res.data)
             console.log(res.response)
             console.log('sucesso')
+            this.fatorConv = {
+                codigoProduto: parseInt(localStorage.getItem('codProduto')),
+                unMed: '',
+                fatorConversao: '',
+                valorVenda: 0.00,
+                conversaoEntrada: false,
+                codigoUsuario: parseInt(localStorage.getItem('codUser'))
+
+            }
             this.listarFatoresConv()
           })
           .catch((e)=>{
@@ -1271,8 +1355,144 @@ export default {
     },
     editarFator(item){
         this.fatorConv = item    
+        this.fatorConv.unMed = parseInt(item.unMed)   
+    },
+    excluirFator(item){
+        let fator = item
+        Dialog.create({
+          title: 'Excluir',
+          message: 'Tem certeza que deseja excluir este fator de conversão?',
+          buttons: [
+            {
+              label: 'Não! Cancela',
+              color: 'negative',
+              raised: true,
+              style: 'margin-top: 20px',
+              handler () {
+                Toast.create('Cancelado...')
+              }
+            },
+            {
+              label: 'Sim! Pode excluir',
+              color: 'positive',
+              raised: true,
+              style: 'margin-top: 20px',
+              handler: () => {
+                
+                Loading.show({message: 'Aguardando Dados...'})
+                axios.post(API + 'produto/excluirProdutoOutrasEmb?codigo=' + fator.codigo)
+                  .then((res)=>{
+                      //console.log(res)
+                      Toast.create('Fator de Conversão selecionado foi excluido com sucesso')
+                      Loading.hide()
+                      this.listarFatoresConv()
+                  })
+                  .catch((e)=>{
+                    console.log(e)
+                    Loading.hide()
+                    return
+                  })
+                
+              }
+            }
+          ]
+        })
+    },
+    listarMateriaPrima(){
+      if(this.search === '' && this.tipoCod === 'nome'){
+        return  
+      }
+      if(this.search === '' && this.tipoCod !== 'nome'){
+        return;
+      }
+      
+      let URL
+      if(this.tipoCod === 'barras'){
+          URL = API + 'produto/obterproduto?codBarra=' + this.search
+      }
+      else if(this.tipoCod === 'emp'){
+          URL = API + 'produto/obterproduto?codEmpresa=' + this.search
+      }
+      else {
+          URL = API + 'produto/obterproduto?nomeProduto=' + this.search
+      }
+      
+      Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Aguardando Dados...'
+      })
+      axios.get(URL)
+      .then((res)=>{
+        Loading.hide()
+        console.log(res)
+        this.prodMP = res.data
+        if(typeof this.prodMP !== 'object'){
+            this.prodMP = {}
+            Object.assign(this.prodMP, {nome: 'Produto não encontrado'});
+        }
+      })
+      .catch((e)=>{
+        Loading.hide()
+        console.log(e)
+        if(typeof this.prodMP.nome == 'undefined'){
+            Object.assign(this.prodMP, {nome: 'Produto não encontrado'});
+        }
+      })
+     
+    },
+    salvarMateriaPrima(){
+        if(this.search === '' || this.search === 0){
+            Toast.create.negative('Você não pode adicionar matéria prima sem selecionar o produto')
+            return;
+        }
+        
+        this.matPrima.codigoMatPrima = this.prodMP.codigo
+        let Qtd = this.qteUtil * this.fcMatPrima
+        let umInt = Math.round(Qtd / this.qteProd)        
+        Object.assign(this.matPrima, { qtde: umInt })
+        console.log('matPrima:', this.matPrima);
+        
+        let lista = []
+        
+        lista.push(this.matPrima)
+        
+        Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Aguardando Dados...'
+        })
+        axios.post(API + 'produtoMatPrima/gravarProdutoMatPrima', lista)
+          .then((res)=>{
+            Loading.hide()
+            Toast.create.positive({
+                html: 'Sucesso',
+                icon: 'done'
+            })
+            //console.log(res)
+            console.log(res.data)
+            console.log(res.response)
+            console.log('sucesso')
+            this.matPrima = {
+                codProduto: parseInt(localStorage.getItem('codProduto')),
+                codigoMatPrima: '',
+                codigoUsuario: parseInt(localStorage.getItem('codUser'))
+            }
+            this.listarFatoresConv()
+          })
+          .catch((e)=>{
+            Loading.hide()
+            //console.log('error')
+            console.log(e.response)
+            console.log(String(e))
+            let error = e.response.data
+            console.log(error)
+            for(var i=0; error.length; i++){
+                Toast.create.negative(error[i].value)
+            }
+        })  
+        
     }
-    
    
   },
   created(){
