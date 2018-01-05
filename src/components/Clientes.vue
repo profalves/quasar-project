@@ -192,6 +192,7 @@ export default {
 
       ],
       visivel: true,
+      alert: false,
       
       //LISTA
       config: {
@@ -477,7 +478,7 @@ export default {
       console.log('clicked on a row', row)
       localStorage.setItem('codPessoa', row.codigo)
       localStorage.setItem('cadMode', 'edit')
-      //this.$router.push({ path: '/cadcliente' })
+      if(!this.alert){
         Alert.create({
           enter: 'bounceInRight',
           leave: 'bounceOutRight',
@@ -496,11 +497,14 @@ export default {
             {
               label: 'Fechar',
               handler: () => {
+                this.alert = false
                 return;
               }
             }
           ]
         })
+      }
+      this.alert = true
     },
     novo(){
       localStorage.setItem('cadMode', 'save')

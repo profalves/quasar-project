@@ -5,6 +5,11 @@
         instead of <q-item> for
         internal vue-router navigation
       -->
+      <div class="user">
+          <img src="../../img/User-icon.png" width="20%" /><br>
+          {{user}} <br>
+          {{emp}} <br>
+      </div>
 
       <q-list no-border link inset-delimiter>
         <q-list-header>Menu</q-list-header>
@@ -100,7 +105,10 @@
 <script>
 export default {
   data () {
-    return {}
+    return {
+        user: localStorage.getItem('nameUser'),
+        emp: localStorage.getItem('nomeEmpresa'),
+    }
   },
   methods:{
     novo(){
@@ -122,5 +130,8 @@ export default {
 <style scoped>
     .link{
         margin-left: 10px
+    }
+    .user{
+        margin: 10px
     }
 </style>

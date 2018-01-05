@@ -604,13 +604,13 @@
                   </thead>
                   <tbody>
                     <tr v-for="item in composicao">
-                      <td class="text-left">{{ item.unMed }}</td>
-                      <td class="text-right">{{ item.fatorConversao }}</td>
-                      <td class="text-left">{{ item.conversaoEntrada | boolString }}</td>
-                      <td class="text-left">{{ item.ml | decimal }}</td>
+                      <td class="text-left">{{ item.materiaPrima }}</td>
+                      <td class="text-right">{{ item.valorUnit | formatMoney }}</td>
+                      <td class="text-left">{{ item.qtde }}</td>
+                      <td class="text-left">{{ item.total | formatMoney }}</td>
                       
                       <td class="text-center">
-                        <i class="material-icons fa-2x mHover text-negative" @click="" color="negative">delete_forever</i> 
+                        <i class="material-icons fa-2x mHover text-negative" @click="excluirMateriaPrima(item)" color="negative">delete_forever</i> 
                       </td>
                     </tr>
                   </tbody>
@@ -631,10 +631,10 @@ import { Dialog, Toast, Loading } from 'quasar'
 import { AtomSpinner } from 'epic-spinners'
     
 //dev
-//const API = localStorage.getItem('wsAtual')
+const API = localStorage.getItem('wsAtual')
 
 //debug
-const API = 'http://192.168.0.200:29755/'
+//const API = 'http://192.168.0.200:29755/'
 
 export default {
   name: 'CadProduto',
@@ -734,7 +734,7 @@ export default {
         },
         fatores: [],
         matPrima: {
-            codProduto: parseInt(localStorage.getItem('codProduto')),
+            codigoProduto: parseInt(localStorage.getItem('codProduto')),
             codigoMatPrima: 6,
             codigoUsuario: parseInt(localStorage.getItem('codUser'))
         
@@ -1379,11 +1379,15 @@ export default {
               style: 'margin-top: 20px',
               handler: () => {
                 
-                Loading.show({message: 'Aguardando Dados...'})
-                axios.post(API + 'produto/excluirProdutoOutrasEmb?codigo=' + fator.codigo)
+                Loading.show({
+                  spinner: AtomSpinner,
+                  spinnerSize: 140,
+                  message: 'Aguardando Dados...'
+                })
+                axios.post(API + 'produto/excluirProdutosOutrasEmb?codigo=' + fator.codigo)
                   .then((res)=>{
                       //console.log(res)
-                      Toast.create('Fator de Conversão selecionado foi excluido com sucesso')
+                      Toast.create('O Fator de Conversão selecionado foi excluido com sucesso')
                       Loading.hide()
                       this.listarFatoresConv()
                   })
@@ -1449,9 +1453,10 @@ export default {
         
         this.matPrima.codigoMatPrima = this.prodMP.codigo
         let Qtd = this.qteUtil * this.fcMatPrima
-        let umInt = Math.round(Qtd / this.qteProd)        
+        let umInt = Math.round(Qtd / this.qteProd).toFixed(3)       
         Object.assign(this.matPrima, { qtde: umInt })
         console.log('matPrima:', this.matPrima);
+        
         
         let lista = []
         
@@ -1492,6 +1497,65 @@ export default {
             }
         })  
         
+    },
+    obterMateriaPrima(){
+        Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Aguardando Dados...'
+        })
+        axios.get(API + 'produtomatprima/obtermateriaprima?codigoproduto=' + localStorage.getItem('codProduto'))
+          .then((res)=>{
+            //console.log(res)
+            this.composicao = res.data
+          })
+          .catch((e)=>{
+            Loading.hide()
+            console.log(e.response)
+        })  
+    },
+    excluirMateriaPrima(item){
+        Dialog.create({
+          title: 'Excluir',
+          message: 'Tem certeza que deseja excluir a matéria prima ' + item.materiaPrima + '?',
+          buttons: [
+            {
+              label: 'Não! Cancela',
+              color: 'negative',
+              raised: true,
+              style: 'margin-top: 20px',
+              handler(){
+                Toast.create('Cancelado...')
+              }
+            },
+            {
+              label: 'Sim! Pode excluir',
+              color: 'positive',
+              raised: true,
+              style: 'margin-top: 20px',
+              handler: () => {
+                Loading.show({
+                  spinner: AtomSpinner,
+                  spinnerSize: 140,
+                  message: 'Aguardando Dados...'
+                })
+                axios.post(API + 'produto/excluirProdutosOutrasEmb?codigo=' + item.codigo)
+                  .then((res)=>{
+                      //console.log(res)
+                      Toast.create('O Fator de Conversão selecionado foi excluido com sucesso')
+                      Loading.hide()
+                      this.listarFatoresConv()
+                  })
+                  .catch((e)=>{
+                    console.log(e)
+                    Loading.hide()
+                    return
+                  })
+                
+              }
+            }
+          ]
+        })
     }
    
   },
@@ -1510,6 +1574,8 @@ export default {
         t.btnDelete = true
         t.visivel = true
         t.listarTabPrecoDet()
+        t.obterMateriaPrima()
+        
     }
 
   }

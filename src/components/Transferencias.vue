@@ -151,6 +151,189 @@ export default {
       index: '',
       dest: '',
       empDest: {},
+      configs: [],
+      configDestino: {
+        "$id": "1",
+        "delivery": {
+          "$id": "2",
+          "solicitaSenha": true,
+          "ramoAtividade": null,
+          "layoutModoTouch": false,
+          "layoutModoNormal": true,
+          "imprimirComposicaoProduto": true,
+          "imprimirAoFecharConta": true,
+          "solicitaSenha1Vez": true,
+          "pcServidor": false,
+          "modoFicha": false,
+          "imprimeItensAgrupados": true,
+          "cobrarTaxaServico": true,
+          "notificaSenhas": false,
+          "numeroSenha": 0,
+          "backupAutoMinutos": 0,
+          "carregarItensPedido": false,
+          "imprimeClienteCadastradoCozinha1": true,
+          "localizaProdutoPorCodigoEmpresa": false,
+          "removerCabecalhoCupom": true,
+          "sugerirValorPagamewnto": false,
+          "previsaoMinutosAtendimento": 0,
+          "limiteVendaProduto": 0.00,
+          "limiteVendaTotal": 0.00,
+          "impressoraCozinha1": "\\\\SUPORTE01\\EPSON TM-T20 Receipt5 DEV3",
+          "impressoraCozinha2": "\\\\SUPORTE01\\EPSON TM-T20 Receipt5 DEV3",
+          "imprimeDuasViasCozinha": false,
+          "classificaDeliverysMaisRecentes": false,
+          "pizzaPorMaiorValor": false,
+          "imprimirItensDetalhado": false,
+          "imprimePedidoBalcaoCompleto": true,
+          "imprimeSegundaViaDeliveryNaRecepcao": true,
+          "impressoraGrupo01": [
+            "BEBIDA",
+            "CERVEJA",
+            "COMBO HUMBLE",
+            "COMPLEMENTO DE PEDIDO",
+            "ENREGA",
+            "ESPETINHO XD",
+            "INDEFINIDO",
+            "LASANHA",
+            "LINHA 1000",
+            "MINE PIZZA",
+            "PETISCO",
+            "PIZZA",
+            "PRATOS",
+            "REFRIGERANTES",
+            "SERVICOS",
+            "SOBREMESAS",
+            "SORVETE",
+            "SUCOS"
+          ],
+          "impressoraGrupo02": [
+            "BOBINA DE PAPEL",
+            "BOTAO"
+          ]
+        },
+        "impressao": {
+          "$id": "3",
+          "tipoImpressora": 1,
+          "tipoImpressao": 0,
+          "impressoraEtiquetadora": "",
+          "impressoraBobina46": "\\\\SUPORTE01\\EPSON TM-T20 Receipt5 DEV3",
+          "impressoraA4": "\\\\SUPORTE01\\EPSON TM-T20 Receipt5 DEV3",
+          "perguntarImpressao": true,
+          "cliente_fontName": "Courier new",
+          "cliente_fontSize": 7,
+          "cliente_QtdCaracteres": 20,
+          "cliente_Bold": false,
+          "removerCabecalhoCupom": true,
+          "solicitarSenhaAdmSegundaVia": false,
+          "modeloImpressao": 2
+        },
+        "opcoesImpressaoCaixa": {
+          "$id": "4",
+          "detalharSuprimentos": true,
+          "detalharSangrias": true,
+          "detalharVendasCrediario": false,
+          "detalharRecebimentos": false,
+          "exibirTotalVendasPorVendedor": false
+        },
+        "dadosIniciaisNF": {
+          "$id": "5",
+          "utilizaNFELib": true,
+          "numeroNFE": 1,
+          "numeroNFce": 1,
+          "serieNFE": 1,
+          "serieNFce": 1,
+          "codigoCSC": "5999BA9B-5A09-4A0D-95DC-AA33F10FE381",
+          "senhaCertificado": "123456",
+          "urlContNfce": "http://localhost/nfe/bin",
+          "urlWebApi": "http://localhost/nfe/bin",
+          "utilizaTEF": false,
+          "infoAdicional": []
+        },
+        "importacaoXML": {
+          "$id": "6",
+          "validarCodBarraEAN": true,
+          "validarNomeFiscalXProd": false
+        },
+        "parcelamentos": [
+          {
+            "$id": "7",
+            "id": 1,
+            "parcelamento": "7"
+          },
+          {
+            "$id": "8",
+            "id": 2,
+            "parcelamento": "14"
+          },
+          {
+            "$id": "9",
+            "id": 3,
+            "parcelamento": "21"
+          },
+          {
+            "$id": "10",
+            "id": 4,
+            "parcelamento": "30"
+          },
+          {
+            "$id": "11",
+            "id": 5,
+            "parcelamento": "45"
+          }
+        ],
+        "agenda": {
+          "$id": "12",
+          "lancarOrcamentoAposAgendamento": false
+        },
+        "nomeFantasia": "LIZ BELLA",
+        "urlWebServiceVS": "192.168.0.200",
+        "enderecoPastaPublica": "E:\\",
+        "baixarEstoqueMatPrimaVenda": true,
+        "manterTelaRecebAberta": false,
+        "bloquearVendaEstoqueNegativo": true,
+        "bloquearEdicaoPedidoNoRecebimento": false,
+        "dbPassw": "ðï±²òòé",
+        "fecharCaixaComPedidosEmAberto": false,
+        "utilizaApelidoConsulta": false,
+        "mostraTelaTroco": true,
+        "imprimeSegundaViaRecibo": false,
+        "carregarFormasPgto": false,
+        "etiquetaBalanca_QtdDigitos": 0,
+        "codEmpresaEAN13": false,
+        "prazoTrocaProduto_Dias": 15,
+        "informarDadosCheque": false,
+        "numeroCaixa": 1,
+        "qtdCasasDecimaisNFEntrada": 2,
+        "exibirDesconto": false,
+        "qtdAutomatica1": false,
+        "agruparProdutos": false,
+        "jurosMes": 0.00,
+        "permitirVendaClienteBalcao": true,
+        "permitirVendaClienteCadastrado": true,
+        "imprimeCarneA4": false,
+        "habilitaEdicaoSubTotal": false,
+        "habilitaSelecaoVendedor": true,
+        "filtraClientesPorVendedor": false,
+        "usarTabPrecoQtd": false,
+        "mensagemFinalCupom": "atencao senhores clientes ao assinar ester termo esta de acordo que todos os produtos foram recebidos em perfeito estado ASS____________________",
+        "databaseName": "aviamento",
+        "ipBancoDados": ".\\SQLEXPRESS2008",
+        "localBackup1": "D:\\VIRTUALSTORE\\bck",
+        "localBackup2": "",
+        "localRepositorioXML": "C:\\Virtualstore\\Ws\\NFE",
+        "extensaoCertificado": "PFX",
+        "escolherVendedorPorProduto": false,
+        "exibirFornecedor": true,
+        "vendedorAcessaPgto": false,
+        "exibeTodosTipoProduto": true,
+        "tipoPDV": 1,
+        "informarDadosCartao": false,
+        "industria": false,
+        "naoLocalizaProdutoCodBarra": false,
+        "alteraPrecoVenda": false,
+        "selecionaEntregador": true
+ 
+      },
       
       //tabela
       misc: 'bordered', //[{value: 'bordered'},{value: 'highlight'}]
@@ -220,6 +403,20 @@ export default {
         
         return lista
     },
+    listaConfigs(){
+      let a = this.configs
+      let lista = []
+      
+      lista = a.map(row => ({
+          label: row.nomeFantasia, 
+          value: { 
+              codigo: row.$id,
+              url: row.urlWebServiceVS
+                 }
+      }))
+      //console.log(lista)
+      return lista    
+    }
   },
   methods:{
     setEmpresa(){
@@ -389,13 +586,44 @@ export default {
             this.transferencias.splice(index,1)
         }
     },
+    obterConfigs(){
+        //let url = 'http://192.168.0.200:29755/'
+        Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Aguardando Dados...'
+        })
+        axios.get(API + 'estoque/obterEmpresaDestino')
+          .then((res)=>{
+            Loading.hide()
+            console.log(res)
+            this.configs = res.data
+          })
+          .catch((e)=>{
+            Loading.hide()
+            console.log(e)
+            Toast.create({
+                html: 'Sem Conexão',
+                timeout: 6000,
+                bgColor: '#f44242',
+                icon: 'mood_bad'
+            })
+          })
+    },
     enviar(){
         Loading.show({
           spinner: AtomSpinner,
           spinnerSize: 140,
           message: 'Enviando Dados...'
-      })
-        axios.get(API + 'produto/obterproduto')
+        })
+        axios.post(API + 'estoque/TransferirEstoque', [
+            {Produtos: this.transferencias},
+            {configDestino: this.configDestino},
+            {tipoMovimentacao: 'transferencia'},
+            {codigoUsuario: 16},
+            {codigoEmpresa: 1}
+            
+        ])
           .then((res)=>{
             Loading.hide()
             //console.log(res)
@@ -415,9 +643,9 @@ export default {
   mounted(){
     this.$refs.modal.open()
   },
-  /*created(){
-    this.todosProdutos()
-  }*/
+  created(){
+    this.obterConfigs()
+  }
   
 }
 </script>

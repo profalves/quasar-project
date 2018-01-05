@@ -155,11 +155,10 @@ const API = localStorage.getItem('wsAtual')
 //const API = 'http://192.168.0.200:29755/' 
 
 export default {
-  
-  
   data () {
     return {
       Produtos: [],
+      alert: false,
       config: {
         title: '',
         refresh: (localStorage.getItem('refresh') === 'true'),
@@ -353,7 +352,7 @@ export default {
       console.log('clicked on a row', row)
       localStorage.setItem('codProduto', row.codigo)
       localStorage.setItem('cadMode', 'edit')
-        
+      if(!this.alert){  
         Alert.create({
           enter: 'bounceInRight',
           leave: 'bounceOutRight',
@@ -372,12 +371,14 @@ export default {
             {
               label: 'Fechar',
               handler: () => {
+                this.alert = false
                 return;
               }
             }
           ]
         })
-    
+      }
+      this.alert = true
     },
     listarProdutos(){
       Loading.show({
