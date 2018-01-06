@@ -6,7 +6,7 @@
         internal vue-router navigation
       -->
       <div class="user">
-          <img src="../../img/User-icon.png" width="20%" /><br>
+          <img src="../../img/newuser.png" class="avatar" /><br>
           {{user}} <br>
           {{emp}} <br>
       </div>
@@ -111,17 +111,14 @@ export default {
     }
   },
   methods:{
-    novo(){
-      localStorage.setItem('cadMode', 'save')
-      this.$router.push('/cadContas')
-    },
     verificarUser(){
         if(!localStorage.getItem('codUser')){
-          this.$router.push('/login')
+          console.log(localStorage.getItem('codUser'))
+          //this.$router.push('/login')
         }
     },
   },
-  created(){
+  mounted(){
     let t = this
     t.verificarUser()
   }
@@ -132,6 +129,6 @@ export default {
         margin-left: 10px
     }
     .user{
-        margin: 10px
+        margin: 10px 15px
     }
 </style>

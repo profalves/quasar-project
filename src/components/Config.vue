@@ -106,7 +106,7 @@
                     label="Linhas por Página"
                     :label-width="4"
                   >
-                    <q-slider v-model="rowsPerPage" :min="5" :max="500" :step="5" label-always :label-value="`${rowsPerPage}px` "/>
+                    <q-slider v-model="rowsPerPage" :min="5" :max="500" :step="5" label-always :label-value="`${rowsPerPage} Linhas` "/>
                   </q-field>
 
                   <q-field
@@ -118,7 +118,7 @@
                       <div class="col-auto" style="margin-top: 10px">
                         <q-select
                           v-model="bodyHeightProp"
-                          float-label="Style"
+                          float-label="Tipo"
                           :options="[
                             {label: 'Auto', value: 'auto'},
                             {label: 'Altura', value: 'height'},
@@ -193,14 +193,22 @@
               <div class="row">
                 <div class="col">
                   <q-field
-                    icon="featured_play_list"
-                    helper="Nome do Banco de Dados"
+                    icon="fa-server"
+                    helper="Web Service"
                   >
                     <q-input v-model.trim="banco" clearable />
                   </q-field>   
                 </div>
               </div>
               <div class="row">
+                <div class="col">
+                  <q-field
+                    icon="featured_play_list"
+                    helper="Nome do Banco de Dados"
+                  >
+                    <q-input v-model.trim="bdName" clearable />
+                  </q-field>   
+                </div>
                 <div class="col">
                   <q-field
                     icon="vpn_key"
@@ -228,7 +236,7 @@
                     <tr>
                       <th class="text-left">ID</th>
                       <th class="text-left">Empresa</th>
-                      <th class="text-left">Banco de Dados</th>
+                      <th class="text-left">Web Service</th>
                       <th class="text-left">IP/Host</th>
                       <th class="text-left">Porta</th>
                       <th class="text-left">Editar</th>
@@ -254,6 +262,7 @@
             </div>
 
             </q-collapsible>
+            <!-- RESET -->
             <q-collapsible  icon="delete_forever" 
                             label="Restaurar Configurações iniciais" 
                             sublabel="Resetar todas as configurações">
@@ -307,6 +316,7 @@ export default {
       banco: '',
       senhaBd: '',
       bancoID: '',
+      bdName: '',
       bancosDados: [],
       filtro: '',
       indice: '',
@@ -571,6 +581,8 @@ export default {
         this.bancosDados = []
         this.listarBancos()
     },
+      
+    //Resetar TODAS Configurações
     resetarTudo(){
         Dialog.create({
           title: 'Você tem certeza que deseja voltar TODAS para as configurações iniciais do sistema?',

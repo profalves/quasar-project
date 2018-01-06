@@ -105,7 +105,9 @@
         
         <q-btn color="blue-9"
                big
-               rounded>Enviar</q-btn>
+               rounded
+               @click="enviar"
+               >Enviar</q-btn>
     </div>
     
     
@@ -134,10 +136,10 @@ import { Loading, Toast, Dialog } from 'quasar'
 import axios from 'axios'
 import { AtomSpinner } from 'epic-spinners'
     
-const API = localStorage.getItem('wsAtual')
+//onst API = localStorage.getItem('wsAtual')
   
 //debug
-//const API = 'http://192.168.0.200:29755/'     
+const API = 'http://192.168.0.200:29755/'     
 
 export default {
   data () {
@@ -617,11 +619,11 @@ export default {
           message: 'Enviando Dados...'
         })
         axios.post(API + 'estoque/TransferirEstoque', [
-            {Produtos: this.transferencias},
-            {configDestino: this.configDestino},
-            {tipoMovimentacao: 'transferencia'},
-            {codigoUsuario: 16},
-            {codigoEmpresa: 1}
+            this.transferencias,
+            this.configDestino,
+            'transferencia',
+            16,
+            1
             
         ])
           .then((res)=>{

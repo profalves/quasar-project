@@ -251,6 +251,10 @@ export default {
         }
       ],
       pagination: (localStorage.getItem('pagination') === 'true'),
+      oldPagination: {
+          rowsPerPage: parseInt(localStorage.getItem('rowsPerPage')),
+          options: [5, 10, 15, 30, 50, 100]
+      },
       rowHeight: parseInt(localStorage.getItem('rowHeight')),
       bodyHeightProp: localStorage.getItem('bodyHeightProp'),
       bodyHeight: parseInt(localStorage.getItem('bodyHeight'))
@@ -408,6 +412,12 @@ export default {
   },
   created(){
     this.listarProdutos()
+    if (localStorage.getItem('pagination') === 'false') {
+      this.oldPagination = clone(this.config.pagination)
+      this.config.pagination = false
+      return
+    }
+    this.config.pagination = this.oldPagination
   }
   
 }

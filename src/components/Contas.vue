@@ -203,6 +203,7 @@
 <script>
 import { Alert, Dialog, Toast, Loading, clone, date } from 'quasar'
 import axios from 'axios'
+import { AtomSpinner } from 'epic-spinners'
 
 const API = 'http://192.168.0.200/WSV3/'
   
@@ -355,6 +356,10 @@ export default {
         }
       ],
       pagination: (localStorage.getItem('pagination') === 'true'),
+      oldPagination: {
+          rowsPerPage: parseInt(localStorage.getItem('rowsPerPage')),
+          options: [5, 10, 15, 30, 50, 100]
+      },
       rowHeight: parseInt(localStorage.getItem('rowHeight')),
       bodyHeightProp: localStorage.getItem('bodyHeightProp'),
       bodyHeight: parseInt(localStorage.getItem('bodyHeight'))
@@ -376,7 +381,11 @@ export default {
   },
   methods: {
     listarContas(){
-      Loading.show({message: 'Aguardando Dados...'})
+      Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Aguardando Dados...'
+      })
       axios.get(API + 'conta/obterContas?tipo=' + this.tipo + '&pagas=' + this.subtipo)
       .then((res)=>{
           console.log(res)
@@ -626,6 +635,12 @@ export default {
   },
   created(){
     this.listarContas()
+    if (localStorage.getItem('pagination') === 'false') {
+      this.oldPagination = clone(this.config.pagination)
+      this.config.pagination = false
+      return
+    }
+    this.config.pagination = this.oldPagination
   }
 }
 </script>

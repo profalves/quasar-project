@@ -171,13 +171,23 @@ export default {
           axios.get(API + 'usuario/obterUsuario?usuario='+ this.user + '&senha=' + this.pass)
           .then((res)=>{
             Loading.hide()
-            localStorage.setItem('tela', 'principal')
-            localStorage.setItem('codUser', res.data.codigo)
-            localStorage.setItem('nameUser', res.data.nome)
+            console.log(res.data)
             localStorage.setItem('nomeEmpresa', localStorage.getItem('Empresa' + this.bd))
-            localStorage.setItem('codIdUser', res.data.codigoIdentificacao)
-            //console.log(res.data)
-            this.$router.push('/')
+            
+            async function getUser(){
+                localStorage.setItem('tela', 'principal')
+                localStorage.setItem('codUser', res.data.codigo)
+                localStorage.setItem('nameUser', res.data.nome)
+                localStorage.setItem('codIdUser', res.data.codigoIdentificacao)    
+            }
+              
+            async function entrar(){  
+                 var number = await getUser();
+                 return number
+            }
+            
+            entrar(this.$router.push('/'));
+            
           })
           .catch((e)=>{
             Loading.hide()
@@ -192,6 +202,14 @@ export default {
             console.log(e.response)
           })
             
+        },
+        entrar(){ //verificar usuário
+            if(localStorage.getItem('codUser')){
+              this.$router.push('/login')
+            }
+            else{
+                this.login()
+            }
         },
         /*listarBancos(){
             var i

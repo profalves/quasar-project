@@ -72,8 +72,9 @@ export default {
 <style>
     body {
         background-image: url("../img/fundo.png");
-        background-size: cover;
-        background-color: aliceblue;
+        background-size: auto;
+        background-repeat: repeat-x;
+        background-color: white;
     }
     .container {
         margin: 20px 20px 0 20px;
