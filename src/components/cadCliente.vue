@@ -170,7 +170,7 @@
             <div class="col-8 col-md-6">
               <q-field
                 icon="markunread_mailbox"
-                helper="Clique no botão ao lado para pesquisar o CEP"
+                helper="Clique no ENTER para pesquisar o CEP"
                 :error="$v.cep.$error"
                 name="campoCEP"
               >
@@ -182,13 +182,14 @@
                          v-mask="['########']"
                          ref="cep"
                          name="cep"
+                         @keyup.enter="buscarCep"
                 />
                 <span v-if="!$v.cep.maxLength">Quantidade de números superior ao de um cep</span>
 
               </q-field>   
             </div>
             <div class="col">
-              <q-btn 
+              <!--<q-btn 
                  icon="search" 
                  color="primary"
                  style="margin: 17px 0 0 20px"
@@ -196,8 +197,8 @@
                  @click="buscarCep"
                  :disabled="OFF"
               >
-              </q-btn>
-              <span id="avisoCep" v-if="OFF">Offline</span>
+              </q-btn>-->
+              <span id="avisoCep" v-if="OFF">Offline para pesquisar CEP</span>
             </div>
         </div>
 

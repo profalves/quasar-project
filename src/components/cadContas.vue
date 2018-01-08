@@ -43,7 +43,7 @@
     
     
     <div class="row">
-        <div class="col-xs-12 col-md-4">
+        <div class="col-xs-12 col-md-6">
             <q-field
                 icon="account_balance_wallet"
              >
@@ -54,7 +54,7 @@
                 />
             </q-field>   
         </div>
-        <div class="col offset-md-2">
+        <div class="col">
             <q-field
                 icon="store"
              >
@@ -63,10 +63,11 @@
                     filter
                     v-model="conta.codFornecedor"
                     :options="listaFornecedores"
+                    @change="cadFornecedor"
                 />
             </q-field>   
         </div>
-        <div class="col-2 btn-plus" >
+        <!--<div class="col-2 btn-plus" >
             
             <q-btn 
                rounded
@@ -74,7 +75,7 @@
                @click="cadFornecedor">
                <q-icon name="add" />
             </q-btn>
-        </div>
+        </div>-->
     </div> 
     
     <!--<div class="row">
@@ -93,21 +94,21 @@
     </div> -->
     
     <div class="row">
-        <div class="col-10 col-md-4">
+        <div class="col-10 col-md-6">
             <q-field
                 icon="group_work"
              >
                 <q-select
-                    float-label="Tipo Categoria"
+                    float-label="Tipo Conta"
                     filter
                     v-model="conta.codTipo"
                     :options="listaCategorias"
-                    @change="listarSubtipos"
+                    @change="selectTipo"
                 />
             </q-field>
             
         </div>
-        <div class="col-2 btn-plus" >
+        <!--<div class="col-2 btn-plus" >
             <q-btn 
                rounded
                color="primary" 
@@ -116,8 +117,8 @@
             </q-btn>
             
             
-        </div>
-        <div class="col-10 col-md-4">
+        </div>-->
+        <div class="col-10 col-md-6">
             <q-field
                 icon="group_work"
              >
@@ -126,17 +127,18 @@
                     filter
                     v-model="conta.codSubTipoDespesa"
                     :options="listaSubCategorias"
+                    @change="novoSubTipo"
                 />
             </q-field>   
         </div>
-        <div class="col-2 btn-plus" >
+        <!--<div class="col-2 btn-plus" >
             <q-btn 
                rounded
                color="primary" 
                @click="novoSubTipo">
                <q-icon name="add" />
             </q-btn>    
-        </div>
+        </div>-->
     </div>
     
     <div class="row">
@@ -573,7 +575,12 @@ export default {
               lista.push({label: n, value: c})  
           }  
       }
-      //console.log(lista)
+      
+      lista.unshift({
+          label: 'NOVO...', 
+          value: 0
+      })
+      
       return lista
     
     }, 
@@ -585,6 +592,11 @@ export default {
           label: row.nome, 
           value: row.codigo
       }))
+        
+      lista.unshift({
+          label: 'NOVO...', 
+          value: 0
+      })
       
       return lista
     
@@ -597,6 +609,11 @@ export default {
           label: row.nome, 
           value: row.codigo
       }))
+        
+      lista.unshift({
+          label: 'NOVO...', 
+          value: 0
+      })
         
       return lista
     
@@ -763,6 +780,9 @@ export default {
       })  
     },
     cadFornecedor(){
+        if(this.conta.codFornecedor !== 0){
+            return;
+        }
         localStorage.setItem('cadMode', 'save')
         localStorage.setItem('tela', 'fornContas')
         this.$router.push('/cadcliente')
@@ -781,6 +801,9 @@ export default {
       })  
     },
     novoTipo(){
+        if(this.conta.codTipo !== 0){
+            return;
+        }
         Dialog.create({
           title: 'Novo Tipo de Conta',
           message: 'Digite o nome da novo tipo e clique em ok.',
@@ -819,7 +842,12 @@ export default {
             }
           ]
         })
+        this.conta.codTipo = ''
     
+    },
+    selectTipo(){
+        this.listarSubtipos()
+        this.novoTipo()
     },
     listarSubtipos(){
       Loading.show({message: 'Aguardando Dados...'})
@@ -835,6 +863,9 @@ export default {
       })  
     },
     novoSubTipo(){
+        if(this.conta.codSubTipoDespesa !== 0){
+            return;
+        }
         Dialog.create({
           title: 'Novo Subtipo de Conta',
           message: 'Certifique-se que o Tipo já esteja selecionado para criar um subtipo para o mesmo, digite o nome do subtipo e depois clique em ok',
@@ -876,6 +907,7 @@ export default {
             }
           ]
         })
+        this.conta.codSubTipoDespesa = ''
     
     },
     listarFormasPgto(){

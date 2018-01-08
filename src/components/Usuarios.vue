@@ -11,8 +11,6 @@
         </q-btn>
     </q-fixed-position>
     
-    <i>Para editar um registro, basta apenas clicar no produto</i>
-    
   <div id="lista">
     
     <q-data-table
@@ -145,8 +143,9 @@
 </template>
 
 <script>
-import { Dialog, Toast, Loading, clone } from 'quasar'
+import { Alert, Dialog, Toast, Loading, clone } from 'quasar'
 import axios from 'axios'
+import { AtomSpinner } from 'epic-spinners'
 
 const API = localStorage.getItem('wsAtual')
   
@@ -161,7 +160,9 @@ export default {
     return {
       usuarios: [],
       excluidos: [],
-      text: 'text',
+      alert: false,
+      visivel: true,  
+          
       config: {
         title: '',
         refresh: (localStorage.getItem('refresh') === 'true'),
@@ -250,7 +251,11 @@ export default {
   },
   methods: {
     listarUsuarios(){
-      Loading.show({message: 'Aguardando Dados...'})
+      Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Aguardando Dados...'
+      })
       axios.get(API + 'usuario/obterUsuario')
       .then((res)=>{
           console.log(res)
@@ -318,14 +323,45 @@ export default {
       }, 5000)
     },
     selection (number, rows) {
-      console.log(rows)
+      if(rows.length > 1){
+        this.visivel = false
+      }
+      else{
+        this.visivel = true
+      }
       console.log(`selecionou ${number}: ${rows}`)
     },
     rowClick (row) {
       console.log('clicked on a row', row)
       localStorage.setItem('codUsuario', row.codigoIdentificacao)
       localStorage.setItem('cadMode', 'edit')
-      this.$router.push({ path: '/cadUsuario' })  
+       
+      if(!this.alert){
+        Alert.create({
+          enter: 'bounceInRight',
+          leave: 'bounceOutRight',
+          color: 'positive',
+          icon: 'tag_faces',
+          html: `Nome: ` + row.nome,
+          position: 'bottom-center',
+          actions: [
+            {
+              label: 'Abrir',
+              handler: () => {
+                this.$router.push({ path: '/cadUsuario' })
+              }
+            },
+            {
+              label: 'Fechar',
+              handler: () => {
+                this.alert = false
+                return;
+              }
+            }
+          ]
+        })
+      }
+      this.alert = true
     },
     novo(){
       localStorage.setItem('cadMode', 'save')

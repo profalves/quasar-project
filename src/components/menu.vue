@@ -10,6 +10,7 @@
           {{user}} <br>
           {{emp}} <br>
       </div>
+      <hr>
 
       <q-list no-border link inset-delimiter>
         <q-list-header>Menu</q-list-header>
@@ -113,8 +114,7 @@ export default {
   methods:{
     verificarUser(){
         if(!localStorage.getItem('codUser')){
-          console.log(localStorage.getItem('codUser'))
-          //this.$router.push('/login')
+          this.$router.push('/login')
         }
     },
   },

@@ -31,7 +31,7 @@
       :columns="colunas"
       @refresh="refresh"
       @selection="selection"
-      @rowclick="rowClick"
+      @rowclick=""
       style="background-color:white;"
     >
       <template slot="selection" scope="props">
@@ -467,8 +467,6 @@ export default {
       }, 5000)
     },
     selection (number, rows) {
-      console.log(rows)
-      //console.log(rows.length)
       if(rows.length > 1){
         this.visivel = false
       }

@@ -117,7 +117,7 @@
       <q-collapsible :opened="open.cab" icon="explore" label="Cabeçalho">
           
         <div class="row">
-            <div class="col-10">
+            <div class="col">
                 <q-field
                     icon="store"
                  >
@@ -126,10 +126,11 @@
                         filter
                         v-model="cabecalho.codPessoaEmissor"
                         :options="listaFornecedores"
+                        @change="cadFornecedor"
                     />
                 </q-field>   
             </div>
-            <div class="col-2 btn-plus" >
+            <!--<div class="col-2 btn-plus" >
 
                 <q-btn 
                    rounded
@@ -137,7 +138,7 @@
                    @click="cadFornecedor">
                    <q-icon name="add" />
                 </q-btn>
-            </div>
+            </div>-->
         </div>
           
         <!--
@@ -1169,13 +1170,21 @@ export default {
       
     },
     listaFornecedores: function () {
-      let a = this.pessoas
-      let lista = []
+      var a = this.pessoas
+      var lista = []
       
-      lista = a.map(row => ({
-          label: row.nome, 
-          value: row.codigo
-      }))
+      for (let i=0; i < a.length; i++) {
+          if(a[i].codTipo === 2){
+              let n = a[i].nome
+              let c = a[i].codigo
+              lista.push({label: n, value: c})  
+          }  
+      }
+      
+      lista.unshift({
+          label: 'NOVO...', 
+          value: 0
+      })
       
       return lista
     
@@ -1304,6 +1313,9 @@ export default {
       window.history.go(-1)
     },
     cadFornecedor(){
+        if(this.cabecalho.codPessoaEmissor !== 0){
+            return;
+        }
         localStorage.setItem('tela', 'fornNotas')
         localStorage.setItem('cadMode', 'save')
         this.$router.push('/cadcliente')
