@@ -64,10 +64,16 @@
       :columns="colunas"
       @refresh="refresh"
       @selection="selection"
-      @rowclick="rowClick"
+      @rowclick=""
       style="background-color:white;"
     >
       <template slot="selection" scope="props">
+        <q-btn flat 
+               color="primary" 
+               @click="editar(props)" 
+               v-if="visivel">
+          <q-icon name="edit" />
+        </q-btn>
         <q-btn v-if="subtipo === false"
                flat 
                color="primary" 
@@ -231,6 +237,7 @@ export default {
       excluidos: '',
       codigoCab: '',
       selecionados: '',
+      visivel: true,
       
       config: {
         title: '',
@@ -551,8 +558,20 @@ export default {
         this.listarContas()
       }, 5000)
     },
+    editar (props) {
+      console.log(props.rows[0].data.codigo)
+      let row = props.rows[0].data
+      localStorage.setItem('codPessoa', row.codigo)
+      localStorage.setItem('cadMode', 'edit')
+      this.$router.push({ path: '/cadContas' }) 
+    },
     selection (number, rows) {
-      console.log(rows)
+      if(rows.length > 1){
+        this.visivel = false
+      }
+      else{
+        this.visivel = true
+      }
       console.log(`selecionou ${number}: ${rows}`)
       //console.log(rows[0].data.codigoCab)
       this.codigoCab = rows[0]

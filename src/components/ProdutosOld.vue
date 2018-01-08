@@ -1,9 +1,10 @@
 <template>
-<div id="usuarios">
-  <h5>Usuários</h5>
+<div id="clientes">
+  <h5>Lista de Produtos</h5>
   <!-- Botão ADD -->
     <q-fixed-position class="over" corner="bottom-right" :offset="[18, 18]">
         <q-btn 
+
            round
            color="primary" 
            @click="novo">
@@ -14,18 +15,16 @@
   <div id="lista">
     
     <q-data-table
-      :data="usuarios"
+      :data="Produtos"
       :config="config"
       :columns="colunas"
       @refresh="refresh"
       @selection="selection"
-      @rowclick=""
+      @rowclick="rowClick"
       style="background-color:white;"
     >
       <template slot="selection" scope="props">
-        <q-btn flat color="primary" @click="editar(props)" v-if="visivel">
-          <q-icon name="edit" />
-        </q-btn>
+        
         <q-btn flat color="primary" @click="deleteRow(props)">
           <q-icon name="delete" />
         </q-btn>
@@ -153,19 +152,13 @@ import { AtomSpinner } from 'epic-spinners'
 const API = localStorage.getItem('wsAtual')
   
 //debug
-//const API = 'http://192.168.0.200:29755/'     
-    
+//const API = 'http://192.168.0.200:29755/' 
 
 export default {
-  
-  name: 'usuarios',
   data () {
     return {
-      usuarios: [],
-      excluidos: [],
+      Produtos: [],
       alert: false,
-      visivel: true,  
-          
       config: {
         title: '',
         refresh: (localStorage.getItem('refresh') === 'true'),
@@ -202,18 +195,16 @@ export default {
       colunas: [
         {
           label: 'Código',
-          field: 'codigoIdentificacao',
+          field: 'codigo',
           filter: true,
           sort: true,
-          type: 'number',
-          width: '100px'
+          type: 'string',
+          width: '60px'
         },
-        
         {
           label: 'Nome',
           field: 'nome',
           width: '150px',
-          //classes: 'bg-orange-2',
           sort: true,
           filter: true,
           type: 'string',
@@ -224,20 +215,38 @@ export default {
             return new Date(value).toLocaleString()
           }*/
         },
+        
         {
-          label: 'Função',
-          field: 'funcao',
+          label: 'Preço',
+          field: 'valor',
           filter: true,
           sort: true,
-          type: 'string',
-          width: '120px'
+          type: 'number',
+          width: '80px',
+          format (value) {
+            function numberToReal(numero) {
+                numero = numero.toFixed(2).split('.');
+                numero[0] = "R$ " + numero[0].split(/(?=(?:...)*$)/).join('.');
+                return numero.join(',');
+            }
+            let x = numberToReal(value);
+            return x
+          }
         },
         {
-          label: 'Empresa',
-          field: 'codigoEmpresa',
+          label: 'Estoque',
+          field: 'qtd',
           sort: true,
           filter: true,
-          type: 'string',
+          type: 'number',
+          width: '80px'
+        },
+        {
+          label: 'Cód. Barras',
+          field: 'codBarra',
+          sort: true,
+          filter: true,
+          type: 'number',
           width: '100px'
         }
       ],
@@ -248,27 +257,41 @@ export default {
       },
       rowHeight: parseInt(localStorage.getItem('rowHeight')),
       bodyHeightProp: localStorage.getItem('bodyHeightProp'),
-      bodyHeight: parseInt(localStorage.getItem('bodyHeight')),
-      
+      bodyHeight: parseInt(localStorage.getItem('bodyHeight'))
+    }
+  },
+  watch: {
+    pagination (value) {
+      if (!value) {
+        this.oldPagination = clone(this.config.pagination)
+        this.config.pagination = false
+        return
+      }
+      this.config.pagination = this.oldPagination
+    },
+    rowHeight (value) {
+      this.config.rowHeight = value + 'px'
+    },
+    bodyHeight (value) {
+      let style = {}
+      if (this.bodyHeightProp !== 'auto') {
+        style[this.bodyHeightProp] = value + 'px'
+      }
+      this.config.bodyStyle = style
+    },
+    bodyHeightProp (value) {
+      let style = {}
+      if (value !== 'auto') {
+        style[value] = this.bodyHeight + 'px'
+      }
+      this.config.bodyStyle = style
     }
   },
   methods: {
-    listarUsuarios(){
-      Loading.show({
-          spinner: AtomSpinner,
-          spinnerSize: 140,
-          message: 'Aguardando Dados...'
+    changeMessage (props) {
+      props.rows.forEach(row => {
+        row.data.message = 'Gogu'
       })
-      axios.get(API + 'usuario/obterUsuario')
-      .then((res)=>{
-          console.log(res)
-          this.usuarios = res.data
-          Loading.hide()
-      })
-      .catch((e)=>{
-        console.log(e)
-        Loading.hide()
-      })  
     },
     deleteRow (props) {
       let row = props.rows
@@ -300,13 +323,14 @@ export default {
                       obj = a[i].data
                       obj.excluido = true
                       console.log(obj)
+                      let produto  = obj.nome
                       Loading.show({message: 'Aguardando Dados...'})
-                      axios.post(API + 'usuario/excluirUsuario?codUsuario=' + obj.codigo)
+                      axios.post(API + 'produto/excluirProduto?codProduto=' + obj.codigo)
                           .then((res)=>{
                               //console.log(res)
-                              Toast.create('Excluido com sucesso')
+                              Toast.create(produto + ' foi excluido com sucesso')
                               Loading.hide()
-                              this.listarUsuarios()
+                              this.listarProdutos()
                           })
                           .catch((e)=>{
                             console.log(e)
@@ -322,43 +346,30 @@ export default {
     },
     refresh (done) {
       this.timeout = setTimeout(() => {
-        this.listarUsuarios()
+        this.listarProdutos()
       }, 5000)
     },
-    editar (props) {
-      console.log(props.rows[0].data.codigo)
-      let row = props.rows[0].data
-      localStorage.setItem('codPessoa', row.codigo)
-      localStorage.setItem('cadMode', 'edit')
-      this.$router.push({ path: '/cadUsuario' }) 
-    },
     selection (number, rows) {
-      if(rows.length > 1){
-        this.visivel = false
-      }
-      else{
-        this.visivel = true
-      }
-      console.log(`selecionou ${number}: ${rows}`)
+      console.log(`selected ${number}: ${rows}`)
     },
     rowClick (row) {
       console.log('clicked on a row', row)
-      localStorage.setItem('codUsuario', row.codigoIdentificacao)
+      localStorage.setItem('codProduto', row.codigo)
       localStorage.setItem('cadMode', 'edit')
-      
-      if(!this.alert){
+      if(!this.alert){  
         Alert.create({
           enter: 'bounceInRight',
           leave: 'bounceOutRight',
           color: 'positive',
           icon: 'tag_faces',
-          html: `Nome: ` + row.nome,
+          html: `Nome: ` + row.nome + `<br>`,
           position: 'bottom-center',
           actions: [
             {
               label: 'Abrir',
               handler: () => {
-                this.$router.push({ path: '/cadUsuario' })
+                this.$router.push({ path: '/cadproduto' })
+                console.log('acting')
               }
             },
             {
@@ -373,59 +384,34 @@ export default {
       }
       this.alert = true
     },
+    listarProdutos(){
+      Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Aguardando Dados...'
+      })
+      axios.get(API + 'produto/obterProduto')
+      .then((res)=>{
+          //console.log(res.data)
+          this.Produtos = res.data
+          Loading.hide()
+      })
+      .catch((e)=>{
+        Loading.hide()
+        console.log(e)
+      })  
+    },
     novo(){
       localStorage.setItem('cadMode', 'save')
-      this.$router.push('/cadUsuario')
+      this.$router.push('/cadproduto')
     }
-    /*deleteRow (props) {
-      props.rows.forEach(row => {
-        this.table.splice(row.index, 1)
-      })
-    },
-    refresh (done) {
-      this.timeout = setTimeout(() => {
-        done()
-      }, 5000)
-    },
-    selection (number, rows) {
-      console.log(`selected ${number}: ${rows}`)
-    },
-    rowClick (row) {
-      console.log('clicked on a row', row)
-    }*/
   },
+
   beforeDestroy () {
     clearTimeout(this.timeout)
   },
-  watch: {
-    pagination (value) {
-      if (!value) {
-        this.oldPagination = clone(this.config.pagination)
-        this.config.pagination = false
-        return
-      }
-      this.config.pagination = this.oldPagination
-    },
-    rowHeight (value) {
-      this.config.rowHeight = value + 'px'
-    },
-    bodyHeight (value) {
-      let style = {}
-      if (this.bodyHeightProp !== 'auto') {
-        style[this.bodyHeightProp] = value + 'px'
-      }
-      this.config.bodyStyle = style
-    },
-    bodyHeightProp (value) {
-      let style = {}
-      if (value !== 'auto') {
-        style[value] = this.bodyHeight + 'px'
-      }
-      this.config.bodyStyle = style
-    }
-  },
   created(){
-    this.listarUsuarios()
+    this.listarProdutos()
     if (localStorage.getItem('pagination') === 'false') {
       this.oldPagination = clone(this.config.pagination)
       this.config.pagination = false
@@ -433,6 +419,7 @@ export default {
     }
     this.config.pagination = this.oldPagination
   }
+  
 }
 </script>
 

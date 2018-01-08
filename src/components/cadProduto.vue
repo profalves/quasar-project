@@ -85,7 +85,7 @@
     <div class="row">
         <div class="col-md-6">
           <q-field
-            icon="crop_free"
+            icon="fa-barcode"
           >
             <q-input v-model.number="CadProduto.produto.codBarra"
                      float-label="Cód. Barras"
@@ -96,7 +96,7 @@
         </div>
         <div class="col">
           <q-field
-            icon="store"
+            icon="crop_free"
           >
             <q-input v-model.number="CadProduto.produto.codEmpresa"
                      float-label="Cód. Empresa"

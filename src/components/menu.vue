@@ -114,7 +114,9 @@ export default {
   methods:{
     verificarUser(){
         if(!localStorage.getItem('codUser')){
-          this.$router.push('/login')
+          //this.$router.push('/login')
+          console.log('erro no login')
+          localStorage.getItem('codUser')
         }
     },
   },
