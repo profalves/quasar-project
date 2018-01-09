@@ -52,7 +52,7 @@
                     color="primary" 
                     rounded
                     small
-                    @click=""
+                    @click="abrir(item)"
                     id="btn"
                     >
                     abrir
@@ -130,7 +130,7 @@ export default {
               value: 12
           }
       ],
-      mes: '',
+      mes: parseInt(localStorage.getItem('mesAniversariante')),
         
       //tabela
       misc: 'highlight', //[{value: 'bordered'},{value: 'highlight'}]
@@ -172,6 +172,7 @@ export default {
   },
   methods: {
     getAniversariantes(){
+      localStorage.setItem('mesAniversariante', this.mes)
       Loading.show({message: 'Aguardando Dados...'})
       axios.get(API + 'pessoa/obteraniversariante?mes=' + this.mes)
       .then((res)=>{
@@ -188,10 +189,22 @@ export default {
     fone(item){},
     whats(item){},
     abrir(item){
-        console.log(item)
+      let row = item
+      localStorage.setItem('codPessoa', row.codigo)
+      localStorage.setItem('cadMode', 'edit')
+      localStorage.setItem('tela', 'nivers')
+      this.$router.push({ path: '/cadcliente' }) 
     }
     
   },
+  created(){
+    if(localStorage.getItem('mesAniversariante') && localStorage.getItem('tela') === 'nivers'){
+      this.getAniversariantes()  
+    }
+    else{
+      localStorage.setItem('mesAniversariante', '')
+    }
+  }
   
 }
 </script>

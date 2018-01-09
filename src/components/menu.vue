@@ -1,17 +1,17 @@
 <template>
     <div>
-      <!--
-        Use <q-side-link> component
-        instead of <q-item> for
-        internal vue-router navigation
-      -->
       <div class="user">
           <img src="../../img/newuser.png" class="avatar" /><br>
           {{user}} <br>
           {{emp}} <br>
       </div>
-      <hr>
-
+      
+      <!--
+        Use <q-side-link> component
+        instead of <q-item> for
+        internal vue-router navigation
+      -->
+        
       <q-list no-border link inset-delimiter>
         <q-list-header>Menu</q-list-header>
         <q-item to="/home">
@@ -131,6 +131,6 @@ export default {
         margin-left: 10px
     }
     .user{
-        margin: 10px 15px
+        margin: 10px 15px 0
     }
 </style>
