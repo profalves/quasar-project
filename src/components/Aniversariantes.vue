@@ -30,7 +30,7 @@
                     @click=""
                     id="btn"
                     >
-                    <i class="fa fa-envelope-o"></i>
+                    <i class="fa fa-envelope-o fa-2x"></i>
                 </q-btn>
                 <q-btn
                     color="primary" 
@@ -38,7 +38,7 @@
                     small
                     id="btn"
                     >
-                    <i class="fa fa-phone"></i>
+                    <i class="fa fa-phone fa-2x"></i>
                 </q-btn>
                 <q-btn
                     color="primary" 
@@ -46,7 +46,7 @@
                     small
                     id="btn"
                     >
-                    <i class="fa fa-whatsapp"></i>
+                    <i class="fa fa-whatsapp fa-2x"></i>
                 </q-btn>
                 <q-btn
                     color="primary" 
@@ -67,9 +67,9 @@
 </template>
 
 <script>
-// | formatNiver
 import { Loading } from 'quasar'
 import axios from 'axios'
+import { AtomSpinner } from 'epic-spinners'
     
 const API = localStorage.getItem('wsAtual')
   
@@ -173,7 +173,11 @@ export default {
   methods: {
     getAniversariantes(){
       localStorage.setItem('mesAniversariante', this.mes)
-      Loading.show({message: 'Aguardando Dados...'})
+      Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Aguardando Dados...'
+      })
       axios.get(API + 'pessoa/obteraniversariante?mes=' + this.mes)
       .then((res)=>{
         console.log(res.data)

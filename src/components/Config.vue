@@ -9,23 +9,27 @@
         </q-btn>
       </q-fixed-position>
       
-      <q-fixed-position class="fixo" corner="bottom-right" :offset="[18, 18]">
+      <!--<q-fixed-position class="fixo" corner="bottom-right" :offset="[18, 18]">
         <q-btn 
            rounded
            color="primary" 
            @click="$router.push('test')">
            Testes
         </q-btn>
-      </q-fixed-position>
+      </q-fixed-position>-->
       
       <div class="row">
         <div class="col-xl-6">
           <q-list inset-separator style="background-color: white; margin-bottom: 40px;">
+            <q-list-header>Configurações Gerais</q-list-header>
             <!-- Notificações -->
             <q-collapsible icon="notifications" label="Notificações" sublabel="Configurações de exibição de Notificações no sistema">
               <div>
-               <q-list link>
+               <q-list link no-border>
                 <q-item tag="label">
+                  <q-item-side>
+                      <q-icon name="fa-sign-in fa-2x" />
+                  </q-item-side>
                   <q-item-main>
                     <q-item-tile title>Boas Vindas</q-item-tile>
                   </q-item-main>
@@ -35,11 +39,15 @@
                         checked-icon="visibility"
                         unchecked-icon="visibility_off"
                         style="margin-left: 25px"
+                        @change="notificaBoasVindas"
                     />
 
                   </q-item-side>
                 </q-item>
                 <q-item tag="label">
+                  <q-item-side>
+                      <q-icon name="fa-birthday-cake fa-2x" />
+                  </q-item-side>
                   <q-item-main>
                     <q-item-tile label>Aniversariantes</q-item-tile>
                     <q-item-tile sublabel>Receberá notificações se houver aniversariantes no dia</q-item-tile>
@@ -50,10 +58,11 @@
                         checked-icon="visibility"
                         unchecked-icon="visibility_off"
                         style="margin-left: 25px"
+                        @change="notificaAniversariantes"
                     />
                   </q-item-side>
                 </q-item>
-                <q-item multiline tag="label">
+                <!--<q-item multiline tag="label">
                   <q-item-main>
                     <q-item-tile label>Notification</q-item-tile>
                     <q-item-tile sublabel lines="2">Allow notifications</q-item-tile>
@@ -66,7 +75,7 @@
                         style="margin-left: 25px"
                     />
                   </q-item-side>
-                </q-item>
+                </q-item>-->
                </q-list>
                  
               </div>
@@ -340,8 +349,8 @@ export default {
       //btn voltar
       canGoBack: window.history.length > 1,
       //Notificações
-      boas: false,    
-      niver: false,    
+      boas: (localStorage.getItem('boasVindas') === 'true'),
+      niver: (localStorage.getItem('aniversarios') === 'true'),    
       list: false,    
         
       //Gerais
@@ -450,7 +459,16 @@ export default {
       window.history.go(-1)
     },
       
-    //Gerais
+    notificaBoasVindas(){
+        localStorage.setItem('boasVindas', this.boas)    
+     
+    },
+    notificaAniversariantes(){
+        localStorage.setItem('aniversarios', this.niver)    
+     
+    },
+      
+    //Graficos
     alterarGrafico(){
         localStorage.setItem('tipoGrafico', this.tipoGrafico)
     },

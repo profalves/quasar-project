@@ -67,7 +67,7 @@
 <script>
 import axios from 'axios'
 import { Alert, Dialog, Loading } from 'quasar'
-import { AtomSpinner, OrbitSpinner } from 'epic-spinners'
+import { AtomSpinner } from 'epic-spinners'
 
 //dev
 let API = localStorage.getItem('wsAtual')
@@ -202,14 +202,6 @@ export default {
           })
             
         },
-        entrar(){ //verificar usuário
-            if(localStorage.getItem('codUser')){
-              this.$router.push('/login')
-            }
-            else{
-                this.login()
-            }
-        },
         /*listarBancos(){
             var i
             for (i = 1; i <= localStorage.getItem('bancoCont'); i++) {
@@ -270,7 +262,7 @@ export default {
           if(this.bd === 'none'){ return }
           API = localStorage.getItem('wsAtual')
           Loading.show({
-              spinner: OrbitSpinner,
+              spinner: AtomSpinner,
               spinnerSize: 140,
               message: 'Carregando Usuários...'
           })

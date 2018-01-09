@@ -1,6 +1,6 @@
 <template>
-  <div>
-   
+  <div id="testes">
+      
      <q-btn button @click="notifyMe()">Notifique me!</q-btn><br><br>
     
      <div id="pdf">

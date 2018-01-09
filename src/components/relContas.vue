@@ -95,8 +95,8 @@ const API = localStorage.getItem('wsAtual')
         despesas: 0,
         receitas: 0,
         visivel: false,
-        dataInicial: '2017-07-01T00:00:00.000-03:00',
-        dataFinal: '2017-07-31T00:00:00.000-03:00',
+        dataInicial: '',
+        dataFinal: '',
           
         //datatime
         dias: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
@@ -126,67 +126,10 @@ const API = localStorage.getItem('wsAtual')
         }
       }
     },
-    /*computed:{
-        somaDespPagar(value){
-          if(this.despPagar.length === 0){ return 0 }
-          let a = this.despPagar.filter(d => d.vencimento >= this.dataInicial && d.vencimento <= this.dataFinal)
-          let lista = []
-          
-          lista = a.map(row => row.valorTitulo)
-          
-          value = lista.reduce(function(a, b) {
-            return a + b;
-          });
-          return value
-        },
-        somaDespPagas(value){
-          if(this.despPagas.length === 0){ return 0 }
-          let a = this.despPagas.filter(d => d.vencimento >= this.dataInicial && d.vencimento <= this.dataFinal)
-          let lista = []
-          
-          lista = a.map(row => row.valorPago)
-          
-          value = lista.reduce(function(a, b) {
-            return a + b;
-          });
-          return value
-        },
-        somaRecPagar(value){
-          if(this.recPagar.length === 0){ return 0 }
-          let a = this.recPagar.filter(d => d.vencimento >= this.dataInicial && d.vencimento <= this.dataFinal)
-          let lista = []
-          
-          lista = a.map(row => row.valorTitulo)
-          
-          value = lista.reduce(function(a, b) {
-            return a + b;
-          });
-          return value
-        },
-        somaRecPagas(value){
-          if(this.recPagas.length === 0){ return 0 }
-          let a = this.recPagas.filter(d => d.vencimento >= this.dataInicial && d.vencimento <= this.dataFinal)
-          let lista = []
-          
-          lista = a.map(row => row.valorPago)
-          
-          value = lista.reduce(function(a, b) {
-            return a + b;
-          });
-          return value
-        },
-        despesas(){
-            return this.somaDespPagar + this.somaDespPagas
-        },
-        receitas(){
-            return this.somaRecPagar + this.somaRecPagas
-        }
-       
-    },*/
     methods:{
         listarDespesasAPagar(){
           Loading.show({message: 'Aguardando Dados...'})
-          axios.get(API + 'conta/obterContas?tipo=CP&pagas=false')
+          axios.get(API + 'conta/obterContas?tipo=CP&pagas=false')//&dataInicial=' + this.dataInicial + '&dataInicial=' + this.dataFinal)
           .then((res)=>{
               //console.log(res)
               this.despPagar = res.data
@@ -237,8 +180,9 @@ const API = localStorage.getItem('wsAtual')
           })  
         },
         calcDespPagar(){
+          this.listarDespesasAPagar()
           if(this.despPagar.length === 0){ return 0 }
-          let a = this.despPagar.filter(d => d.vencimento >= this.dataInicial && d.vencimento <= this.dataFinal)
+          let a = this.despPagar
           let lista = []
           
           lista = a.map(row => row.valorTitulo)
@@ -296,9 +240,16 @@ const API = localStorage.getItem('wsAtual')
             
             this.visivel = true
         },
+        listar(){
+            let t = this
+            t.listarDespesasAPagar()
+            t.listarDespesasPagas()
+            /*t.listarReceitasAPagar()
+            t.listarReceitasPagas() */  
+        },
         getContas(){
             let t = this
-            
+            t.listar()
             t.calcRecPagar()
             t.calcRecPagas()
             t.calcDespPagar()
@@ -309,11 +260,7 @@ const API = localStorage.getItem('wsAtual')
         }
     },
     mounted(){
-        let t = this
-        t.listarDespesasAPagar()
-        t.listarDespesasPagas()
-        t.listarReceitasAPagar()
-        t.listarReceitasPagas()   
+        //this.listar() 
     }
   }
 </script>
