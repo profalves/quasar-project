@@ -50,7 +50,6 @@
       :data="notas"
       :config="config"
       :columns="colunas"
-      @refresh="refresh"
       @selection="selection"
       @rowclick="rowClick"
       style="background-color:white;"
@@ -81,7 +80,6 @@
           :data="itensNota"
           :config="config2"
           :columns="colunas2"
-          @refresh="refresh"
           style="background-color:white;"
         ></q-data-table>
     

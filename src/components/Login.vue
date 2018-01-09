@@ -186,7 +186,7 @@ export default {
                  return number
             }
             
-            entrar(this.$router.push('/'));
+            entrar(this.$router.push('/home'));
             
           })
           .catch((e)=>{

@@ -2,14 +2,23 @@
 <div id="clientes">
   <h5>Lista de Pessoas</h5>
   <!-- Botão ADD -->
-    <q-fixed-position class="over" corner="bottom-right" :offset="[18, 18]">
-        <q-btn 
-           round
-           color="primary" 
-           @click="novo">
-           <q-icon name="add" />
-        </q-btn>
-    </q-fixed-position>
+  <q-fixed-position class="over" corner="bottom-right" :offset="[18, 18]">
+    <q-btn 
+       round
+       color="primary" 
+       @click="novo">
+       <q-icon name="add" />
+    </q-btn>
+  </q-fixed-position>
+  <!-- Botão niver -->
+  <q-fixed-position class="over" corner="bottom-left" :offset="[18, 18]">
+    <q-btn 
+       round
+       color="primary" 
+       @click="$router.push('/nivers')">
+       <q-icon name="cake" />
+    </q-btn>
+  </q-fixed-position>
   
   <div id="lista">
     <!--<div class="row">
@@ -36,9 +45,15 @@
     >
       <template slot="selection" scope="props">
         
-        <!--<q-btn flat color="primary" @click="whatsapp(props)">
+        <q-btn flat color="primary" @click="endElet(props)" v-if="visivel">
+          <q-icon name="email" />
+        </q-btn>
+        <q-btn flat color="primary" @click="telefones(props)" v-if="visivel">
+          <q-icon name="phone" />
+        </q-btn>
+        <q-btn flat color="primary" @click="whatsapp(props)" v-if="visivel">
           <q-icon class="fa fa-whatsapp fa-2x" />
-        </q-btn>-->
+        </q-btn>
         <q-btn flat color="primary" @click="editar(props)" v-if="visivel">
           <q-icon name="edit" />
         </q-btn>
@@ -157,6 +172,34 @@
         </div>
       </q-field>
     </q-collapsible>
+    
+    <q-modal minimized ref="telModal">
+      <div class="layout-padding">
+          <q-list link no-border>
+              <q-list-header>Ligar para Telefone de {{pessoa}}</q-list-header>
+              <q-item v-for="(fone, index) in fones" :key="index">
+                  <a :href='`tel:${fone.numero}`'>{{fone.numero}}</a>
+              </q-item>
+              <q-item-separator />
+          </q-list>
+          <br>
+          <q-btn color="primary" @click="$refs.telModal.close()">Fechar</q-btn>
+      </div>
+    </q-modal>
+    
+    <q-modal minimized ref="emailModal">
+      <div class="layout-padding">
+          <q-list link no-border>
+              <q-list-header>Enviar Email para {{pessoa}}</q-list-header>
+              <q-item v-for="(email, index) in emails" :key="index">
+                  <a :href='`mailto:${email.endereco}`'>{{email.endereco}}</a>
+              </q-item>
+              <q-item-separator />
+          </q-list>
+          <br>
+          <q-btn color="primary" @click="$refs.emailModal.close()">Fechar</q-btn>
+      </div>
+    </q-modal>
 
     
   </div>
@@ -178,6 +221,9 @@ export default {
   data () {
     return {
       pessoas: [],
+      pessoa: '',
+      fones: [],
+      emails: [],
       excluidos: [],
       tipo: 'c',
       tipos: [
@@ -265,24 +311,6 @@ export default {
           },
           width: '100px'
         },*/
-        
-        {
-          label: 'Telefone',
-          field: 'telResid',
-          sort: true,
-          filter: true,
-          type: 'number',
-          width: '100px'
-        },
-        {
-          label: 'Celular',
-          field: 'celular1',
-          sort: true,
-          filter: true,
-          type: 'number',
-          width: '100px'
-        },
-        
         {
           label: 'Tipo',
           field: 'tipo',
@@ -381,90 +409,66 @@ export default {
       })
     },
     whatsapp (props) {
-      let row = props.rows
-      
-      Dialog.create({
-          title: 'Enviar mensagem via Whatsapp',
-          message: 'Digite a sua mensagem aqui abaixo e clique em enviar.',
-          form: {
-            msg: {
-              type: 'textarea',
-              label: 'Mensagem',
-              model: ''
-            }
-          },
-          buttons: [
-            'Cancel',
-            {
-              label: 'Ok',
-              handler: (data) => {
-                  let a = row
-                  let obj = {}
-
-                  for (let i=0; i < a.length; i++) {
-                      obj = a[i].data
-                      let numero  = obj.celular1
-                      /*console.log(obj)
-                      console.log(numero)
-                      console.log(data.msg)*/
-                      openURL('https://api.whatsapp.com/send?phone=' + 55 + numero + '&text=' + data.msg)
-                      
+      let row = props.rows[0].data.telefones
+      if(row.length < 1){
+        Toast.create('Não há numeros salvos para este cadastro')
+      }
+      for (let i=0; i < row.length; i++) {
+          if(row[i].movel === true){
+            let w = row[i].numero
+            Dialog.create({
+              title: 'Enviar mensagem via Whatsapp para ' + w,
+              message: 'Digite a sua mensagem aqui abaixo e clique em enviar.',
+              form: {
+                msg: {
+                  type: 'textarea',
+                  label: 'Mensagem',
+                  model: ''
+                }
+              },
+              buttons: [
+                {
+                  label: 'Cancelar',
+                  color: 'negative',
+                },
+                {
+                  label: 'Enviar',
+                  color: 'positive',
+                  handler: (data) => {
+                    console.log(data)
+                    console.log('telefone:', w)
+                    openURL('https://api.whatsapp.com/send?phone=' + 55 + w + '&text=' + data.msg)
                   }
-              }
-            }
-          ]
-      })
-      /*Dialog.create({
-          title: 'Excluir',
-          message: 'Tem certeza que deseja excluir ' + this.excluidos.length + ' registro(s)?',
-          buttons: [
-            {
-              label: 'Não! Cancela',
-              color: 'negative',
-              raised: true,
-              style: 'margin-top: 20px',
-              handler () {
-                Toast.create('Cancelado...')
-              }
-            },
-            {
-              label: 'Sim! Pode excluir',
-              color: 'positive',
-              raised: true,
-              style: 'margin-top: 20px',
-              handler: () => {
-                  let a = this.excluidos
-                  let obj = {}
+                }
+              ]
+            })  
+          }
+          else{
+           Toast.create('Não há celulares definidos para este cadastro')
+          }
+            
 
-                  for (let i=0; i < a.length; i++) {
-                      obj = a[i].data
-                      obj.excluido = true
-                      obj.cpf = 0
-                      let cliente  = obj.nome
-                      console.log(obj)
-                      Loading.show({message: 'Aguardando Dados...'})
-                      axios.post(API + 'pessoa/excluirPessoa?codPessoa=' + obj.codigo)
-                          .then((res)=>{
-                              Toast.create(cliente + ' foi excluido com sucesso')
-                              console.log(res)
-                              Loading.hide()
-                              this.listarPessoas()
-                          })
-                          .catch((e)=>{
-                            console.log(e)
-                            return
-                          })  
-                      
-                  }
-              }
-            }
-          ]
-      })*/
+      }
     },
-    refresh (done) {
-      this.timeout = setTimeout(() => {
-        this.listarPessoas()
-      }, 5000)
+    telefones (props){
+        this.$refs.telModal.open()
+        let nome = props.rows[0].data.nome
+        this.pessoa = nome
+        let row = props.rows[0].data.telefones
+        this.fones = row
+        //console.log('telefones: ', row);
+    },
+    endElet (props){
+        this.$refs.emailModal.open()
+        let nome = props.rows[0].data.nome
+        this.pessoa = nome
+        let row = props.rows[0].data.endEletronico
+        this.emails = row
+        //console.log('emails: ', row);
+    },
+    refresh (done){
+      this.listarPessoas()
+      done()
     },
     selection (number, rows) {
       if(rows.length > 1){
@@ -508,14 +512,11 @@ export default {
       }
       this.alert = true
     },
-    novo(){
+    novo (){
       localStorage.setItem('cadMode', 'save')
       this.$router.push('/cadcliente')
     }
     
-  },
-  beforeDestroy () {
-    clearTimeout(this.timeout)
   },
   watch: {
     pagination (value) {

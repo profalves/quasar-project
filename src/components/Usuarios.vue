@@ -321,9 +321,8 @@ export default {
       })
     },
     refresh (done) {
-      this.timeout = setTimeout(() => {
-        this.listarUsuarios()
-      }, 5000)
+      this.listarUsuarios()
+      done()
     },
     editar (props) {
       console.log(props.rows[0].data.codigo)
@@ -377,25 +376,6 @@ export default {
       localStorage.setItem('cadMode', 'save')
       this.$router.push('/cadUsuario')
     }
-    /*deleteRow (props) {
-      props.rows.forEach(row => {
-        this.table.splice(row.index, 1)
-      })
-    },
-    refresh (done) {
-      this.timeout = setTimeout(() => {
-        done()
-      }, 5000)
-    },
-    selection (number, rows) {
-      console.log(`selected ${number}: ${rows}`)
-    },
-    rowClick (row) {
-      console.log('clicked on a row', row)
-    }*/
-  },
-  beforeDestroy () {
-    clearTimeout(this.timeout)
   },
   watch: {
     pagination (value) {

@@ -554,9 +554,8 @@ export default {
       })
     },
     refresh (done) {
-      this.timeout = setTimeout(() => {
-        this.listarContas()
-      }, 5000)
+      this.listarContas()
+      done()
     },
     editar (props) {
       console.log(props.rows[0].data.codigo)

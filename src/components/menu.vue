@@ -28,7 +28,7 @@
           <q-list highlight no-border>
             <q-item>
               <q-side-link to="/produtos">
-                <q-item-main label="Lista de Produtos" sublabel="Listagem e Cadastro de Produtos" />
+                <q-item-main label="Localizar Produtos" sublabel="Listagem e Cadastro de Produtos" />
               </q-side-link>
             </q-item>
             <q-item>

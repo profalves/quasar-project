@@ -25,6 +25,7 @@ export default new VueRouter({
     { path: '/', component: load('Home') },
     { path: '/hello', component: load('Hello') },
     { path: '/clientes', component: load('Clientes') },
+    { path: '/nivers', component: load('Aniversariantes') },
     { path: '/cadcliente', component: load('cadCliente') },
     { path: '/produtos', component: load('Produtos') },
     { path: '/transFiliais', component: load('Transferencias') },

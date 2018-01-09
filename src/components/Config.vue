@@ -21,8 +21,58 @@
       <div class="row">
         <div class="col-xl-6">
           <q-list inset-separator style="background-color: white; margin-bottom: 40px;">
+            <!-- Notificações -->
+            <q-collapsible icon="notifications" label="Notificações" sublabel="Configurações de exibição de Notificações no sistema">
+              <div>
+               <q-list link>
+                <q-item tag="label">
+                  <q-item-main>
+                    <q-item-tile title>Boas Vindas</q-item-tile>
+                  </q-item-main>
+                  <q-item-side right>
+                    <q-toggle
+                        v-model="boas"
+                        checked-icon="visibility"
+                        unchecked-icon="visibility_off"
+                        style="margin-left: 25px"
+                    />
+
+                  </q-item-side>
+                </q-item>
+                <q-item tag="label">
+                  <q-item-main>
+                    <q-item-tile label>Aniversariantes</q-item-tile>
+                    <q-item-tile sublabel>Receberá notificações se houver aniversariantes no dia</q-item-tile>
+                  </q-item-main>
+                  <q-item-side right>
+                    <q-toggle
+                        v-model="niver"
+                        checked-icon="visibility"
+                        unchecked-icon="visibility_off"
+                        style="margin-left: 25px"
+                    />
+                  </q-item-side>
+                </q-item>
+                <q-item multiline tag="label">
+                  <q-item-main>
+                    <q-item-tile label>Notification</q-item-tile>
+                    <q-item-tile sublabel lines="2">Allow notifications</q-item-tile>
+                  </q-item-main>
+                  <q-item-side right>
+                    <q-toggle
+                        v-model="list"
+                        checked-icon="visibility"
+                        unchecked-icon="visibility_off"
+                        style="margin-left: 25px"
+                    />
+                  </q-item-side>
+                </q-item>
+               </q-list>
+                 
+              </div>
+            </q-collapsible>
             <!-- GRAFICOS -->
-            <q-collapsible icon="settings" label="Configuações de Gráficos" sublabel="Configurações de exibição de gráficos no sistema">
+            <q-collapsible icon="insert_chart" label="Configuações de Gráficos" sublabel="Configurações de exibição de gráficos no sistema">
               <div>
                <q-field label="Tipo de Gráfico a Exibir">
                 <q-select
@@ -289,7 +339,11 @@ export default {
     return {
       //btn voltar
       canGoBack: window.history.length > 1,
-      
+      //Notificações
+      boas: false,    
+      niver: false,    
+      list: false,    
+        
       //Gerais
       tipoGrafico: localStorage.getItem('tipoGrafico'),
       height: parseInt(localStorage.getItem('alturaGrafico')),
