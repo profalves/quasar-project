@@ -238,6 +238,7 @@
 import axios from 'axios'
 import { Dialog, Loading } from 'quasar'
 import bar from './charts/Bar2.js' 
+import { AtomSpinner } from 'epic-spinners'
     
 const API = localStorage.getItem('wsAtual')
   
@@ -528,7 +529,11 @@ export default {
         
     },
     getFechamento(){
-      Loading.show({message: 'Aguardando Dados...'})
+      Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Aguardando Dados...'
+      })
       axios.get(API + 'caixa/obterFechamentoCaixa?codigocaixa=' + this.idCaixa + '&FechamentoTodos=true')
       .then((res)=>{  
         Loading.hide()
@@ -552,7 +557,11 @@ export default {
       })
     },
     getCaixa(){
-      Loading.show({message: 'Aguardando Dados...'})
+      Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Aguardando Dados...'
+      })
       axios.get(API + 'caixa/obterCaixaCab?aberto=' + this.abertos)
       .then((res)=>{
         Loading.hide()
@@ -628,7 +637,11 @@ export default {
         })    
     },
     fecharCaixa(){
-      Loading.show({message: 'Aguardando Dados...'})
+      Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Aguardando Dados...'
+      })
       axios.post(API + 'caixa/GRAVARFechamentoCaixa?codigocaixa=' + this.idCaixa)
       .then((res)=>{  
         Loading.hide()

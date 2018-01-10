@@ -26,6 +26,17 @@
             <q-collapsible icon="notifications" label="Notificações" sublabel="Configurações de exibição de Notificações no sistema">
               <div>
                <q-list link no-border>
+                <q-item multiline tag="label">
+                  <q-item-main>
+                    <q-item-tile label>Receber Notificações</q-item-tile>
+                    <q-item-tile sublabel lines="2">Solicitar permissão para receber Notificações no app</q-item-tile>
+                  </q-item-main>
+                  <q-item-side right>
+                    <q-btn round small push @click="solicitarNotificacoes">
+                        <i class="fa fa-exclamation text-primary"></i>
+                    </q-btn>
+                  </q-item-side>
+                </q-item>
                 <q-item tag="label">
                   <q-item-side>
                       <q-icon name="fa-sign-in fa-2x" />
@@ -62,20 +73,7 @@
                     />
                   </q-item-side>
                 </q-item>
-                <!--<q-item multiline tag="label">
-                  <q-item-main>
-                    <q-item-tile label>Notification</q-item-tile>
-                    <q-item-tile sublabel lines="2">Allow notifications</q-item-tile>
-                  </q-item-main>
-                  <q-item-side right>
-                    <q-toggle
-                        v-model="list"
-                        checked-icon="visibility"
-                        unchecked-icon="visibility_off"
-                        style="margin-left: 25px"
-                    />
-                  </q-item-side>
-                </q-item>-->
+                
                </q-list>
                  
               </div>
@@ -458,14 +456,30 @@ export default {
     goBack(){
       window.history.go(-1)
     },
-      
+    
+    solicitarNotificacoes(){
+        if (!("Notification" in window)) {
+            alert("This device does not support notification");
+        }
+        else if (Notification.permission === "granted") {
+            return new Notification("Você tem permissão para receber notificações");
+        }
+
+        // Otherwise, we need to ask the user for permission
+        else if (Notification.permission !== 'denied' || Notification.permission === "default") {
+          Notification.requestPermission(function (permission) {
+              if (permission === "granted") {
+                return new Notification("Permissão para receber notificações concedida");
+              }
+          });
+        }
+
+    },
     notificaBoasVindas(){
-        localStorage.setItem('boasVindas', this.boas)    
-     
+        localStorage.setItem('boasVindas', this.boas)
     },
     notificaAniversariantes(){
-        localStorage.setItem('aniversarios', this.niver)    
-     
+        localStorage.setItem('aniversarios', this.niver)
     },
       
     //Graficos
@@ -702,6 +716,7 @@ export default {
           ]
         })
     }
+    Notification.requestPermission()
   }
   
 }

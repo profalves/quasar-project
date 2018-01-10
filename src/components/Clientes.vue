@@ -389,7 +389,11 @@ export default {
                       obj.cpf = 0
                       let cliente  = obj.nome
                       console.log(obj)
-                      Loading.show({message: 'Aguardando Dados...'})
+                      Loading.show({
+                          spinner: AtomSpinner,
+                          spinnerSize: 140,
+                          message: 'Enviando Dados...'
+                      })
                       axios.post(API + 'pessoa/excluirPessoa?codPessoa=' + obj.codigo)
                           .then((res)=>{
                               Toast.create(cliente + ' foi excluido com sucesso')

@@ -94,6 +94,7 @@
 <script>
 import { Toast, Loading, clone } from 'quasar'
 import axios from 'axios'
+import { AtomSpinner } from 'epic-spinners'
     
 function numberToReal(numero) {
     //if(numero === 0) { return 0.00 }
@@ -429,7 +430,11 @@ export default {
       
     listarNotas(){
       if(this.fornecedor === ''){ return }
-      Loading.show({message: 'Aguardando Dados...'})
+      Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Aguardando Dados...'
+      })
       axios.get(API + 'pedido/obterNumeroNota?codfornecedor=' + this.fornecedor + '&excluido=' + this.checked)
       .then((res)=>{
           //console.log(res.data)
@@ -445,7 +450,11 @@ export default {
       }) 
     },
     listarFornecedores(){
-      Loading.show({message: 'Aguardando Dados...'})
+      Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Aguardando Dados...'
+      })
       axios.get(API + 'pessoa/obterfornecedores')
       .then((res)=>{
           //console.log(res.data)
@@ -458,7 +467,11 @@ export default {
       }) 
     },
     listarItens(){
-      Loading.show({message: 'Aguardando Dados...'})
+      Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Aguardando Dados...'
+      })
       axios.get(API + 'pedido/obterPedidoNota?codigocab=' + this.codigo)
       .then((res)=>{
           //console.log(res.data)
@@ -484,7 +497,11 @@ export default {
       console.log(props.rows[0].data.codigo)
       let nota = props.rows[0].data.codigo
       
-      Loading.show({message: 'Aguardando Dados...'})
+      Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Excluindo Nota...'
+      })
       axios.post(API + 'pedido/excluirPedido?codigoCab=' + nota)
       .then((res)=>{
           console.log(res.data)

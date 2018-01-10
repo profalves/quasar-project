@@ -200,7 +200,7 @@
 </template>
 
 <script>
-    
+import { AtomSpinner } from 'epic-spinners'    
 import { Loading, Toast, clone } from 'quasar'
 import axios from 'axios'
     
@@ -421,7 +421,11 @@ export default {
             fam = '&codFamilia=' + this.familia
         }
         
-        Loading.show({message: 'Aguardando Dados...'})
+        Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Aguardando Dados...'
+        })
         axios.get(API + 'relatorio/obterRptProdutosPorML?' +
                 'dataInicial=' + this.dataInicial +
                 '&dataFinal=' + this.dataFinal + 
@@ -444,7 +448,11 @@ export default {
         })
       },
       listarFamilias(){
-          Loading.show({message: 'Aguardando Dados...'})
+          Loading.show({
+              spinner: AtomSpinner,
+              spinnerSize: 140,
+              message: 'Aguardando Dados...'
+          })
           axios.get(API + 'produto/obterProdutosFamilia')
           .then((res)=>{
             Loading.hide()

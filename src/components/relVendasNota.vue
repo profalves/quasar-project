@@ -195,7 +195,7 @@
 </template>
 
 <script>
-    
+import { AtomSpinner } from 'epic-spinners'    
 import { Loading, Toast } from 'quasar'
 import axios from 'axios'
     
@@ -347,7 +347,11 @@ export default {
         }
         
         
-        Loading.show({message: 'Aguardando Dados...'})
+        Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Aguardando Dados...'
+        })
         axios.get(API + 'relatorio/obterRptPorNota?' +
                 'dataInicial=' + this.dataInicial +
                 '&dataFinal=' + this.dataFinal +
@@ -383,7 +387,11 @@ export default {
           })
       },
       todosProdutos(){
-          Loading.show({message: 'Aguardando Dados...'})
+          Loading.show({
+              spinner: AtomSpinner,
+              spinnerSize: 140,
+              message: 'Aguardando Dados...'
+          })
           axios.get(API + 'produto/obterproduto')
           .then((res)=>{
               Loading.hide()
@@ -397,7 +405,11 @@ export default {
           
       },
       listarVendedores(){
-          Loading.show({message: 'Aguardando Dados...'})
+          Loading.show({
+              spinner: AtomSpinner,
+              spinnerSize: 140,
+              message: 'Aguardando Dados...'
+          })
           axios.get(API + 'usuario/obterUsuario')
           .then((res)=>{
             Loading.hide()

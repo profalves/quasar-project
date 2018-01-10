@@ -46,6 +46,7 @@
 
 import { Loading } from 'quasar'
 import axios from 'axios'
+import { AtomSpinner } from 'epic-spinners'
     
 const API = localStorage.getItem('wsAtual')
   
@@ -142,7 +143,11 @@ export default {
   },
   methods: {
     getCaixaMes(){
-      Loading.show({message: 'Aguardando Dados...'})
+      Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Aguardando Dados...'
+      })
       axios.get(API + 'caixa/obterCaixaMes?Mes=' + this.mes)
       .then((res)=>{
         //console.log(res.data)

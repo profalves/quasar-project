@@ -15,6 +15,7 @@ import Quasar from 'quasar'
 import router from './router'
 import './themes/index'
 import './themes/spinners'
+import './themes/notifications'
 import store from './vuex/store'
 
 

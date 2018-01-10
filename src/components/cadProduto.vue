@@ -927,7 +927,11 @@ export default {
             this.CadProduto.precos[1].valor = this.valor
         }
         
-        Loading.show({message: 'Enviando Dados...'})
+        Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Enviando Dados...'
+        })
         axios.post(API + 'produto/gravarProduto', this.CadProduto)
           .then((res)=>{
             Loading.hide()
@@ -974,7 +978,11 @@ export default {
               style: 'margin-top: 20px',
               handler: () => {
                 let produto  = this.CadProduto.produto.nome
-                Loading.show({message: 'Aguardando Dados...'})
+                Loading.show({
+                  spinner: AtomSpinner,
+                  spinnerSize: 140,
+                  message: 'Aguardando Dados...'
+                })
                 axios.post(API + 'produto/excluirProduto?codProduto=' + this.CadProduto.produto.codigo)
                   .then((res)=>{
                       //console.log(res)
@@ -1258,7 +1266,11 @@ export default {
     },
     listarProdutos(){
       if (localStorage.getItem('cadMode')==='edit'){
-          Loading.show({message: 'Aguardando Dados...'})
+          Loading.show({
+              spinner: AtomSpinner,
+              spinnerSize: 140,
+              message: 'Aguardando Dados...'
+          })
           axios.get(API + 'produto/obterproduto?codProduto=' + localStorage.getItem('codProduto'))
           .then((res)=>{
               Loading.hide()

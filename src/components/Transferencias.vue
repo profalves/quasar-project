@@ -508,7 +508,7 @@ export default {
           .then((res)=>{
             Loading.hide()
             this.produtos = res.data
-            //console.log(res)
+            this.findTemp()
           })
           .catch((e)=>{
             Loading.hide()
@@ -520,6 +520,32 @@ export default {
                 icon: 'mood_bad'
             })
           })
+    },
+    findTemp(){
+      if(localStorage.getItem('transfTemp')){
+        Dialog.create({
+          title: 'Transferência salva como rascunho',
+          message: 'Você tem uma Transferência salva temporariamente, deseja recuperar?',
+          buttons: [
+            {
+              label: 'Não',
+              color: 'negative',
+              raised: true,
+              style: 'margin-top: 20px'
+            },
+            {
+              label: 'Sim',
+              color: 'positive',
+              raised: true,
+              style: 'margin-top: 20px',
+              handler:() => {
+                this.transferencias = JSON.parse(localStorage.getItem('transfTemp'))
+                Toast.create.positive('Transferência recuperada com sucesso!')
+              }
+            }
+          ]
+        })
+      }
     },
     alertAdd(){
         if(!this.produto.codigo){
@@ -594,7 +620,7 @@ export default {
                 return
             }  
         }
-        this.transferencias.push({
+        this.transferencias.unshift({
             codigo: this.produto.codigo,
             codBarra: this.produto.codBarra,
             nome: this.produto.nome,
@@ -668,10 +694,55 @@ export default {
     },
   },
   mounted(){
-    this.$refs.modal.open()
+    //this.$refs.modal.open()
+    this.todosProdutos() // se descomentar acima, tem que apagar esta linha
+    
+  },
+  beforeRouteLeave(to, from, next){
+    if(this.transferencias.length === 0){
+      next()
+      return
+    }
+    Dialog.create({
+      title: '<i class="fa fa-exclamation-triangle text-negative" style="margin-right: 15px"></i>Espere!',
+      message: 'Tem certeza que deseja sair sem salvar a Transferência?',
+      buttons: [
+        {
+          label: 'Pode sair sem salvar',
+          color: 'negative',
+          raised: true,
+          style: 'margin-top: 20px',
+          handler:() => {
+            next()
+          }
+        },
+        {
+          label: 'Salvar e continuar',
+          color: 'warning',
+          raised: true,
+          style: 'margin-top: 20px',
+          handler:() => {
+            localStorage.setItem('transfTemp', JSON.stringify(this.transferencias));
+            Toast.create('Nota salva temporariamente!')
+            this.$router.push('/transFiliais')
+          }
+        },
+        {
+          label: 'Salvar e sair',
+          color: 'positive',
+          raised: true,
+          style: 'margin-top: 20px',
+          handler:() => {
+            localStorage.setItem('transfTemp', JSON.stringify(this.transferencias));
+            Toast.create('Nota salva temporariamente!')
+            next()
+          }
+        }
+      ]
+    })
   },
   created(){
-    this.obterConfigs()
+    //this.obterConfigs()
   }
   
 }

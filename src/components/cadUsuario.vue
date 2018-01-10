@@ -234,6 +234,7 @@ import axios from 'axios'
 import VMasker from 'vanilla-masker'
 import { required, between, minLength, maxLength, email } from 'vuelidate/lib/validators'
 import { Dialog, Toast, Loading } from 'quasar'
+import { AtomSpinner } from 'epic-spinners'
     
 //dev
 const API = localStorage.getItem('wsAtual')
@@ -341,7 +342,11 @@ export default {
         this.usuario.nome = this.nome
         this.usuario.senha = this.senha
       
-        Loading.show({message: 'Enviando Dados...'})
+        Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Enviando Dados...'
+        })
         axios.post(API + 'usuario/gravarUsuario', this.usuario)
           .then((res)=>{
             Loading.hide()
@@ -387,7 +392,11 @@ export default {
               raised: true,
               style: 'margin-top: 20px',
               handler: () => {
-                Loading.show({message: 'Aguardando Dados...'})
+                Loading.show({
+                  spinner: AtomSpinner,
+                  spinnerSize: 140,
+                  message: 'Excluindo Usuário...'
+                })
                 axios.post(API + 'usuario/excluirUsuario?codUsuario=' + this.usuario.codigo)
                   .then((res)=>{
                       //console.log(res)
@@ -406,7 +415,11 @@ export default {
         })
     },
     listarPessoas(){
-      Loading.show({message: 'Aguardando Dados...'})
+      Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Aguardando Dados...'
+      })
       axios.get(API + 'pessoa/obterpessoa')
       .then((res)=>{
           //console.log(res.data)
@@ -420,7 +433,11 @@ export default {
     },
     
     listarUsuarios(){
-      Loading.show({message: 'Aguardando Dados...'})
+      Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Aguardando Dados...'
+      })
       axios.get(API + 'usuario/obterUsuario')
       .then((res)=>{
           //console.log(res)
@@ -433,7 +450,11 @@ export default {
     },
     editarUsuario(){
       if (localStorage.getItem('cadMode')==='edit'){
-          Loading.show({message: 'Aguardando Dados...'})
+          Loading.show({
+              spinner: AtomSpinner,
+              spinnerSize: 140,
+              message: 'Editando Usuário...'
+          })
           axios.get(API + 'usuario/obterUsuario?codidentificacao=' + localStorage.getItem('codUsuario'))
           .then((res)=>{
               Loading.hide()

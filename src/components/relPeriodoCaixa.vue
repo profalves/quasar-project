@@ -193,6 +193,7 @@ import radar from './charts/Radar.js'
 import bubble from './charts/Bubble.js'
 import { Dialog, Loading } from 'quasar'
 import axios from 'axios'
+import { AtomSpinner } from 'epic-spinners'
     
 const API = localStorage.getItem('wsAtual')
   
@@ -442,7 +443,11 @@ export default {
       }  
     },
     listarResumo(){
-      Loading.show({message: 'Aguardando Dados...'})
+      Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Aguardando Dados...'
+      })
       axios.get(API + 'caixa/obterResumoCaixa?datainicial=' + this.dataInicial + '&datafinal=' + this.dataFinal)
       .then((res)=>{
           console.log(res.data)

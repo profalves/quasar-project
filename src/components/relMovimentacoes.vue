@@ -182,7 +182,7 @@
 </template>
 
 <script>
-    
+import { AtomSpinner } from 'epic-spinners'    
 import { Loading, Toast, clone } from 'quasar'
 import axios from 'axios'
     
@@ -543,7 +543,11 @@ export default {
             p = '&codProduto=' + this.produto
         }
         
-        Loading.show({message: 'Aguardando Dados...'})
+        Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Aguardando Dados...'
+        })
         axios.get(API + 'relatorio/obterRptMovDiversas?' +
                 'dataInicial=' + this.dataInicial +
                 '&dataFinal=' + this.dataFinal + 
@@ -562,7 +566,11 @@ export default {
         })
       },
       listarClientes(){
-          Loading.show({message: 'Aguardando Dados...'})
+          Loading.show({
+              spinner: AtomSpinner,
+              spinnerSize: 140,
+              message: 'Aguardando Dados...'
+          })
           axios.get(API + 'pessoa/obterpessoa')
           .then((res)=>{
             Loading.hide()
@@ -574,7 +582,11 @@ export default {
           })
       },
       todosProdutos(){
-          Loading.show({message: 'Aguardando Dados...'})
+          Loading.show({
+              spinner: AtomSpinner,
+              spinnerSize: 140,
+              message: 'Aguardando Dados...'
+          })
           axios.get(API + 'produto/obterproduto')
           .then((res)=>{
               Loading.hide()
@@ -588,7 +600,11 @@ export default {
           
       },
       listarVendedores(){
-          Loading.show({message: 'Aguardando Dados...'})
+          Loading.show({
+              spinner: AtomSpinner,
+              spinnerSize: 140,
+              message: 'Aguardando Dados...'
+          })
           axios.get(API + 'usuario/obterUsuario')
           .then((res)=>{
             Loading.hide()
@@ -601,7 +617,11 @@ export default {
           })
       },
       listarMovs(){
-          Loading.show({message: 'Aguardando Dados...'})
+          Loading.show({
+              spinner: AtomSpinner,
+              spinnerSize: 140,
+              message: 'Aguardando Dados...'
+          })
           axios.get(API + 'vendascab/obterVendasCabOP')
           .then((res)=>{
             Loading.hide()

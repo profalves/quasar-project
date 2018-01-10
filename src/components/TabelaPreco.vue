@@ -140,6 +140,7 @@
 import { Dialog, Toast, Loading } from 'quasar'
 import { required } from 'vuelidate/lib/validators'
 import axios from 'axios'
+import { AtomSpinner } from 'epic-spinners'
     
 const API = localStorage.getItem('wsAtual')
   
@@ -221,7 +222,11 @@ export default {
       window.history.go(-1)
     },
     listarTabs (){
-        Loading.show({message: 'Aguardando dados...'})
+        Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Aguardando Dados...'
+        })
         axios.get(API + 'produto/obterProdutosTbPrecoCab')
           .then((res)=>{
             Loading.hide()
@@ -253,7 +258,11 @@ export default {
             Object.assign(tab,{Codigo: this.codigo})
         }
         
-        Loading.show({message: 'Aguardando dados...'})
+        Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Enviando Dados...'
+        })
         axios.post(API + 'produto/gravarTabPrecoCab', tab)
           .then((res)=>{
             Loading.hide()
@@ -304,7 +313,12 @@ export default {
               raised: true,
               color: 'negative',
               handler: () => {
-                Loading.show({message: 'Excluindo tabela...'})
+                Loading.show({
+                    spinner: AtomSpinner,
+                    spinnerSize: 140,
+                    message: 'Excluindo tabela...'
+                })
+                
                 axios.post(API + 'produto/gravarTabPrecoCab', item)
                   .then((res)=>{
                     Loading.hide()

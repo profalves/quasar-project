@@ -71,6 +71,7 @@
 import { Loading } from 'quasar'
 import axios from 'axios'
 import bar from './charts/Bar.js'
+import { AtomSpinner } from 'epic-spinners'
     
 const API = localStorage.getItem('wsAtual')
   
@@ -128,7 +129,11 @@ const API = localStorage.getItem('wsAtual')
     },
     methods:{
         listarDespesasAPagar(){
-          Loading.show({message: 'Aguardando Dados...'})
+          Loading.show({
+              spinner: AtomSpinner,
+              spinnerSize: 140,
+              message: 'Aguardando Dados...'
+          })
           axios.get(API + 'conta/obterContas?tipo=CP&pagas=false')//&dataInicial=' + this.dataInicial + '&dataInicial=' + this.dataFinal)
           .then((res)=>{
               //console.log(res)
@@ -141,7 +146,11 @@ const API = localStorage.getItem('wsAtual')
           })  
         },
         listarDespesasPagas(){
-          Loading.show({message: 'Aguardando Dados...'})
+          Loading.show({
+              spinner: AtomSpinner,
+              spinnerSize: 140,
+              message: 'Aguardando Dados...'
+          })
           axios.get(API + 'conta/obterContas?tipo=CP&pagas=true')
           .then((res)=>{
               //console.log(res)
@@ -154,7 +163,11 @@ const API = localStorage.getItem('wsAtual')
           })  
         },
         listarReceitasAPagar(){
-          Loading.show({message: 'Aguardando Dados...'})
+          Loading.show({
+              spinner: AtomSpinner,
+              spinnerSize: 140,
+              message: 'Aguardando Dados...'
+          })
           axios.get(API + 'conta/obterContas?tipo=CR&pagas=false')
           .then((res)=>{
               //console.log(res)
@@ -167,7 +180,11 @@ const API = localStorage.getItem('wsAtual')
           })  
         },
         listarReceitasPagas(){
-          Loading.show({message: 'Aguardando Dados...'})
+          Loading.show({
+              spinner: AtomSpinner,
+              spinnerSize: 140,
+              message: 'Aguardando Dados...'
+          })
           axios.get(API + 'conta/obterContas?tipo=CR&pagas=true')
           .then((res)=>{
               //console.log(res)

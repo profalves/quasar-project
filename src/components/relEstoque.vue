@@ -217,6 +217,7 @@
     
 import { Loading, Toast, clone } from 'quasar'
 import axios from 'axios'
+import { AtomSpinner } from 'epic-spinners'
     
 const API = localStorage.getItem('wsAtual')
   
@@ -453,7 +454,11 @@ export default {
             produto = '&codProduto=' + this.produto
         }
         
-        Loading.show({message: 'Aguardando Dados...'})
+        Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Aguardando Dados...'
+        })
         axios.get(API + 'relatorio/obterVendasPorProduto?' +
                 'dataInicial=' + this.dataInicial +
                 '&dataFinal=' + this.dataFinal + 
@@ -474,7 +479,11 @@ export default {
         })
       },
       listarFamilias(){
-          Loading.show({message: 'Aguardando Dados...'})
+          Loading.show({
+              spinner: AtomSpinner,
+              spinnerSize: 140,
+              message: 'Aguardando Dados...'
+          })
           axios.get(API + 'produto/obterProdutosFamilia')
           .then((res)=>{
             Loading.hide()
@@ -486,7 +495,11 @@ export default {
           })
       },
       todosProdutos(){
-          Loading.show({message: 'Aguardando Dados...'})
+          Loading.show({
+              spinner: AtomSpinner,
+              spinnerSize: 140,
+              message: 'Aguardando Dados...'
+          })
           axios.get(API + 'produto/obterproduto')
           .then((res)=>{
               Loading.hide()
@@ -500,7 +513,11 @@ export default {
           
       },
       listarVendedores(){
-          Loading.show({message: 'Aguardando Dados...'})
+          Loading.show({
+              spinner: AtomSpinner,
+              spinnerSize: 140,
+              message: 'Aguardando Dados...'
+          })
           axios.get(API + 'usuario/obterUsuario')
           .then((res)=>{
             Loading.hide()

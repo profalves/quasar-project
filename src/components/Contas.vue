@@ -434,7 +434,11 @@ export default {
                       obj = a[i].data
                       let f = obj.fornecedor
                       let p = obj.numeroDocumento.split('/').pop()
-                      Loading.show({message: 'Aguardando Dados...'})
+                      Loading.show({
+                          spinner: AtomSpinner,
+                          spinnerSize: 140,
+                          message: 'Enviando Dados...'
+                      })
                       axios.post(API + 'conta/excluirConta?codigo=' + obj.codigo)
                           .then((res)=>{
                               //console.log(res)
@@ -480,7 +484,11 @@ export default {
                   let a = this.excluidos
                   let obj = a[0].data
                   let f = obj.fornecedor
-                  Loading.show({message: 'Aguardando Dados...'})
+                  Loading.show({
+                      spinner: AtomSpinner,
+                      spinnerSize: 140,
+                      message: 'Enviando Dados...'
+                  })
                   axios.post(API + 'conta/excluirConta?codigoCab=' + obj.codigoCab)
                       .then((res)=>{
                           //console.log(res)
@@ -533,7 +541,11 @@ export default {
                       lista.push(obj)
                   }
                    
-                  Loading.show({message: 'Aguardando Dados...'})
+                  Loading.show({
+                      spinner: AtomSpinner,
+                      spinnerSize: 140,
+                      message: 'Enviando Dados...'
+                  })
                   axios.post(API + 'conta/pagarContas', lista)
                       .then((res)=>{
                           //console.log(res)

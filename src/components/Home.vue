@@ -103,8 +103,14 @@
 import { Loading } from 'quasar'
 import axios from 'axios'
 import { AtomSpinner } from 'epic-spinners'
+import VueNotifications from 'vue-notifications'
 
 const API = localStorage.getItem('wsAtual')
+
+function expression(statement) { // ESLint ignore ERROR 'use strict'
+ 'use strict'
+ return statement;
+}
   
 //debug
 //const API = localStorage.getItem('wsAtual')
@@ -113,7 +119,30 @@ export default {
   name: 'principal',
   data () {
     return {
-        niverHoje: ''
+        niverHoje: '',
+        niversariando: '',
+    }
+  },
+  notifications: {
+    showSuccessMsg: {
+      type: VueNotifications.types.success,
+      title: 'Hello there',
+      message: 'That\'s the success!'
+    },
+    showInfoMsg: {
+      type: VueNotifications.types.info,
+      title: 'Hey you',
+      message: 'Here is some info for you'
+    },
+    showWarnMsg: {
+      type: VueNotifications.types.warn,
+      title: 'Wow, man',
+      message: 'That\'s the kind of warning'
+    },
+    showErrorMsg: {
+      type: VueNotifications.types.error,
+      title: 'Wow-wow',
+      message: 'That\'s the error'
     }
   },
   methods:{
@@ -160,11 +189,7 @@ export default {
           vibrate: [200, 100, 200]
         }
         let n = new Notification('Retaguarda Web - 7Virtual', options)
-
-        function expression(statement) { 
-         'use strict'
-         return statement;
-        }
+        
         expression(n.vibrate) // ESLint ignore line
         //navigator.vibrate([100,30,100,30,100,200,200,30,200,30,200,200,100,30,100,30,100]) // Vibrate 'SOS' in Morse.
     },
@@ -183,24 +208,31 @@ export default {
         .then((res)=>{
             console.log('niver: ',res.data)
             this.niverHoje = res.data
+            for(let i=0; i<this.niverHoje.length; i++){
+                
+                let options = {
+                  body: 'Parabéns! ' + this.niverHoje[i].nome,
+                  renotify: false,
+                  vibrate: [200, 100, 200]
+                }
+                let n = new Notification('Aniversariando Hoje!', options)
+                
+                expression(n.vibrate)
+                
+                this.showSuccessMsg({
+                  type: VueNotifications.types.success,
+                  title: 'Parabéns a ' + this.niverHoje[i].nome,
+                  message: 'Proveita para dar-lhe felicitações!'
+                })
+            }
+            
             Loading.hide()
         })
         .catch((e)=>{
             console.log(e.response)
             Loading.hide()
         })
-        
-        let options = {
-          body: 'Parabéns! ' + this.niverHoje,
-          vibrate: [200, 100, 200]
-        }
-        let n = new Notification('Retaguarda Web - 7Virtual', options)
-
-        function expression(statement) { 
-         'use strict'
-         return statement;
-        }
-        expression(n.vibrate) // ESLint ignore line
+         
         //navigator.vibrate([100,30,100,30,100,200,200,30,200,30,200,200,100,30,100,30,100]) // Vibrate 'SOS' in Morse.
     },
     
@@ -211,6 +243,7 @@ export default {
     //t.verificarSuporte()
     t.vibrarNotif()
     t.niverNotif()
+    Notification.requestPermission()
   }
 }
 </script>

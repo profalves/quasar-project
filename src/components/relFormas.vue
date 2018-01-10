@@ -157,6 +157,7 @@
     
 import { Loading, Toast, clone } from 'quasar'
 import axios from 'axios'
+import { AtomSpinner } from 'epic-spinners'
 
 function numberToReal(numero) {
   numero = numero.toFixed(2).split('.');
@@ -323,7 +324,11 @@ export default {
             f = '&CodFormaPgto=' + this.forma
         }
           
-        Loading.show({message: 'Aguardando Dados...'})
+        Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Aguardando Dados...'
+        })
         axios.get(API + 'relatorio/obterRptPorFormaPgto?' +
                 'dataInicial=' + this.dataInicial +
                 '&dataFinal=' + this.dataFinal + f)
@@ -341,7 +346,11 @@ export default {
         })
       },
       listarFormas(){
-          Loading.show({message: 'Aguardando Dados...'})
+          Loading.show({
+              spinner: AtomSpinner,
+              spinnerSize: 140,
+              message: 'Aguardando Dados...'
+          })
           axios.get(API + 'conta/obterFormasPgto')
           .then((res)=>{
             Loading.hide()

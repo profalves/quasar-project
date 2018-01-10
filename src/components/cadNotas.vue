@@ -525,9 +525,9 @@
       </q-collapsible>
         
     </q-list>
-    <br>
+    <br><br>
     
-    <div class="row">
+    <!--<div class="row">
         <div class="col">
             <q-btn
                 color="primary"
@@ -538,7 +538,7 @@
             </q-btn>
         </div>
         
-    </div>
+    </div>-->
     
     <!--MODAL-->
     <q-modal ref="layoutModal" :content-css="{minWidth: '60vw', minHeight: '60vh'}">
@@ -811,7 +811,7 @@
 
 <script>
 import axios from 'axios'
-//import VMasker from 'vanilla-masker'
+import { AtomSpinner } from 'epic-spinners'
 import listaCFOP from 'data/CFOP.json'
 import { minLength } from 'vuelidate/lib/validators'
 import { Dialog, Toast, Loading, Ripple } from 'quasar'
@@ -1361,7 +1361,13 @@ export default {
             this.duplicata.codFornecedor = this.cabecalho.codPessoaEmissor
             this.CadNotas.titulos.push(this.duplicata)
         }
-        Loading.show({message: 'Enviando Dados...'})
+        
+        Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Enviando Dados...'
+        })
+        
         axios.post(API + 'pedido/gravarPedido', [this.CadNotas, this.tipoEntradaEstoque, this.qtdParcelas, this.intervalo])
           .then((res)=>{
             Loading.hide()
@@ -1432,7 +1438,11 @@ export default {
         let VendasDetImp = {}
         let FatorConversao = this.item.fator
         let tipoEntradaEstoque = 'compra'
-        Loading.show()
+        Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Enviando Dados...'
+        })
         axios.post(API + 'vendasDet/retornaMvVendasDet', [
             Fiscal,
             VendasDet,
@@ -1529,7 +1539,11 @@ export default {
     //====== LISTAS ======================================================================
     
     listarPessoas(){
-      Loading.show({message: 'Aguardando Dados...'})
+      Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Aguardando Dados...'
+      })
       axios.get(API + 'pessoa/obterpessoa')
       .then((res)=>{
           //console.log(res.data)
@@ -1547,7 +1561,11 @@ export default {
       }
         
       if(this.tipoCod === 'barras'){
-          Loading.show()
+          Loading.show({
+              spinner: AtomSpinner,
+              spinnerSize: 140,
+              message: 'Aguardando Dados...'
+          })
           axios.get(API + 'produto/obterproduto?codBarra=' + this.search)
           .then((res)=>{
             Loading.hide()
@@ -1590,7 +1608,11 @@ export default {
           })
       }
       else {
-          Loading.show()
+          Loading.show({
+              spinner: AtomSpinner,
+              spinnerSize: 140,
+              message: 'Aguardando Dados...'
+          })
           axios.get(API + 'produto/obterproduto?nomeProduto=' + this.search)
           .then((res)=>{
             Loading.hide()
@@ -1614,7 +1636,11 @@ export default {
       }
     },
     todosProdutos(){
-        Loading.show({message: 'Aguardando dados...'})
+        Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Aguardando Dados...'
+        })
         axios.get(API + 'produto/obterproduto')
           .then((res)=>{
             Loading.hide()
@@ -1642,7 +1668,11 @@ export default {
       })
     },
     listarTipos(){
-      Loading.show({message: 'Aguardando Dados...'})
+      Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Aguardando Dados...'
+      })
       axios.get(API + 'conta/obterContasTipo')
       .then((res)=>{
           //console.log(res.data)
@@ -1655,7 +1685,11 @@ export default {
       })  
     },
     listarSubtipos(){
-      Loading.show({message: 'Aguardando Dados...'})
+      Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Aguardando Dados...'
+      })
       axios.get(API + 'conta/obterContasSubTipo?codTipo=' + this.duplicata.codTipo)
       .then((res)=>{
           //console.log(res.data)
@@ -1668,7 +1702,11 @@ export default {
       })  
     },
     listarFormasPgto(){
-      Loading.show({message: 'Aguardando Dados...'})
+      Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Aguardando Dados...'
+      })
       axios.get(API + 'conta/obterformaspgto')
       .then((res)=>{
           //console.log(res.data)
@@ -1681,7 +1719,11 @@ export default {
       })  
     },
     listarNotas(){
-      Loading.show({message: 'Aguardando Dados...'})
+      Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Aguardando Dados...'
+      })
       axios.get(API + 'pedido/obterPedido?codigoCab=' + localStorage.getItem('codCab'))
       .then((res)=>{
           //console.log(res.data)
@@ -1695,7 +1737,11 @@ export default {
       })  
     },
     listarContas(){
-      Loading.show({message: 'Aguardando Dados...'})
+      Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Aguardando Dados...'
+      })
       axios.get(API + 'conta/obterContas?codigoCab=' + localStorage.getItem('codCab'))
       .then((res)=>{
           //console.log(res.data)
@@ -1752,6 +1798,18 @@ export default {
           }
         },
         {
+          label: 'Salvar nota e continuar',
+          color: 'warning',
+          raised: true,
+          style: 'margin-top: 20px',
+          handler:() => {
+            Object.assign(this.CadNotas, {cab: this.cabecalho})
+            localStorage.setItem('notaTemp', JSON.stringify(this.CadNotas));
+            Toast.create('Nota salva temporariamente!')
+            this.$router.push('/cadnotas?q=save')
+          }
+        },
+        {
           label: 'Salvar nota e sair',
           color: 'positive',
           raised: true,
@@ -1760,6 +1818,7 @@ export default {
             Object.assign(this.CadNotas, {cab: this.cabecalho})
             localStorage.setItem('notaTemp', JSON.stringify(this.CadNotas));
             Toast.create('Nota salva temporariamente!')
+            next()
           }
         }
       ]

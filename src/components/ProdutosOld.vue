@@ -324,7 +324,11 @@ export default {
                       obj.excluido = true
                       console.log(obj)
                       let produto  = obj.nome
-                      Loading.show({message: 'Aguardando Dados...'})
+                      Loading.show({
+                          spinner: AtomSpinner,
+                          spinnerSize: 140,
+                          message: 'Aguardando Dados...'
+                      })
                       axios.post(API + 'produto/excluirProduto?codProduto=' + obj.codigo)
                           .then((res)=>{
                               //console.log(res)

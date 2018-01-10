@@ -913,7 +913,7 @@ import axios from 'axios'
 import VMasker from 'vanilla-masker'
 import { required, minLength, maxLength, email } from 'vuelidate/lib/validators'
 import { Dialog, Toast, Loading, openURL } from 'quasar'
-import { SelfBuildingSquareSpinner } from 'epic-spinners'
+import { SelfBuildingSquareSpinner, AtomSpinner } from 'epic-spinners'
 
 //dev
 const API = localStorage.getItem('wsAtual')
@@ -1275,7 +1275,11 @@ export default {
       })  
     },
     buscarCepADD(){
-      Loading.show({message: 'Enviando Dados...'})
+      Loading.show({
+          spinner: SelfBuildingSquareSpinner,
+          spinnerSize: 150,
+          message: 'Consultando CEP...'
+      })
       axios.get('http://api.postmon.com.br/v1/cep/' + this.cep2)
       .then((res)=>{
           Loading.hide()
@@ -1346,7 +1350,11 @@ export default {
             this.CadPessoa.pessoa.codigoIBGECidade = 2930501
         }
         
-        Loading.show({message: 'Enviando Dados...'})
+        Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Enviando Dados...'
+        })
         axios.post(API + 'pessoa/gravarPessoa', this.CadPessoa)//, this.fones, this.emails, this.endAdd
           .then((res)=>{
             Loading.hide()
@@ -1402,7 +1410,11 @@ export default {
               style: 'margin-top: 20px',
               handler: () => {
                 let nome = this.CadPessoa.pessoa.nome
-                Loading.show({message: 'Aguardando Dados...'})
+                Loading.show({
+                  spinner: AtomSpinner,
+                  spinnerSize: 140,
+                  message: 'Excluindo Dados...'
+                })
                 axios.post(API + 'pessoa/excluirPessoa?codPessoa=' + this.CadPessoa.pessoa.codigo)
                   .then((res)=>{
                       Toast.create(nome + ' foi excluido com sucesso')
@@ -1451,7 +1463,11 @@ export default {
        
     },
     adicionarEnd(){
-        Loading.show({message: 'Aguarde...'})
+        Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Aguardando Dados...'
+        })
         axios.post(API + 'pessoaEnd/gravarEndereco', this.endAdicional)
           .then((res)=>{
             Loading.hide()
@@ -1501,7 +1517,11 @@ export default {
                 let vm = this
                 data = endEx
                 endEx.excluido = true
-                Loading.show({message: 'Excluindo...'})
+                Loading.show({
+                  spinner: AtomSpinner,
+                  spinnerSize: 140,
+                  message: 'Enviando Dados...'
+                })
                 axios.post(API + 'pessoaEnd/gravarEndereco', data)
                   .then((res)=>{
                     Loading.hide()
@@ -1583,7 +1603,11 @@ export default {
     adicionarTel(){
         this.foneADD.Numero = this.fone
         this.foneADD.CodPessoa = localStorage.getItem('codPessoa')
-        Loading.show({message: 'Enviando Dados...'})
+        Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Enviando Dados...'
+        })
         axios.post(API + 'pessoaTelefone/gravarPessoaTelefone', this.foneADD)
           .then((res)=>{
             Loading.hide()
@@ -1653,7 +1677,11 @@ export default {
     adicionarEmail(){
         this.emailADD.Endereco = this.email
         this.emailADD.CodPessoa = localStorage.getItem('codPessoa')
-        Loading.show({message: 'Enviando Dados...'})
+        Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Enviando Dados...'
+        })
         axios.post(API + 'pessoaEnd/gravarPessoaEndEletronico', this.emailADD)
           .then((res)=>{
             Loading.hide()
@@ -1745,7 +1773,11 @@ export default {
                     Toast.create.negative('A família não pode ser cadastrada com nome nulo') 
                     return
                 }
-                Loading.show({message: 'Enviando Dados...'})
+                Loading.show({
+                  spinner: AtomSpinner,
+                  spinnerSize: 140,
+                  message: 'Enviando Dados...'
+                })
                 axios.post(API + 'pessoa/gravarPessoaFamilia', data)
                   .then((res)=>{
                     Loading.hide()
@@ -1818,7 +1850,11 @@ export default {
     },
     listarPessoas(){
       if (localStorage.getItem('cadMode')==='edit'){
-          Loading.show({message: 'Aguardando Dados...'})
+          Loading.show({
+              spinner: AtomSpinner,
+              spinnerSize: 140,
+              message: 'Enviando Dados...'
+          })
           axios.get(API + 'pessoa/obterpessoa?codClientePK=' + localStorage.getItem('codPessoa'))
           .then((res)=>{
               Loading.hide()
