@@ -295,7 +295,7 @@ export default {
     created(){
         this.loadConfig()
         localStorage.setItem('tela', 'login')
-        //localStorage.removeItem('codUser')
+        localStorage.removeItem('codUser')
     }
 }
 </script>

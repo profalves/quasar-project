@@ -1,5 +1,27 @@
 <template>
   <div>
+    <div class="row topo" style="margin-bottom:20px">
+      <q-btn
+        color="primary"
+        push
+        @click="goBack"
+      >
+        <i class="material-icons">arrow_back</i>
+      </q-btn>
+      
+      <!--<q-btn
+        color="negative"
+        push big
+        @click="excluir"
+        style="margin-left:5px;"
+        v-if="btnDelete"
+      >
+        <i class="material-icons">delete</i>
+      </q-btn>-->
+      
+      
+      
+    </div>
     <!-- formulário -->
     <div class="row">
         <div class="col">
@@ -7,7 +29,7 @@
         </div>
     </div>
     
-    <hr>
+    
     Transferir para a empresa: {{empDest.nome}}<br>
 
     <q-toolbar slot="header" inverted color="tertiary">
@@ -136,10 +158,10 @@ import { Loading, Toast, Dialog } from 'quasar'
 import axios from 'axios'
 import { AtomSpinner } from 'epic-spinners'
     
-//onst API = localStorage.getItem('wsAtual')
+const API = localStorage.getItem('wsAtual')
   
 //debug
-const API = 'http://192.168.0.200:29755/'     
+//const API = 'http://192.168.0.200:29755/'     
 
 export default {
   data () {
@@ -421,6 +443,9 @@ export default {
     }
   },
   methods:{
+    goBack(){
+        window.history.back()
+    },
     setEmpresa(){
       if(this.dest !== ''){
         this.todosProdutos()

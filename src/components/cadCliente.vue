@@ -919,7 +919,7 @@ import { SelfBuildingSquareSpinner } from 'epic-spinners'
 const API = localStorage.getItem('wsAtual')
 
 //debug
-//onst API = 'http://192.168.0.200:29755/'
+//const API = 'http://192.168.0.200:29755/'
 
 export default {
   name: 'clientes',
@@ -1324,7 +1324,10 @@ export default {
         //NOVO
         this.CadPessoa.pessoa.nome = this.nome
         this.CadPessoa.pessoa.sexoFeminino = (this.sexo === 'true')
-        this.CadPessoa.pessoa.dataNasc = new Date(2000, 0, 1)
+        
+        if(!this.CadPessoa.pessoa.dataNasc){
+            this.CadPessoa.pessoa.dataNasc = new Date(2000, 0, 1)
+        }
         
         if(this.cpf.length>11){
             this.CadPessoa.pessoa.cnpj = this.cpf
@@ -1343,10 +1346,8 @@ export default {
             this.CadPessoa.pessoa.codigoIBGECidade = 2930501
         }
         
-        //, this.fones, this.emails, this.endAdd
-        
         Loading.show({message: 'Enviando Dados...'})
-        axios.post(API + 'pessoa/gravarPessoa', this.CadPessoa)
+        axios.post(API + 'pessoa/gravarPessoa', this.CadPessoa)//, this.fones, this.emails, this.endAdd
           .then((res)=>{
             Loading.hide()
             Toast.create.positive({

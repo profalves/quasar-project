@@ -1498,6 +1498,33 @@ export default {
         this.duplicata.valorTitulo = d    
     },
     
+    findTemp(){
+      if(localStorage.getItem('notaTemp') && this.$route.query.q === 'save'){
+        Dialog.create({
+          title: 'Nota salva como rascunho',
+          message: 'Você tem uma nota salva temporariamente, deseja recuperar?',
+          buttons: [
+            {
+              label: 'Não',
+              color: 'negative',
+              raised: true,
+              style: 'margin-top: 20px'
+            },
+            {
+              label: 'Sim',
+              color: 'positive',
+              raised: true,
+              style: 'margin-top: 20px',
+              handler:() => {
+                this.CadNotas = JSON.parse(localStorage.getItem('notaTemp'))
+                this.cabecalho = this.CadNotas.cab
+                Toast.create.positive('Nota recuperada com sucesso!')
+              }
+            }
+          ]
+        })
+      }
+    },
       
     //====== LISTAS ======================================================================
     
@@ -1680,14 +1707,13 @@ export default {
         Loading.hide()
       })  
     },
-    
-    
-    
+      
   },
   created(){
     let t = this
     if(this.$route.query.q === 'save'){
-      localStorage.setItem('cadMode', 'save')        
+      localStorage.setItem('cadMode', 'save')
+      this.findTemp()
     }
     
     if(localStorage.getItem('cadMode') === 'edit'){
@@ -1706,7 +1732,40 @@ export default {
     //console.log(this.CadNotas.titulos.length)
     
     
-  }
+  },
+  beforeRouteLeave(to, from, next){
+    if(this.CadNotas.det.length === 0){
+      next()
+      return
+    }
+    Dialog.create({
+      title: 'Espere!',
+      message: 'Tem certeza que deseja sair sem salvar a nota?',
+      buttons: [
+        {
+          label: 'Pode sair sem salvar',
+          color: 'negative',
+          raised: true,
+          style: 'margin-top: 20px',
+          handler:() => {
+            next()
+          }
+        },
+        {
+          label: 'Salvar nota e sair',
+          color: 'positive',
+          raised: true,
+          style: 'margin-top: 20px',
+          handler:() => {
+            Object.assign(this.CadNotas, {cab: this.cabecalho})
+            localStorage.setItem('notaTemp', JSON.stringify(this.CadNotas));
+            Toast.create('Nota salva temporariamente!')
+          }
+        }
+      ]
+    })
+  },
+
  
 }
 </script>
