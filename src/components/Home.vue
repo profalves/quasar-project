@@ -104,36 +104,70 @@ import { Loading } from 'quasar'
 import axios from 'axios'
 import { AtomSpinner } from 'epic-spinners'
 import iziToast from 'izitoast'
-
+    
 iziToast.settings({
-    timeout: 20000,
+    timeout: 10000,
     resetOnHover: true,
     icon: 'material-icons',
-    transitionIn: 'fadeInUp',
-    transitionOut: 'fadeOut',
+    transitionIn: 'flipInX',
+    transitionOut: 'flipOutX',
     onOpening: function(){
-        console.log('iziToast abriu!');
+        console.log('toast abriu!');
     },
-    onClosing: function(){
-        console.log("iziToast fechou!");
+    onClosing: function(data){
+        console.log(data);
+        console.log("toast fechou!");
     }
 });
 
+import VueNotifications from 'vue-notifications'
+
+var moment = require('moment');    
+
 const API = localStorage.getItem('wsAtual')
+  
+//debug
+//const API = localStorage.getItem('wsAtual')
 
 function expression(statement) { // ESLint ignore ERROR 'use strict'
  'use strict'
  return statement;
 }
-  
-//debug
-//const API = localStorage.getItem('wsAtual')
 
 export default {
   name: 'principal',
   data () {
     return {
         niverHoje: '',
+        visualizar: '',
+        
+    }
+  },
+  notifications: {
+    showSuccessMsg: {
+      type: VueNotifications.types.success,
+      title: '',
+      message: ''
+    },
+    showInfoMsg: {
+      type: VueNotifications.types.info,
+      title: 'Hey you',
+      message: 'Here is some info for you'
+    },
+    showWarnMsg: {
+      type: VueNotifications.types.warn,
+      title: 'Wow, man',
+      message: 'That\'s the kind of warning'
+    },
+    showErrorMsg: {
+      type: VueNotifications.types.error,
+      title: 'Wow-wow',
+      message: 'That\'s the error'
+    }
+  },
+  watch:{
+    visualizar(value){
+        return console.log(value)
         
     }
   },
@@ -164,6 +198,15 @@ export default {
             return;
         }
         
+        let podeMostrar = sessionStorage.getItem('today')
+        let negado = moment().format('DD-MM-YYYY')
+        console.log('Não será visualizado notificações de aniversariantes de ', negado);
+        
+        if(podeMostrar === negado){
+            return;
+         
+        }
+        
         Loading.show({
           spinner: AtomSpinner,
           spinnerSize: 140,
@@ -173,6 +216,7 @@ export default {
         .then((res)=>{
             console.log('niver: ',res.data)
             this.niverHoje = res.data
+            
             for(let i=0; i<this.niverHoje.length; i++){
                 
                 let options = {
@@ -184,63 +228,26 @@ export default {
                 
                 expression(n.vibrate)
                 
-                iziToast.question({
+                this.showSuccessMsg({
+                  type: VueNotifications.types.success,
                   timeout: 10000,
-                  close: true,
-                  toastOnce: true,
-                  id: 'question',
-                  zindex: 99 + i,
-                  color: 'blue', // blue
                   title: 'Parabéns a ' + this.niverHoje[i].nome,
-                  message: 'Visualizar',
+                  //message: '...',
                   buttons: [
-                    ['<button><b>Sim</b></button>', function (instance, toast) {
-
-                        localStorage.setItem('tela', 'hoje')
-                        iziToast.hide(toast);
-
-
+                    ['<button><b>Visualizar</b></button>', function (instance, toast) {
+                        instance.hide(toast)
+                        //this.$router.push('/nivers')
+                        
                     }, true],
-                    ['<button>Não</button>', function (instance, toast) {
-                        
-                        iziToast.hide(toast);
-
-                    }],
-                    ['<button>Apagar Todos</button>', function (instance, toast) {
-                        
+                    ['<button>Não Mostrar Mais</button>', function (instance, toast) {
+                        console.info('Não mostrar mais')
+                        sessionStorage.setItem('today', moment().format('DD-MM-YYYY'))
                         iziToast.destroy();
 
                     }]
-                  ],
-                  onClosing: function(instance, toast, closedBy){
-                        console.info('Closing | closedBy: ' + closedBy);
-                  },
+                  ]
+                  
                 })
-                
-               
-       /* 
-        buttons: [
-            ['<button><b>YES</b></button>', function (instance, toast) {
-
-                console.info('yes');
-                iziToast.destroy();
-                
-
-            }, true],
-            ['<button>NO</button>', function (instance, toast) {
-
-                console.info('no');
-                iziToast.hide(toast)
-
-            }]
-        ],
-        onClosing: function(instance, toast, closedBy){
-            console.info('Closing | closedBy: ' + closedBy);
-        },
-        onClosed: function(instance, toast, closedBy){
-            console.info('Closed | closedBy: ' + closedBy);
-        }*/
-                
                 
             }
             
@@ -257,9 +264,11 @@ export default {
   },
   created(){
     let t = this
+    
     t.verificarUser()
     t.vibrarNotif()
     t.niverNotif()
+    localStorage.setItem('tela', 'principal')
     Notification.requestPermission()
     
   }

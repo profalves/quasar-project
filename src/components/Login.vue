@@ -136,21 +136,15 @@ export default {
     methods:{
         login(){
           if(this.bd === ''){
-              Toast.create.negative({
-                  html: 'Selecione uma empresa antes do Login'
-              })
+              Toast.create.negative('Selecione uma empresa antes do Login')
               return 
           }
           if(this.user === ''){
-              Toast.create.negative({
-                  html: 'Antes preencha o usuário e a senha, depois clique em ENTRAR'
-              })
+              Toast.create.negative('Antes preencha o usuário e a senha, depois clique em ENTRAR')
               return
           }
           if(this.pass === ''){
-              Toast.create.negative({
-                  html: 'Antes preencha a senha e só depois clique em ENTRAR'
-              })
+              Toast.create.negative('Antes preencha a senha e só depois clique em ENTRAR')
               return
           }
           API = localStorage.getItem('wsAtual')
@@ -178,7 +172,7 @@ export default {
           })
           .catch((e)=>{
             Loading.hide()
-            Toast.create({
+            Toast.create.negative({
               html: e.response.data[0].value
                 
             })

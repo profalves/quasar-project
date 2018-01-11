@@ -211,6 +211,11 @@ export default {
       this.$router.push({ path: '/cadcliente' }) 
     }
     
+  },
+  created(){
+    if(localStorage.getItem('tela') === 'hoje'){
+        this.getHoje()
+    }
   }
   
 }
