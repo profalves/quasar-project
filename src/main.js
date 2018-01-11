@@ -51,6 +51,9 @@ Vue.use(money)
 import JsPDF from 'jspdf'
 Vue.use(JsPDF)
 
+import moment from 'moment'
+Vue.use(moment)
+
 
 //============= FILTERS ============================
 

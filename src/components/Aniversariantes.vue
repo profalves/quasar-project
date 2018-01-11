@@ -9,7 +9,16 @@
       @change="getAniversariantes"
     />
     
-    <div id="table">
+    <q-fixed-position class="over" corner="bottom-left" :offset="[18, 18]">
+        <q-btn 
+           round
+           color="primary" 
+           @click="getHoje">
+           <q-icon name="cake" />
+        </q-btn>
+    </q-fixed-position>
+    
+    <div id="table" v-if="visivel">
         <table class="q-table" :class="computedClasses" style="margin-left:1px">
           <thead>
             <tr>
@@ -21,43 +30,22 @@
           <tbody>
             <tr v-for="item in caixa">
               <td data-th="Name">{{ item.nome }}</td>
-              <td data-th="Aniversário">{{ item.dia }}</td>
-              <td data-th="Enviar">
-                <q-btn
-                    color="primary" 
-                    rounded
-                    small
-                    @click=""
-                    id="btn"
-                    >
-                    <i class="fa fa-envelope-o fa-2x"></i>
-                </q-btn>
-                <q-btn
-                    color="primary" 
-                    rounded
-                    small
-                    id="btn"
-                    >
-                    <i class="fa fa-phone fa-2x"></i>
-                </q-btn>
-                <q-btn
-                    color="primary" 
-                    rounded
-                    small
-                    id="btn"
-                    >
-                    <i class="fa fa-whatsapp fa-2x"></i>
-                </q-btn>
-                <q-btn
-                    color="primary" 
-                    rounded
-                    small
-                    @click="abrir(item)"
-                    id="btn"
-                    >
-                    abrir
-                </q-btn>
+              <td data-th="Aniversário">{{ item.dataNasc | formatNiver }}</td>
+              <td data-th="Aniversário">
+                  <q-fab color="primary" icon="keyboard_arrow_left" direction="left">
+                      <q-fab-action color="lime" @click="" icon="mail" />
+                      <q-fab-action color="info" @click="" icon="phone" />
+                      <q-fab-action color="secondary" @click="" icon="fa-whatsapp" />
+                      <q-btn
+                        color="primary" 
+                        rounded
+                        @click="abrir(item)"
+                        >
+                        abrir
+                      </q-btn>
+                  </q-fab>
               </td>
+              
             </tr>
           </tbody>
         </table>
@@ -70,6 +58,7 @@
 import { Loading } from 'quasar'
 import axios from 'axios'
 import { AtomSpinner } from 'epic-spinners'
+var moment = require('moment');
     
 const API = localStorage.getItem('wsAtual')
   
@@ -130,7 +119,10 @@ export default {
               value: 12
           }
       ],
-      mes: parseInt(localStorage.getItem('mesAniversariante')),
+      mes: '',
+      visivel: false,
+      filtroNome: '',
+      filtroData: '',
         
       //tabela
       misc: 'highlight', //[{value: 'bordered'},{value: 'highlight'}]
@@ -162,17 +154,19 @@ export default {
         classes.push(this.gutter)
       }
       return classes
+    },
+    nivers () {
+        return this.caixa
     }
   },
   filters:{
     formatNiver: function (value) {
-        if(value === null) {return null}
-        return new Date(value).toLocaleString('pt-BR', {month: '2-digit',day: '2-digit'})
+        if(value === null) return null
+        return moment(value).format("DD/MM")
     }
   },
   methods: {
     getAniversariantes(){
-      localStorage.setItem('mesAniversariante', this.mes)
       Loading.show({
           spinner: AtomSpinner,
           spinnerSize: 140,
@@ -180,7 +174,24 @@ export default {
       })
       axios.get(API + 'pessoa/obteraniversariante?mes=' + this.mes)
       .then((res)=>{
-        console.log(res.data)
+        this.visivel = true
+        this.caixa = res.data
+        Loading.hide()
+      })
+      .catch((e)=>{
+        console.log(e.response)
+        Loading.hide()
+      })
+    },
+    getHoje(){
+      Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Aguardando Dados...'
+      })
+      axios.get(API + 'pessoa/obteraniversariante')
+      .then((res)=>{
+        this.visivel = true
         this.caixa = res.data
         Loading.hide()
       })
@@ -200,14 +211,6 @@ export default {
       this.$router.push({ path: '/cadcliente' }) 
     }
     
-  },
-  created(){
-    if(localStorage.getItem('mesAniversariante') && localStorage.getItem('tela') === 'nivers'){
-      this.getAniversariantes()  
-    }
-    else{
-      localStorage.setItem('mesAniversariante', '')
-    }
   }
   
 }

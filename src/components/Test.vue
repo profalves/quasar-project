@@ -1,7 +1,9 @@
 <template>
   <div id="testes">
       
-     <q-btn button @click="notifyMe()">Notifique me!</q-btn><br><br>
+     <q-btn color="dark" @click="vibrateMe()">Vibrar me!</q-btn><br><br>
+     <q-btn color="dark" @click="notifyMe()">Notifique me!</q-btn><br><br>
+     <q-btn color="dark" @click="nvMe()">Notifica e vibra!</q-btn><br><br>
     
      <div id="pdf">
          <q-btn icon="create" 
@@ -304,6 +306,21 @@ export default {
   methods: {
     launch (url) {
       openURL(url)
+    },
+    nvMe(){
+        let options = {
+          tag: '7Virtual', 
+          body: 'Notificando e vibrando',
+          renotify: false,
+          vibrate: [200, 100, 200]
+        }
+        let n = new Notification('Oi!', options)
+
+        return n.vibrate
+    },
+    vibrateMe(){
+        navigator.vibrate([100,30,100,30,100,200,200,30,200,30,200,200,100,30,100,30,100]) // Vibrate 'SOS' in Morse.
+        console.log('vibrou');
     },
     notifyMe() {
       // Let's check if the browser supports notifications

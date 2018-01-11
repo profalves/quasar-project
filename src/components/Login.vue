@@ -66,7 +66,7 @@
 
 <script>
 import axios from 'axios'
-import { Alert, Dialog, Loading } from 'quasar'
+import { Toast, Dialog, Loading } from 'quasar'
 import { AtomSpinner } from 'epic-spinners'
 
 //dev
@@ -136,32 +136,20 @@ export default {
     methods:{
         login(){
           if(this.bd === ''){
-              Alert.create({
-                  html: 'Selecione uma empresa antes do Login',
-                  enter: 'bounceInLeft',
-                  leave: 'bounceOutLeft',
-                  position: 'bottom-center',
-                  //color: 'warning'
+              Toast.create.negative({
+                  html: 'Selecione uma empresa antes do Login'
               })
               return 
           }
           if(this.user === ''){
-              Alert.create({
-                  html: 'Antes preencha o usuário e a senha, depois clique em ENTRAR',
-                  enter: 'bounceInLeft',
-                  leave: 'bounceOutLeft',
-                  position: 'bottom-center',
-                  //color: 'warning'
+              Toast.create.negative({
+                  html: 'Antes preencha o usuário e a senha, depois clique em ENTRAR'
               })
               return
           }
           if(this.pass === ''){
-              Alert.create({
-                  html: 'Antes preencha a senha e só depois clique em ENTRAR',
-                  enter: 'bounceInLeft',
-                  leave: 'bounceOutLeft',
-                  position: 'bottom-center',
-                  //color: 'warning'
+              Toast.create.negative({
+                  html: 'Antes preencha a senha e só depois clique em ENTRAR'
               })
               return
           }
@@ -169,9 +157,9 @@ export default {
           Loading.show({ spinner: AtomSpinner })
           axios.get(API + 'usuario/obterUsuario?usuario='+ this.user + '&senha=' + this.pass)
           .then((res)=>{
-            Loading.hide()
-            console.log(res.data)
             localStorage.setItem('nomeEmpresa', localStorage.getItem('Empresa' + this.bd))
+            Loading.hide()
+            //console.log(res.data)
             
             async function getUser(){
                 localStorage.setItem('tela', 'principal')
@@ -190,12 +178,8 @@ export default {
           })
           .catch((e)=>{
             Loading.hide()
-            Alert.create({
-              html: e.response.data[0].value,
-              enter: 'bounceInLeft',
-              leave: 'bounceOutLeft',
-              position: 'bottom-center',
-              //color: 'warning'
+            Toast.create({
+              html: e.response.data[0].value
                 
             })
             console.log(e.response)

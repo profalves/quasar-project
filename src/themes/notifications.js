@@ -12,7 +12,9 @@ const options = {
   success: toast,
   error: toast,
   info: toast,
-  warn: toast
+  warn: toast,
+  question: toast
 }
 
 Vue.use(VueNotifications, options)
+Vue.use(iziToast)

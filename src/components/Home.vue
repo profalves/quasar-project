@@ -103,7 +103,21 @@
 import { Loading } from 'quasar'
 import axios from 'axios'
 import { AtomSpinner } from 'epic-spinners'
-import VueNotifications from 'vue-notifications'
+import iziToast from 'izitoast'
+
+iziToast.settings({
+    timeout: 20000,
+    resetOnHover: true,
+    icon: 'material-icons',
+    transitionIn: 'fadeInUp',
+    transitionOut: 'fadeOut',
+    onOpening: function(){
+        console.log('iziToast abriu!');
+    },
+    onClosing: function(){
+        console.log("iziToast fechou!");
+    }
+});
 
 const API = localStorage.getItem('wsAtual')
 
@@ -120,62 +134,13 @@ export default {
   data () {
     return {
         niverHoje: '',
-        niversariando: '',
-    }
-  },
-  notifications: {
-    showSuccessMsg: {
-      type: VueNotifications.types.success,
-      title: 'Hello there',
-      message: 'That\'s the success!'
-    },
-    showInfoMsg: {
-      type: VueNotifications.types.info,
-      title: 'Hey you',
-      message: 'Here is some info for you'
-    },
-    showWarnMsg: {
-      type: VueNotifications.types.warn,
-      title: 'Wow, man',
-      message: 'That\'s the kind of warning'
-    },
-    showErrorMsg: {
-      type: VueNotifications.types.error,
-      title: 'Wow-wow',
-      message: 'That\'s the error'
+        
     }
   },
   methods:{
     verificarUser(){
         if(!localStorage.getItem('codUser')){
           this.$router.push('/login')
-        }
-    },
-    verificarSuporte(){
-        var c = ( window.webkitNotifications !== undefined );
-        console.log('c', c);
-    if (!c){
-        alert("Seu navegador não suporta notificações desktop. Por favor, use o Google Chrome!");
-    }
-        alert(c)
-        return c
-    },
-    verificarPermissao(){
-        if ( !this.verificarSuporte() ) return;
-
-        switch ( window.webkitNotifications )
-        {
-            case 0: // PERMITIDO
-            alert( "Permitido" );
-            break;
-
-            case 1: // NÃO PERMITIDO
-            alert("Não permitido");
-            break;
-
-            case 2: // PERMISSÃO NEGADA
-            alert( "Permissão negada" );
-            break;
         }
     },
     vibrarNotif(){
@@ -219,11 +184,64 @@ export default {
                 
                 expression(n.vibrate)
                 
-                this.showSuccessMsg({
-                  type: VueNotifications.types.success,
+                iziToast.question({
+                  timeout: 10000,
+                  close: true,
+                  toastOnce: true,
+                  id: 'question',
+                  zindex: 99 + i,
+                  color: 'blue', // blue
                   title: 'Parabéns a ' + this.niverHoje[i].nome,
-                  message: 'Proveita para dar-lhe felicitações!'
+                  message: 'Visualizar',
+                  buttons: [
+                    ['<button><b>Sim</b></button>', function (instance, toast) {
+
+                        localStorage.setItem('tela', 'hoje')
+                        iziToast.hide(toast);
+
+
+                    }, true],
+                    ['<button>Não</button>', function (instance, toast) {
+                        
+                        iziToast.hide(toast);
+
+                    }],
+                    ['<button>Apagar Todos</button>', function (instance, toast) {
+                        
+                        iziToast.destroy();
+
+                    }]
+                  ],
+                  onClosing: function(instance, toast, closedBy){
+                        console.info('Closing | closedBy: ' + closedBy);
+                  },
                 })
+                
+               
+       /* 
+        buttons: [
+            ['<button><b>YES</b></button>', function (instance, toast) {
+
+                console.info('yes');
+                iziToast.destroy();
+                
+
+            }, true],
+            ['<button>NO</button>', function (instance, toast) {
+
+                console.info('no');
+                iziToast.hide(toast)
+
+            }]
+        ],
+        onClosing: function(instance, toast, closedBy){
+            console.info('Closing | closedBy: ' + closedBy);
+        },
+        onClosed: function(instance, toast, closedBy){
+            console.info('Closed | closedBy: ' + closedBy);
+        }*/
+                
+                
             }
             
             Loading.hide()
@@ -240,10 +258,10 @@ export default {
   created(){
     let t = this
     t.verificarUser()
-    //t.verificarSuporte()
     t.vibrarNotif()
     t.niverNotif()
     Notification.requestPermission()
+    
   }
 }
 </script>

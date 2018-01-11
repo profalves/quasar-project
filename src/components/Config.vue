@@ -9,14 +9,14 @@
         </q-btn>
       </q-fixed-position>
       
-      <!--<q-fixed-position class="fixo" corner="bottom-right" :offset="[18, 18]">
+      <q-fixed-position class="fixo" corner="bottom-right" :offset="[18, 18]">
         <q-btn 
            rounded
            color="primary" 
            @click="$router.push('test')">
            Testes
         </q-btn>
-      </q-fixed-position>-->
+      </q-fixed-position>
       
       <div class="row">
         <div class="col-xl-6">
@@ -457,6 +457,7 @@ export default {
       window.history.go(-1)
     },
     
+    //notificações
     solicitarNotificacoes(){
         if (!("Notification" in window)) {
             alert("This device does not support notification");
@@ -623,20 +624,20 @@ export default {
             this.bancosDados = []
             this.listarBancos()
             
-            if(this.bancosDados.length === 1){
-                let port = ''
-                if(localStorage.getItem('porta1')){
-                    port = ':' + localStorage.getItem('porta1')     
-                }
-                let DB = ''
-                if(localStorage.getItem('banco1')){
-                    DB = '/' + localStorage.getItem('banco1')     
-                }
-                let sv = localStorage.getItem('ip1')
-                localStorage.setItem('wsAtual', 'http://' + sv + port + DB + '/' )
-
-                //API = localStorage.getItem('wsAtual')
+        }
+    },
+    setWS(){
+        if(this.bancosDados.length === 1){
+            let port = ''
+            if(localStorage.getItem('porta1')){
+                port = ':' + localStorage.getItem('porta1')     
             }
+            let DB = ''
+            if(localStorage.getItem('banco1')){
+                DB = '/' + localStorage.getItem('banco1')     
+            }
+            let sv = localStorage.getItem('ip1')
+            localStorage.setItem('wsAtual', 'http://' + sv + port + DB + '/' )
         }
     },
     editar(item, index) {
@@ -717,7 +718,11 @@ export default {
         })
     }
     Notification.requestPermission()
-  }
+  },
+  beforeRouteLeave(to, from, next){
+    this.setWS()
+    next()
+  },
   
 }
 </script>
