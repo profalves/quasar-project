@@ -123,6 +123,10 @@ iziToast.settings({
 import VueNotifications from 'vue-notifications'
 
 import moment from 'moment'
+//var moment = require('moment');
+require("moment/min/locales.min");
+moment.locale('pt-br');
+    
 
 const API = localStorage.getItem('wsAtual')
   

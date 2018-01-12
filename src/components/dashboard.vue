@@ -5,27 +5,93 @@
           
         </q-toolbar-title>
       </div>
-      <h2>{{tempo}} {{user}}</h2>
+      <h2>{{tempo}} {{user | capitalize}}</h2>
       
       <div class="row">
         <div class="col-xl-6">
-          <q-list inset-separator style="background-color: white; margin-bottom: 40px;">
-            <q-list-header>Informações Gerais</q-list-header>
+          <q-list inset-separator no-border>
+            <q-list-header>Painel Gestor</q-list-header>
             <!-- Faturamento -->
-            <q-collapsible icon="notifications" label="Faturamento" sublabel="Configurações de exibição de Notificações no sistema">
-                
-              <q-knob
-                v-model="model"
-                size="120px"
-                style="font-size: 1.5rem"
-                color="secondary"
-                line-width="5px"
-                :min="min"
-                :max="max"
-                :step="5"
-              >
-                R$ {{model}}
-              </q-knob>
+            <q-collapsible opened icon="attach_money" label="Faturamento" sublabel="">
+              <div class="row">
+                <div class="col">
+                    <q-card>
+                      <q-card-title>
+                        Dia
+                        <q-icon slot="right" name="more_vert">
+                          <q-popover ref="popover">
+                            <q-list link class="no-border">
+                              <q-item @click="">
+                                <q-item-main label="Configurar" />
+                                <q-item-side right icon="settings" />
+                              </q-item>
+                              <q-item @click="">
+                                <q-item-main label="Manipular" />
+                                <q-item-side right icon="create" />
+                              </q-item>
+                            </q-list>
+                          </q-popover>
+                        </q-icon>
+                      </q-card-title>
+                      <q-card-separator />
+                      <q-card-main class="text-center">
+                          <q-knob
+                            v-model="dia"
+                            size="120px"
+                            style="font-size: 1.5rem"
+                            :color="faturaCorDia"
+                            line-width="5px"
+                            :min="min"
+                            :max="maxDia"
+                            :step="1"
+                            
+                          >
+                            <!--readonly-->
+                            R$ {{dia}}
+                          </q-knob>
+                      </q-card-main>
+                    </q-card>  
+                </div>
+                <div class="col">
+                    <q-card>
+                      <q-card-title>
+                        Mês
+                        <q-icon slot="right" name="more_vert">
+                          <q-popover ref="popover">
+                            <q-list link class="no-border">
+                              <q-item @click="">
+                                <q-item-main label="Configurar" />
+                                <q-item-side right icon="settings" />
+                              </q-item>
+                              <q-item @click="">
+                                <q-item-main label="Manipular" />
+                                <q-item-side right icon="create" />
+                              </q-item>
+                            </q-list>
+                          </q-popover>
+                        </q-icon>
+                      </q-card-title>
+                      <q-card-separator />
+                      <q-card-main class="text-center">
+                          <q-knob
+                            v-model="mes"
+                            size="120px"
+                            style="font-size: 1.5rem"
+                            :color="faturaCorMes"
+                            line-width="5px"
+                            :min="min"
+                            :max="maxMes"
+                            :step="1"
+                            
+                          >
+                            <!--readonly-->
+                            R$ {{mes}}
+                          </q-knob>
+                      </q-card-main>
+                    </q-card>  
+                </div>
+              </div>
+              
               
             </q-collapsible>
             <!-- Contas -->
@@ -110,10 +176,13 @@
     },
     data () {
       return {
-        model: 40,
+        dia: 40,
+        mes: 1000,
         min: 0,
-        max: 100,
+        maxDia: parseInt(localStorage.getItem('tetoDia')),
+        maxMes: parseInt(localStorage.getItem('tetoMes')),
         tempo: '',
+        //faturaCor: 'blue',
         user: localStorage.getItem('nameUser'),
         tipo: localStorage.getItem('tipoGrafico'),
         width: 100,
@@ -138,6 +207,39 @@
           }
         }
       }
+    },
+    computed:{
+        faturaCorDia: function(){
+            let meta = parseInt(localStorage.getItem('metaDia'))
+            let quase = parseInt(localStorage.getItem('quaseDia'))
+            
+            if(this.dia>meta){
+                return 'positive'
+            }
+            else if(this.dia>quase){
+                return 'warning'
+            }
+            else{
+                return 'negative'
+            }    
+        },
+        faturaCorMes: function(){
+            let meta = parseInt(localStorage.getItem('metaMes'))
+            let quase = parseInt(localStorage.getItem('quaseMes'))
+            
+            if(this.mes>meta){
+                return 'positive'
+            }
+            else if(this.mes>quase){
+                return 'warning'
+            }
+            else{
+                return 'negative'
+            } 
+        },
+    },
+    methods:{
+        
     },
     mounted(){
         if(new Date().getHours() < 12 && new Date().getHours() > 4){

@@ -232,6 +232,12 @@ export default {
                 localStorage.setItem('bodyHeight', 200)
                 localStorage.setItem('alturaGrafico', 100)
                 localStorage.setItem('rowsPerPage', 5)
+                localStorage.setItem('tetoDia', 1000)
+                localStorage.setItem('metaDia', 0)
+                localStorage.setItem('quaseDia', 0)
+                localStorage.setItem('tetoMes', 50000)
+                localStorage.setItem('metaMes', 0)
+                localStorage.setItem('quaseMes', 0)
                 Loading.hide()
             }
             

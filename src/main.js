@@ -51,9 +51,6 @@ Vue.use(money)
 import JsPDF from 'jspdf'
 Vue.use(JsPDF)
 
-import moment from 'moment'
-Vue.use(moment)
-
 import push from 'pushsafer-notifications'
 Vue.use(push)
 
@@ -85,6 +82,12 @@ Vue.filter('formatPerc', function (value) {
 Vue.filter('formatDate', function (value) {
     if(value === null) {return null}
     return new Date(value).toLocaleString('pt-BR', {year: 'numeric',month: '2-digit',day: '2-digit'})
+})
+
+Vue.filter('capitalize', function (value) {
+    if (!value) return ''
+    value = value.toString().toLowerCase()
+    return value.charAt(0).toUpperCase() + value.slice(1)
 })
 
 //============== STARTING QUASAR ==============
