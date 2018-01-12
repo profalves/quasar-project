@@ -122,7 +122,7 @@ iziToast.settings({
 
 import VueNotifications from 'vue-notifications'
 
-var moment = require('moment');    
+import moment from 'moment'
 
 const API = localStorage.getItem('wsAtual')
   

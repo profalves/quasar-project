@@ -1,62 +1,87 @@
 <template>
-  <div class="layout-padding ">
+  <div id="dashboard">
       <div slot="header" class="toolbar">
         <q-toolbar-title :padding="1">
-            Exemplo de Gráficos
+          
         </q-toolbar-title>
       </div>
+      <h2>{{tempo}} {{user}}</h2>
       
-      <div class="layout-view">
-           <q-select
-              v-model="tipo"
-              float-label="Tipo de Gráfico"
-              :options="[
-                {
-                  label: 'Linha',
-                  icon: 'show_chart',
-                  value: 'line'
-                },
-                {
-                  label: 'Barra',
-                  icon: 'insert_chart',
-                  value: 'bar'
-                },
-                {
-                  label: 'Pizza',
-                  icon: 'pie_chart',
-                  value: 'pie'
-                },
-                {
-                  label: 'Donut',
-                  icon: 'donut_large',
-                  value: 'donut'
-                },
-                {
-                  label: 'PolarArea',
-                  icon: 'track_changes',
-                  value: 'polar'
-                },
-                {
-                  label: 'RadarArea',
-                  icon: 'multiline_chart',
-                  value: 'radar'
-                },
-                {
-                  label: 'Bolhas',
-                  icon: 'bubble_chart',
-                  value: 'bolha'
-                },
-               ]"
-           />
-         
-          <chartLine :width="width" :height="height" :data="data" v-if="tipo === 'line'"></chartLine>
-          <bar :data="data" v-if="tipo === 'bar'"></bar>
-          <pie :data="data" v-if="tipo === 'pie'"></pie>
-          <donut :data="data" v-if="tipo === 'donut'"></donut>
-          <polar :data="data" v-if="tipo === 'polar'"></polar>
-          <radar :data="data" v-if="tipo === 'radar'"></radar>
-          <bubble :data="data" v-if="tipo === 'bolha'"></bubble>
+      <div class="row">
+        <div class="col-xl-6">
+          <q-list inset-separator style="background-color: white; margin-bottom: 40px;">
+            <q-list-header>Informações Gerais</q-list-header>
+            <!-- Faturamento -->
+            <q-collapsible icon="notifications" label="Faturamento" sublabel="Configurações de exibição de Notificações no sistema">
+                
+              <q-knob
+                v-model="model"
+                size="120px"
+                style="font-size: 1.5rem"
+                color="secondary"
+                line-width="5px"
+                :min="min"
+                :max="max"
+                :step="5"
+              >
+                R$ {{model}}
+              </q-knob>
+              
+            </q-collapsible>
+            <!-- Contas -->
+            <q-collapsible icon="insert_chart" label="Contas" sublabel="Configurações de exibição de gráficos no sistema">
+                
+              <div class="layout-view">
+                   <q-select
+                      v-model="tipo"
+                      float-label="Tipo de Gráfico"
+                      :options="[
+                        {
+                          label: 'Linha',
+                          icon: 'show_chart',
+                          value: 'line'
+                        },
+                        {
+                          label: 'Barra',
+                          icon: 'insert_chart',
+                          value: 'bar'
+                        },
+                        {
+                          label: 'Pizza',
+                          icon: 'pie_chart',
+                          value: 'pie'
+                        },
+                        {
+                          label: 'Donut',
+                          icon: 'donut_large',
+                          value: 'donut'
+                        }
+                       ]"
+                   />
+
+                  <chartLine :width="width" :height="height" :data="data" v-if="tipo === 'line'"></chartLine>
+                  <bar :data="data" v-if="tipo === 'bar'"></bar>
+                  <pie :data="data" v-if="tipo === 'pie'"></pie>
+                  <donut :data="data" v-if="tipo === 'donut'"></donut>
+                  <polar :data="data" v-if="tipo === 'polar'"></polar>
+                  <radar :data="data" v-if="tipo === 'radar'"></radar>
+                  <bubble :data="data" v-if="tipo === 'bolha'"></bubble>
+              </div>
+                
+            </q-collapsible>
+            <!-- Lista de Aniversariantes -->
+            <q-collapsible icon="view_list" label="Lista de Aniversariantes" sublabel="Configure globalmente a exibição das listas">
+              
+            </q-collapsible>
+            
+            
+          </q-list>
+            
+        </div>
       </div>
+      
+      
+      
     
       
       
@@ -70,8 +95,10 @@
   import polar from './charts/Polar.js'
   import radar from './charts/Radar.js'
   import bubble from './charts/Bubble.js'
+  
+    
   export default {
-    name: 'CaixaRelatorios',
+    name: 'DashBoard',
     components: {
         chartLine,
         bar,
@@ -83,6 +110,11 @@
     },
     data () {
       return {
+        model: 40,
+        min: 0,
+        max: 100,
+        tempo: '',
+        user: localStorage.getItem('nameUser'),
         tipo: localStorage.getItem('tipoGrafico'),
         width: 100,
         height: parseInt(localStorage.getItem('alturaGrafico')),
@@ -107,6 +139,18 @@
         }
       }
     },
+    mounted(){
+        if(new Date().getHours() < 12 && new Date().getHours() > 4){
+            this.tempo = 'Bom dia'
+        }
+        else if(new Date().getHours() >= 12 && new Date().getHours() < 18){
+            this.tempo = 'Boa tarde'
+        }
+        else{
+            this.tempo = 'Boa noite'
+        }
+        
+    }
     
     
   }

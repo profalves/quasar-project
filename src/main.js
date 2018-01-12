@@ -54,6 +54,9 @@ Vue.use(JsPDF)
 import moment from 'moment'
 Vue.use(moment)
 
+import push from 'pushsafer-notifications'
+Vue.use(push)
+
 
 //============= FILTERS ============================
 
