@@ -22,7 +22,7 @@ export default new VueRouter({
    */
 
   routes: [
-    { path: '/', component: load('Home') },
+    { path: '/', component: load('dashboard') },
     { path: '/hello', component: load('Hello') },
     { path: '/clientes', component: load('Clientes') },
     { path: '/nivers', component: load('Aniversariantes') },

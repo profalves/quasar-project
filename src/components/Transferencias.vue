@@ -57,6 +57,7 @@
              @keyup.enter="listarProdutos"
              @blur="listarProdutos"
              v-if="tipoCod === 'nome'"
+             autofocus
              >
         <q-autocomplete
           :static-data="{field: 'label', list: listaItens}"

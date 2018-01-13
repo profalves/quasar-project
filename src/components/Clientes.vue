@@ -13,10 +13,11 @@
   <!-- Botão niver -->
   <q-fixed-position class="over" corner="bottom-left" :offset="[18, 18]">
     <q-btn 
-       round
+       rounded
        color="primary" 
        @click="$router.push('/nivers')">
-       <q-icon name="cake" />
+       <q-icon name="cake" style="padding-right:5px"/>
+        Aniversariantes
     </q-btn>
   </q-fixed-position>
   

@@ -12,7 +12,7 @@
           <q-list inset-separator no-border>
             <q-list-header>Painel Gestor</q-list-header>
             <!-- Faturamento -->
-            <q-collapsible opened icon="attach_money" label="Faturamento" sublabel="">
+            <q-collapsible icon="attach_money" label="Faturamento" sublabel="Faturamento do dia: R$ 0,00 / Saldo: R$ 0,00">
               <div class="row">
                 <div class="col">
                     <q-card>
@@ -22,12 +22,10 @@
                           <q-popover ref="popover">
                             <q-list link class="no-border">
                               <q-item @click="">
-                                <q-item-main label="Configurar" />
-                                <q-item-side right icon="settings" />
+                                <q-item-main label="Total de Vendas" />
                               </q-item>
                               <q-item @click="">
-                                <q-item-main label="Manipular" />
-                                <q-item-side right icon="create" />
+                                <q-item-main label="Lucro" />
                               </q-item>
                             </q-list>
                           </q-popover>
@@ -44,9 +42,7 @@
                             :min="min"
                             :max="maxDia"
                             :step="1"
-                            
                           >
-                            <!--readonly-->
                             R$ {{dia}}
                           </q-knob>
                       </q-card-main>
@@ -60,12 +56,10 @@
                           <q-popover ref="popover">
                             <q-list link class="no-border">
                               <q-item @click="">
-                                <q-item-main label="Configurar" />
-                                <q-item-side right icon="settings" />
+                                <q-item-main label="Total de Vendas" />
                               </q-item>
                               <q-item @click="">
-                                <q-item-main label="Manipular" />
-                                <q-item-side right icon="create" />
+                                <q-item-main label="Lucro" />
                               </q-item>
                             </q-list>
                           </q-popover>
@@ -95,7 +89,7 @@
               
             </q-collapsible>
             <!-- Contas -->
-            <q-collapsible icon="insert_chart" label="Contas" sublabel="Configurações de exibição de gráficos no sistema">
+            <q-collapsible icon="insert_chart" label="Contas" sublabel="Você tem 0 contas a pagar e 0 contas a receber">
                 
               <div class="layout-view">
                    <q-select
@@ -136,8 +130,31 @@
                 
             </q-collapsible>
             <!-- Lista de Aniversariantes -->
-            <q-collapsible icon="view_list" label="Lista de Aniversariantes" sublabel="Configure globalmente a exibição das listas">
-              
+            <q-collapsible icon="view_list" label="Lista de Aniversariantes" :sublabel="aniversariantes">
+                <q-list highlight no-border v-if="visivel">
+                  <q-list-header>Aniversariantes</q-list-header>
+                  <q-item v-for="(item, index) in nivers" :key="index">
+                    <q-item-main>
+                      <q-item-tile label>{{ item.nome }}</q-item-tile>
+                      <!--<q-item-tile sublabel>{{ item.nome }}</q-item-tile>-->
+                    </q-item-main>
+                    <q-item-side right>
+                      <q-fab color="primary" icon="keyboard_arrow_left" direction="left">
+                          <q-fab-action color="lime" @click="" icon="mail" />
+                          <q-fab-action color="info" @click="" icon="phone" />
+                          <q-fab-action color="secondary" @click="" icon="fa-whatsapp" />
+                          <q-btn
+                            color="primary" 
+                            rounded
+                            @click="abrir(item)"
+                            >
+                            abrir
+                          </q-btn>
+                      </q-fab>
+                    </q-item-side>
+                  </q-item>
+
+                </q-list>
             </q-collapsible>
             
             
@@ -147,13 +164,22 @@
       </div>
       
       
-      
-    
-      
-      
   </div>
 </template>
 <script type="text/javascript">
+  import { Loading } from 'quasar'
+  import axios from 'axios'
+  import { AtomSpinner } from 'epic-spinners'
+  var moment = require('moment');
+  require("moment/min/locales.min");
+  moment.locale('pt-br');
+
+  const API = localStorage.getItem('wsAtual')
+
+  //debug
+  //const API = 'http://192.168.0.200:29755/'
+    
+    
   import chartLine from './charts/Line.js'
   import bar from './charts/Bar.js'
   import pie from './charts/Pizza.js'
@@ -176,13 +202,15 @@
     },
     data () {
       return {
-        dia: 40,
-        mes: 1000,
+        //faturamento
+        dia: 0,
+        mes: 0,
         min: 0,
         maxDia: parseInt(localStorage.getItem('tetoDia')),
         maxMes: parseInt(localStorage.getItem('tetoMes')),
         tempo: '',
-        //faturaCor: 'blue',
+        
+        //gráficos
         user: localStorage.getItem('nameUser'),
         tipo: localStorage.getItem('tipoGrafico'),
         width: 100,
@@ -205,11 +233,44 @@
               options: '200px',
               backgroundColor: 'grey'
           }
-        }
+        },
+        //Aniversariantes
+        nivers: '',
+        visivel: false,
+        msg: '',
+      
+        //tabela
+        misc: 'highlight', //[{value: 'bordered'},{value: 'highlight'}]
+        separator: 'cell', // none, horizontal, vertical, cell
+        stripe: 'odd', // none, odd, even
+        type: 'none', // flipped, responsive
+        gutter: 'none', // compact, loose
       }
     },
     computed:{
-        faturaCorDia: function(){
+        computedClasses () {
+          let classes = []
+          if (this.misc.includes('bordered')) {
+            classes.push('bordered')
+          }
+          if (this.misc.includes('highlight')) {
+            classes.push('highlight')
+          }
+          if (this.separator !== 'none') {
+            classes.push(this.separator + '-separator')
+          }
+          if (this.stripe !== 'none') {
+            classes.push('striped-' + this.stripe)
+          }
+          if (this.type !== 'none') {
+            classes.push(this.type)
+          }
+          if (this.gutter !== 'none') {
+            classes.push(this.gutter)
+          }
+          return classes
+        },
+        faturaCorDia(){
             let meta = parseInt(localStorage.getItem('metaDia'))
             let quase = parseInt(localStorage.getItem('quaseDia'))
             
@@ -223,7 +284,7 @@
                 return 'negative'
             }    
         },
-        faturaCorMes: function(){
+        faturaCorMes(){
             let meta = parseInt(localStorage.getItem('metaMes'))
             let quase = parseInt(localStorage.getItem('quaseMes'))
             
@@ -237,8 +298,43 @@
                 return 'negative'
             } 
         },
+        aniversariantes(){
+            if(this.msg) return this.msg
+            return 'Aniversariantes Hoje: ' + this.nivers.length    
+        }
     },
     methods:{
+        getHoje(){
+          Loading.show({
+              spinner: AtomSpinner,
+              spinnerSize: 140,
+              message: 'Aguardando Dados...'
+          })
+          axios.get(API + 'pessoa/obteraniversariante')
+          .then((res)=>{
+            console.info(res.data)
+            if(typeof res.data !== 'string'){
+                this.nivers = res.data
+                this.visivel = true
+            }
+            else{
+                this.msg = res.data
+            }
+            Loading.hide()
+          })
+          .catch((e)=>{
+            console.log(e.response)
+            Loading.hide()
+          })
+        },
+        abrir(item){
+          let row = item
+          localStorage.setItem('codPessoa', row.codigo)
+          localStorage.setItem('cadMode', 'edit')
+          //localStorage.setItem('tela', 'nivers')
+          this.$router.push({ path: '/cadcliente' }) 
+        }
+        
         
     },
     mounted(){
@@ -251,6 +347,8 @@
         else{
             this.tempo = 'Boa noite'
         }
+        
+        this.getHoje()
         
     }
     

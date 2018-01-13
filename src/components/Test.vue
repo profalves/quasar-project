@@ -3,12 +3,10 @@
       
     <div id="notify">
      <q-btn color="dark" @click="vibrateMe()">S.O.S!</q-btn><br><br>
-     <q-btn color="dark" @click="notifyMe()">Notifique me!</q-btn><br><br>
-     <q-btn color="dark" @click="nvMe()">Notifica e vibra!</q-btn><br><br>
-     <q-btn color="dark" @click="notiBeep()">Notifica e bipa!</q-btn><br><br>
-     <q-btn color="dark" @click="pushSafer()">pushSafer!</q-btn><br><br>
-     <q-btn color="dark" @click="displayNotification()">Notificação Google!</q-btn><br><br>
-     <q-btn color="dark" @click="webkit()">webkit Notification</q-btn><br><br>
+     <q-btn color="dark" @click="notify()">Notifique me com Cordova!</q-btn><br><br>
+     <q-btn color="dark" @click="getPermission()">Solicitar Permisão Notificações Cordova</q-btn><br><br>
+     <hr>
+     <q-btn color="dark" @click="dialog()">Notifica Dialog</q-btn><br><br>
 
     </div>
      <hr>
@@ -253,28 +251,6 @@ import {
     HalfCircleSpinner
 } from 'epic-spinners'
 
-import Push from 'pushsafer-notifications'    
-    
-var p = new Push( {
-    k: 'Your20CharPrivateKey', // your 20 chars long private key or 15 chars long alias key (required)
-    debug: true
-});
-
-var msg = {
-    m: 'This is a Node.js test message',   // Message (required)
-    t: "Title Test",                     // Title (optional)
-    s: '2',                                // Sound (value 0-28) (optional)
-    v: '2',                                // Vibration (empty or value 1-3) (optional)
-    i: '1',                                // Icon (value 1-98) (optional)
-    d: '221',                              // Device or Device Group id (optional)
-    u: 'https://www.pushsafer.com',        // an URL (optional)
-    ut: 'Pushsafer.com',                   // URLs title (optional)
-    l: '10',                               // Time to Live in minutes (optional)
-    p: '',                                 // Image converted to > Data URL with Base64-encoded string (optional)
-    p2: '',                                // Image 2 converted to > Data URL with Base64-encoded string (optional)
-    p3: ''                                 // Image 3 converted to > Data URL with Base64-encoded string (optional)
-};
-
 
 export default {
   data () {
@@ -353,29 +329,29 @@ export default {
         navigator.vibrate([100,30,100,30,100,200,200,30,200,30,200,200,100,30,100,30,100]) // Vibrate 'SOS' in Morse.
         //console.log('vibrou');
     },
-    notiBeep() {
-      navigator.vibrate(1000);
-      navigator.alert("Hello");
-      navigator.beep(1);
-    },
-    pushSafer() {
-        p.send( msg );
-      
-    },
-    displayNotification() {
-      if (Notification.permission === 'granted' || Notification.permission === 'default') {
-        navigator.serviceWorker.getRegistration().then(function(reg) {
-          reg.showNotification('Hello!');
+    notify(){
+        cordova.plugins.notification.local.schedule({
+            title: 'My first notification',
+            text: 'Thats pretty easy...',
+            foreground: true
         });
-      }
     },
-    webkit() {
-      if (window.webkitNotifications) {
-        alert("Notifications are supported!");
-      }
-      else {
-        alert("Notifications are not supported for this Browser/OS version yet.");
-      }
+    getPermission(){
+        cordova.plugins.notification.local.hasPermission(function (granted) {
+            alert(granted)
+        });
+    },
+    dialog(){
+        function onConfirm(buttonIndex) {
+            alert('You selected button ' + buttonIndex);
+        }
+
+        navigator.notification.confirm(
+            'You are the winner!', // message
+             onConfirm,            // callback to invoke with index of button pressed
+            'Game Over',           // title
+            ['Restart','Exit']     // buttonLabels
+        );
     },
     pdf(){
         let doc = new JsPDF('p', 'pt', 'letter')

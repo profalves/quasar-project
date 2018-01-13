@@ -258,7 +258,7 @@
                 </div>
               </div>
               <div class="row">
-                <div class="col">
+                <!--<div class="col">
                   <q-field
                     icon="featured_play_list"
                     helper="Nome do Banco de Dados"
@@ -273,7 +273,7 @@
                   >
                     <q-input v-model.trim="senhaBd" type="password" clearable />
                   </q-field>   
-                </div> 
+                </div> -->
                 <div class="col-2 btn-plus" style="text-align:center">
                     <q-btn 
                        rounded
