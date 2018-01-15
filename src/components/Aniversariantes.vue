@@ -27,11 +27,13 @@
       :options="meses"
       @change="getAniversariantes"
     />
+    
+    <q-btn color="primary" @click="getAniversariantes">Obter</q-btn>
       
     <div v-if="visivel">
       
         <div class="row">
-            <div class="col">
+            <div class="col-xs-12 col-md-6">
                 <q-field
                   icon="search"
                 >
@@ -64,9 +66,9 @@
                   <!--<td data-th="Dia">{{ item.dataNasc | formatDay }}</td>-->
                   <td data-th="Enviar">
                       <q-fab color="primary" icon="keyboard_arrow_left" direction="left">
-                          <q-fab-action color="lime" @click="" icon="mail" />
-                          <q-fab-action color="info" @click="" icon="phone" />
-                          <q-fab-action color="secondary" @click="" icon="fa-whatsapp" />
+                          <q-fab-action color="lime" @click="msgEmail(item)" icon="mail" />
+                          <q-fab-action color="info" @click="fone(item)" icon="phone" />
+                          <q-fab-action color="secondary" @click="whats(item)" icon="fa-whatsapp" />
                           <q-btn
                             color="primary" 
                             rounded
@@ -84,11 +86,40 @@
 
     </div>
       
+    <q-modal minimized ref="telModal">
+      <div>
+          <q-list link no-border>
+              <q-list-header>Ligar para Telefone de {{pessoa}}</q-list-header>
+              <q-item v-for="(fone, index) in fones" :key="index">
+                  <a :href='`tel:${fone.numero}`'>{{fone.numero}}</a>
+              </q-item>
+              <q-item-separator />
+          </q-list>
+          <br>
+          <q-btn color="primary" @click="$refs.telModal.close()" id="btn-modal">Fechar</q-btn>
+      </div>
+    </q-modal>
+    
+    <q-modal minimized ref="emailModal">
+      <div>
+          <q-list link no-border>
+              <q-list-header>Enviar Email para {{pessoa}}</q-list-header>
+              <q-item v-for="(email, index) in emails" :key="index">
+                  <a :href='`mailto:${email.endereco}`'>{{email.endereco}}</a>
+              </q-item>
+              <q-item-separator />
+          </q-list>
+          <br>
+          <q-btn color="primary" @click="$refs.emailModal.close()" id="btn-modal">Fechar</q-btn>
+      </div>
+    </q-modal>
+      
+    <br><br><br><br>  
   </div>
 </template>
 
 <script>
-import { Dialog, Loading } from 'quasar'
+import { Toast, Dialog, Loading, openURL } from 'quasar'
 import axios from 'axios'
 import { AtomSpinner } from 'epic-spinners'
 var moment = require('moment');
@@ -103,7 +134,8 @@ const API = localStorage.getItem('wsAtual')
 export default {
   data () {
     return {
-      caixa: [],
+      pessoas: [],
+      pessoa: '',
       meses: [
           { 
               label:'Janeiro', 
@@ -158,6 +190,8 @@ export default {
       visivel: false,
       filtroNome: '',
       filtroData: '',
+      fones: [],
+      emails: [],
         
       //tabela
       misc: 'highlight', //[{value: 'bordered'},{value: 'highlight'}]
@@ -192,15 +226,12 @@ export default {
     },
     nivers () {
         if(this.filtroNome){
-            return this.caixa.filter(niver => niver.nome.toLowerCase().indexOf(this.filtroNome)>=0)
+            return this.pessoas.filter(niver => niver.nome.toLowerCase().indexOf(this.filtroNome)>=0)
         }
         if(this.filtroData){
-            return this.caixa.filter(niver => niver.dataNasc.indexOf(this.filtroData)>=0)
+            return this.pessoas.filter(niver => niver.dataNasc.indexOf(this.filtroData)>=0)
         }
-        
-        return this.caixa
-        
-
+        return this.pessoas
     }
   },
   filters:{
@@ -226,7 +257,7 @@ export default {
       axios.get(API + 'pessoa/obteraniversariante?mes=' + this.mes)
       .then((res)=>{
         this.visivel = true
-        this.caixa = res.data
+        this.pessoas = res.data
         Loading.hide()
       })
       .catch((e)=>{
@@ -256,7 +287,7 @@ export default {
             })
         }else{
             this.visivel = true
-            this.caixa = res.data
+            this.pessoas = res.data
         }
         Loading.hide()
       })
@@ -265,9 +296,61 @@ export default {
         Loading.hide()
       })
     },
-    msgEmail(item){},
-    fone(item){},
-    whats(item){},
+    msgEmail(item){
+      this.$refs.emailModal.open()
+      this.emails = item.endEletronico
+      this.pessoa = item.nome
+      //console.info(this.fones)
+    },
+    fone(item){
+      this.$refs.telModal.open()
+      this.fones = item.telefones
+      this.pessoa = item.nome
+      //console.info(this.fones)
+    },
+    whats(item){
+      let row = item.telefones
+      console.log('row', row);
+      if(row.length < 1){
+        Toast.create('Não há numeros salvos para este cadastro')
+      }
+      for(let i=0; i < row.length; i++){
+          if(row[i].movel === true){
+            let w = row[i].numero
+            Dialog.create({
+              title: 'Enviar mensagem via Whatsapp para ' + w,
+              message: 'Digite a sua mensagem aqui abaixo e clique em enviar.',
+              form: {
+                msg: {
+                  type: 'textarea',
+                  label: 'Mensagem',
+                  model: ''
+                }
+              },
+              buttons: [
+                {
+                  label: 'Cancelar',
+                  color: 'negative',
+                },
+                {
+                  label: 'Enviar',
+                  color: 'positive',
+                  handler: (data) => {
+                    //console.log(data)
+                    //console.log('telefone:', w)
+                    openURL('https://api.whatsapp.com/send?phone=' + 55 + w + '&text=' + data.msg)
+                  }
+                }
+              ]
+            })  
+          }
+          else{
+           Toast.create('Não há celulares definidos para este cadastro')
+          }
+            
+
+      }
+    },
     abrir(item){
       let row = item
       localStorage.setItem('codPessoa', row.codigo)
@@ -335,6 +418,10 @@ export default {
     
     #btn {
         margin: 0 0 5px 5px;
+    }
+    
+    #btn-modal {
+        margin: 0 0 15px 15px;
     }
     
 </style>

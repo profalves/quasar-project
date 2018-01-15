@@ -84,13 +84,35 @@
       </q-card-title>
       <q-card-main>
         <div class="row">
-            <div class="col-xs-12 col-md-6">
+            <div class="col-xs-12 col-md-6" v-if="0===1"> <!--permissão ver custo-->
                 <q-field
                   icon="monetization_on"
+                >
+                 <p class="fields">
+                    <strong>Custo: </strong>{{ produto.custo | formatMoney }} 
+                 </p>
+
+                </q-field>
+            </div>
+            <div class="col">
+                <q-field
+                  icon="store"
 
                 >
                  <p class="fields">
-                    <strong>Preço: </strong>{{ produto.valor | formatMoney }} 
+                    <strong>Estoque Atual: </strong><span :class="colorsClasses">{{ produto.qtd }}</span> 
+                 </p>
+
+                </q-field>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-md-6">
+                <q-field
+                  icon="monetization_on"
+                >
+                 <p class="fields">
+                    <strong>Venda: </strong>{{ produto.valor | formatMoney }} 
                  </p>
 
                 </q-field>

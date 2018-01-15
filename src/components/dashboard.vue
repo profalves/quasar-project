@@ -140,9 +140,9 @@
                     </q-item-main>
                     <q-item-side right>
                       <q-fab color="primary" icon="keyboard_arrow_left" direction="left">
-                          <q-fab-action color="lime" @click="" icon="mail" />
-                          <q-fab-action color="info" @click="" icon="phone" />
-                          <q-fab-action color="secondary" @click="" icon="fa-whatsapp" />
+                          <q-fab-action color="lime" @click="msgEmail(item)" icon="mail" />
+                          <q-fab-action color="info" @click="fone(item)" icon="phone" />
+                          <q-fab-action color="secondary" @click="whats(item)" icon="fa-whatsapp" />
                           <q-btn
                             color="primary" 
                             rounded
@@ -157,17 +157,43 @@
                 </q-list>
             </q-collapsible>
             
-            
           </q-list>
             
         </div>
       </div>
       
+      <q-modal minimized ref="telModal">
+          <div>
+              <q-list link no-border>
+                  <q-list-header>Ligar para Telefone de {{pessoa}}</q-list-header>
+                  <q-item v-for="(fone, index) in fones" :key="index">
+                      <a :href='`tel:${fone.numero}`'>{{fone.numero}}</a>
+                  </q-item>
+                  <q-item-separator />
+              </q-list>
+              <br>
+              <q-btn color="primary" @click="$refs.telModal.close()" id="btn-modal">Fechar</q-btn>
+          </div>
+      </q-modal>
+
+      <q-modal minimized ref="emailModal">
+          <div>
+              <q-list link no-border>
+                  <q-list-header>Enviar Email para {{pessoa}}</q-list-header>
+                  <q-item v-for="(email, index) in emails" :key="index">
+                      <a :href='`mailto:${email.endereco}`'>{{email.endereco}}</a>
+                  </q-item>
+                  <q-item-separator />
+              </q-list>
+              <br>
+              <q-btn color="primary" @click="$refs.emailModal.close()" id="btn-modal">Fechar</q-btn>
+          </div>
+      </q-modal>
       
   </div>
 </template>
 <script type="text/javascript">
-  import { Loading } from 'quasar'
+  import { Toast, Dialog, Loading, openURL } from 'quasar'
   import axios from 'axios'
   import { AtomSpinner } from 'epic-spinners'
   var moment = require('moment');
@@ -234,11 +260,15 @@
               backgroundColor: 'grey'
           }
         },
+        
         //Aniversariantes
         nivers: '',
+        pessoa: '',
         visivel: false,
         msg: '',
-      
+        fones: '',
+        emails: '',
+        
         //tabela
         misc: 'highlight', //[{value: 'bordered'},{value: 'highlight'}]
         separator: 'cell', // none, horizontal, vertical, cell
@@ -312,7 +342,7 @@
           })
           axios.get(API + 'pessoa/obteraniversariante')
           .then((res)=>{
-            console.info(res.data)
+            //console.info(res.data)
             if(typeof res.data !== 'string'){
                 this.nivers = res.data
                 this.visivel = true
@@ -333,8 +363,60 @@
           localStorage.setItem('cadMode', 'edit')
           //localStorage.setItem('tela', 'nivers')
           this.$router.push({ path: '/cadcliente' }) 
-        }
-        
+        },
+        msgEmail(item){
+          this.$refs.emailModal.open()
+          this.emails = item.endEletronico
+          this.pessoa = item.nome
+          //console.info(this.fones)
+        },
+        fone(item){
+          this.$refs.telModal.open()
+          this.fones = item.telefones
+          this.pessoa = item.nome
+          //console.info(this.fones)
+        },
+        whats(item){
+          let row = item.telefones
+          console.log('row', row);
+          if(row.length < 1){
+            Toast.create('Não há numeros salvos para este cadastro')
+          }
+          for(let i=0; i < row.length; i++){
+              if(row[i].movel === true){
+                let w = row[i].numero
+                Dialog.create({
+                  title: 'Enviar mensagem via Whatsapp para ' + w,
+                  message: 'Digite a sua mensagem aqui abaixo e clique em enviar.',
+                  form: {
+                    msg: {
+                      type: 'textarea',
+                      label: 'Mensagem',
+                      model: ''
+                    }
+                  },
+                  buttons: [
+                    {
+                      label: 'Cancelar',
+                      color: 'negative',
+                    },
+                    {
+                      label: 'Enviar',
+                      color: 'positive',
+                      handler: (data) => {
+                        //console.log(data)
+                        //console.log('telefone:', w)
+                        openURL('https://api.whatsapp.com/send?phone=' + 55 + w + '&text=' + data.msg)
+                      }
+                    }
+                  ]
+                })  
+              }
+              else{
+               Toast.create('Não há celulares definidos para este cadastro')
+              }
+          }
+        },
         
     },
     mounted(){
@@ -355,4 +437,8 @@
     
   }
 </script>
-<style></style>
+<style>
+    #btn-modal {
+        margin: 0 0 15px 15px;
+    }
+</style>

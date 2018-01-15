@@ -10,15 +10,25 @@
        <q-icon name="add" />
     </q-btn>
   </q-fixed-position>
+    
   <!-- Botão niver -->
   <q-fixed-position class="over" corner="bottom-left" :offset="[18, 18]">
-    <q-btn 
-       rounded
-       color="primary" 
-       @click="$router.push('/nivers')">
-       <q-icon name="cake" style="padding-right:5px"/>
-        Aniversariantes
-    </q-btn>
+    <q-fab color="primary" icon="group" direction="right">
+      <q-fab-action color="purple" 
+                    @click="$router.push('/nivers')" 
+                    icon="cake">
+          <q-tooltip>
+            Aniversariantes
+          </q-tooltip>
+      </q-fab-action>
+      <q-fab-action color="secondary" 
+                    @click="" 
+                    icon="fa-whatsapp">
+          <q-tooltip>
+            Enviar para Lista de Transmissão
+          </q-tooltip>
+      </q-fab-action>
+    </q-fab>
   </q-fixed-position>
   
   <div id="lista">
@@ -30,7 +40,7 @@
                 v-model="tipo"
                 :options="tipos"
             />
-        </q-field>   
+        </q-field>
     </div>-->
     
     
@@ -45,7 +55,6 @@
       style="background-color:white;"
     >
       <template slot="selection" scope="props">
-        
         <q-btn flat color="primary" @click="endElet(props)" v-if="visivel">
           <q-icon name="email" />
         </q-btn>
@@ -63,8 +72,6 @@
         </q-btn>
       </template>
     </q-data-table>
-    
-   
     
     <!-- Configurações -->
     <q-collapsible
@@ -173,6 +180,8 @@
         </div>
       </q-field>
     </q-collapsible>
+
+    {{row}}
     
     <q-modal minimized ref="telModal">
       <div class="layout-padding">
@@ -240,6 +249,7 @@ export default {
       ],
       visivel: true,
       alert: false,
+      row: '',
       
       //LISTA
       config: {
@@ -414,6 +424,7 @@ export default {
       })
     },
     whatsapp (props) {
+      this.row = props.rows[0].data.telefones
       let row = props.rows[0].data.telefones
       if(row.length < 1){
         Toast.create('Não há numeros salvos para este cadastro')
@@ -459,6 +470,7 @@ export default {
         this.$refs.telModal.open()
         let nome = props.rows[0].data.nome
         this.pessoa = nome
+        this.row = props.rows[0].data.telefones
         let row = props.rows[0].data.telefones
         this.fones = row
         //console.log('telefones: ', row);
@@ -467,6 +479,7 @@ export default {
         this.$refs.emailModal.open()
         let nome = props.rows[0].data.nome
         this.pessoa = nome
+        this.row = props.rows[0].data.endEletronico
         let row = props.rows[0].data.endEletronico
         this.emails = row
         //console.log('emails: ', row);

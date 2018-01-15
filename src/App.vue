@@ -26,8 +26,14 @@
     <menuLeft slot="left" v-if="$route.path !== '/login' && !$route.query.config"></menuLeft>
     
     <transition name="fade" mode="out-in">   
-        <router-view class="container"></router-view>    
+      <router-view class="container"></router-view>    
     </transition>
+      
+    <!--<q-toolbar slot="footer" color="black">
+      <q-toolbar-title>
+        Layout Footer
+      </q-toolbar-title>
+    </q-toolbar>-->
     
   </q-layout>
   </div>
