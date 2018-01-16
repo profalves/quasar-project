@@ -5,4 +5,5 @@ dist/
 npm-debug.log*
 cordova/platforms
 cordova/plugins
+cordova/www
 .brackets.json
