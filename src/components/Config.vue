@@ -207,6 +207,8 @@
 
               </div>
             </q-collapsible>
+            <!-- WhatsApp -->
+            <q-collapsible icon="fa-whatsapp" label="WhatsApp" sublabel="Configure as mensagens prontas para enviar para as pessoas cadastradas"></q-collapsible>
             <!-- BANCOS -->
             <q-collapsible  icon="device_hub" 
                             label="Banco de Dados" 
@@ -319,6 +321,8 @@
             </div>
 
             </q-collapsible>
+            <!-- SYNC -->
+            <q-collapsible icon="sync" label="Sincronizar o Aplicativo" sublabel="Configure a sincronização em tempo real e executar um sincronização agora"></q-collapsible>
             <!-- RESET -->
             <q-collapsible  icon="delete_forever" 
                             label="Restaurar Configurações iniciais" 

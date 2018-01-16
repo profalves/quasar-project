@@ -15,7 +15,6 @@ import Quasar from 'quasar'
 import router from './router'
 import './themes/index'
 import './themes/spinners'
-import './themes/notifications'
 import store from './vuex/store'
 
 
@@ -51,9 +50,11 @@ Vue.use(money)
 import JsPDF from 'jspdf'
 Vue.use(JsPDF)
 
-import push from 'pushsafer-notifications'
-Vue.use(push)
-
+var localforage = require('localforage')
+localforage.config({
+    driver: localforage.INDEXEDDB,
+    name: 'localDB'
+});
 
 //============= FILTERS ============================
 

@@ -67,8 +67,9 @@
 <script>
 import axios from 'axios'
 import { Toast, Dialog, Loading } from 'quasar'
-import { AtomSpinner } from 'epic-spinners'
-
+import { AtomSpinner, FulfillingBouncingCircleSpinner } from 'epic-spinners'
+import localforage from 'localforage'
+    
 //dev
 let API = localStorage.getItem('wsAtual')
 
@@ -275,11 +276,65 @@ export default {
             Loading.hide()
           })
         },
+        listarPessoas(){
+          Loading.show({
+              spinner: FulfillingBouncingCircleSpinner,
+              spinnerSize: 140,
+              message: 'Obtendo Pessoas...'
+          })
+          axios.get(API + 'pessoa/obterpessoa')
+          .then((res)=>{
+              console.log(res.data)
+              localforage.setItem('Pessoas', JSON.stringify(res.data))
+              console.log(localforage.getItem('Pessoas'))
+              Loading.hide()
+          })
+          .catch((e)=>{
+            console.log(e.response)
+            Loading.hide()
+          })  
+        },
+
+        todosProdutos(){
+          Loading.show({
+              spinner: FulfillingBouncingCircleSpinner,
+              spinnerSize: 140,
+              message: 'Obtendo Produtos...'
+          })
+          axios.get(API + 'produto/obterproduto')
+          .then((res)=>{
+            Loading.hide()
+            localforage.setItem('Produtos', JSON.stringify(res.data))
+            console.log(localforage.getItem('Produtos'))
+            console.log(res.data)
+          })
+          .catch((e)=>{
+            Loading.hide()
+            console.log(e.response)
+            Toast.create({
+                    html: 'Sem Conexão',
+                    timeout: 6000,
+                    bgColor: '#f44242',
+                    icon: 'mood_bad'
+                })
+          })
+        },
+
+    },
+    mounted(){
+        this.listarPessoas()
+        this.todosProdutos()
     },
     created(){
         this.loadConfig()
         localStorage.setItem('tela', 'login')
         localStorage.removeItem('codUser')
+    },
+    beforeCreate(){
+        Loading.show({message: 'Aguarde 5 segundos'})
+        setTimeout(() => {
+            Loading.hide()
+        }, 5000)
     }
 }
 </script>

@@ -1,10 +1,6 @@
 <template>
   <div id="dashboard">
-      <div slot="header" class="toolbar">
-        <q-toolbar-title :padding="1">
-          
-        </q-toolbar-title>
-      </div>
+      
       <h2>{{tempo}} {{user | capitalize}}</h2>
       
       <div class="row">
@@ -89,7 +85,7 @@
               
             </q-collapsible>
             <!-- Contas -->
-            <q-collapsible icon="insert_chart" label="Contas" sublabel="Você tem 0 contas a pagar e 0 contas a receber">
+            <q-collapsible icon="insert_chart" label="Contas" sublabel="Você tem 0 contas a pagar e 0 contas a receber hoje">
                 
               <div class="layout-view">
                    <q-select
@@ -127,6 +123,10 @@
                   <radar :data="data" v-if="tipo === 'radar'"></radar>
                   <bubble :data="data" v-if="tipo === 'bolha'"></bubble>
               </div>
+                
+            </q-collapsible>
+            <!-- Estoque Mínimo -->
+            <q-collapsible icon="system_update_alt" label="Estoque Mínimo" sublabel="Você tem 0 produtos abaixo do estoque mínimo">
                 
             </q-collapsible>
             <!-- Lista de Aniversariantes -->
@@ -432,9 +432,7 @@
         
         this.getHoje()
         
-    }
-    
-    
+    }  
   }
 </script>
 <style>

@@ -1,6 +1,6 @@
 <template>
 <div id="clientes">
-  <h5>Lista de Pessoas</h5>
+
   <!-- Botão ADD -->
   <q-fixed-position class="over" corner="bottom-right" :offset="[18, 18]">
     <q-btn 
@@ -31,188 +31,168 @@
     </q-fab>
   </q-fixed-position>
   
-  <div id="lista">
-    <!--<div class="row">
-        <q-field
-            label="Tipo"
-          >
-            <q-select
-                v-model="tipo"
-                :options="tipos"
-            />
-        </q-field>
-    </div>-->
-    
-    
-    <q-data-table
-      ref="dtable"
-      :data="pessoas"
-      :config="config"
-      :columns="colunas"
-      @refresh="refresh"
-      @selection="selection"
-      @rowclick=""
-      style="background-color:white;"
-    >
-      <template slot="selection" scope="props">
-        <q-btn flat color="primary" @click="endElet(props)" v-if="visivel">
-          <q-icon name="email" />
-        </q-btn>
-        <q-btn flat color="primary" @click="telefones(props)" v-if="visivel">
-          <q-icon name="phone" />
-        </q-btn>
-        <q-btn flat color="primary" @click="whatsapp(props)" v-if="visivel">
-          <q-icon class="fa fa-whatsapp fa-2x" />
-        </q-btn>
-        <q-btn flat color="primary" @click="editar(props)" v-if="visivel">
-          <q-icon name="edit" />
-        </q-btn>
-        <q-btn flat color="primary" @click="deleteRow(props)">
-          <q-icon name="delete" />
-        </q-btn>
-      </template>
-    </q-data-table>
-    
-    <!-- Configurações -->
-    <q-collapsible
-      label="Opções"
-      icon="settings"
-      style="background-color:white;
-             margin-bottom:100px;"
-      class="shadow-2"
-    >
-        
-      <!--<q-field
-        icon="title"
-        label="Nome da Tabela"
-        :label-width="4"
-      >
-        <q-input v-model="config.title" />
-      </q-field>-->
-
-        
-      <q-field
-        icon="widgets"
-        label="Recursos"
-        :label-width="4"
-      >
-        <div class="column group" style="margin: -5px -7px">
-          <q-checkbox v-model="config.refresh" label="Atualizar tabela (refresh)" />
-          <q-checkbox v-model="config.columnPicker" label="Selecionar colunas" />
-          <q-checkbox v-model="pagination" label="Paginação" />
-          <q-checkbox v-model="config.responsive" label="Responsiva" />
-          <q-checkbox v-model="config.noHeader" label="Sem Cabeçário" />
+  <div class="row">
+        <div class="col">
+            <h5>Buscar Pessoa</h5>
         </div>
-      </q-field>
+    </div>
 
-      <q-field
-        icon="check box"
-        label="Tipo de Seleção"
-        :label-width="4"
-      >
-        <q-select
-          v-model="config.selection"
-          class="col-xs-12 col-sm"
-          float-label="Seleção"
-          :options="[
-            {label: 'Nenhuma', value: false},
-            {label: 'Singular', value: 'single'},
-            {label: 'Multipla', value: 'multiple'}
-          ]"
+    <!--<q-toolbar slot="header" inverted color="tertiary">
+       <q-radio v-model="tipoCod" 
+                val="barras"
+                label="Cód. Barras" 
+                @focus="search = ''" />
+       <q-radio v-model="tipoCod" 
+                val="emp" 
+                label="Cód. Emp" 
+                style="margin-left:20px"  
+                @focus="search = ''" />
+       <q-radio v-model="tipoCod" 
+                val="nome"
+                label="Nome" 
+                style="margin-left:20px" 
+                @focus="search = ''" />
+    </q-toolbar>-->
+
+    <q-search  
+             v-model="search" 
+             color="none" 
+             style="margin-left: 10px"
+             placeholder="Procurar..."
+             @keyup.enter="obterPessoa"
+             @blur="obterPessoa"
+             >
+        <q-autocomplete
+          :static-data="{field: 'label', list: listaItens}"
+          @selected="obterPessoa"
         />
-      </q-field>
 
-      <!--<q-field
-        icon="place"
-        label="Sticky Columns"
-        :label-width="4"
-      >
-        <q-select
-          v-model="config.leftStickyColumns"
-          class="col-xs-12 col-sm"
-          float-label="Left Sticky Columns"
-          :options="[
-            {label: 'None', value: 0},
-            {label: '1', value: 1},
-            {label: '2', value: 2}
-          ]"
-        />
-        <br>
-        <q-select
-          v-model="config.rightStickyColumns"
-          class="col-xs-12 col-sm"
-          float-label="Right Sticky Columns"
-          :options="[
-            {label: 'None', value: 0},
-            {label: '1', value: 1},
-            {label: '2', value: 2}
-          ]"
-        />
-      </q-field>-->
-
-      <q-field
-        icon="format_line_spacing"
-        label="Altura das linhas"
-        :label-width="4"
-      >
-        <q-slider v-model="rowHeight" :min="38" :max="200" label-always :label-value="`${rowHeight}px` "/>
-      </q-field>
-
-      <q-field
-        icon="content_paste"
-        label="Tamanho"
-        :label-width="4"
-      >
-        <div class="row no-wrap items-center">
-          <div class="col-auto" style="margin-top: 10px">
-            <q-select
-              v-model="bodyHeightProp"
-              float-label="Style"
-              :options="[
-                {label: 'Auto', value: 'auto'},
-                {label: 'Altura', value: 'height'},
-                {label: 'Altura Min', value: 'minHeight'},
-                {label: 'Altura Max', value: 'maxHeight'}
-              ]"
-            />
-          </div>
-          <q-slider class="col" v-model="bodyHeight" :min="100" :max="700" label-always :disable="bodyHeightProp === 'auto'" :label-value="`${bodyHeight}px`" />
-        </div>
-      </q-field>
-    </q-collapsible>
-
-    {{row}}
+    </q-search>
     
-    <q-modal minimized ref="telModal">
-      <div class="layout-padding">
-          <q-list link no-border>
-              <q-list-header>Ligar para Telefone de {{pessoa}}</q-list-header>
-              <q-item v-for="(fone, index) in fones" :key="index">
-                  <a :href='`tel:${fone.numero}`'>{{fone.numero}}</a>
-              </q-item>
-              <q-item-separator />
-          </q-list>
-          <br>
-          <q-btn color="primary" @click="$refs.telModal.close()">Fechar</q-btn>
-      </div>
-    </q-modal>
-    
-    <q-modal minimized ref="emailModal">
-      <div class="layout-padding">
-          <q-list link no-border>
-              <q-list-header>Enviar Email para {{pessoa}}</q-list-header>
-              <q-item v-for="(email, index) in emails" :key="index">
-                  <a :href='`mailto:${email.endereco}`'>{{email.endereco}}</a>
-              </q-item>
-              <q-item-separator />
-          </q-list>
-          <br>
-          <q-btn color="primary" @click="$refs.emailModal.close()">Fechar</q-btn>
-      </div>
-    </q-modal>
+    <div v-for="pessoa in pessoa">
+        <q-card v-if="pessoa" no-border>
+          <q-card-title>
+            {{ pessoa.nome }}
+            <span slot="subtitle">{{ pessoa.apelido }}</span>
+            <q-icon slot="right" name="more_vert">
+              <q-popover ref="popover">
+                <q-list link class="no-border">
+                  <q-item @click="excluir()">
+                    <q-item-main label="Excluir item" />
+                  </q-item>
+                  <q-item @click="abrir()">
+                    <q-item-main label="Abrir Cadastro" />
+                  </q-item>
+                  <q-item @click="limpar()">
+                    <q-item-main label="Fechar" />
+                  </q-item>
+                </q-list>
+              </q-popover>
+            </q-icon>
+          </q-card-title>
+          <q-card-main>
+            <!--<div class="row">
+                <div class="col-xs-12 col-md-6" v-if="0===1"> <!--permissão ver custo--
+                    <q-field
+                      icon="monetization_on"
+                    >
+                     <p class="fields">
+                        <strong>Custo: </strong>{{ pessoa.custo }} 
+                     </p>
 
-    
-  </div>
+                    </q-field>
+                </div>
+                <div class="col">
+                    <q-field
+                      icon="store"
+
+                    >
+                     <p class="fields">
+                        <strong>Estoque Atual: </strong><span :class="colorsClasses">{{ pessoa }}</span> 
+                     </p>
+
+                    </q-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-md-6">
+                    <q-field
+                      icon="monetization_on"
+                    >
+                     <p class="fields">
+                        <strong>Venda: </strong>{{ pessoa.valor | formatMoney }} 
+                     </p>
+
+                    </q-field>
+                </div>
+                <div class="col">
+                    <q-field
+                      icon="store"
+
+                    >
+                     <p class="fields">
+                        <strong>Estoque Atual: </strong><span :class="colorsClasses">{{ pessoa.qtd }}</span> 
+                     </p>
+
+                    </q-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-md-6">
+                    <q-field
+                      icon="fa-barcode"
+
+                    >
+                     <p class="fields">
+                        <strong>Cód. Barras: </strong>{{ pessoa.codBarra }} 
+                     </p>
+
+                    </q-field>
+                </div>
+                <div class="col">
+                    <q-field
+                      icon="local_grocery_store"
+
+                    >
+                     <p class="fields">
+                        <strong>Família: </strong>{{ pessoa.familia }} 
+                     </p>
+
+                    </q-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-md-6">
+                    <q-field
+                      icon="fa-th-large"
+
+                    >
+                     <p class="fields">
+                        <strong>Categoria: </strong>{{ pessoa.categoria }} 
+                     </p>
+
+                    </q-field>
+                </div>
+                <div class="col">
+                    <q-field
+                      icon="fa-truck"
+
+                    >
+                     <p class="fields">
+                        <strong>Marca: </strong>{{ pessoa.marca }} 
+                     </p>
+
+                    </q-field>
+                </div>
+            </div>-->
+          </q-card-main>
+          <!--<q-card-separator />
+          <q-card-actions center>
+            <q-btn flat @click="abrir">Abrir</q-btn>
+            <q-btn flat @click="limpar">Fechar</q-btn>
+          </q-card-actions>-->
+        </q-card>
+    </div>
     
 </div>
 </template>
@@ -221,6 +201,7 @@
 import { Alert, Dialog, Toast, Loading, clone, openURL } from 'quasar'
 import axios from 'axios'
 import { AtomSpinner } from 'epic-spinners'
+import localforage from 'localforage'
 
 const API = localStorage.getItem('wsAtual')
   
@@ -230,6 +211,7 @@ const API = localStorage.getItem('wsAtual')
 export default { 
   data () {
     return {
+      search: '',  
       pessoas: [],
       pessoa: '',
       fones: [],
@@ -342,7 +324,30 @@ export default {
       
     }
   },
-  //components: { OrbitSpinner },
+  computed:{
+    /*colorsClasses() {
+      let classes
+      if(this.pessoa.qtd<0){
+        classes = 'text-negative'
+      }
+      else if(this.pessoa.qtd>0){
+        classes = 'text-primary'
+      }
+      
+      return classes
+    },*/
+    listaItens(){
+      let a = this.pessoas
+      let lista = []
+      
+      lista = a.map(row => ({
+          label: row.nome, 
+          value: row.codigo
+      }))
+      //console.log(lista)
+      return lista
+    },
+  },
   methods: {
     listarPessoas(){
       Loading.show({
@@ -354,6 +359,23 @@ export default {
       .then((res)=>{
           //console.log(res.data)
           this.pessoas = res.data
+          Loading.hide()
+      })
+      .catch((e)=>{
+        console.log(e)
+        Loading.hide()
+      })  
+    },
+    obterPessoa(){
+      Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Aguardando Dados...'
+      })
+      axios.get(API + 'pessoa/obterpessoa?nome=' + this.search)
+      .then((res)=>{
+          //console.log(res.data)
+          this.pessoa = res.data
           Loading.hide()
       })
       .catch((e)=>{
@@ -563,16 +585,27 @@ export default {
       this.config.bodyStyle = style
     }
   },
-  created(){
-    this.listarPessoas()
-    if (localStorage.getItem('pagination') === 'false') {
-      this.oldPagination = clone(this.config.pagination)
-      this.config.pagination = false
-      return
-    }
-    this.config.pagination = this.oldPagination
+  mounted(){
     
-  }
+    localforage.getItem('Pessoas').then((value) => {
+        if(value){
+            console.log('get')
+            console.log(value)
+            this.pessoas = JSON.parse(value);
+        }
+        else{
+            Toast.create('Não há pessoas aqui')
+            //this.listarPessoas()
+        }
+        
+    }).catch((err) => {
+        console.log(err)
+        console.log('fail')
+    }) 
+    
+  },
+  
+  
 }
 </script>
 

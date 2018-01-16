@@ -1,19 +1,9 @@
 import Vue from 'vue'
-import VueNotifications from 'vue-notifications'
-import iziToast from 'izitoast'// https://github.com/dolce/iziToast
-import 'izitoast/dist/css/iziToast.min.css'
+import localforage from 'localforage'
+    
+const options = localforage.config({
+    driver: localforage.INDEXEDDB,
+    name: 'I-heart-localStorage'
+});
 
-function toast ({title, message, type, timeout, cb, buttons, onClosing, onClosed}) {
-  if (type === VueNotifications.types.warn) type = 'warning'
-  return iziToast[type]({title, message, timeout, buttons})
-}
-
-const options = {
-  success: toast,
-  error: toast,
-  info: toast,
-  warn: toast
-}
-
-Vue.use(VueNotifications, options)
-Vue.use(iziToast)
+Vue.use(localforage, options)
