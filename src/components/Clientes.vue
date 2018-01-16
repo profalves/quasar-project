@@ -592,6 +592,7 @@ export default {
             console.log('get')
             console.log(value)
             this.pessoas = JSON.parse(value);
+            alert('Pessoas obtidas com sucesso')
         }
         else{
             Toast.create('Não há pessoas aqui')
@@ -601,6 +602,7 @@ export default {
     }).catch((err) => {
         console.log(err)
         console.log('fail')
+        alert('fail')
     }) 
     
   },

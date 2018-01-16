@@ -239,6 +239,10 @@ export default {
                 localStorage.setItem('tetoMes', 50000)
                 localStorage.setItem('metaMes', 0)
                 localStorage.setItem('quaseMes', 0)
+                localStorage.setItem('loadPessoas', false)
+                localStorage.setItem('loadProdutos', false)
+                localStorage.setItem('loadContas', false)
+                localStorage.setItem('loadUsuarios', false)
                 Loading.hide()
             }
             
@@ -294,7 +298,6 @@ export default {
             Loading.hide()
           })  
         },
-
         todosProdutos(){
           Loading.show({
               spinner: FulfillingBouncingCircleSpinner,

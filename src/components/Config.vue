@@ -32,7 +32,9 @@
                     <q-item-tile sublabel lines="2">Solicitar permissão para receber Notificações no app</q-item-tile>
                   </q-item-main>
                   <q-item-side right>
-                    <q-btn round small push @click="solicitarNotificacoes">
+                    <q-btn round 
+                           push
+                           @click="solicitarNotificacoes">
                         <i class="fa fa-exclamation text-primary"></i>
                     </q-btn>
                   </q-item-side>
@@ -276,13 +278,12 @@
                     <q-input v-model.trim="senhaBd" type="password" clearable />
                   </q-field>   
                 </div> -->
-                <div class="col-2 btn-plus" style="text-align:center">
+                <div class="col-2" id="btn-save">
                     <q-btn 
                        rounded
                        color="primary" 
                        @click="salvarBanco">
-                       <q-icon name="check" v-if="edit"/>
-                       <q-icon name="add" v-else/>
+                       Salvar
                     </q-btn>
                 </div>
               </div>
@@ -322,7 +323,99 @@
 
             </q-collapsible>
             <!-- SYNC -->
-            <q-collapsible icon="sync" label="Sincronizar o Aplicativo" sublabel="Configure a sincronização em tempo real e executar um sincronização agora"></q-collapsible>
+            <q-collapsible icon="sync" label="Sincronizar o Aplicativo" sublabel="Configure a sincronização em tempo real e executar um sincronização agora">
+              <div>
+               <q-list link no-border>
+                <q-item multiline tag="label">
+                  <q-item-main>
+                    <q-item-tile label>Sincronizar agora</q-item-tile>
+                    <q-item-tile sublabel lines="2">Solicitar sincronização completa do app</q-item-tile>
+                  </q-item-main>
+                  <q-item-side right>
+                    <q-btn loader
+                           push
+                           round
+                           class="text-secondary"
+                           @click="simulateProgress">
+                      <i class="material-icons fa-2x">sync</i>
+                    </q-btn>
+                  </q-item-side>
+                </q-item>
+                <q-list-header>Sincronizar Automaticamente</q-list-header>
+                <q-item tag="label">
+                  <q-item-side>
+                      <q-icon name="fa-users" />
+                  </q-item-side>
+                  <q-item-main>
+                    <q-item-tile title>Pessoas</q-item-tile>
+                  </q-item-main>
+                  <q-item-side right>
+                    <q-toggle
+                        v-model="loadPessoas"
+                        checked-icon="sync"
+                        unchecked-icon="sync_disabled"
+                        style="margin-left: 25px"
+                        @change="setLoadPessoas"
+                    />
+
+                  </q-item-side>
+                </q-item>
+                <q-item tag="label">
+                  <q-item-side>
+                      <q-icon name="fa-shopping-cart" />
+                  </q-item-side>
+                  <q-item-main>
+                    <q-item-tile label>Produtos</q-item-tile>
+                  </q-item-main>
+                  <q-item-side right>
+                    <q-toggle
+                        v-model="loadProdutos"
+                        checked-icon="sync"
+                        unchecked-icon="sync_disabled"
+                        style="margin-left: 25px"
+                        @change="setLoadProdutos"
+                    />
+                  </q-item-side>
+                </q-item>
+                <q-item tag="label">
+                  <q-item-side>
+                      <q-icon name="fa-money" />
+                  </q-item-side>
+                  <q-item-main>
+                    <q-item-tile label>Contas</q-item-tile>
+                  </q-item-main>
+                  <q-item-side right>
+                    <q-toggle
+                        v-model="loadContas"
+                        checked-icon="sync"
+                        unchecked-icon="sync_disabled"
+                        style="margin-left: 25px"
+                        @change="setLoadContas"
+                    />
+                  </q-item-side>
+                </q-item>
+                <q-item tag="label">
+                  <q-item-side>
+                      <q-icon name="fa-user" />
+                  </q-item-side>
+                  <q-item-main>
+                    <q-item-tile label>Usuários</q-item-tile>
+                  </q-item-main>
+                  <q-item-side right>
+                    <q-toggle
+                        v-model="loadUsuarios"
+                        checked-icon="sync"
+                        unchecked-icon="sync_disabled"
+                        style="margin-left: 25px"
+                        @change="setLoadUsuarios"
+                    />
+                  </q-item-side>
+                </q-item>
+                
+               </q-list>
+                 
+              </div>
+            </q-collapsible>
             <!-- RESET -->
             <q-collapsible  icon="delete_forever" 
                             label="Restaurar Configurações iniciais" 
@@ -355,10 +448,11 @@ export default {
       niver: (localStorage.getItem('aniversarios') === 'true'),    
       list: false,    
         
-      //Gerais
+      //Graficos
       tipoGrafico: localStorage.getItem('tipoGrafico'),
       height: parseInt(localStorage.getItem('alturaGrafico')),
       check: false,
+      
       //config. das tabelas
       config: { 
         refresh: (localStorage.getItem('refresh') === 'true'),
@@ -394,6 +488,12 @@ export default {
       stripe: 'odd', // none, odd, even
       type: 'none', // flipped, responsive
       gutter: 'none', // compact, loose
+        
+      //sync
+      loadPessoas: (localStorage.getItem('loadPessoas') === 'true'),
+      loadProdutos: (localStorage.getItem('loadProdutos') === 'true'),
+      loadContas: (localStorage.getItem('loadContas') === 'true'),
+      loadUsuarios: (localStorage.getItem('loadUsuarios') === 'true')
       
     }
   },
@@ -672,7 +772,38 @@ export default {
         this.bancosDados = []
         this.listarBancos()
     },
+    
+    //Sincronizar
+    setLoadPessoas(){
+        localStorage.setItem('loadPessoas', this.loadPessoas)
+    },
+    setLoadProdutos(){
+        localStorage.setItem('loadProdutos', this.loadProdutos)
+    },
+    setLoadContas(){
+        localStorage.setItem('loadContas', this.loadContas)
+    },
+    setLoadUsuarios(){
+        localStorage.setItem('loadUsuarios', this.loadUsuarios)
+    },
       
+    
+      
+    //sync test
+    simulateProgress (event, done) {
+      // simulate a delay, like in
+      // waiting for an Ajax call
+      setTimeout(() => {
+        // delay is over, now we call
+        // done() function to inform button
+        // it must go to its initial state
+        done()
+        // DON't forget to call done() otherwise
+        // the button will keep on being in
+        // "loading" state
+      }, 3000)
+    },
+    
     //Resetar TODAS Configurações
     resetarTudo(){
         Dialog.create({
@@ -732,13 +863,13 @@ export default {
 </script>
 
 <style>
-    #config {
+    #config{
         overflow: scroll;
     }
     .low{
-        margin-bottom: 50px
+        margin-bottom: 50px;
     }
-    .fixo{
-        z-index: 
+    #btn-save{
+        margin: 20px 0 0 40px;            
     }
 </style>
