@@ -22,6 +22,7 @@
         <div class="col-xl-6">
           <q-list inset-separator style="background-color: white; margin-bottom: 40px;">
             <q-list-header>Configurações Gerais</q-list-header>
+            
             <!-- Notificações -->
             <q-collapsible icon="notifications" label="Notificações" sublabel="Configurações de exibição de Notificações no sistema">
               <div>
@@ -79,6 +80,25 @@
                </q-list>
                  
               </div>
+            </q-collapsible>
+            <!-- BUSCAS -->
+            <q-collapsible icon="search" label="Buscas" sublabel="Configurações de buscas no sistema">
+                <q-list link no-border>
+                    <q-item multiline tag="label">
+                      <q-item-main>
+                        <q-item-tile label>Número máximo de resultados</q-item-tile>
+                        <q-item-tile sublabel lines="2">Quantidade máxima de resultados exibidos durante a busca</q-item-tile>
+                      </q-item-main>
+                      <q-item-side right>
+                        <q-input v-model="maxResults" 
+                                 type="number" 
+                                 :min="0" 
+                                 :max="20" 
+                                 align="right"
+                                 @change="setMaxResults"/> 
+                      </q-item-side>
+                    </q-item>
+                </q-list>
             </q-collapsible>
             <!-- GRAFICOS -->
             <q-collapsible icon="insert_chart" label="Configuações de Gráficos" sublabel="Configurações de exibição de gráficos no sistema">
@@ -341,7 +361,7 @@
                     </q-btn>
                   </q-item-side>
                 </q-item>
-                <q-list-header>Sincronizar Automaticamente</q-list-header>
+                <q-list-header>Sincronizar Automaticamente Durante o Uso</q-list-header>
                 <q-item tag="label">
                   <q-item-side>
                       <q-icon name="fa-users" />
@@ -416,6 +436,25 @@
                  
               </div>
             </q-collapsible>
+            <!-- ARMAZENAMENTO INTERNO -->
+            <q-collapsible icon="smartphone" label="Armazenamento Interno" sublabel="Visualizar o armazenamento do aplicativo em uso agora">
+                <q-list link no-border>
+                    <q-item multiline tag="label">
+                      <q-item-main>
+                        <q-item-tile label>SQLite</q-item-tile>
+                        <q-item-tile sublabel>{{dbLocal}}</q-item-tile>
+                      </q-item-main>
+
+                    </q-item>
+                    <q-item multiline tag="label">
+                      <q-item-main>
+                        <q-item-tile label>Local Storage (Browser/Webview)</q-item-tile>
+                        <q-item-tile sublabel>{{localStorage}}</q-item-tile>
+                      </q-item-main>
+
+                    </q-item>
+                </q-list>
+            </q-collapsible>
             <!-- RESET -->
             <q-collapsible  icon="delete_forever" 
                             label="Restaurar Configurações iniciais" 
@@ -443,6 +482,9 @@ export default {
     return {
       //btn voltar
       canGoBack: window.history.length > 1,
+      //buscas
+      maxResults: parseInt(localStorage.getItem('maxResults')),
+      
       //Notificações
       boas: (localStorage.getItem('boasVindas') === 'true'),
       niver: (localStorage.getItem('aniversarios') === 'true'),    
@@ -488,6 +530,10 @@ export default {
       stripe: 'odd', // none, odd, even
       type: 'none', // flipped, responsive
       gutter: 'none', // compact, loose
+      
+      //Armazenamento internoget 
+      localStorage: '',
+      dbLocal: '',
         
       //sync
       loadPessoas: (localStorage.getItem('loadPessoas') === 'true'),
@@ -521,46 +567,12 @@ export default {
       }
       return classes
     },
-    storageAvailable: function(type) {
-        try {
-            let x = '__storage_test__';
-            localStorage.setItem(x, x);
-            localStorage.removeItem(x);
-            return true;
-        }
-        catch(e) {
-            return e instanceof DOMException && (
-                // everything except Firefox
-                e.code === 22 ||
-                // Firefox
-                e.code === 1014 ||
-                // test name field too, because code might not be present
-                // everything except Firefox
-                e.name === 'QuotaExceededError' ||
-                // Firefox
-                e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
-                // acknowledge QuotaExceededError only if there's something already stored
-                localStorage.length !== 0;
-        }
-    },
-    localStorage(){
-        let total = 0;
-        for(let x in localStorage) {
-            if(x !== 'length'){
-                var quantidade = (localStorage[x].length * 2) / 1024;
-                total += quantidade ;
-                //console.log( x + " = " + quantidade .toFixed(2) + " KB");
-            }
-        }
-        console.log( "Total armazenado no localStorage: " + total.toFixed(2) + " KB");
-        return total.toFixed(2) + " KB"
-    }
   },
   methods: {
     goBack(){
       window.history.go(-1)
     },
-    
+      
     //notificações
     solicitarNotificacoes(){
         if (!("Notification" in window)) {
@@ -585,6 +597,11 @@ export default {
     },
     notificaAniversariantes(){
         localStorage.setItem('aniversarios', this.niver)
+    },
+      
+    //buscas
+    setMaxResults(){
+        localStorage.setItem('maxResults', this.maxResults)    
     },
       
     //Graficos
@@ -787,7 +804,38 @@ export default {
         localStorage.setItem('loadUsuarios', this.loadUsuarios)
     },
       
-    
+    //Armazenamento interno
+    getLocalStorage(){
+        let total = 0;
+        for(let x in localStorage) {
+            if(x !== 'length'){
+                var quantidade = (localStorage[x].length * 2) / 1024;
+                total += quantidade ;
+                //console.log( x + " = " + quantidade .toFixed(2) + " KB");
+            }
+        }
+        console.log( "Total armazenado no localStorage: " + total.toFixed(2) + " KB");
+        
+        if(total>1000){
+            let mb = total / 1024
+            this.localStorage = 'Em uso: ' + mb.toFixed(2).toString() + "MB de 4MB"
+        }
+        else{
+            this.localStorage = 'Em uso: ' + total.toFixed(2).toString() + "KB de 4MB"
+        }
+        
+    },
+    getDBLocal(){
+        navigator.webkitTemporaryStorage.queryUsageAndQuota ((usedBytes, grantedBytes) => {
+            let uso = (usedBytes /1000000).toFixed(2)
+            let total = (grantedBytes /1000000000).toFixed(2)
+            this.dbLocal = 'Em uso: ' + uso.toString() + 'MB de ' + total.toString() + 'GB'
+            console.log('db using: ', (usedBytes) /1000000, 'MB of ', grantedBytes /1000000000, 'GB');
+        }, 
+        function(e) { 
+            console.error('Error', e);
+        });    
+    },
       
     //sync test
     simulateProgress (event, done) {
@@ -835,6 +883,10 @@ export default {
         
     }
     
+  },
+  mounted(){
+    this.getLocalStorage()
+    this.getDBLocal()
   },
   created (){
     this.listarBancos()

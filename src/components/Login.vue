@@ -27,8 +27,7 @@
             align="center"
             v-model="bd"
             :options="listaEmpresas" 
-            @change="setBancoAtual"
-            @blur="listarUsuarios" 
+            @change="listarUsuarios"
         />
       </q-field>
       <q-field
@@ -66,13 +65,12 @@
 
 <script>
 import axios from 'axios'
-import { Toast, Dialog, Loading } from 'quasar'
+import { Toast, Dialog, Loading, Events } from 'quasar'
 import { AtomSpinner, FulfillingBouncingCircleSpinner } from 'epic-spinners'
 import localforage from 'localforage'
     
 //dev
 let API = localStorage.getItem('wsAtual')
-
 //debug
 //const API = 'http://192.168.0.200:29755/'
     
@@ -123,7 +121,6 @@ export default {
         listaUsuarios: function () {
           var a = this.usuarios
           var lista = []
-
           for (let i=0; i < a.length; i++) {
               let n = a[i].nome
               let v = a[i].nome
@@ -195,7 +192,6 @@ export default {
                     this.bancosDados.push(lista)
                 }
             }
-
         },*/
         setBancoAtual(){
             if(this.bd === 'none'){
@@ -243,13 +239,19 @@ export default {
                 localStorage.setItem('loadProdutos', false)
                 localStorage.setItem('loadContas', false)
                 localStorage.setItem('loadUsuarios', false)
+                localStorage.setItem('maxResults', 6)
                 Loading.hide()
             }
             
         },
         listarUsuarios(){
+          this.setBancoAtual()
+          this.syncStart()
+          
           if(this.bd === 'none'){ return }
+          
           API = localStorage.getItem('wsAtual')
+          
           Loading.show({
               spinner: AtomSpinner,
               spinnerSize: 140,
@@ -280,7 +282,11 @@ export default {
             Loading.hide()
           })
         },
+        
+        // sincronização: 
         listarPessoas(){
+          let load = localStorage.getItem('loadPessoas')
+          if(load === 'true') return
           Loading.show({
               spinner: FulfillingBouncingCircleSpinner,
               spinnerSize: 140,
@@ -289,7 +295,7 @@ export default {
           axios.get(API + 'pessoa/obterpessoa')
           .then((res)=>{
               console.log(res.data)
-              localforage.setItem('Pessoas', JSON.stringify(res.data))
+              localforage.setItem('Pessoas', res.data)
               console.log(localforage.getItem('Pessoas'))
               Loading.hide()
           })
@@ -299,6 +305,8 @@ export default {
           })  
         },
         todosProdutos(){
+          let load = localStorage.getItem('loadProdutos')
+          if(load === 'true') return
           Loading.show({
               spinner: FulfillingBouncingCircleSpinner,
               spinnerSize: 140,
@@ -307,7 +315,7 @@ export default {
           axios.get(API + 'produto/obterproduto')
           .then((res)=>{
             Loading.hide()
-            localforage.setItem('Produtos', JSON.stringify(res.data))
+            localforage.setItem('Produtos', res.data)
             console.log(localforage.getItem('Produtos'))
             console.log(res.data)
           })
@@ -322,22 +330,45 @@ export default {
                 })
           })
         },
-
-    },
-    mounted(){
-        this.listarPessoas()
-        this.todosProdutos()
+        syncStart(){
+            if(localStorage.getItem('wsAtual') === '') return
+            this.listarPessoas()
+            this.todosProdutos()
+        }
     },
     created(){
+        Events.$on('app:loading', state => {
+          console.log(`Loading está ${state ? 'ativo' : 'fechado'}`)
+        })
+        this.syncStart()
         this.loadConfig()
         localStorage.setItem('tela', 'login')
         localStorage.removeItem('codUser')
+        
     },
-    beforeCreate(){
-        Loading.show({message: 'Aguarde 5 segundos'})
-        setTimeout(() => {
-            Loading.hide()
-        }, 5000)
+    mounted(){
+        if(localStorage.getItem('wsAtual') === '') return
+        //verificação de carregamento sendo executado
+        let c = 0
+        for(let load in localStorage){
+            let x = load.substring(0,4)
+            let r 
+            if(x === 'load'){
+                r = localStorage.getItem(load)
+            }
+            if(r === 'true') c++
+            
+        }
+        
+        if(c === 4)return
+        Loading.show({
+          spinner: FulfillingBouncingCircleSpinner,
+          spinnerSize: 200,
+          message: ''
+        })    
+    },
+    updated(){ //a sincronização foi executada
+        Loading.hide() 
     }
 }
 </script>

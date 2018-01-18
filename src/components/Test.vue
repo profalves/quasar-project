@@ -1,66 +1,60 @@
 <template>
-<div>{{objectStore}}</div>
+  <div>
+    <loading-screen ref="loadingScreen">
+    <div class="page-header">
+      <h1>People</h1>
+    </div>
+    
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>Name</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="obj in objects">
+            <td>{{obj.id}}</td>
+            <td>{{obj.name}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </loading-screen>
+  </div>
 </template>
-
+ 
 <script>
-import localforage from 'localforage'
-
+import LoadingScreen from 'vue-loading-screen';
+ 
 export default {
-  
-  methods: {
-      
-    openDB(){
-        this.objectStore = localforage.supports(localforage.INDEXEDDB)
-        let set = localforage.setDriver(localforage.INDEXEDDB)
-        console.log('set', set);
-        
-        localforage.setItem('Pessoas', 'store value').then(function (value) {
-            // Do other things once the value has been saved.
-            console.log(value);
-        }).catch(function(err) {
-            // This code runs if there were any errors
-            console.info(err);
-        });
-        
-
-    },
-    verificarSuporte(){
-        var c = ( window.webkitNotifications !== undefined );
-        console.log('c', c);
-        if (!c){
-            alert("Seu navegador não suporta notificações desktop. Por favor, use o Google Chrome!");
-        }
-        alert(c)
-        return c
-    },
-    verificarPermissao(){
-        if ( !this.verificarSuporte() ) return;
-
-        switch ( window.webkitNotifications )
-        {
-            case 0: // PERMITIDO
-            alert( "Permitido" );
-            break;
-
-            case 1: // NÃO PERMITIDO
-            alert("Não permitido");
-            break;
-
-            case 2: // PERMISSÃO NEGADA
-            alert( "Permissão negada" );
-            break;
-        }
-    }
+  components: {
+    LoadingScreen,
   },
   data() {
-     return {
-       objectStore: '',    
-     }
+    return {
+      objects: [],
+    };
   },
-  mounted(){
-    this.openDB()
-    this.verificarPermissao()
-  }
-}
-</script>
-
+  methods: {
+    refresh() {
+      const p = new Promise((resolve, reject) => {
+        setTimeout(resolve, 5000);
+      });
+ 
+      this.$refs.loadingScreen.load(p);
+ 
+      p.then(() => {
+        this.objects = [
+          { id: 1, name: 'Foo' },
+          { id: 2, name: 'Bar' },
+        ];
+      });
+    },
+  },
+  created() {
+    this.$nextTick(() => {
+      this.refresh();
+    });
+  },
+};
+</script> 

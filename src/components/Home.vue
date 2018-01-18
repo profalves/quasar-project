@@ -103,24 +103,6 @@
 import { Loading } from 'quasar'
 import axios from 'axios'
 import { AtomSpinner } from 'epic-spinners'
-import iziToast from 'izitoast'
-    
-iziToast.settings({
-    timeout: 10000,
-    resetOnHover: true,
-    icon: 'material-icons',
-    transitionIn: 'flipInX',
-    transitionOut: 'flipOutX',
-    onOpening: function(){
-        console.log('toast abriu!');
-    },
-    onClosing: function(data){
-        console.log(data);
-        console.log("toast fechou!");
-    }
-});
-
-import VueNotifications from 'vue-notifications'
 
 import moment from 'moment'
 //var moment = require('moment');
@@ -145,28 +127,6 @@ export default {
         niverHoje: '',
         visualizar: '',
         
-    }
-  },
-  notifications: {
-    showSuccessMsg: {
-      type: VueNotifications.types.success,
-      title: '',
-      message: ''
-    },
-    showInfoMsg: {
-      type: VueNotifications.types.info,
-      title: 'Hey you',
-      message: 'Here is some info for you'
-    },
-    showWarnMsg: {
-      type: VueNotifications.types.warn,
-      title: 'Wow, man',
-      message: 'That\'s the kind of warning'
-    },
-    showErrorMsg: {
-      type: VueNotifications.types.error,
-      title: 'Wow-wow',
-      message: 'That\'s the error'
     }
   },
   watch:{
@@ -232,26 +192,6 @@ export default {
                 
                 expression(n.vibrate)
                 
-                this.showSuccessMsg({
-                  type: VueNotifications.types.success,
-                  timeout: 10000,
-                  title: 'Parabéns a ' + this.niverHoje[i].nome,
-                  //message: '...',
-                  buttons: [
-                    ['<button><b>Visualizar</b></button>', function (instance, toast) {
-                        instance.hide(toast)
-                        //this.$router.push('/nivers')
-                        
-                    }, true],
-                    ['<button>Não Mostrar Mais</button>', function (instance, toast) {
-                        console.info('Não mostrar mais')
-                        sessionStorage.setItem('today', moment().format('DD-MM-YYYY'))
-                        iziToast.destroy();
-
-                    }]
-                  ]
-                  
-                })
                 
             }
             

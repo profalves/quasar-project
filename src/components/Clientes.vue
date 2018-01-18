@@ -8,12 +8,15 @@
        color="primary" 
        @click="novo">
        <q-icon name="add" />
+        <q-tooltip>
+            Novo
+        </q-tooltip>
     </q-btn>
   </q-fixed-position>
     
   <!-- Botão niver -->
   <q-fixed-position class="over" corner="bottom-left" :offset="[18, 18]">
-    <q-fab color="primary" icon="group" direction="right">
+    <q-fab color="primary" icon="keyboard_arrow_right" direction="right">
       <q-fab-action color="purple" 
                     @click="$router.push('/nivers')" 
                     icon="cake">
@@ -63,6 +66,7 @@
              @blur="obterPessoa"
              >
         <q-autocomplete
+          :max-results="maxResults"
           :static-data="{field: 'label', list: listaItens}"
           @selected="obterPessoa"
         />
@@ -83,7 +87,7 @@
                   <q-item @click="abrir()">
                     <q-item-main label="Abrir Cadastro" />
                   </q-item>
-                  <q-item @click="limpar()">
+                  <q-item @click="fechar()">
                     <q-item-main label="Fechar" />
                   </q-item>
                 </q-list>
@@ -91,108 +95,64 @@
             </q-icon>
           </q-card-title>
           <q-card-main>
-            <!--<div class="row">
-                <div class="col-xs-12 col-md-6" v-if="0===1"> <!--permissão ver custo--
-                    <q-field
-                      icon="monetization_on"
-                    >
-                     <p class="fields">
-                        <strong>Custo: </strong>{{ pessoa.custo }} 
-                     </p>
-
-                    </q-field>
-                </div>
-                <div class="col">
-                    <q-field
-                      icon="store"
-
-                    >
-                     <p class="fields">
-                        <strong>Estoque Atual: </strong><span :class="colorsClasses">{{ pessoa }}</span> 
-                     </p>
-
-                    </q-field>
-                </div>
+            <div>
+                <div v-show="`${pessoa.endereco}`">{{pessoa.endereco}},</div> {{pessoa.numero}}<br>
+                {{pessoa.bairro}}<br>
+                <div v-if="`${pessoa.cidade}`">{{pessoa.cidade}} - </div>{{pessoa.uf}}<br>
+                Tipo: {{pessoa.tipo}}   
             </div>
-            <div class="row">
-                <div class="col-xs-12 col-md-6">
-                    <q-field
-                      icon="monetization_on"
-                    >
-                     <p class="fields">
-                        <strong>Venda: </strong>{{ pessoa.valor | formatMoney }} 
-                     </p>
-
-                    </q-field>
-                </div>
-                <div class="col">
-                    <q-field
-                      icon="store"
-
-                    >
-                     <p class="fields">
-                        <strong>Estoque Atual: </strong><span :class="colorsClasses">{{ pessoa.qtd }}</span> 
-                     </p>
-
-                    </q-field>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-xs-12 col-md-6">
-                    <q-field
-                      icon="fa-barcode"
-
-                    >
-                     <p class="fields">
-                        <strong>Cód. Barras: </strong>{{ pessoa.codBarra }} 
-                     </p>
-
-                    </q-field>
-                </div>
-                <div class="col">
-                    <q-field
-                      icon="local_grocery_store"
-
-                    >
-                     <p class="fields">
-                        <strong>Família: </strong>{{ pessoa.familia }} 
-                     </p>
-
-                    </q-field>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-xs-12 col-md-6">
-                    <q-field
-                      icon="fa-th-large"
-
-                    >
-                     <p class="fields">
-                        <strong>Categoria: </strong>{{ pessoa.categoria }} 
-                     </p>
-
-                    </q-field>
-                </div>
-                <div class="col">
-                    <q-field
-                      icon="fa-truck"
-
-                    >
-                     <p class="fields">
-                        <strong>Marca: </strong>{{ pessoa.marca }} 
-                     </p>
-
-                    </q-field>
-                </div>
-            </div>-->
           </q-card-main>
-          <!--<q-card-separator />
+          <q-card-separator />
           <q-card-actions center>
-            <q-btn flat @click="abrir">Abrir</q-btn>
-            <q-btn flat @click="limpar">Fechar</q-btn>
-          </q-card-actions>-->
+            <q-btn flat round
+                   color="primary" 
+                   icon="phone" 
+                   @click="telefones(pessoa)" />
+            <q-btn flat round
+                   color="negative"
+                   icon="fa-envelope" 
+                   @click="endElet(pessoa)" />
+            <q-btn flat round
+                   @click="">SMS
+            </q-btn>
+            <q-btn flat round
+                   color="positive" 
+                   icon="fa-whatsapp"
+                   @click="whatsapp(pessoa)" />
+          </q-card-actions>
         </q-card>
     </div>
+    
+    <q-modal minimized ref="telModal">
+      <div class="layout-padding">
+          <q-list link no-border>
+              <q-list-header>Ligar para Telefone de {{pessoaNome}}</q-list-header>
+              <q-item v-for="(fone, index) in fones" :key="index">
+                  <a :href='`tel:${fone.numero}`'>{{fone.numero}}</a>
+              </q-item>
+              <q-item-separator />
+          </q-list>
+          <br>
+          <q-btn color="primary" @click="$refs.telModal.close()">Fechar</q-btn>
+      </div>
+    </q-modal>
+    
+    <q-modal minimized ref="emailModal">
+      <div class="layout-padding">
+          <q-list link no-border>
+              <q-list-header>Enviar Email para {{pessoaNome}}</q-list-header>
+              <q-item v-for="(email, index) in emails" :key="index">
+                  <a :href='`mailto:${email.endereco}`'>{{email.endereco}}</a>
+              </q-item>
+              <q-item-separator />
+          </q-list>
+          <br>
+          <q-btn color="primary" @click="$refs.emailModal.close()">Fechar</q-btn>
+      </div>
+    </q-modal>
+    
+
+
     
 </div>
 </template>
@@ -214,6 +174,7 @@ export default {
       search: '',  
       pessoas: [],
       pessoa: '',
+      pessoaNome: '',
       fones: [],
       emails: [],
       excluidos: [],
@@ -232,6 +193,7 @@ export default {
       visivel: true,
       alert: false,
       row: '',
+      maxResults: parseInt(localStorage.getItem('maxResults')),
       
       //LISTA
       config: {
@@ -374,7 +336,7 @@ export default {
       })
       axios.get(API + 'pessoa/obterpessoa?nome=' + this.search)
       .then((res)=>{
-          //console.log(res.data)
+          console.log(res)
           this.pessoa = res.data
           Loading.hide()
       })
@@ -382,6 +344,10 @@ export default {
         console.log(e)
         Loading.hide()
       })  
+    },
+    fechar(){
+      this.search = ''
+      this.pessoa = []
     },
     editar (props) {
       console.log(props.rows[0].data.codigo)
@@ -445,9 +411,11 @@ export default {
           ]
       })
     },
-    whatsapp (props) {
-      this.row = props.rows[0].data.telefones
-      let row = props.rows[0].data.telefones
+    whatsapp (pessoa) {
+      this.row = pessoa.telefones
+      let row = pessoa.telefones
+      console.log('row', row.telefones);
+        
       if(row.length < 1){
         Toast.create('Não há numeros salvos para este cadastro')
       }
@@ -488,21 +456,19 @@ export default {
 
       }
     },
-    telefones (props){
+    telefones (pessoa){
         this.$refs.telModal.open()
-        let nome = props.rows[0].data.nome
-        this.pessoa = nome
-        this.row = props.rows[0].data.telefones
-        let row = props.rows[0].data.telefones
+        this.pessoaNome = pessoa.nome
+        this.row = pessoa.telefones
+        let row = pessoa.telefones
         this.fones = row
-        //console.log('telefones: ', row);
+        console.log('telefones: ', row);
     },
-    endElet (props){
+    endElet (pessoa){
         this.$refs.emailModal.open()
-        let nome = props.rows[0].data.nome
-        this.pessoa = nome
-        this.row = props.rows[0].data.endEletronico
-        let row = props.rows[0].data.endEletronico
+        this.pessoaNome = pessoa.nome
+        this.row = pessoa.endEletronico
+        let row = pessoa.endEletronico
         this.emails = row
         //console.log('emails: ', row);
     },
@@ -586,23 +552,26 @@ export default {
     }
   },
   mounted(){
+    if(localStorage.getItem('loadPessoas') === 'true'){
+        this.listarPessoas()
+        return
+    }
     
+      
     localforage.getItem('Pessoas').then((value) => {
         if(value){
-            console.log('get')
+            console.log('localforage get')
             console.log(value)
-            this.pessoas = JSON.parse(value);
-            alert('Pessoas obtidas com sucesso')
+            this.pessoas = value;
         }
         else{
-            Toast.create('Não há pessoas aqui')
-            //this.listarPessoas()
+            console.log('localforage fail')
+            this.listarPessoas()
         }
         
     }).catch((err) => {
         console.log(err)
         console.log('fail')
-        alert('fail')
     }) 
     
   },
