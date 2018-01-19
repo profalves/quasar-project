@@ -28,7 +28,7 @@
       @change="getAniversariantes"
     />
     
-    <q-btn color="primary" @click="getAniversariantes">Obter</q-btn>
+    <!--<q-btn color="primary" @click="getAniversariantes">Obter</q-btn>-->
       
     <div v-if="visivel">
       
@@ -87,32 +87,41 @@
     </div>
       
     <q-modal minimized ref="telModal">
-      <div>
-          <q-list link no-border>
-              <q-list-header>Ligar para Telefone de {{pessoa}}</q-list-header>
-              <q-item v-for="(fone, index) in fones" :key="index">
-                  <a :href='`tel:${fone.numero}`'>{{fone.numero}}</a>
-              </q-item>
-              <q-item-separator />
-          </q-list>
-          <br>
-          <q-btn color="primary" @click="$refs.telModal.close()" id="btn-modal">Fechar</q-btn>
-      </div>
-    </q-modal>
-    
+          <div>
+              <div v-if="fones.length === 0" class="layout-padding">
+                  <q-item>Nenhum telefone cadastrado</q-item>
+
+              </div>
+              <q-list link no-border v-else>
+                  <q-list-header>Ligar para Telefone de {{pessoa}}</q-list-header>
+                  
+                  <q-item v-for="(fone, index) in fones" :key="index">
+                      <a :href='`tel:${fone.numero}`'>{{fone.numero}}</a>
+                  </q-item>
+                  <q-item-separator />
+              </q-list>
+              <br>
+              <q-btn color="primary" @click="$refs.telModal.close()" id="btn-modal">Fechar</q-btn>
+          </div>
+      </q-modal>
+
     <q-modal minimized ref="emailModal">
-      <div>
-          <q-list link no-border>
-              <q-list-header>Enviar Email para {{pessoa}}</q-list-header>
-              <q-item v-for="(email, index) in emails" :key="index">
-                  <a :href='`mailto:${email.endereco}`'>{{email.endereco}}</a>
-              </q-item>
-              <q-item-separator />
-          </q-list>
-          <br>
-          <q-btn color="primary" @click="$refs.emailModal.close()" id="btn-modal">Fechar</q-btn>
-      </div>
-    </q-modal>
+          <div>
+              <div v-if="emails.length === 0" class="layout-padding">
+                  <q-item>Nenhum email cadastrado</q-item>
+
+              </div>
+              <q-list link no-border v-else>
+                  <q-list-header>Enviar Email para {{pessoa}}</q-list-header>
+                  <q-item v-for="(email, index) in emails" :key="index">
+                      <a :href='`mailto:${email.endereco}`'>{{email.endereco}}</a>
+                  </q-item>
+                  <q-item-separator />
+              </q-list>
+              <br>
+              <q-btn color="primary" @click="$refs.emailModal.close()" id="btn-modal">Fechar</q-btn>
+          </div>
+      </q-modal>
       
     <br><br><br><br>  
   </div>

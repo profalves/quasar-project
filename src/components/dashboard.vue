@@ -1,7 +1,7 @@
 <template>
   <div id="dashboard">
       
-      <h2>{{tempo}} {{user | capitalize}}</h2>
+      <h2 class="text-center">{{tempo}} {{user | capitalize}}</h2>
       
       <div class="row">
         <div class="col-xl-6">
@@ -141,6 +141,13 @@
                     <q-item-side right>
                       <q-fab color="primary" icon="keyboard_arrow_left" direction="left">
                           <q-fab-action color="lime" @click="msgEmail(item)" icon="mail" />
+                          <q-btn
+                            color="faded" 
+                            rounded
+                            @click="sms(item)"
+                            >
+                            SMS
+                          </q-btn>
                           <q-fab-action color="info" @click="fone(item)" icon="phone" />
                           <q-fab-action color="secondary" @click="whats(item)" icon="fa-whatsapp" />
                           <q-btn
@@ -164,7 +171,11 @@
       
       <q-modal minimized ref="telModal">
           <div>
-              <q-list link no-border>
+              <div v-if="fones.length === 0" class="layout-padding">
+                  <q-item>Nenhum telefone cadastrado</q-item>
+
+              </div>
+              <q-list link no-border v-else>
                   <q-list-header>Ligar para Telefone de {{pessoa}}</q-list-header>
                   <q-item v-for="(fone, index) in fones" :key="index">
                       <a :href='`tel:${fone.numero}`'>{{fone.numero}}</a>
@@ -175,10 +186,32 @@
               <q-btn color="primary" @click="$refs.telModal.close()" id="btn-modal">Fechar</q-btn>
           </div>
       </q-modal>
+      
+      <q-modal minimized ref="smsModal">
+          <div>
+              <div v-if="fones.length === 0" class="layout-padding">
+                  <q-item>Nenhum telefone válido cadastrado</q-item>
+
+              </div>
+              <q-list link no-border v-else>
+                  <q-list-header>Enviar SMS para {{pessoa}}</q-list-header>
+                  <q-item v-for="(fone, index) in fones" :key="index">
+                      <a :href='`sms:${fone.numero}`'>{{fone.numero}}</a>
+                  </q-item>
+                  <q-item-separator />
+              </q-list>
+              <br>
+              <q-btn color="primary" @click="$refs.smsModal.close()" id="btn-modal">Fechar</q-btn>
+          </div>
+      </q-modal>
 
       <q-modal minimized ref="emailModal">
           <div>
-              <q-list link no-border>
+              <div v-if="emails.length === 0" class="layout-padding">
+                  <q-item>Nenhum email cadastrado</q-item>
+
+              </div>
+              <q-list link no-border v-else>
                   <q-list-header>Enviar Email para {{pessoa}}</q-list-header>
                   <q-item v-for="(email, index) in emails" :key="index">
                       <a :href='`mailto:${email.endereco}`'>{{email.endereco}}</a>
@@ -204,8 +237,7 @@
 
   //debug
   //const API = 'http://192.168.0.200:29755/'
-    
-    
+   
   import chartLine from './charts/Line.js'
   import bar from './charts/Bar.js'
   import pie from './charts/Pizza.js'
@@ -372,6 +404,12 @@
         },
         fone(item){
           this.$refs.telModal.open()
+          this.fones = item.telefones
+          this.pessoa = item.nome
+          //console.info(this.fones)
+        },
+        sms(item){
+          this.$refs.smsModal.open()
           this.fones = item.telefones
           this.pessoa = item.nome
           //console.info(this.fones)

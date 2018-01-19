@@ -370,7 +370,6 @@
 <script>
 import axios from 'axios'
 //import VMasker from 'vanilla-masker'
-
 import { required, minLength } from 'vuelidate/lib/validators'
 import { Dialog, Toast, Loading } from 'quasar'
 

@@ -1335,7 +1335,7 @@ export default {
         
         if(this.cpf.length>11){
             this.CadPessoa.pessoa.cnpj = this.cpf
-            this.CadPessoa.pessoa.cpf = this.cpf.substring(0, 10)
+            //this.CadPessoa.pessoa.cpf = this.cpf.substring(0, 10)
             
         }
         else{
@@ -1350,6 +1350,8 @@ export default {
             this.CadPessoa.pessoa.codigoIBGECidade = 2930501
         }
         
+        let tela = localStorage.getItem('tela')
+        
         Loading.show({
           spinner: AtomSpinner,
           spinnerSize: 140,
@@ -1362,19 +1364,17 @@ export default {
                 html: 'Sucesso',
                 icon: 'done'
             })
-            //console.log(res)
-            console.log(res.data)
-            console.log(res.response)
-            console.log('sucesso')
-            if(localStorage.getItem('tela') === 'fornContas'){
+            
+            if(tela === 'fornContas'){
                 this.$router.push('cadcontas')    
             }
-            else if(localStorage.getItem('tela') === 'fornNotas'){
+            else if(tela === 'fornNotas'){
                 this.$router.push('cadnotas')    
             }
             else {
                 this.$router.push('clientes')
             }
+            
           })
           .catch((e)=>{
             Loading.hide()
@@ -1855,7 +1855,7 @@ export default {
               spinnerSize: 140,
               message: 'Enviando Dados...'
           })
-          axios.get(API + 'pessoa/obterpessoa?codClientePK=' + localStorage.getItem('codPessoa'))
+          axios.get(API + 'pessoa/obterpessoa?codigo=' + localStorage.getItem('codPessoa'))
           .then((res)=>{
               Loading.hide()
               //console.log(res.data)

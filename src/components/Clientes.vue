@@ -14,7 +14,7 @@
     </q-btn>
   </q-fixed-position>
     
-  <!-- Botão niver -->
+  <!-- Botão options -->
   <q-fixed-position class="over" corner="bottom-left" :offset="[18, 18]">
     <q-fab color="primary" icon="keyboard_arrow_right" direction="right">
       <q-fab-action color="purple" 
@@ -29,6 +29,13 @@
                     icon="fa-whatsapp">
           <q-tooltip>
             Enviar para Lista de Transmissão
+          </q-tooltip>
+      </q-fab-action>
+      <q-fab-action color="info" 
+                    @click="sync" 
+                    icon="sync">
+          <q-tooltip>
+            Sincronizar
           </q-tooltip>
       </q-fab-action>
     </q-fab>
@@ -73,7 +80,7 @@
 
     </q-search>
     
-    <div v-for="pessoa in pessoa">
+    <div v-for="(pessoa, index) in pessoa">
         <q-card v-if="pessoa" no-border>
           <q-card-title>
             {{ pessoa.nome }}
@@ -81,13 +88,13 @@
             <q-icon slot="right" name="more_vert">
               <q-popover ref="popover">
                 <q-list link class="no-border">
-                  <q-item @click="excluir()">
+                  <q-item @click="excluir(pessoa)">
                     <q-item-main label="Excluir item" />
                   </q-item>
-                  <q-item @click="abrir()">
+                  <q-item @click="abrir(pessoa)">
                     <q-item-main label="Abrir Cadastro" />
                   </q-item>
-                  <q-item @click="fechar()">
+                  <q-item @click="fechar(index)">
                     <q-item-main label="Fechar" />
                   </q-item>
                 </q-list>
@@ -96,10 +103,18 @@
           </q-card-title>
           <q-card-main>
             <div>
-                <div v-show="`${pessoa.endereco}`">{{pessoa.endereco}},</div> {{pessoa.numero}}<br>
-                {{pessoa.bairro}}<br>
-                <div v-if="`${pessoa.cidade}`">{{pessoa.cidade}} - </div>{{pessoa.uf}}<br>
-                Tipo: {{pessoa.tipo}}   
+                <div v-if="`${pessoa.endereco}`">{{pessoa.endereco}} {{pessoa.numero}}</div>
+                <div class="row">
+                    <div class="col">{{pessoa.bairro}}</div>
+                </div>
+                <div class="row">
+                    <div class="col-auto right" v-show="`${pessoa.cidade}`">{{pessoa.cidade}} - </div>
+                    <div class="col-auto">{{pessoa.uf}}</div>
+                </div>
+                <div>
+                    <div class="col">Tipo: {{pessoa.tipo}}</div>    
+                </div>
+                   
             </div>
           </q-card-main>
           <q-card-separator />
@@ -109,16 +124,16 @@
                    icon="phone" 
                    @click="telefones(pessoa)" />
             <q-btn flat round
+                   color="positive" 
+                   icon="fa-whatsapp"
+                   @click="whatsapp(pessoa)" />
+            <q-btn flat round
                    color="negative"
                    icon="fa-envelope" 
                    @click="endElet(pessoa)" />
             <q-btn flat round
-                   @click="">SMS
+                   @click="sms (pessoa)">SMS
             </q-btn>
-            <q-btn flat round
-                   color="positive" 
-                   icon="fa-whatsapp"
-                   @click="whatsapp(pessoa)" />
           </q-card-actions>
         </q-card>
     </div>
@@ -134,6 +149,20 @@
           </q-list>
           <br>
           <q-btn color="primary" @click="$refs.telModal.close()">Fechar</q-btn>
+      </div>
+    </q-modal>
+    
+    <q-modal minimized ref="smsModal">
+      <div class="layout-padding">
+          <q-list link no-border>
+              <q-list-header>Enviar SMS para {{pessoaNome}}</q-list-header>
+              <q-item v-for="(fone, index) in fones" :key="index">
+                  <a :href='`sms:${fone.numero}`'>{{fone.numero}}</a>
+              </q-item>
+              <q-item-separator />
+          </q-list>
+          <br>
+          <q-btn color="primary" @click="$refs.smsModal.close()">Fechar</q-btn>
       </div>
     </q-modal>
     
@@ -319,7 +348,6 @@ export default {
       })
       axios.get(API + 'pessoa/obterpessoa')
       .then((res)=>{
-          //console.log(res.data)
           this.pessoas = res.data
           Loading.hide()
       })
@@ -329,6 +357,16 @@ export default {
       })  
     },
     obterPessoa(){
+      if(localStorage.getItem('loadPessoas') !== 'true'){
+          localforage.getItem('Pessoas').then((value) => {
+            if(value){
+                this.pessoa = value.filter(row => row.nome === this.search);
+                console.log('pessoa', this.pessoa)
+            }
+          })
+          return
+      }
+        
       Loading.show({
           spinner: AtomSpinner,
           spinnerSize: 140,
@@ -345,24 +383,24 @@ export default {
         Loading.hide()
       })  
     },
-    fechar(){
+    limpar (){
       this.search = ''
       this.pessoa = []
     },
-    editar (props) {
-      console.log(props.rows[0].data.codigo)
-      let row = props.rows[0].data
-      localStorage.setItem('codPessoa', row.codigo)
+    abrir (pessoa) {
+      localStorage.setItem('codPessoa', pessoa.codigo)
       localStorage.setItem('cadMode', 'edit')
       this.$router.push({ path: '/cadcliente' }) 
     },
-    deleteRow (props) {
-      let row = props.rows
-      console.log(row)
-      this.excluidos = row
+    fechar(index) {
+      this.pessoa.splice(index,1)
+      this.search = ''
+        
+    },
+    excluir (pessoa) {
       Dialog.create({
           title: 'Excluir',
-          message: 'Tem certeza que deseja excluir ' + this.excluidos.length + ' registro(s)?',
+          message: 'Tem certeza que deseja excluir ' + pessoa.nome + ' registro(s)?',
           buttons: [
             {
               label: 'Não! Cancela',
@@ -370,7 +408,7 @@ export default {
               raised: true,
               style: 'margin-top: 20px',
               handler () {
-                Toast.create('Cancelado...')
+                  Toast.create('Exclusão cancelada...')
               }
             },
             {
@@ -379,33 +417,25 @@ export default {
               raised: true,
               style: 'margin-top: 20px',
               handler: () => {
-                  let a = this.excluidos
-                  let obj = {}
-
-                  for (let i=0; i < a.length; i++) {
-                      obj = a[i].data
-                      obj.excluido = true
-                      obj.cpf = 0
-                      let cliente  = obj.nome
-                      console.log(obj)
-                      Loading.show({
-                          spinner: AtomSpinner,
-                          spinnerSize: 140,
-                          message: 'Enviando Dados...'
-                      })
-                      axios.post(API + 'pessoa/excluirPessoa?codPessoa=' + obj.codigo)
-                          .then((res)=>{
-                              Toast.create(cliente + ' foi excluido com sucesso')
-                              console.log(res)
-                              Loading.hide()
-                              this.listarPessoas()
-                          })
-                          .catch((e)=>{
-                            console.log(e)
-                            return
-                          })  
-                      
-                  }
+                  let cliente = pessoa
+                  Loading.show({
+                      spinner: AtomSpinner,
+                      spinnerSize: 140,
+                      message: 'Enviando Dados...'
+                  })
+                  axios.post(API + 'pessoa/excluirPessoa?codPessoa=' + cliente.codigo)
+                  .then((res)=>{
+                      Toast.create(cliente.nome + ' foi excluido com sucesso')
+                      //console.log(res)
+                      Loading.hide()
+                      this.limpar()
+                      this.listarPessoas()
+                  })
+                  .catch((e)=>{
+                    console.log(e)
+                    return
+                  }) 
+                   
               }
             }
           ]
@@ -457,14 +487,32 @@ export default {
       }
     },
     telefones (pessoa){
+        if(pessoa.telefones.length < 1){
+            Toast.create('Não há numeros salvos para este cadastro')
+            return
+        }
         this.$refs.telModal.open()
+        this.pessoaNome = pessoa.nome
+        this.fones = pessoa.telefones
+        //console.log('telefones: ', row);
+    },
+    sms (pessoa){
+        if(pessoa.telefones.length < 1){
+            Toast.create('Não há numeros salvos para este cadastro')
+            return
+        }
+        this.$refs.smsModal.open()
         this.pessoaNome = pessoa.nome
         this.row = pessoa.telefones
         let row = pessoa.telefones
         this.fones = row
-        console.log('telefones: ', row);
+        //console.log('telefones: ', row);
     },
     endElet (pessoa){
+        if(pessoa.endEletronico.length < 1){
+            Toast.create('Não há emails salvos para este cadastro')
+            return
+        }
         this.$refs.emailModal.open()
         this.pessoaNome = pessoa.nome
         this.row = pessoa.endEletronico
@@ -521,6 +569,29 @@ export default {
     novo (){
       localStorage.setItem('cadMode', 'save')
       this.$router.push('/cadcliente')
+    },
+    sync(){
+      Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Sincronizando Dados...'
+      })
+      axios.get(API + 'pessoa/obterpessoa')
+      .then((res)=>{
+          //console.log(res.data)
+          localforage.setItem('Pessoas', res.data).then((value) => {
+            this.pessoas = (value)
+            Toast.create('Dados sincronizados com sucesso')
+          }).catch((err) => {
+            console.log(err);
+          });
+          Loading.hide()
+      })
+      .catch((e)=>{
+        console.log(e)
+        Loading.hide()
+      })
+      
     }
     
   },
@@ -556,7 +627,6 @@ export default {
         this.listarPessoas()
         return
     }
-    
       
     localforage.getItem('Pessoas').then((value) => {
         if(value){
@@ -587,4 +657,6 @@ export default {
   display inline-block
 .over
   z-index 5
+.right 
+  padding-right 3px
 </style>

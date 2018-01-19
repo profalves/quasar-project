@@ -296,7 +296,6 @@ export default {
           .then((res)=>{
               console.log(res.data)
               localforage.setItem('Pessoas', res.data)
-              console.log(localforage.getItem('Pessoas'))
               Loading.hide()
           })
           .catch((e)=>{
@@ -316,7 +315,6 @@ export default {
           .then((res)=>{
             Loading.hide()
             localforage.setItem('Produtos', res.data)
-            console.log(localforage.getItem('Produtos'))
             console.log(res.data)
           })
           .catch((e)=>{

@@ -10,6 +10,33 @@
            <q-icon name="add" />
         </q-btn>
     </q-fixed-position>
+      
+    <!-- Botão options -->
+    <q-fixed-position class="over" corner="bottom-left" :offset="[18, 18]">
+        <q-fab color="primary" icon="keyboard_arrow_right" direction="right">
+          <q-fab-action color="primary" 
+                        @click="" 
+                        icon="fa-table">
+              <q-tooltip>
+                Tabela de Preços
+              </q-tooltip>
+          </q-fab-action>
+          <q-fab-action color="warning" 
+                        @click="" 
+                        icon="fa-truck">
+              <q-tooltip>
+                Transferencias
+              </q-tooltip>
+          </q-fab-action>
+          <q-fab-action color="info" 
+                        @click="sync" 
+                        icon="sync">
+              <q-tooltip>
+                Sincronizar
+              </q-tooltip>
+          </q-fab-action>
+        </q-fab>
+    </q-fixed-position>
    
     <!-- formulário -->
     <div class="row">
@@ -59,7 +86,6 @@
              @blur="listarProdutos"
              v-else
              >
-
     </q-search>
         
     <q-card v-if="produto">
@@ -84,7 +110,31 @@
       </q-card-title>
       <q-card-main>
         <div class="row">
-            <div class="col-xs-12 col-md-6" v-if="0===1"> <!--permissão ver custo-->
+            <div class="col-xs-12 col-md-6">
+                <q-field
+                  icon="fa-barcode"
+
+                >
+                 <p class="fields">
+                    <strong>Cód. Barras: </strong>{{ produto.codBarra }} 
+                 </p>
+
+                </q-field>
+            </div>
+            <div class="col-xs-12 col-md-6">
+                <q-field
+                  icon="domain"
+
+                >
+                 <p class="fields">
+                    <strong>Cód. Empresa: </strong>{{ produto.codEmpresa }} 
+                 </p>
+
+                </q-field>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-md-6"> <!--permissão ver custo-->
                 <q-field
                   icon="monetization_on"
                 >
@@ -109,21 +159,21 @@
         <div class="row">
             <div class="col-xs-12 col-md-6">
                 <q-field
-                  icon="monetization_on"
+                  icon="fa-percent"
                 >
                  <p class="fields">
-                    <strong>Venda: </strong>{{ produto.valor | formatMoney }} 
+                    <strong>Margem de Lucro: </strong>{{ produto.percLucro | formatPerc }} 
                  </p>
 
                 </q-field>
             </div>
-            <div class="col">
+            <div class="col-xs-12 col-md-6">
                 <q-field
-                  icon="store"
+                  icon="fa-th-large"
 
                 >
                  <p class="fields">
-                    <strong>Estoque Atual: </strong><span :class="colorsClasses">{{ produto.qtd }}</span> 
+                    <strong>Categoria: </strong>{{ produto.categoria }} 
                  </p>
 
                 </q-field>
@@ -132,11 +182,10 @@
         <div class="row">
             <div class="col-xs-12 col-md-6">
                 <q-field
-                  icon="fa-barcode"
-
+                  icon="monetization_on"
                 >
                  <p class="fields">
-                    <strong>Cód. Barras: </strong>{{ produto.codBarra }} 
+                    <strong>Venda: </strong>{{ produto.valor | formatMoney }} 
                  </p>
 
                 </q-field>
@@ -156,11 +205,11 @@
         <div class="row">
             <div class="col-xs-12 col-md-6">
                 <q-field
-                  icon="fa-th-large"
+                  icon="fa-product-hunt"
 
                 >
                  <p class="fields">
-                    <strong>Categoria: </strong>{{ produto.categoria }} 
+                    <strong>Tipo: </strong>{{ produto.tipo }} 
                  </p>
 
                 </q-field>
@@ -192,6 +241,7 @@
 import { Loading, Toast, Dialog } from 'quasar'
 import axios from 'axios'
 import { AtomSpinner } from 'epic-spinners'
+import localforage from 'localforage'
     
 const API = localStorage.getItem('wsAtual')
   
@@ -225,10 +275,10 @@ export default {
     colorsClasses() {
       let classes
       if(this.produto.qtd<0){
-        classes = 'text-negative'
+        classes = 'text-negative text-bold'
       }
       else if(this.produto.qtd>0){
-        classes = 'text-primary'
+        classes = 'text-primary text-bold'
       }
       
       return classes
@@ -251,8 +301,30 @@ export default {
       this.search = ''
     },
     listarProdutos(){
-      if(this.search === ''){
-        this.search = 0
+      if(localStorage.getItem('loadProdutos') !== 'true'){
+          localforage.getItem('Produtos').then((value) => {
+            if(value){
+                switch (this.tipoCod) {    
+                    case 'barra':
+                        let b = value.filter(row => row.codBarra === this.search);
+                        this.produto = b[0]
+                        console.log('produto', this.produto)
+                        break;
+                    case 'emp':
+                        let e = value.filter(row => row.codEmpresa === this.search);
+                        this.produto = e[0]
+                        console.log('produto', this.produto)
+                        break;
+                    case 'nome':
+                        let n = value.filter(row => row.nome === this.search);
+                        this.produto = n[0]
+                        console.log('produto', this.produto)
+                    
+                }
+                
+            }
+          })
+          return
       }
       
       let URL
@@ -265,7 +337,7 @@ export default {
       else {
           URL = API + 'produto/obterproduto?nomeProduto=' + this.search
       }
-      
+
       Loading.show({
           spinner: AtomSpinner,
           spinnerSize: 140,
@@ -288,7 +360,7 @@ export default {
             Object.assign(this.produto, {nome: 'Produto não encontrado'});
         }
       })
-     
+      
     },
     todosProdutos(){
         Loading.show({
@@ -300,7 +372,7 @@ export default {
           .then((res)=>{
             Loading.hide()
             this.produtos = res.data
-            //console.log(res)
+            localforage.setItem('Produtos', res.data)
           })
           .catch((e)=>{
             Loading.hide()
@@ -374,10 +446,53 @@ export default {
       })
      
     },
+    sync(){
+      Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Sincronizando Dados...'
+      })
+      axios.get(API + 'produto/obterproduto')
+      .then((res)=>{
+          //console.log(res.data)
+          localforage.setItem('Produtos', res.data).then((value) => {
+            this.produtos = (value)
+            Toast.create('Dados sincronizados com sucesso')
+          }).catch((err) => {
+            console.log(err);
+          });
+          Loading.hide()
+      })
+      .catch((e)=>{
+        console.log(e)
+        Loading.hide()
+      })
+      
+    }
               
   },
   mounted(){
-    this.todosProdutos()
+    if(localStorage.getItem('loadProdutos') === 'true'){
+        this.todosProdutos()
+        return
+    }
+      
+    localforage.getItem('Produtos').then((value) => {
+        if(value){
+            console.log('localforage get')
+            console.log(value)
+            this.produtos = value;
+        }
+        else{
+            console.log('localforage fail')
+            this.todosProdutos()
+        }
+        
+    }).catch((err) => {
+        console.log(err)
+        console.log('fail')
+    }) 
+    
   },
   
   

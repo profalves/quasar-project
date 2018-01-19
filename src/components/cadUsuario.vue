@@ -341,6 +341,7 @@ export default {
     salvar(){
         this.usuario.nome = this.nome
         this.usuario.senha = this.senha
+        this.usuario.codigoIdentificacao = 0
       
         Loading.show({
           spinner: AtomSpinner,

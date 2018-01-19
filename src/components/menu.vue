@@ -85,18 +85,14 @@
         </q-item>  
         
         <!-- 
-        <q-item>
-          <q-side-link to="/">Início</q-side-link>
-        </q-item>
-        <q-item>
-          <q-side-link to="/repos">Ver Repositórios</q-side-link>
-        </q-item>
          
         <q-item @click="launch('https://github.com/profalves')">
           
           <q-item-side class="fa fa-github fa-2x"/>
           <q-item-main label="Acessar o Github" sublabel="quasar-framework.org" />
-        </q-item>-->
+        </q-item>
+        
+        -->
         
         
       </q-list>  
@@ -104,6 +100,7 @@
 </template>
 
 <script>
+
 export default {
   data () {
     return {
