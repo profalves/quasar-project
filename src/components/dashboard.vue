@@ -374,7 +374,7 @@
           })
           axios.get(API + 'pessoa/obteraniversariante')
           .then((res)=>{
-            //console.info(res.data)
+            console.info(res.data)
             if(typeof res.data !== 'string'){
                 this.nivers = res.data
                 this.visivel = true

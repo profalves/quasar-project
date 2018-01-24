@@ -11,32 +11,26 @@
         </q-btn>
     </q-fixed-position>
       
-    <!-- Botão options -->
-    <q-fixed-position class="over" corner="bottom-left" :offset="[18, 18]">
-        <q-fab color="primary" icon="keyboard_arrow_right" direction="right">
-          <q-fab-action color="primary" 
-                        @click="$router.push('/tabprecos')" 
-                        icon="fa-table">
-              <q-tooltip>
-                Tabela de Preços
-              </q-tooltip>
-          </q-fab-action>
-          <q-fab-action color="warning" 
-                        @click="$router.push('/transFiliais')" 
-                        icon="fa-truck">
-              <q-tooltip>
-                Transferencias
-              </q-tooltip>
-          </q-fab-action>
-          <q-fab-action color="info" 
-                        @click="sync" 
-                        icon="sync">
-              <q-tooltip>
-                Sincronizar
-              </q-tooltip>
-          </q-fab-action>
-        </q-fab>
+    <!-- Botão voltar -->
+    <q-fixed-position class="fixo" corner="bottom-left" :offset="[18, 18]">
+        <q-btn 
+           round
+           color="primary" 
+           @click="goBack">
+           <q-icon name="keyboard_arrow_left" />
+        </q-btn>
     </q-fixed-position>
+    
+    <!-- Botão sync -->
+    <q-fixed-position class="fixo" corner="bottom-left" :offset="[88, 18]">
+        <q-btn 
+           round
+           color="primary" 
+           @click="sync">
+           <q-icon name="sync" />
+        </q-btn>
+    </q-fixed-position>
+    
    
     <!-- formulário -->
     <div class="row">
@@ -261,7 +255,7 @@ export default {
       index: '',
       dest: '',
       empDest: {},
-      permissoes: {},
+      permissoes: '',
         
       
       //tabela
@@ -299,6 +293,9 @@ export default {
     },
   },
   methods:{
+     goBack(){
+        window.history.back()
+    },
     limpar(){
       this.produto = ''
       this.search = ''
@@ -471,6 +468,21 @@ export default {
         Loading.hide()
       })
       
+    },
+    obterPermissoes(){
+        localforage.getItem('usuario').then((value) => {
+            if(value){
+                //console.log(value)
+                this.permissoes = value
+            }
+            else{
+                console.log(value)
+            }
+
+        }).catch((err) => {
+            console.log(err)
+            console.log('fail')
+        }) 
     }
               
   },
@@ -496,21 +508,17 @@ export default {
         console.log('fail')
     }) 
     
-    localforage.getItem('usuario').then((value) => {
-        if(value){
-            console.log(value)
-            this.permissoes = value
-        }
-        else{
-            Toast.create('permissoes não capturadas, faça login novamente')
-        }
-        
-    }).catch((err) => {
-        console.log(err)
-        console.log('fail')
-    }) 
+    this.obterPermissoes()
     
   },
+  /*beforeUpdate(){
+    this.obterPermissoes()
+    console.info('before atualizando ... ')
+  },
+  updated(){
+    this.obterPermissoes()
+    console.info('update atualizando ... ')
+  }*/
   
   
 }

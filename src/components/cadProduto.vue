@@ -631,21 +631,7 @@ import { Dialog, Toast, Loading } from 'quasar'
 import { AtomSpinner } from 'epic-spinners'
 import localforage from 'localforage'
     
-//permissões   
-const permissoes = localforage.getItem('usuario').then((value) => {
-    if(value){
-        console.log(value)
-        this.permissoes = value
-    }
-    else{
-        Toast.create('permissoes não capturadas, faça login novamente')
-    }
 
-}).catch((err) => {
-    console.log(err)
-    Toast.create('permissoes não capturadas, faça login novamente')
-    console.log('fail')
-}) 
     
 //dev
 const API = localStorage.getItem('wsAtual')
@@ -764,7 +750,7 @@ export default {
         qteProd: 1,
         qteUtil: 1,
         mtProds: false,
-        permissoes,
+        permissoes: {},
         
         //tabela
         misc: 'bordered', //[{value: 'bordered'},{value: 'highlight'}]
@@ -1588,6 +1574,21 @@ export default {
         })
     }
    
+  },
+  mounted(){
+    localforage.getItem('usuario').then((value) => {
+        if(value){
+            console.log(value)
+            this.permissoes = value
+        }
+        else{
+            console.log(value)
+        }
+
+    }).catch((err) => {
+        console.log(err)
+        console.log('fail')
+    }) 
   },
   created(){
     let t = this

@@ -24,14 +24,12 @@
               <q-item-main label="Pessoas" sublabel="Cadastros de clientes, fornecedores, etc." />
           </q-side-link>
         </q-item>
-        
         <q-item to="/produtos" v-if="!permissoes.pdV_PermitirTransfProduto && !permissoes.ret_AlteraTabPreco">
           <q-item-side icon="assignment_turned_in" />
           <q-side-link to="/produtos" class="link">
               <q-item-main label="Produtos" sublabel="Cadastros de clientes, fornecedores, etc." />
           </q-side-link>
         </q-item>
-        
         <q-collapsible icon="assignment_turned_in" label="Produtos" sublabel="Listagem e Cadastro de Produtos" v-if="permissoes.pdV_PermitirTransfProduto || permissoes.ret_AlteraTabPreco">
           <q-list highlight no-border>
             <q-item>
@@ -91,7 +89,11 @@
                 <q-item-main label="Sair" />
           </q-side-link>
         </q-item>  
-        
+        <!--<q-item @click="sair">
+          <q-item-side icon="exit_to_app" />
+            <q-item-main label="Fechar" />
+        </q-item>  
+        -->
         <!-- 
          
         <q-item @click="launch('https://github.com/profalves')">
@@ -109,6 +111,7 @@
 
 <script>
 import localforage from 'localforage'
+//import { Dialog } from 'quasar'
 
 /*let permissoes = localforage.getItem('usuario').then(function(value) {
     // This code runs once the value has been loaded
@@ -137,26 +140,38 @@ export default {
     obterPermissoes(){
         localforage.getItem('usuario').then((value) => {
             if(value){
-                console.log(value)
+                //console.log(value)
                 this.permissoes = value
             }
             else{
-                alert('permissoes não capturadas, faça login novamente')
+                console.log(value)
             }
 
         }).catch((err) => {
             console.log(err)
             console.log('fail')
         })
+    },
+    exitApp(){
+        window.close()
+    },
+    sair(){
+        window.close()
     }
+    
   },
-  ready(){this.obterPermissoes()},
   mounted(){
     let t = this
     t.verificarUser()
     t.obterPermissoes()
-    
-  }
+    //console.log('mounted')
+  },
+  beforeUpdate(){
+      this.obterPermissoes()
+      //console.log('beforeUpdate')
+  },
+  
+  
 }
 </script>
 <style scoped>

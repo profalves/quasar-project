@@ -183,6 +183,8 @@
         </q-tab-pane>
         
         <q-tab-pane name="permissions">
+            <center>{{usuario.nome}}</center> 
+            
             <div class="row">
                 <div class="col-md-6">
                     <q-card>
