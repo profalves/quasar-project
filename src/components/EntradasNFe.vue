@@ -61,7 +61,7 @@
         <q-btn flat color="primary" @click="editar(props)" v-else>
           <q-icon name="edit" />
         </q-btn>
-        <q-btn flat color="primary" @click="deleteRow(props)" v-if="checked !== true">
+        <q-btn flat color="primary" @click="deleteRow(props)" v-if="!checked && permissoes.pdV_CancelarPedido">
           <q-icon name="delete" />
         </q-btn>
         
@@ -95,6 +95,7 @@
 import { Toast, Loading, clone } from 'quasar'
 import axios from 'axios'
 import { AtomSpinner } from 'epic-spinners'
+import localforage from 'localforage'
     
 function numberToReal(numero) {
     //if(numero === 0) { return 0.00 }
@@ -123,7 +124,7 @@ export default {
       open: false,
       visivel: false,
       checked: false,
-        
+      permissoes: {},  
         
       //config
       config: {
@@ -548,7 +549,23 @@ export default {
         this.visivel = false
       }
       
+    },
+    obterPermissoes(){
+        localforage.getItem('usuario').then((value) => {
+            if(value){
+                console.log(value)
+                this.permissoes = value
+            }
+            else{
+                console.log(value)
+            }
+
+        }).catch((err) => {
+            console.log(err)
+            console.log('fail')
+        })
     }
+
     
   },
   beforeDestroy () {
@@ -580,6 +597,9 @@ export default {
       }
       this.config.bodyStyle = style
     }
+  },
+  mounted(){
+    this.obterPermissoes()
   },
   created(){
     this.listarFornecedores()

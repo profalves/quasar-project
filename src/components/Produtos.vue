@@ -66,6 +66,7 @@
              v-if="tipoCod === 'nome'"
              >
         <q-autocomplete
+          :max-results="maxResults"
           :static-data="{field: 'label', list: listaItens}"
           @selected="listarProdutos"
         />
@@ -256,7 +257,7 @@ export default {
       dest: '',
       empDest: {},
       permissoes: '',
-        
+      maxResults: parseInt(localStorage.getItem('maxResults')), 
       
       //tabela
       misc: 'bordered', //[{value: 'bordered'},{value: 'highlight'}]

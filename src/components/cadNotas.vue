@@ -334,23 +334,13 @@
                 color="secondary"
                 push
                 :key="modal"
-                @click="$refs.layoutModal.open()"
+                @click="openModal"
                 
             >
                 Adicionar item
             </q-btn>
         </div>
-        <!--<div class="col col-md-3">
-            <q-btn
-                color="secondary"
-                push
-                :key="modal"
-                @click="enviarItem"
-                
-            >
-                Enviar item
-            </q-btn>
-        </div> -->
+        
         <br>
         <!--Data tables HTML-->
         <div class="row" id="table">
@@ -580,6 +570,7 @@
                      @blur="listarProdutos"
                      >
                 <q-autocomplete
+                  :max-results="maxResults"
                   :static-data="{field: 'label', list: listaItens}"
                   @selected="listarProdutos"
                 />
@@ -796,7 +787,7 @@
         
         <div class="row">
             <div class="col" style="margin:10px">
-                <q-btn color="secondary" @click="addItem($refs.layoutModal.close())">Adicionar item</q-btn>
+                <q-btn color="secondary" @click="verificarDuplicidade($refs.layoutModal.close())">Adicionar item</q-btn>
             </div>   
         </div>
         
@@ -815,6 +806,36 @@ import { AtomSpinner } from 'epic-spinners'
 import listaCFOP from 'data/CFOP.json'
 import { minLength } from 'vuelidate/lib/validators'
 import { Dialog, Toast, Loading, Ripple } from 'quasar'
+import localforage from 'localforage'
+  
+const itemInit = { //det 
+    codTabPreco: 2,
+    codigoProduto: '',
+    codigoUsuario: parseInt(localStorage.getItem('codUser')),
+    codigoComputador: '',    
+    custo: 0.00,    
+    custoTrib: 0.00,    
+    desconto: 0.00,    
+    venda: 0.00,    
+    acrescimo: 0.00,    
+    unMedCom: '',    
+    unMedTrib: '',    
+    encargos: 0.00,    
+    IPI: 0.00,    
+    frete: 0.00,    
+    seguro: 0.00,    
+    outro: 0.00,    
+    qtd: 1,    
+    qtdCom: 1,    
+    tipoSaida: 'V',    
+    qtdDevolvida: 0.00,    
+    totalItem: 0.00,    
+    cancelado: '',    
+    codPessoaEmpregado: '',
+    OBS: '',    
+    impresso: ''
+}
+    
     
 //dev
 const API = localStorage.getItem('wsAtual')
@@ -1100,7 +1121,7 @@ export default {
               value: 'recibo'
             }
         ],
-        
+        maxResults: parseInt(localStorage.getItem('maxResults')),
         canGoBack: window.history.length > 1,
         btnDelete: false,
         
@@ -1419,7 +1440,28 @@ export default {
           ]
         })
     },
-      
+    
+    openModal(){
+        this.$refs.layoutModal.open()
+        this.search = ''
+        this.detItem = itemInit
+        this.produto = {}
+    },
+    verificarDuplicidade(){
+        let qtd = this.detItem.qtd //armazenar antes de limpar os campos
+        for(let i=0; i < this.CadNotas.det.length; i++){ //verificar duplicidade
+            if(this.produto.codBarra === this.CadNotas.det[i].codBarra){
+                console.log('this.CadNotas.det[i].codBarra', this.CadNotas.det[i].codBarra);
+                console.log('this.produto.codBarra', this.produto.codBarra);
+                let s = this.CadNotas.det[i].qtd + qtd
+                this.CadNotas.det[i].qtd = s
+                let c = this.CadNotas.det[i].custo * s
+                this.CadNotas.det[i].custo = c
+                return
+            }  
+        }
+        this.addItem()
+    },
     addItem(){
         if(this.produto === ''){
             Toast.create('Não pode adicionar item nulo')
@@ -1507,33 +1549,39 @@ export default {
         let d = this.somaNota / this.qtdParcelas
         this.duplicata.valorTitulo = d    
     },
-    
+      
     findTemp(){
-      if(localStorage.getItem('notaTemp') && this.$route.query.q === 'save'){
-        Dialog.create({
-          title: 'Nota salva como rascunho',
-          message: 'Você tem uma nota salva temporariamente, deseja recuperar?',
-          buttons: [
-            {
-              label: 'Não',
-              color: 'negative',
-              raised: true,
-              style: 'margin-top: 20px'
-            },
-            {
-              label: 'Sim',
-              color: 'positive',
-              raised: true,
-              style: 'margin-top: 20px',
-              handler:() => {
-                this.CadNotas = JSON.parse(localStorage.getItem('notaTemp'))
-                this.cabecalho = this.CadNotas.cab
-                Toast.create.positive('Nota recuperada com sucesso!')
-              }
-            }
-          ]
-        })
-      }
+        localforage.getItem('notaTemp').then((value) => {
+        if(value){
+            Dialog.create({
+              title: 'Nota salva como rascunho',
+              message: 'Você tem uma nota salva temporariamente, deseja recuperar?',
+              buttons: [
+                {
+                  label: 'Não',
+                  color: 'negative',
+                  raised: true,
+                  style: 'margin-top: 20px'
+                },
+                {
+                  label: 'Sim',
+                  color: 'positive',
+                  raised: true,
+                  style: 'margin-top: 20px',
+                  handler:() => {
+                    this.CadNotas = value
+                    this.cabecalho = this.CadNotas.cab
+                    Toast.create.positive('Nota recuperada com sucesso!')
+                  }
+                }
+              ]
+            })
+        }
+        
+      }).catch(function(err) {
+        Toast.create.negative('Falha ao carregagar a transferencia: ' + err)
+        
+      });
     },
       
     //====== LISTAS ======================================================================
@@ -1804,7 +1852,7 @@ export default {
           style: 'margin-top: 20px',
           handler:() => {
             Object.assign(this.CadNotas, {cab: this.cabecalho})
-            localStorage.setItem('notaTemp', JSON.stringify(this.CadNotas));
+            localforage.setItem('notaTemp', this.CadNotas);
             Toast.create('Nota salva temporariamente!')
             this.$router.push('/cadnotas?q=save')
           }
@@ -1816,7 +1864,7 @@ export default {
           style: 'margin-top: 20px',
           handler:() => {
             Object.assign(this.CadNotas, {cab: this.cabecalho})
-            localStorage.setItem('notaTemp', JSON.stringify(this.CadNotas));
+            localforage.setItem('notaTemp', this.CadNotas);
             Toast.create('Nota salva temporariamente!')
             next()
           }

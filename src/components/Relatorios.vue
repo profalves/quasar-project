@@ -2,7 +2,7 @@
 <div id="realtorios">
     <div class="row">
       
-    <div class="col-6">
+    <div class="col-6" v-if="permissoes.acessaFinanceiro || permissoes.verQuantiaCaixa">
         <router-link to="/relcaixa">
             <q-card color="positive" class="col-sm-6">
               <q-card-title></q-card-title>
@@ -33,7 +33,7 @@
     </div>    
 
     
-    <div class="col-12">
+    <div class="col-12" v-if="permissoes.acessaFinanceiro">
         <router-link to="/relatoriomov">
             <q-card color="info" class="col-sm-6">
               <q-card-title></q-card-title>
@@ -47,7 +47,7 @@
         </router-link>
     </div>    
     
-    <div class="col-6">
+    <div class="col-6" v-if="permissoes.acessaFinanceiro">
         <router-link to="/relatoriocontas">
             <q-card color="tertiary" class="col-sm-6">
               <q-card-title></q-card-title>
@@ -61,7 +61,7 @@
         </router-link>
     </div>    
     
-    <div class="col">
+    <div class="col" v-if="permissoes.acessaFinanceiro || permissoes.verQuantiaCaixa">
         <router-link to="/relatoriolucro">
             <q-card color="secondary" class="col-sm-6">
               <q-card-title></q-card-title>
@@ -76,7 +76,7 @@
         </router-link>
     </div>    
     
-    <div class="col">
+    <div class="col" v-if="permissoes.acessaFinanceiro">
         <router-link to="/relFormas">
             <q-card color="warning" class="col-sm-6">
               <q-card-title></q-card-title>
@@ -97,13 +97,33 @@
 </template>
 
 <script>
+import localforage from 'localforage'
 export default {
   name: 'relatorios',
   data () {
     return {
+        permissoes: {},
     }
   },
-  components: {
+  methods: {
+    obterPermissoes(){
+        localforage.getItem('usuario').then((value) => {
+            if(value){
+                //console.log(value)
+                this.permissoes = value
+            }
+            else{
+                console.log(value)
+            }
+
+        }).catch((err) => {
+            console.log(err)
+            console.log('fail')
+        })
+    }
+  },
+  mounted(){
+    this.obterPermissoes()
   }
 }
 </script>

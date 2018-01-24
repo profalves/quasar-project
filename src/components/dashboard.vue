@@ -6,9 +6,9 @@
       <div class="row">
         <div class="col-xl-6">
           <q-list inset-separator no-border>
-            <q-list-header>Painel Gestor</q-list-header>
+            <q-list-header>Painel {{permissoes.funcao | capitalize}}</q-list-header>
             <!-- Faturamento -->
-            <q-collapsible icon="attach_money" label="Faturamento" sublabel="Faturamento do dia: R$ 0,00 / Saldo: R$ 0,00">
+            <q-collapsible v-if="permissoes.acessaFinanceiro" icon="attach_money" label="Faturamento" sublabel="Faturamento do dia: R$ 0,00 / Saldo: R$ 0,00">
               <div class="row">
                 <div class="col">
                     <q-card>
@@ -85,7 +85,7 @@
               
             </q-collapsible>
             <!-- Contas -->
-            <q-collapsible icon="insert_chart" label="Contas" sublabel="Você tem 0 contas a pagar e 0 contas a receber hoje">
+            <q-collapsible v-if="permissoes.acessaFinanceiro" icon="insert_chart" label="Contas" sublabel="Você tem 0 contas a pagar e 0 contas a receber hoje">
                 
               <div class="layout-view">
                    <q-select
@@ -229,6 +229,8 @@
   import { Toast, Dialog, Loading, openURL } from 'quasar'
   import axios from 'axios'
   import { AtomSpinner } from 'epic-spinners'
+  import localforage from 'localforage'
+
   var moment = require('moment');
   require("moment/min/locales.min");
   moment.locale('pt-br');
@@ -260,6 +262,8 @@
     },
     data () {
       return {
+        permissoes: {},  
+          
         //faturamento
         dia: 0,
         mes: 0,
@@ -455,6 +459,22 @@
               }
           }
         },
+        obterPermissoes(){
+            localforage.getItem('usuario').then((value) => {
+                if(value){
+                    console.log(value)
+                    this.permissoes = value
+                }
+                else{
+                    console.log(value)
+                }
+
+            }).catch((err) => {
+                console.log(err)
+                console.log('fail')
+            })
+        }
+
         
     },
     mounted(){
@@ -469,6 +489,7 @@
         }
         
         this.getHoje()
+        this.obterPermissoes()
         
     }  
   }

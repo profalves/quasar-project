@@ -60,6 +60,7 @@
              autofocus
              >
         <q-autocomplete
+          :max-results="maxResults"
           :static-data="{field: 'label', list: listaItens}"
           @selected="listarProdutos"
         />
@@ -361,7 +362,7 @@ export default {
         "selecionaEntregador": true
  
       },
-      
+      maxResults: parseInt(localStorage.getItem('maxResults')),
       //tabela
       misc: 'bordered', //[{value: 'bordered'},{value: 'highlight'}]
       separator: 'cell', // none, horizontal, vertical, cell
