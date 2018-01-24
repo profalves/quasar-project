@@ -154,6 +154,7 @@ export default {
             //console.log(res.data)
             
             async function getUser(){
+                localforage.setItem('usuario', res.data)
                 localStorage.setItem('tela', 'principal')
                 localStorage.setItem('codUser', res.data.codigo)
                 localStorage.setItem('nameUser', res.data.nome)

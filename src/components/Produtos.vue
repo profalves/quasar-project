@@ -15,14 +15,14 @@
     <q-fixed-position class="over" corner="bottom-left" :offset="[18, 18]">
         <q-fab color="primary" icon="keyboard_arrow_right" direction="right">
           <q-fab-action color="primary" 
-                        @click="" 
+                        @click="$router.push('/tabprecos')" 
                         icon="fa-table">
               <q-tooltip>
                 Tabela de Preços
               </q-tooltip>
           </q-fab-action>
           <q-fab-action color="warning" 
-                        @click="" 
+                        @click="$router.push('/transFiliais')" 
                         icon="fa-truck">
               <q-tooltip>
                 Transferencias
@@ -92,11 +92,11 @@
       <q-card-title>
         {{ produto.nome }}
         <span slot="subtitle">{{ produto.apelido }}</span>
-        <q-icon slot="right" name="more_vert">
+        <q-icon slot="right" name="more_vert" v-if="permissoes.alteraProduto">
           <q-popover ref="popover">
             <q-list link class="no-border">
               <q-item @click="excluir()">
-                <q-item-main label="Excluir item" />
+                <q-item-main label="Excluir item"/>
               </q-item>
               <q-item @click="abrir()">
                 <q-item-main label="Abrir Cadastro" />
@@ -107,6 +107,7 @@
             </q-list>
           </q-popover>
         </q-icon>
+        <q-icon slot="right" name="clear" class="link" @click="limpar()" v-else />
       </q-card-title>
       <q-card-main>
         <div class="row">
@@ -133,13 +134,35 @@
                 </q-field>
             </div>
         </div>
-        <div class="row">
+        <div class="row" v-if="permissoes.ret_VerCusto">
             <div class="col-xs-12 col-md-6"> <!--permissão ver custo-->
                 <q-field
                   icon="monetization_on"
                 >
                  <p class="fields">
                     <strong>Custo: </strong>{{ produto.custo | formatMoney }} 
+                 </p>
+
+                </q-field>
+            </div>
+            <div class="col-xs-12 col-md-6">
+                <q-field
+                  icon="fa-percent"
+                >
+                 <p class="fields">
+                    <strong>Margem de Lucro: </strong>{{ produto.percLucro | formatPerc }} 
+                 </p>
+
+                </q-field>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-md-6">
+                <q-field
+                  icon="monetization_on"
+                >
+                 <p class="fields">
+                    <strong>Venda: {{ produto.valor | formatMoney }} </strong>
                  </p>
 
                 </q-field>
@@ -159,33 +182,11 @@
         <div class="row">
             <div class="col-xs-12 col-md-6">
                 <q-field
-                  icon="fa-percent"
-                >
-                 <p class="fields">
-                    <strong>Margem de Lucro: </strong>{{ produto.percLucro | formatPerc }} 
-                 </p>
-
-                </q-field>
-            </div>
-            <div class="col-xs-12 col-md-6">
-                <q-field
                   icon="fa-th-large"
 
                 >
                  <p class="fields">
                     <strong>Categoria: </strong>{{ produto.categoria }} 
-                 </p>
-
-                </q-field>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-xs-12 col-md-6">
-                <q-field
-                  icon="monetization_on"
-                >
-                 <p class="fields">
-                    <strong>Venda: </strong>{{ produto.valor | formatMoney }} 
                  </p>
 
                 </q-field>
@@ -203,17 +204,6 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-xs-12 col-md-6">
-                <q-field
-                  icon="fa-product-hunt"
-
-                >
-                 <p class="fields">
-                    <strong>Tipo: </strong>{{ produto.tipo }} 
-                 </p>
-
-                </q-field>
-            </div>
             <div class="col">
                 <q-field
                   icon="fa-truck"
@@ -221,6 +211,17 @@
                 >
                  <p class="fields">
                     <strong>Marca: </strong>{{ produto.marca }} 
+                 </p>
+
+                </q-field>
+            </div>
+            <div class="col-xs-12 col-md-6">
+                <q-field
+                  icon="fa-product-hunt"
+
+                >
+                 <p class="fields">
+                    <strong>Tipo: </strong>{{ produto.tipo }} 
                  </p>
 
                 </q-field>
@@ -260,6 +261,8 @@ export default {
       index: '',
       dest: '',
       empDest: {},
+      permissoes: {},
+        
       
       //tabela
       misc: 'bordered', //[{value: 'bordered'},{value: 'highlight'}]
@@ -493,6 +496,20 @@ export default {
         console.log('fail')
     }) 
     
+    localforage.getItem('usuario').then((value) => {
+        if(value){
+            console.log(value)
+            this.permissoes = value
+        }
+        else{
+            Toast.create('permissoes não capturadas, faça login novamente')
+        }
+        
+    }).catch((err) => {
+        console.log(err)
+        console.log('fail')
+    }) 
+    
   },
   
   
@@ -510,5 +527,7 @@ export default {
     .fields{
         margin-top: 3px;
     }
-    
+    .link{
+        cursor: pointer;
+    }
 </style>

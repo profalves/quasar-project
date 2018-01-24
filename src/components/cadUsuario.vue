@@ -341,7 +341,6 @@ export default {
     salvar(){
         this.usuario.nome = this.nome
         this.usuario.senha = this.senha
-        this.usuario.codigoIdentificacao = 0
       
         Loading.show({
           spinner: AtomSpinner,
@@ -432,7 +431,6 @@ export default {
         Loading.hide()
       })  
     },
-    
     listarUsuarios(){
       Loading.show({
           spinner: AtomSpinner,
@@ -459,7 +457,7 @@ export default {
           axios.get(API + 'usuario/obterUsuario?codidentificacao=' + localStorage.getItem('codUsuario'))
           .then((res)=>{
               Loading.hide()
-              //console.log(res.data)
+              console.log(res.data)
               this.usuario = res.data
               this.nome = this.usuario.nome
               this.senha = this.usuario.senha

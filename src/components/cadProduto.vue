@@ -273,7 +273,7 @@
     </div>
     
     <div class="row">
-        <div class="col-sm-12 col-md-4">
+        <div class="col-sm-12 col-md-4" v-if="permissoes.ret_VerCusto">
             <q-card color="faded">
             <center>
                 <q-card-title>Custo</q-card-title>
@@ -285,7 +285,7 @@
             </q-card>
         </div>
         
-        <div class="col-sm-12 col-md-4">
+        <div class="col-sm-12 col-md-4" v-if="permissoes.ret_VerCusto">
             <q-card color="primary">
               <center>
                 <q-card-title>Lucro</q-card-title>
@@ -629,6 +629,23 @@ import axios from 'axios'
 import { required, minLength } from 'vuelidate/lib/validators'
 import { Dialog, Toast, Loading } from 'quasar'
 import { AtomSpinner } from 'epic-spinners'
+import localforage from 'localforage'
+    
+//permissões   
+const permissoes = localforage.getItem('usuario').then((value) => {
+    if(value){
+        console.log(value)
+        this.permissoes = value
+    }
+    else{
+        Toast.create('permissoes não capturadas, faça login novamente')
+    }
+
+}).catch((err) => {
+    console.log(err)
+    Toast.create('permissoes não capturadas, faça login novamente')
+    console.log('fail')
+}) 
     
 //dev
 const API = localStorage.getItem('wsAtual')
@@ -747,6 +764,7 @@ export default {
         qteProd: 1,
         qteUtil: 1,
         mtProds: false,
+        permissoes,
         
         //tabela
         misc: 'bordered', //[{value: 'bordered'},{value: 'highlight'}]

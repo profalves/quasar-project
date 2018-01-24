@@ -167,12 +167,12 @@
             
           </q-field>   
         </div>
-        <div class="col-md-2 col-xs-12">
+        <!--<div class="col-md-2 col-xs-12">
             <q-checkbox v-model="checked" 
                         label="Despesa Fixa"
                         style="margin-top:20px;"
             />
-        </div>
+        </div>-->
     </div>
     
     

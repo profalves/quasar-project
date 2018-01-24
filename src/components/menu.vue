@@ -24,34 +24,42 @@
               <q-item-main label="Pessoas" sublabel="Cadastros de clientes, fornecedores, etc." />
           </q-side-link>
         </q-item>
-        <q-collapsible icon="assignment_turned_in" label="Produtos" sublabel="Opções de Produtos">
+        
+        <q-item to="/produtos" v-if="!permissoes.pdV_PermitirTransfProduto && !permissoes.ret_AlteraTabPreco">
+          <q-item-side icon="assignment_turned_in" />
+          <q-side-link to="/produtos" class="link">
+              <q-item-main label="Produtos" sublabel="Cadastros de clientes, fornecedores, etc." />
+          </q-side-link>
+        </q-item>
+        
+        <q-collapsible icon="assignment_turned_in" label="Produtos" sublabel="Listagem e Cadastro de Produtos" v-if="permissoes.pdV_PermitirTransfProduto || permissoes.ret_AlteraTabPreco">
           <q-list highlight no-border>
             <q-item>
               <q-side-link to="/produtos">
                 <q-item-main label="Localizar Produtos" sublabel="Listagem e Cadastro de Produtos" />
               </q-side-link>
             </q-item>
-            <q-item>
-              <q-side-link to="/transFiliais" >
+            <q-item v-if="permissoes.pdV_PermitirTransfProduto">
+              <q-side-link to="/transFiliais">
                 <q-item-main label="Transferencias" sublabel="Transferencias entre filiais" />
               </q-side-link>
             </q-item>
-            <q-item>
-              <q-side-link to="/tabprecos" >
+            <q-item v-if="permissoes.ret_AlteraTabPreco">
+              <q-side-link to="/tabprecos">
                 <q-item-main label="Tabelas de Peços" sublabel="Cadastrar tabelas de Preços" />
               </q-side-link>   
             </q-item>
           </q-list>  
         </q-collapsible>
         
-        <q-item to="/contas">
+        <q-item to="/contas" v-if="permissoes.acessaFinanceiro">
           <q-item-side icon="account_balance_wallet"/>
           <q-side-link to="/contas" class="link">
                <q-item-main label="Contas" sublabel="Cadastros Financeiros" />
           </q-side-link>
           
         </q-item>
-        <q-item to="/cadnotas?q=save" >
+        <q-item to="/cadnotas?q=save">
           <q-item-side icon="insert_drive_file" />
           <q-side-link to="/cadnotas?q=save" class="link">
                <q-item-main label="Entrada de Notas" sublabel="Cadastros de NFe de Compras" />
@@ -63,7 +71,7 @@
                 <q-item-main label="Relatórios" sublabel="Relatórios Gerais" />
           </q-side-link>
         </q-item>
-        <q-item to="/usuarios">
+        <q-item to="/usuarios" v-if="permissoes.cadUsuario">
           <q-item-side icon="person" />
           <q-side-link to="/usuarios" class="link">
                 <q-item-main label="Usuários" sublabel="Cadastros de Usuários, Alteração de Senhas, etc." />
@@ -100,12 +108,24 @@
 </template>
 
 <script>
+import localforage from 'localforage'
+
+/*let permissoes = localforage.getItem('usuario').then(function(value) {
+    // This code runs once the value has been loaded
+    // from the offline store.
+    permissoes = value;
+    console.log('value', value);
+}).catch(function(err) {
+    // This code runs if there were any errors
+    console.log(err);
+});*/
 
 export default {
   data () {
     return {
         user: localStorage.getItem('nameUser'),
         emp: localStorage.getItem('nomeEmpresa'),
+        permissoes: ''
     }
   },
   methods:{
@@ -114,10 +134,28 @@ export default {
           this.$router.push('/login')
         }
     },
+    obterPermissoes(){
+        localforage.getItem('usuario').then((value) => {
+            if(value){
+                console.log(value)
+                this.permissoes = value
+            }
+            else{
+                alert('permissoes não capturadas, faça login novamente')
+            }
+
+        }).catch((err) => {
+            console.log(err)
+            console.log('fail')
+        })
+    }
   },
+  ready(){this.obterPermissoes()},
   mounted(){
     let t = this
     t.verificarUser()
+    t.obterPermissoes()
+    
   }
 }
 </script>

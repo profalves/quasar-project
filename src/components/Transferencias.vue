@@ -158,6 +158,7 @@
 import { Loading, Toast, Dialog } from 'quasar'
 import axios from 'axios'
 import { AtomSpinner } from 'epic-spinners'
+import localforage from 'localforage'
     
 const API = localStorage.getItem('wsAtual')
   
@@ -170,6 +171,7 @@ export default {
       tipoCod: 'nome',
       search: '',
       transferencias: [],
+      hasTransf: '',
       produtos: [],
       produto: {},
       qtd: 1,
@@ -460,9 +462,9 @@ export default {
       }
     },
     listarProdutos(){
-      if(this.search === ''){
+      /*if(this.search === ''){
         this.search = 0
-      }
+      }*/
       
       let URL
       if(this.tipoCod === 'barras'){
@@ -500,53 +502,80 @@ export default {
      
     },
     todosProdutos(){
-        Loading.show({
-          spinner: AtomSpinner,
-          spinnerSize: 140,
-          message: 'Aguardando Dados...'
-        })
-        axios.get(API + 'produto/obterproduto')
-          .then((res)=>{
-            Loading.hide()
-            this.produtos = res.data
+        localforage.getItem('Produtos').then((value) => {
             this.findTemp()
-          })
-          .catch((e)=>{
-            Loading.hide()
-            console.log(e)
-            Toast.create({
-                html: 'Sem Conexão',
-                timeout: 6000,
-                bgColor: '#f44242',
-                icon: 'mood_bad'
+            if(value){
+                console.log('localforage get')
+                console.log(value)
+                this.produtos = value;
+            }
+            else{
+                console.log('localforage fail')
+                this.todosProdutos()
+            }
+
+        }).catch((err) => {
+            console.log(err)
+            console.log('fail')
+        }) 
+        
+        if(localStorage.getItem('loadProdutos') === 'true'){
+            Loading.show({
+              spinner: AtomSpinner,
+              spinnerSize: 140,
+              message: 'Aguardando Dados...'
             })
-          })
+            axios.get(API + 'produto/obterproduto')
+              .then((res)=>{
+                Loading.hide()
+                this.produtos = res.data
+                localforage.setItem('Produtos', res.data)
+                this.findTemp()
+            })
+              .catch((e)=>{
+                Loading.hide()
+                console.log(e)
+                Toast.create({
+                    html: 'Sem Conexão',
+                    timeout: 6000,
+                    bgColor: '#f44242',
+                    icon: 'mood_bad'
+                })
+            })
+        }
     },
     findTemp(){
-      if(localStorage.getItem('transfTemp')){
-        Dialog.create({
-          title: 'Transferência salva como rascunho',
-          message: 'Você tem uma Transferência salva temporariamente, deseja recuperar?',
-          buttons: [
-            {
-              label: 'Não',
-              color: 'negative',
-              raised: true,
-              style: 'margin-top: 20px'
-            },
-            {
-              label: 'Sim',
-              color: 'positive',
-              raised: true,
-              style: 'margin-top: 20px',
-              handler:() => {
-                this.transferencias = JSON.parse(localStorage.getItem('transfTemp'))
-                Toast.create.positive('Transferência recuperada com sucesso!')
-              }
-            }
-          ]
-        })
-      }
+      localforage.getItem('transfTemp').then((value) => {
+        if(value){
+            Dialog.create({
+              title: 'Transferência salva como rascunho',
+              message: 'Você tem uma Transferência salva temporariamente, deseja recuperar?',
+              buttons: [
+                {
+                  label: 'Não',
+                  color: 'negative',
+                  raised: true,
+                  style: 'margin-top: 20px'
+                },
+                {
+                  label: 'Sim',
+                  color: 'positive',
+                  raised: true,
+                  style: 'margin-top: 20px',
+                  handler:() => {
+                    this.transferencias = value
+                    Toast.create.positive('Transferência recuperada com sucesso!')
+                  }
+                }
+              ]
+            })
+        }
+        
+      }).catch(function(err) {
+        Toast.create.negative('Falha ao carregagar a transferencia: ' + err)
+        
+      });
+      
     },
     alertAdd(){
         if(!this.produto.codigo){
@@ -696,7 +725,8 @@ export default {
   },
   mounted(){
     //this.$refs.modal.open()
-    this.todosProdutos() // se descomentar acima, tem que apagar esta linha
+      
+    this.todosProdutos() // se descomentar acima, tem que apagar ou comentar esta linha
     
   },
   beforeRouteLeave(to, from, next){
@@ -723,7 +753,7 @@ export default {
           raised: true,
           style: 'margin-top: 20px',
           handler:() => {
-            localStorage.setItem('transfTemp', JSON.stringify(this.transferencias));
+            localforage.setItem('transfTemp', this.transferencias);
             Toast.create('Nota salva temporariamente!')
             this.$router.push('/transFiliais')
           }
@@ -734,7 +764,7 @@ export default {
           raised: true,
           style: 'margin-top: 20px',
           handler:() => {
-            localStorage.setItem('transfTemp', JSON.stringify(this.transferencias));
+            localforage.setItem('transfTemp',this.transferencias);
             Toast.create('Nota salva temporariamente!')
             next()
           }

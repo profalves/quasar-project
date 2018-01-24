@@ -14,23 +14,22 @@
   <div id="lista">
       
     <div class="row">
-        <div class="col">
-            <q-field
-            label="Tipo"
-              >
+        <div class="col-md-3">
+            <q-field>
                 <q-select
+                    stack-label="Tipo"
                     v-model="tipo"
                     :options="tipos"
                     @change="listarContas"
                 />
             </q-field>
         </div>
-        <div class="col-md-4 col-xs-5 offset-1">
+        <div class="col-md-3 col-xs-12 offset-md-1">
             <q-field
-                label="Despesas"
                 v-if="subDesp"
               >
                 <q-select
+                    stack-label="Despesas"
                     v-model="subtipo"
                     :options="[
                         { label: 'a pagar', value: false},
@@ -40,10 +39,10 @@
                 />
             </q-field>
             <q-field
-                label="Receitas"
                 v-else
               >
                 <q-select
+                    stack-label="Receitas"
                     v-model="subtipo"
                     :options="[
                         { label: 'a receber', value: false},
@@ -53,13 +52,94 @@
                 />
             </q-field>
         </div>  
-        <div class="col"></div> 
+        <div class="col-md-4 col-xs-12 offset-md-1">
+            <q-field
+                icon="filter_list"
+                >
+                <q-select
+                    stack-label="Filtrar Data por"
+                    v-model="filtroPeriodo"
+                    :options="[
+                        { label: 'Periodo', value: true},
+                        { label: 'Dia Específico', value: false}
+                    ]"
+                    @change="listarContas"
+                />
+
+            </q-field> 
+        </div>
          
+    </div>
+    <div class="row">
+        
+        <div v-if="filtroPeriodo" class="col">
+            <div class="row">
+                <div class="col-md-6 col-xs-12">
+                    <q-field
+                        icon="date_range"
+                        >
+                        <q-datetime v-model="dataInicial"
+                                    type="date" 
+                                    float-label="Data Inicial" 
+                                    color="black"
+                                    format="DD/MM/YYYY"
+                                    ok-label="OK" 
+                                    clear-label="Limpar" 
+                                    cancel-label="Cancelar"
+                                    :day-names="dias"
+                                    :month-names="meses"
+
+                        />
+
+                    </q-field>  
+                </div> 
+                <div class="col">
+                    <q-field
+                        icon="date_range"
+                        >
+                        <q-datetime v-model="dataFinal"
+                                    type="date" 
+                                    float-label="Data Final" 
+                                    color="black"
+                                    format="DD/MM/YYYY"
+                                    ok-label="OK" 
+                                    clear-label="Limpar" 
+                                    cancel-label="Cancelar"
+                                    :day-names="dias"
+                                    :month-names="meses"
+
+                        />
+
+                    </q-field>  
+                </div>
+            </div>
+             
+        </div>
+        <div v-else class="col-md-6 col-xs-12">
+            <q-field
+                icon="today"
+                >
+                <q-datetime v-model="vencimento"
+                            type="date" 
+                            float-label="Dia Específico" 
+                            color="black"
+                            format="DD/MM/YYYY"
+                            ok-label="OK" 
+                            clear-label="Limpar" 
+                            cancel-label="Cancelar"
+                            :day-names="dias"
+                            :month-names="meses"
+
+                />
+
+            </q-field>
+        </div>
+        
     </div>
     
     
     <q-data-table
-      :data="contas"
+      :data="contasFilter"
       :config="config"
       :columns="colunas"
       @refresh="refresh"
@@ -210,7 +290,10 @@
 import { Alert, Dialog, Toast, Loading, clone, date } from 'quasar'
 import axios from 'axios'
 import { AtomSpinner } from 'epic-spinners'
-
+var moment = require('moment');
+require("moment/min/locales.min");
+moment.locale('pt-br');
+    
 const API = localStorage.getItem('wsAtual')
   
 //debug
@@ -219,6 +302,9 @@ export default {
   data () {
     return {
       contas: [],
+      vencimento: '',
+      dataInicial: '',
+      dataFinal: '',
       tipo: 'cp',
       tipos: [
         {
@@ -233,6 +319,7 @@ export default {
       ],
       subtipo: false,
       subDesp: true,
+      filtroPeriodo: true,
       text: 'text',
       excluidos: '',
       codigoCab: '',
@@ -369,7 +456,11 @@ export default {
       },
       rowHeight: parseInt(localStorage.getItem('rowHeight')),
       bodyHeightProp: localStorage.getItem('bodyHeightProp'),
-      bodyHeight: parseInt(localStorage.getItem('bodyHeight'))
+      bodyHeight: parseInt(localStorage.getItem('bodyHeight')),
+        
+      //datatime
+      dias: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
+      meses: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
     }
   },
   computed: {
@@ -384,6 +475,21 @@ export default {
         }
         
         return lista
+    },
+    contasFilter(){
+        if(this.vencimento){
+            let data = moment(this.vencimento).format('YYYY-MM-DDTHH:mm:SS')
+            return this.contas.filter(row => row.vencimento.indexOf(data)>=0)
+        }
+        if(this.dataInicial && this.dataFinal){
+            let di = moment(this.dataInicial).format('YYYY-MM-DDTHH:mm:SS')
+            let df = moment(this.dataFinal).format('YYYY-MM-DDTHH:mm:SS')
+            return this.contas.filter(row => row.vencimento > di && row.vencimento < df)
+        }
+        else{
+            return this.contas
+        }
+        
     }
   },
   methods: {
@@ -584,7 +690,7 @@ export default {
         this.visivel = true
       }
       console.log(`selecionou ${number}: ${rows}`)
-      //console.log(rows[0].data.codigoCab)
+      console.log(rows)
       this.codigoCab = rows[0]
       this.selecionados = number
     },
@@ -675,11 +781,13 @@ export default {
 }
 </script>
 
-<style lang="stylus">
-.my-label
-  padding 5px
-  border-radius 3px
-  display inline-block
-.over
-  z-index 5
+<style scoped>
+.my-label{
+  padding: 5px;
+  border-radius: 3px;
+  display: inline-block;
+}
+.over{
+    z-index: 5;
+}
 </style>

@@ -327,7 +327,7 @@ export default {
     editar (props) {
       console.log(props.rows[0].data.codigo)
       let row = props.rows[0].data
-      localStorage.setItem('codPessoa', row.codigo)
+      localStorage.setItem('codUsuario', row.codigoIdentificacao)
       localStorage.setItem('cadMode', 'edit')
       this.$router.push({ path: '/cadUsuario' }) 
     },
@@ -416,11 +416,13 @@ export default {
 }
 </script>
 
-<style lang="stylus">
-.my-label
-  padding 5px
-  border-radius 3px
-  display inline-block
-.over
-  z-index 5
+<style scoped>
+.my-label{
+  padding: 5px;
+  border-radius: 3px;
+  display: inline-block;
+}
+.over{
+  z-index: 5;
+}
 </style>
