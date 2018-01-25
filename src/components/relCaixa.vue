@@ -31,7 +31,12 @@
   </div>
 </template>
 <script>
-  export default {
-    name: 'CaixaRelatorios'  
+export default {
+  name: 'CaixaRelatorios',
+  methods: {
+    goBack(){
+        window.history.back()
+    }
   }
+}
 </script>

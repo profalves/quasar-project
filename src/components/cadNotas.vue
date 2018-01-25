@@ -1456,10 +1456,11 @@ export default {
                 let s = this.CadNotas.det[i].qtd + qtd
                 this.CadNotas.det[i].qtd = s
                 let c = this.CadNotas.det[i].custo * s
-                this.CadNotas.det[i].custo = c
+                this.CadNotas.det[i].totalItem = c
                 return
             }  
         }
+        
         this.addItem()
     },
     addItem(){
@@ -1467,8 +1468,7 @@ export default {
             Toast.create('Não pode adicionar item nulo')
             return
         }
-        this.detItem.codigoProduto = this.produto.codigo
-        //this.detItem.totalItem = this.detItem.custo * this.detItem.qtd
+        
         Object.assign(this.detItem, {nomeProduto: this.produto.nome})
         
         this.enviarItem()
@@ -1621,6 +1621,7 @@ export default {
             this.detItem.custo = this.produto.custo
             this.detItem.venda = this.produto.valor
             this.detItem.unMed = this.produto.unMed
+            this.detItem.codigoProduto = this.produto.codigo
             
             //console.log(res)
             if(typeof this.produto.nome == 'undefined'){
@@ -1642,6 +1643,7 @@ export default {
             this.detItem.custo = this.produto.custo
             this.detItem.venda = this.produto.valor
             this.detItem.unMedCom = this.produto.unMed
+            this.detItem.codigoProduto = this.produto.codigo
             
             //console.log(res)
             if(typeof this.produto.nome == 'undefined'){
@@ -1668,6 +1670,7 @@ export default {
             this.detItem.custo = this.produto.custo
             this.detItem.venda = this.produto.valor
             this.detItem.unMed = this.produto.unMed
+            this.detItem.codigoProduto = this.produto.codigo
             
             //console.log(res)
             if(typeof this.produto.nome == 'undefined'){
@@ -1684,27 +1687,46 @@ export default {
       }
     },
     todosProdutos(){
-        Loading.show({
-          spinner: AtomSpinner,
-          spinnerSize: 140,
-          message: 'Aguardando Dados...'
-        })
-        axios.get(API + 'produto/obterproduto')
-          .then((res)=>{
-            Loading.hide()
-            this.produtos = res.data
-            //console.log(res)
-          })
-          .catch((e)=>{
-            Loading.hide()
-            console.log(e)
-            Toast.create({
-                html: 'Sem Conexão',
-                timeout: 6000,
-                bgColor: '#f44242',
-                icon: 'mood_bad'
+        localforage.getItem('Produtos').then((value) => {
+            this.findTemp()
+            if(value){
+                console.log('localforage get')
+                //console.log(value)
+                this.produtos = value;
+            }
+            else{
+                console.log('localforage fail')
+                this.todosProdutos()
+            }
+
+        }).catch((err) => {
+            console.log(err)
+            console.log('fail')
+        }) 
+        
+        if(localStorage.getItem('loadProdutos') === 'true'){
+            Loading.show({
+              spinner: AtomSpinner,
+              spinnerSize: 140,
+              message: 'Aguardando Dados...'
             })
-          })
+            axios.get(API + 'produto/obterproduto')
+              .then((res)=>{
+                Loading.hide()
+                this.produtos = res.data
+                //console.log(res)
+              })
+              .catch((e)=>{
+                Loading.hide()
+                console.log(e)
+                Toast.create({
+                    html: 'Sem Conexão',
+                    timeout: 6000,
+                    bgColor: '#f44242',
+                    icon: 'mood_bad'
+                })
+              })
+        }
     },
     listarUnidadesMedida(){
       axios.get(API + 'produto/obterUnMedidas')

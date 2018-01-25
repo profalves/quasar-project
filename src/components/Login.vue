@@ -241,10 +241,13 @@ export default {
                 localStorage.setItem('loadContas', false)
                 localStorage.setItem('loadUsuarios', false)
                 localStorage.setItem('maxResults', 6)
+                localStorage.getItem('wsAtual', '')
                 Loading.hide()
             }
             
         },
+        
+        // sincronização: 
         listarUsuarios(){
           this.setBancoAtual()
           this.syncStart()
@@ -262,6 +265,7 @@ export default {
           axios.get(API + 'usuario/obterUsuario')
           .then((res)=>{
             this.usuarios = res.data
+            localforage.setItem('Usuários', res.data)
             //console.log(res.data)
             Loading.hide()
           })
@@ -283,8 +287,6 @@ export default {
             Loading.hide()
           })
         },
-        
-        // sincronização: 
         listarPessoas(){
           let load = localStorage.getItem('loadPessoas')
           if(load === 'true') return
@@ -295,7 +297,7 @@ export default {
           })
           axios.get(API + 'pessoa/obterpessoa')
           .then((res)=>{
-              console.log(res.data)
+              //console.log(res.data)
               localforage.setItem('Pessoas', res.data)
               Loading.hide()
           })
@@ -316,7 +318,7 @@ export default {
           .then((res)=>{
             Loading.hide()
             localforage.setItem('Produtos', res.data)
-            console.log(res.data)
+            //console.log(res.data)
           })
           .catch((e)=>{
             Loading.hide()
@@ -329,10 +331,90 @@ export default {
                 })
           })
         },
+        listarDespPagar(){
+          let load = localStorage.getItem('loadContas')
+          if(load === 'true') return
+          Loading.show({
+              spinner: FulfillingBouncingCircleSpinner,
+              spinnerSize: 140,
+              message: 'Obtendo Depesas a pagar...'
+          })
+          axios.get(API + 'conta/obterContas?tipo=cp&pagas=false')
+          .then((res)=>{
+              //console.log(res.data)
+              localforage.setItem('DespPagar', res.data)
+              Loading.hide()
+          })
+          .catch((e)=>{
+            console.log(e.response)
+            Loading.hide()
+          })  
+        },
+        listarDespPagas(){
+          let load = localStorage.getItem('loadContas')
+          if(load === 'true') return
+          Loading.show({
+              spinner: FulfillingBouncingCircleSpinner,
+              spinnerSize: 140,
+              message: 'Obtendo Depesas pagas...'
+          })
+          axios.get(API + 'conta/obterContas?tipo=cp&pagas=true')
+          .then((res)=>{
+              //console.log(res.data)
+              localforage.setItem('DespPagas', res.data)
+              Loading.hide()
+          })
+          .catch((e)=>{
+            console.log(e.response)
+            Loading.hide()
+          })  
+        },
+        listarRecPagar(){
+          let load = localStorage.getItem('loadContas')
+          if(load === 'true') return
+          Loading.show({
+              spinner: FulfillingBouncingCircleSpinner,
+              spinnerSize: 140,
+              message: 'Obtendo Receitas a pagar...'
+          })
+          axios.get(API + 'conta/obterContas?tipo=cr&pagas=false')
+          .then((res)=>{
+              //console.log(res.data)
+              localforage.setItem('RecPagar', res.data)
+              Loading.hide()
+          })
+          .catch((e)=>{
+            console.log(e.response)
+            Loading.hide()
+          })  
+        },
+        listarRecPagas(){
+          let load = localStorage.getItem('loadContas')
+          if(load === 'true') return
+          Loading.show({
+              spinner: FulfillingBouncingCircleSpinner,
+              spinnerSize: 140,
+              message: 'Obtendo Receitas pagas...'
+          })
+          axios.get(API + 'conta/obterContas?tipo=cr&pagas=true')
+          .then((res)=>{
+              //console.log(res.data)
+              localforage.setItem('RecPagas', res.data)
+              Loading.hide()
+          })
+          .catch((e)=>{
+            console.log(e.response)
+            Loading.hide()
+          })  
+        },
         syncStart(){
             if(localStorage.getItem('wsAtual') === '') return
             this.listarPessoas()
             this.todosProdutos()
+            this.listarDespPagar()
+            this.listarDespPagas()
+            this.listarRecPagar()
+            this.listarRecPagas()
         }
     },
     created(){

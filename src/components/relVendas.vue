@@ -1,5 +1,14 @@
 <template>
   <div class="layout-padding ">
+    <q-fixed-position class="fixo" corner="bottom-left" :offset="[18, 18]">
+        <q-btn 
+           round
+           color="primary" 
+           @click="goBack">
+           <q-icon name="keyboard_arrow_left" />
+        </q-btn>
+    </q-fixed-position>
+      
     <q-list sparse highlight style="background-color: white">
       <q-list-header>Relatorios</q-list-header>
       <q-item link to="/relVendasEstoque">
@@ -32,15 +41,13 @@
   </div>
 </template>
 <script>
-  export default {
-    name: 'VendasRelatorios'  
-  }
-</script>
-
-<script>
 export default {
-  data () {
-    return {}
+  name: 'VendasRelatorios',
+  methods: {
+    goBack(){
+        window.history.back()
+    }
+
   }
 }
 </script>

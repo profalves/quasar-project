@@ -1,7 +1,7 @@
 <template>
 <div id="usuarios">
   <h5>Usuários</h5>
-  <!-- Botão ADD -->
+    <!-- Botão ADD -->
     <q-fixed-position class="over" corner="bottom-right" :offset="[18, 18]">
         <q-btn 
            round
@@ -10,6 +10,27 @@
            <q-icon name="add" />
         </q-btn>
     </q-fixed-position>
+    
+    <!-- Botão voltar -->
+    <q-fixed-position class="fixo" corner="bottom-left" :offset="[18, 18]">
+        <q-btn 
+           round
+           color="primary" 
+           @click="goBack">
+           <q-icon name="keyboard_arrow_left" />
+        </q-btn>
+    </q-fixed-position>
+    
+    <!-- Botão sync -->
+    <q-fixed-position class="fixo" corner="bottom-left" :offset="[88, 18]">
+        <q-btn 
+           round
+           color="primary" 
+           @click="listarUsuarios">
+           <q-icon name="sync" />
+        </q-btn>
+    </q-fixed-position>
+
     
   <div id="lista">
     
@@ -149,6 +170,7 @@
 import { Alert, Dialog, Toast, Loading, clone } from 'quasar'
 import axios from 'axios'
 import { AtomSpinner } from 'epic-spinners'
+import localforage from 'localforage'
 
 const API = localStorage.getItem('wsAtual')
   
@@ -253,6 +275,9 @@ export default {
     }
   },
   methods: {
+    goBack(){
+        window.history.back()
+    },
     listarUsuarios(){
       Loading.show({
           spinner: AtomSpinner,
@@ -263,6 +288,7 @@ export default {
       .then((res)=>{
           console.log(res)
           this.usuarios = res.data
+          localforage.setItem('Usuários', res.data)
           Loading.hide()
       })
       .catch((e)=>{
@@ -404,8 +430,28 @@ export default {
       this.config.bodyStyle = style
     }
   },
-  created(){
-    this.listarUsuarios()
+  mounted(){
+    if(localStorage.getItem('loadUsuarios') === 'true'){
+        this.listarUsuarios()
+    }
+    else{
+        localforage.getItem('Usuários').then((value) => {
+            if(value){
+                console.log('localforage get')
+                console.log(value)
+                this.usuarios = value;
+            }
+            else{
+                console.log('localforage fail')
+                this.listarUsuarios()
+            }
+
+        }).catch((err) => {
+            console.log(err)
+            console.log('fail')
+        }) 
+    }
+    
     if (localStorage.getItem('pagination') === 'false') {
       this.oldPagination = clone(this.config.pagination)
       this.config.pagination = false

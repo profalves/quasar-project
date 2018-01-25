@@ -117,6 +117,8 @@
    
     <!--periodo-->
           
+        <div v-if="estoque.length > 0">
+        
         <q-data-table
           :data="itens"
           :config="config"
@@ -208,6 +210,7 @@
         </q-card>
         <br><br><br><br>
         
+        </div>
         
     </div>
   </div>

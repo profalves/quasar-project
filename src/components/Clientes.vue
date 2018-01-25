@@ -14,8 +14,18 @@
     </q-btn>
   </q-fixed-position>
     
+  <!-- Botão voltar -->
+    <q-fixed-position class="fixo" corner="bottom-left" :offset="[18, 18]">
+        <q-btn 
+           round
+           color="primary" 
+           @click="goBack">
+           <q-icon name="keyboard_arrow_left" />
+        </q-btn>
+    </q-fixed-position>
+    
   <!-- Botão options -->
-  <q-fixed-position class="over" corner="bottom-left" :offset="[18, 18]">
+  <q-fixed-position class="over" corner="bottom-left" :offset="[88, 18]">
     <q-fab color="primary" icon="keyboard_arrow_right" direction="right">
       <q-fab-action color="purple" 
                     @click="$router.push('/nivers')" 
@@ -340,6 +350,9 @@ export default {
     },
   },
   methods: {
+    goBack(){
+        window.history.back()
+    },
     listarPessoas(){
       Loading.show({
           spinner: AtomSpinner,

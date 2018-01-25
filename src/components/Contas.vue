@@ -11,6 +11,26 @@
         </q-btn>
     </q-fixed-position>
     
+    <!-- Botão voltar -->
+    <q-fixed-position class="fixo" corner="bottom-left" :offset="[18, 18]">
+        <q-btn 
+           round
+           color="primary" 
+           @click="goBack">
+           <q-icon name="keyboard_arrow_left" />
+        </q-btn>
+    </q-fixed-position>
+    
+    <!-- Botão sync -->
+    <q-fixed-position class="fixo" corner="bottom-left" :offset="[88, 18]">
+        <q-btn 
+           round
+           color="primary" 
+           @click="sync">
+           <q-icon name="sync" />
+        </q-btn>
+    </q-fixed-position>
+    
   <div id="lista">
       
     <div class="row">
@@ -290,6 +310,7 @@
 import { Alert, Dialog, Toast, Loading, clone, date } from 'quasar'
 import axios from 'axios'
 import { AtomSpinner } from 'epic-spinners'
+import localforage from 'localforage'
 var moment = require('moment');
 require("moment/min/locales.min");
 moment.locale('pt-br');
@@ -325,6 +346,7 @@ export default {
       codigoCab: '',
       selecionados: '',
       visivel: true,
+      syncCount: 0,
       
       config: {
         title: '',
@@ -481,7 +503,7 @@ export default {
             let data = moment(this.vencimento).format('YYYY-MM-DDTHH:mm:SS')
             return this.contas.filter(row => row.vencimento.indexOf(data)>=0)
         }
-        if(this.dataInicial && this.dataFinal){
+        else if(this.dataInicial && this.dataFinal){
             let di = moment(this.dataInicial).format('YYYY-MM-DDTHH:mm:SS')
             let df = moment(this.dataFinal).format('YYYY-MM-DDTHH:mm:SS')
             return this.contas.filter(row => row.vencimento > di && row.vencimento < df)
@@ -493,24 +515,100 @@ export default {
     }
   },
   methods: {
-    listarContas(){
-      Loading.show({
-          spinner: AtomSpinner,
-          spinnerSize: 140,
-          message: 'Aguardando Dados...'
-      })
-      axios.get(API + 'conta/obterContas?tipo=' + this.tipo + '&pagas=' + this.subtipo)
-      .then((res)=>{
-          console.log(res)
-          this.contas = res.data
-          Loading.hide()
-      })
-      .catch((e)=>{
-        console.log(e)
-        Loading.hide()
-      })  
+    goBack(){
+        window.history.back()
     },
-    deleteRow (props) {
+    listarContas(){
+      if(localStorage.getItem('loadContas') === 'true'){
+          Loading.show({
+              spinner: AtomSpinner,
+              spinnerSize: 140,
+              message: 'Aguardando Dados...'
+          })
+          axios.get(API + 'conta/obterContas?tipo=' + this.tipo + '&pagas=' + this.subtipo)
+          .then((res)=>{
+              console.log(res)
+              this.contas = res.data
+              Loading.hide()
+          })
+          .catch((e)=>{
+            console.log(e)
+            Loading.hide()
+          })
+      }
+      else{
+        if(this.tipo === 'cp' && this.subtipo === false){
+            localforage.getItem('DespPagar').then((value) => {
+                if(value){
+                    console.log('localforage get')
+                    console.log(value)
+                    this.contas = value;
+                }
+                else{
+                    console.log('localforage fail')
+                    this.listarContas()
+                }
+
+            }).catch((err) => {
+                console.log(err)
+                console.log('fail')
+            })     
+        }
+        if(this.tipo === 'cp' && this.subtipo === true){
+            localforage.getItem('DespPagas').then((value) => {
+                if(value){
+                    console.log('localforage get')
+                    console.log(value)
+                    this.contas = value;
+                }
+                else{
+                    console.log('localforage fail')
+                    this.listarContas()
+                }
+
+            }).catch((err) => {
+                console.log(err)
+                console.log('fail')
+            })     
+        }
+        if(this.tipo === 'cr' && this.subtipo === false){
+            localforage.getItem('RecPagar').then((value) => {
+                if(value){
+                    console.log('localforage get')
+                    console.log(value)
+                    this.contas = value;
+                }
+                else{
+                    console.log('localforage fail')
+                    this.listarContas()
+                }
+
+            }).catch((err) => {
+                console.log(err)
+                console.log('fail')
+            })     
+        }
+        if(this.tipo === 'cr' && this.subtipo === true){
+            localforage.getItem('RecPagas').then((value) => {
+                if(value){
+                    console.log('localforage get')
+                    console.log(value)
+                    this.contas = value;
+                }
+                else{
+                    console.log('localforage fail')
+                    this.listarContas()
+                }
+
+            }).catch((err) => {
+                console.log(err)
+                console.log('fail')
+            })     
+        }
+      
+      }
+    },
+    deleteRow(props){
       let row = props.rows
       console.log(row)
       this.excluidos = row
@@ -564,7 +662,7 @@ export default {
           ]
       })
     },
-    deleteAll (props) {
+    deleteAll(props){
       let row = props.rows
       console.log(row)
       this.excluidos = row
@@ -612,7 +710,7 @@ export default {
           ]
       })
     },
-    baixarTitulos (props) {
+    baixarTitulos(props){
       let row = props.rows
       console.log(row)
       this.excluidos = row
@@ -671,18 +769,18 @@ export default {
           ]
       })
     },
-    refresh (done) {
+    refresh(done){
       this.listarContas()
       done()
     },
-    editar (props) {
+    editar(props){
       console.log(props.rows[0].data.codigo)
       let row = props.rows[0].data
       localStorage.setItem('codPessoa', row.codigo)
       localStorage.setItem('cadMode', 'edit')
       this.$router.push({ path: '/cadContas' }) 
     },
-    selection (number, rows) {
+    selection(number, rows){
       if(rows.length > 1){
         this.visivel = false
       }
@@ -694,7 +792,7 @@ export default {
       this.codigoCab = rows[0]
       this.selecionados = number
     },
-    rowClick (row) {
+    rowClick(row){
       console.log('clicked on a row', row)
       localStorage.setItem('codConta', row.codigo)
       localStorage.setItem('cadMode', 'edit')
@@ -729,12 +827,85 @@ export default {
     novo(){
       localStorage.setItem('cadMode', 'save')
       this.$router.push('/cadContas')
+    },
+    sync(){
+      let c = 0  
+      
+      Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Sincronizando contas...'
+      })
+      axios.get(API + 'conta/obterContas?tipo=cp&pagas=false')
+      .then((res)=>{
+          console.log('DespPagar', res.data)
+          localforage.setItem('DespPagar', res.data)
+          c = c+1
+          console.log('c', c);
+          if(c === 4){ Loading.hide() }
+      })
+      .catch((e)=>{
+        console.log(e.response)
+        Loading.hide()
+      })  
+        
+      axios.get(API + 'conta/obterContas?tipo=cp&pagas=true')
+      .then((res)=>{
+          console.log('DespPagas', res.data)
+          localforage.setItem('DespPagas', res.data)
+          c = c+1
+          console.log('c', c);
+          if(c === 4){ Loading.hide() }
+      })
+      .catch((e)=>{
+        console.log(e.response)
+        Loading.hide()
+      })  
+        
+      axios.get(API + 'conta/obterContas?tipo=cr&pagas=false')
+      .then((res)=>{
+          console.log('RecPagar', res.data)
+          localforage.setItem('RecPagar', res.data)
+          c = c+1
+          console.log('c', c);
+          if(c === 4){ Loading.hide() }
+      })
+      .catch((e)=>{
+        console.log(e.response)
+        Loading.hide()
+      })  
+    
+      axios.get(API + 'conta/obterContas?tipo=cr&pagas=true')
+      .then((res)=>{
+          console.log('RecPagas', res.data)
+          localforage.setItem('RecPagas', res.data)
+          c = c+1
+          console.log('c', c);
+          if(c === 4){ Loading.hide() }
+      })
+      .catch((e)=>{
+        console.log(e.response)
+        Loading.hide()
+      })
+        
+      
+    
     }
   },
   beforeDestroy () {
     clearTimeout(this.timeout)
   },
   watch: {
+    filtroPeriodo (value) {
+        if(value === true){
+            this.vencimento = ''
+        }
+        else{
+            this.dataInicial = ''
+            this.dataFinal = ''
+        }
+    
+    },
     pagination (value) {
       if (!value) {
         this.oldPagination = clone(this.config.pagination)
@@ -769,8 +940,24 @@ export default {
         }
     }
   },
-  created(){
-    this.listarContas()
+  mounted(){
+    if(localStorage.getItem('loadContas') === 'false'){
+        localforage.getItem('DespPagar').then((value) => {
+            if(value){
+                console.log('localforage get')
+                console.log(value)
+                this.contas = value;
+            }
+            else{
+                console.log('localforage fail')
+                this.listarContas()
+            }
+
+        }).catch((err) => {
+            console.log(err)
+            console.log('fail')
+        })  
+    }
     if (localStorage.getItem('pagination') === 'false') {
       this.oldPagination = clone(this.config.pagination)
       this.config.pagination = false
