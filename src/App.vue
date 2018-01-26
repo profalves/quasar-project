@@ -22,10 +22,10 @@
         <q-icon name="fullscreen" />
       </q-btn>
     </q-toolbar>
-
+    
     <menuLeft slot="left" v-if="$route.path !== '/login' && !$route.query.config"></menuLeft>
     
-    <transition name="fade" mode="out-in">   
+    <transition name="fade" mode="out-in">
       <router-view class="container"></router-view>    
     </transition>
       

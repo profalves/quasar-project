@@ -422,12 +422,13 @@ export default {
           console.log(`Loading está ${state ? 'ativo' : 'fechado'}`)
         })
         this.syncStart()
-        this.loadConfig()
         localStorage.setItem('tela', 'login')
         localStorage.removeItem('codUser')
         
     },
     mounted(){
+        this.loadConfig()
+        
         if(localStorage.getItem('wsAtual') === '') return
         //verificação de carregamento sendo executado
         let c = 0

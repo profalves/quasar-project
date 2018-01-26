@@ -18,7 +18,7 @@
                      label="Filtros"
                      >
         <div class="row">
-            <div class="col">
+            <div class="col-xs-12 col-md-6" v-if="visivel">
                 <q-select
                   v-model="vendedor"
                   float-label="Vendedor"
@@ -26,7 +26,7 @@
                   filter
                 />
             </div>
-            <div class="col-xs-12 col-md-6">
+            <div class="col">
                 <q-select
                     v-model="codTipo"
                     float-label="Tipo de Produto"
@@ -212,6 +212,8 @@
         
         </div>
         
+        {{msg}}
+        
     </div>
   </div>
 </template>
@@ -220,6 +222,7 @@
     
 import { Loading, Toast, clone } from 'quasar'
 import axios from 'axios'
+import localforage from 'localforage'
 import { AtomSpinner } from 'epic-spinners'
     
 const API = localStorage.getItem('wsAtual')
@@ -246,6 +249,11 @@ export default {
           Produtos: [],
           itens: [],
           formas: [],
+          permissoes: {},
+          visivel: true,
+          msg: '',
+          
+          //lista
           config: {
             title: '',
             refresh: (localStorage.getItem('refresh') === 'true'),
@@ -469,16 +477,23 @@ export default {
                 '&agrupamento=' + this.agrup +
                 '&SomenteComposicoes=' + this.composicao)
         .then((res)=>{
-            console.log(res)
+            console.log(res.data)
             this.estoque = res.data
             this.itens = this.estoque[0].itens
             this.formas = this.estoque[0].formasPgto
             this.opened = false
             Loading.hide()
+            
         })
         .catch((e)=>{
-            console.log(e.response)
             Loading.hide()
+            console.log(e.response)
+            let error = e.response.data
+            console.log(error)
+            for(var i=0; error.length; i++){
+                Toast.create.negative(error[i].value)
+            }
+            
         })
       },
       listarFamilias(){
@@ -539,13 +554,35 @@ export default {
         else{
             this.opened = true
         }
+      },
+      obterPermissoes(){
+        localforage.getItem('usuario')
+        .then((value) => {
+            if(value){
+                //console.log(value)
+                this.permissoes = value
+                if(this.permissoes.funcao === "VENDEDOR"){
+                    this.vendedor = parseInt(localStorage.getItem('codIdUser'))
+                    this.visivel = false
+                }
+            }
+            else{
+                console.log(value)
+            }
+
+        })
+        .catch((err) => {
+                console.log(err)
+                console.log('fail')
+        }) 
       }
   },
-  created(){
+  mounted(){
       let t = this
       t.listarVendedores()
       t.listarFamilias()
       t.todosProdutos()
+      t.obterPermissoes()
   }
 }
 </script>
