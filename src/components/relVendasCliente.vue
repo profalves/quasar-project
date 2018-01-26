@@ -19,7 +19,7 @@
                      >
         
         <div class="row">
-            <div class="col">
+            <div class="col" v-if="visivel">
                 <q-select
                   v-model="vendedor"
                   float-label="Vendedor"
@@ -72,7 +72,7 @@
         
       </q-collapsible>
       
-   
+    <div v-if="vendas.length > 0">
     <!--periodo-->
         <center>
            <h5>{{totalizadores.vendedor}}</h5>
@@ -151,7 +151,7 @@
         
         <br><br><br><br>
         
-        
+    </div>   
     </div>
   </div>
 </template>
@@ -160,6 +160,7 @@
 import { AtomSpinner } from 'epic-spinners'    
 import { Loading, Toast, clone } from 'quasar'
 import axios from 'axios'
+import localforage from 'localforage'
 
 function numberToReal(numero) {
   numero = numero.toFixed(2).split('.');
@@ -183,6 +184,10 @@ export default {
           dataFinal: '',
           vendedor: '',
           opened: true,
+          permissoes: '',
+          visivel: true,
+          
+          //listas
           config: {
             title: '',
             refresh: (localStorage.getItem('refresh') === 'true'),
@@ -347,8 +352,14 @@ export default {
             Loading.hide()
         })
         .catch((e)=>{
-            console.log(e.response)
             Loading.hide()
+            console.log(e.response)
+            let error = e.response.data
+            console.log(error)
+            for(var i=0; error.length; i++){
+                Toast.create.negative(error[i].value)
+            }
+            
         })
       },
       listarVendedores(){
@@ -375,11 +386,34 @@ export default {
         else{
             this.opened = true
         }
+      },
+      obterPermissoes(){
+        localforage.getItem('usuario')
+        .then((value) => {
+            if(value){
+                //console.log(value)
+                this.permissoes = value
+                if(this.permissoes.funcao === "VENDEDOR"){
+                    this.vendedor = parseInt(localStorage.getItem('codIdUser'))
+                    this.visivel = false
+                }
+            }
+            else{
+                console.log(value)
+                console.log('Não foi possivel obter as permissões')
+            }
+
+        })
+        .catch((err) => {
+                console.log(err)
+                console.log('fail')
+        }) 
       }
   },
-  created(){
+  mounted(){
       let t = this
       t.listarVendedores()
+      t.obterPermissoes()
   }
 }
 </script>

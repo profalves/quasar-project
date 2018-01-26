@@ -37,7 +37,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col">
+            <div class="col" v-if="visivel">
                 <q-select
                   v-model="vendedor"
                   float-label="Vendedor"
@@ -186,9 +186,7 @@
         </q-item-side>
       </q-item>
     </q-list>
-   
-    
-        
+       
     <br><br><br><br>
         
   </div>
@@ -198,6 +196,7 @@
 import { AtomSpinner } from 'epic-spinners'    
 import { Loading, Toast } from 'quasar'
 import axios from 'axios'
+import localforage from 'localforage'
     
 const API = localStorage.getItem('wsAtual')
   
@@ -221,6 +220,8 @@ export default {
           produto: '',
           ocultarCanceladas: false,
           opened: true,
+          permissoes: '',
+          visivel: true,
           
           styles: [
             '',
@@ -373,8 +374,14 @@ export default {
             Loading.hide()
         })
         .catch((e)=>{
-            console.log(e.response)
             Loading.hide()
+            console.log(e.response)
+            let error = e.response.data
+            console.log(error)
+            for(var i=0; error.length; i++){
+                Toast.create.negative(error[i].value)
+            }
+            
         })
       },
       listarClientes(){
@@ -428,13 +435,36 @@ export default {
         else{
             this.opened = true
         }
+      },
+      obterPermissoes(){
+        localforage.getItem('usuario')
+        .then((value) => {
+            if(value){
+                //console.log(value)
+                this.permissoes = value
+                if(this.permissoes.funcao === "VENDEDOR"){
+                    this.vendedor = parseInt(localStorage.getItem('codIdUser'))
+                    this.visivel = false
+                }
+            }
+            else{
+                console.log(value)
+                console.log('Não foi possivel obter as permissões')
+            }
+
+        })
+        .catch((err) => {
+                console.log(err)
+                console.log('fail')
+        }) 
       }
   },
-  created(){
+  mounted(){
       let t = this
       t.listarClientes()
       t.listarVendedores()
       t.todosProdutos()
+      t.obterPermissoes()
   }
 }
 </script>

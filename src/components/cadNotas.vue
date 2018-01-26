@@ -1688,7 +1688,6 @@ export default {
     },
     todosProdutos(){
         localforage.getItem('Produtos').then((value) => {
-            this.findTemp()
             if(value){
                 console.log('localforage get')
                 //console.log(value)
@@ -1714,7 +1713,7 @@ export default {
               .then((res)=>{
                 Loading.hide()
                 this.produtos = res.data
-                //console.log(res)
+                console.log('Sync Produtos', res)
               })
               .catch((e)=>{
                 Loading.hide()
@@ -1825,7 +1824,7 @@ export default {
     },
       
   },
-  created(){
+  mounted(){
     let t = this
     if(this.$route.query.q === 'save'){
       localStorage.setItem('cadMode', 'save')
@@ -1838,6 +1837,7 @@ export default {
         this.visivel = false
         this.btnDelete = true
     }
+    
     t.listarPessoas()
     t.todosProdutos()
     t.listarUnidadesMedida()

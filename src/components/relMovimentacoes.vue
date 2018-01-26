@@ -115,8 +115,8 @@
         
       </q-collapsible>
    
-    <!--periodo-->
-         
+    <!--movimentações-->
+    <div v-if="relMovs">
          
         <center>
             <h4>Totais Gerais</h4>
@@ -176,7 +176,8 @@
         
         <br><br><br><br>
         
-        
+    </div>
+    
     </div>
   </div>
 </template>
@@ -202,7 +203,7 @@ export default {
       return {
           canGoBack: window.history.length > 1,
           tipoMovs: [],
-          relMovs: [],
+          relMovs: '',
           clientes: [],
           pedidos: [],
           itens: [],
@@ -561,7 +562,11 @@ export default {
         })
         .catch((e)=>{
             console.log(e.response)
+            console.log('erro')
             Loading.hide()
+            let error = e.response.data
+            Toast.create.negative(error)
+            
             this.filtroColap = true
         })
       },
