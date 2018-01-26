@@ -1,131 +1,72 @@
 <template>
-  <div>
-    <loading-screen ref="loadingScreen">
-    <div class="page-header">
-      <h1>People</h1>
+  <div class="layout-padding row justify-center">
+    <div style="width: 500px; max-width: 90vw;">
+      <p class="caption">Implantando Scroll down infinite.</p>
+
+      <br>
+      <q-infinite-scroll :handler="refresher">
+        <div v-for="(item, index) in items" class="caption" :key="index">
+          <q-chip square color="secondary" class="shadow-1">
+            {{ index + 1 }}
+          </q-chip>
+          
+          <h4>{{items[index].value}}</h4>
+          <hr>
+        </div>
+
+        <div slot="message" class="row justify-center" style="margin-bottom: 50px;">
+          <q-spinner-dots :size="40" />
+        </div>
+      </q-infinite-scroll>
     </div>
-    
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th>Id</th>
-            <th>Name</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="obj in objects">
-            <td>{{obj.id}}</td>
-            <td>{{obj.name}}</td>
-          </tr>
-        </tbody>
-      </table>
-    </loading-screen>
   </div>
 </template>
- 
+
 <script>
-import axios from 'axios'
-import LoadingScreen from 'vue-loading-screen';
+import {
+  QInfiniteScroll,
+  QChip,
+  QSpinnerDots
+} from 'quasar'
+import data from 'data/CFOP.json'
     
-const ENDPOINT = 'http://www.companymega.com.br/api/'
-const headers = {
-    'Content-Type': 'text/plain',
-    'Access-Control-Allow-Headers': 'Content-Type',
-    'Access-Control-Allow-Origin': '*',
-    'Accept': 'application/json'
-}
- 
 export default {
   components: {
-    LoadingScreen,
+    QInfiniteScroll,
+    QChip,
+    QSpinnerDots
   },
-  data() {
+  data () {
     return {
-      objects: [],
-    };
+      data,
+      items: []
+    }
   },
   methods: {
-    obterCores(){
-      fetch(ENDPOINT + 'tipos/obterCores', {
-        //method: 'get', // opcional
-        headers: headers
-         
-      })
-      .then((response) => {
-        response.text()
-        response.json()
-        console.log(response)
-      })
-      .catch((err) => { 
-        console.error(err); 
-      });
+    refresher (index, done) {
+      setTimeout(() => {
+        let items = this.items.length + 5
+
+        for(let i = this.items.length; i < items; i++){
+            let d = this.data[i]
+            this.items.push(d) 
+        
+        }
+
+        this.items = this.items.concat(items)
+        done()
+      }, 2500)
     },
-    obterCores2(){
-      axios.get(ENDPOINT + 'tipos/obterCores')
-      .then((response) => {
-        //response.text()
-        //response.json()
-        console.log(response)
-      })
-      .catch((err) => { 
-        console.error(err); 
-      });
-    },
-    salvarCarro(){
-        axios({
-          headers: headers,
-          method: 'POST',
-          url: ENDPOINT + 'carros/insert',
-          data: {
-                    Modelo: 'Corsa',
-                    IdPessoaDono: 1,
-                    IdCor: 3,
-                    IdMarca: 1,
-                    QtdPortas: 4,
-                    KM: 0,
-                    Ano: '',
-                    IdTipoCombustivel: 1,
-                    IdTipoDirecao: 2,
-                    Vidro: true,
-                    Ar: true,
-                    valorCusto: 1.00,
-                    ValorVenda: 30000.00,
-                    IdUsuario: 1,
-                    Excluido: false,
-                }
-        })
-        .then((response) => {
-            console.log(response)
-            this.showModalNew = false
-        })
-        .catch((err) => {
-            this.showModalNew = false
-            console.error(err);
-        });
-    },
-    refresh() {
-      const p = new Promise((resolve, reject) => {
-        setTimeout(resolve, 5000);
-      });
- 
-      this.$refs.loadingScreen.load(p);
- 
-      p.then(() => {
-        this.objects = [
-          { id: 1, name: 'Foo' },
-          { id: 2, name: 'Bar' },
-        ];
-      });
-    },
+    incluir(){
+     for(let i = 0; i < 9; i++){
+        let d = this.data[i]
+        this.items.push(d) 
+        
+     }
+    }
   },
   mounted(){
-    this.salvarCarro()  
-    this.obterCores2()  
-  },
-  created() {
-    this.$nextTick(() => {
-      this.refresh();
-    });
-  },
-};
-</script> 
+    this.incluir()  
+  }
+}
+</script>
