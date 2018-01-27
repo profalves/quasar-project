@@ -74,7 +74,9 @@
       
    
     <!--periodo-->
-        <center v-if="visivel">
+      <div v-if="visivel">
+        
+        <center>
            
             <h5>{{totalizadores.vendedor}}</h5>
 
@@ -148,7 +150,7 @@
         
         <br><br><br><br>
         
-        
+      </div>  
     </div>
   </div>
 </template>

@@ -116,7 +116,7 @@
       </q-collapsible>
    
     <!--movimentações-->
-    <div v-if="relMovs">
+    <div v-if="visivel">
          
         <center>
             <h4>Totais Gerais</h4>
@@ -219,6 +219,8 @@ export default {
           composicao: '',
           filtroColap: true,
           text: '',
+          visivel: false,
+          
           config: {
             title: '',
             refresh: (localStorage.getItem('refresh') === 'true'),
@@ -555,10 +557,11 @@ export default {
                 '&CodTipoMovimentacao=' + this.tipoMov +
                 tipoSai + c + p)
         .then((res)=>{
+            Loading.hide()
             console.log(res.data)
             this.relMovs = res.data
             this.pedidos = this.relMovs.pedidos
-            Loading.hide()
+            this.visivel = true
         })
         .catch((e)=>{
             console.log(e.response)
@@ -566,6 +569,7 @@ export default {
             Loading.hide()
             let error = e.response.data
             Toast.create.negative(error)
+            if(e.data[0].value) { Toast.create.negative('Erro: ' + e.data[0].value) }
             
             this.filtroColap = true
         })

@@ -95,6 +95,8 @@
         
          
         <br>
+        
+        <div v-if="visivel">
          
         <center>
             <h4>Totais Gerais</h4>
@@ -194,7 +196,7 @@
         
         <br><br><br><br>
         
-        
+        </div> 
     </div>
   </div>
 </template>
@@ -235,6 +237,9 @@ export default {
           itens: [],
           formas: [],
           ordem: 'PorReais',
+          visivel: false,
+          
+          //lista
           config: {
             title: '',
             refresh: (localStorage.getItem('refresh') === 'true'),
@@ -440,6 +445,7 @@ export default {
             }
             this.itens = this.lucro.vDet
             this.opened = false
+            this.visivel = true
             Loading.hide()
         })
         .catch((e)=>{
