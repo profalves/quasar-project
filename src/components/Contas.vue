@@ -159,15 +159,21 @@
     
     
     <q-data-table
+      ref="dtable"
       :data="contasFilter"
       :config="config"
       :columns="colunas"
       @refresh="refresh"
       @selection="selection"
-      @rowclick=""
+      @rowclick="rowClick"
       style="background-color:white;"
     >
       <template slot="selection" scope="props">
+        <q-btn flat small 
+               color="primary" 
+               @click="selectAll">
+          Selecionar todos
+        </q-btn>
         <q-btn flat 
                color="primary" 
                @click="editar(props)" 
@@ -357,7 +363,7 @@ export default {
           maxHeight: '500px'
         },
         rowHeight: localStorage.getItem('rowHeight') + 'px',
-        responsive: (localStorage.getItem('responsive') === 'true'),
+        responsive: true, //(localStorage.getItem('responsive') === 'true')
         pagination: {
           rowsPerPage: parseInt(localStorage.getItem('rowsPerPage')),
           options: [5, 10, 15, 30, 50, 100]
@@ -374,7 +380,7 @@ export default {
           rows: 'Linhas',
           selected: {
             singular: 'item selecionado.',
-            plural: 'items selecionado.'
+            plural: 'itens selecionados.'
           },
           clear: 'limpar',
           search: 'Buscar',
@@ -418,8 +424,8 @@ export default {
             return '<i class="material-icons text-positive">thumb_up</i> - Receita'
           },
           width: '100px'
-        },
-        */
+        },*/
+        
         {
           label: 'Categoria',
           field: 'contaTipo',
@@ -436,8 +442,9 @@ export default {
           sort: true,
           type: 'string',
           width: '100px'
-        }, */
+        }, 
           
+        
         {
           label: 'Origem',
           field: 'codigoCab',
@@ -451,7 +458,7 @@ export default {
             }
             return '<strong>NOTA</strong>'
           },
-        },
+        },*/
         
         {
           label: 'Total',
@@ -737,14 +744,13 @@ export default {
                   let obj = {}
                   let lista = []
                   
-                  
                   for (let i=0; i < a.length; i++) {
                       obj = a[i].data
-                      obj.pagamento = new Date()
-                      obj.valorPago = 10
+                      obj.pagamento = new Date().toISOString()
+                      obj.valorPago = obj.valorTitulo
                       lista.push(obj)
                   }
-                   
+                  
                   Loading.show({
                       spinner: AtomSpinner,
                       spinnerSize: 140,
@@ -776,7 +782,7 @@ export default {
     editar(props){
       console.log(props.rows[0].data.codigo)
       let row = props.rows[0].data
-      localStorage.setItem('codPessoa', row.codigo)
+      localStorage.setItem('codConta', row.codigo)
       localStorage.setItem('cadMode', 'edit')
       this.$router.push({ path: '/cadContas' }) 
     },
@@ -823,6 +829,17 @@ export default {
             }
           ]
       })
+    },
+    selectAll(number, rows) {
+        this.$refs.dtable.clearSelection()
+        
+        for (let i = 0; i < this.contasFilter.length; i++){
+            this.$refs.dtable.selectedRows.push(this.$refs.dtable.rows[i])
+            this.$refs.dtable.rowSelection[i] = true
+        }
+        //this.$refs.dtable.toolbar = 'selection'
+        console.log(`selecionou ${number}: ${rows}`)
+        console.log(rows)
     },
     novo(){
       localStorage.setItem('cadMode', 'save')

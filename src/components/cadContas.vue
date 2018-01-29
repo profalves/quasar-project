@@ -752,7 +752,7 @@ export default {
       Loading.show({message: 'Aguardando Dados...'})
       axios.get(API + 'conta/obterContas?codigo=' + parseInt(localStorage.getItem('codConta')))
       .then((res)=>{
-          console.log(res)
+          console.log('Conta:', res)
           this.conta = res.data
           this.geraParcela = false
           if(this.conta.valorPago>0) {

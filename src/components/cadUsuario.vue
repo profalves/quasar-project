@@ -47,7 +47,7 @@
 
         <q-tab-pane name="dados">
             <div class="row">
-                <div class="col">
+                <div class="col-md-6">
                   <q-field
                     icon="person"
                   >
@@ -63,6 +63,7 @@
 
                   </q-field>   
                 </div>
+                <div class="offset-md-1"></div>
                 <div class="col">
                   <q-field
                     icon="verified_user"
@@ -94,6 +95,7 @@
                     <span style="color:#8F8F8F" v-if="!$v.nome.required">A senha é de preenchimento obrigatório</span>
                   </q-field>   
                 </div>
+                <div class="offset-md-1"></div>
                 <div class="col">
                     <q-field
                      icon="build"
@@ -122,7 +124,7 @@
             </div>
 
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-5">
                   <q-field
                     icon="monetization_on"
                   >
@@ -138,6 +140,7 @@
                   </q-field>
                     
                 </div>
+                <div class="offset-md-2"></div>
                 <div class="col">
                   <q-field
                     icon="monetization_on"
@@ -192,14 +195,14 @@
                         PDV
                       </q-card-title>
                       <q-card-separator />
-                      <q-card-main>
-                        <q-checkbox v-model="usuario.bloqueiaCancelaProd" label="Bloquear cancelamento de item na venda" /><br>
-                        <q-checkbox v-model="usuario.verQuantiaCaixa" label="Permitir ver saldo no caixa" /><br>
-                        <q-checkbox v-model="usuario.devolverProduto" label="Permitir nota de devolução" /><br>
-                        <q-checkbox v-model="usuario.pdV_PermitirOutrasSaidas" label="Permitir outras saídas" /><br>
-                        <q-checkbox v-model="usuario.pdV_CriarOrcamento" label="Permitir orçamento" /><br>
-                        <q-checkbox v-model="usuario.pdV_CancelarPedido" label="Permitir cancelamento de nota/pedido" /><br>
-                        <q-checkbox v-model="usuario.pdV_ModificarDescontoSistema" label="Alterar desconto dado pelo sistema" /><br>
+                      <q-card-main class="permissions">
+                        <q-checkbox class="checkbox" v-model="usuario.bloqueiaCancelaProd" label="Bloquear cancelamento de item na venda" /><br>
+                        <q-checkbox class="checkbox" v-model="usuario.verQuantiaCaixa" label="Permitir ver saldo no caixa" /><br>
+                        <q-checkbox class="checkbox" v-model="usuario.devolverProduto" label="Permitir nota de devolução" /><br>
+                        <q-checkbox class="checkbox" v-model="usuario.pdV_PermitirOutrasSaidas" label="Permitir outras saídas" /><br>
+                        <q-checkbox class="checkbox" v-model="usuario.pdV_CriarOrcamento" label="Permitir orçamento" /><br>
+                        <q-checkbox class="checkbox" v-model="usuario.pdV_CancelarPedido" label="Permitir cancelamento de nota/pedido" /><br>
+                        <q-checkbox class="checkbox" v-model="usuario.pdV_ModificarDescontoSistema" label="Alterar desconto dado pelo sistema" /><br>
                       </q-card-main>
                     </q-card>   
                 </div>
@@ -210,14 +213,14 @@
                         Retaguarda
                       </q-card-title>
                       <q-card-separator />
-                      <q-card-main>
-                        <q-checkbox v-model="usuario.cadUsuario" label="Permitir cadastro de usuários" /><br>
-                        <q-checkbox v-model="usuario.movimentaEstoqueES" label="Permitir movimentar estoque" /><br>
-                        <q-checkbox v-model="usuario.ret_AlteraTabPreco" label="Permitir alterar tabela de preços" /><br>
-                        <q-checkbox v-model="usuario.pdV_PermitirTransfProduto" label="Permitir transferência de produtos" /><br>
-                        <q-checkbox v-model="usuario.ret_VerCusto" label="Permitir visualizar custo do produto" /><br>
-                        <q-checkbox v-model="usuario.acessaFinanceiro" label="Permitir visualizar financeiro" /><br>
-                        <q-checkbox v-model="usuario.alteraProduto" label="Permitir alterar produto" /><br>
+                      <q-card-main class="permissions">
+                        <q-checkbox class="checkbox" v-model="usuario.cadUsuario" label="Permitir cadastro de usuários" /><br>
+                        <q-checkbox class="checkbox" v-model="usuario.movimentaEstoqueES" label="Permitir movimentar estoque" /><br>
+                        <q-checkbox class="checkbox" v-model="usuario.ret_AlteraTabPreco" label="Permitir alterar tabela de preços" /><br>
+                        <q-checkbox class="checkbox" v-model="usuario.pdV_PermitirTransfProduto" label="Permitir transferência de produtos" /><br>
+                        <q-checkbox class="checkbox" v-model="usuario.ret_VerCusto" label="Permitir visualizar custo do produto" /><br>
+                        <q-checkbox class="checkbox" v-model="usuario.acessaFinanceiro" label="Permitir visualizar financeiro" /><br>
+                        <q-checkbox class="checkbox" v-model="usuario.alteraProduto" label="Permitir alterar produto" /><br>
                       </q-card-main>
                     </q-card>   
                 </div>
@@ -572,6 +575,14 @@ export default {
     #genero {
         text-align: center;
         margin-top: 15px;
+    }
+    
+    .permissions {
+        font-size: 18px;
+    }
+    
+    .checkbox {
+        margin: 15px 0;
     }
     
 </style>

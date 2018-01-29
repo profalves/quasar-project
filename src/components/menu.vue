@@ -66,7 +66,7 @@
         <q-item to="/relatorios">
           <q-item-side icon="insert_chart" />
           <q-side-link to="/relatorios" class="link">
-                <q-item-main label="Relatórios" sublabel="Relatórios Gerais" />
+                <q-item-main label="Financeiro" sublabel="Relatórios Gerais" />
           </q-side-link>
         </q-item>
         <q-item to="/usuarios" v-if="permissoes.cadUsuario">
