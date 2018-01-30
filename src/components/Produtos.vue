@@ -68,23 +68,37 @@
              style="margin-left: 10px"
              placeholder="Procurar..."
              @keyup.enter="listarProdutos"
-             @blur="listarProdutos"
-             v-if="tipoCod === 'nome'"
+             v-if="autocomplete"
              >
         <q-autocomplete
+          @search="search"
           :max-results="maxResults"
           :static-data="{field: 'label', list: listaItens}"
           @selected="listarProdutos"
         />
 
     </q-search>
+    
+      
+    <q-search v-model="search" 
+              placeholder="Procurar..."
+              style="margin-left: 10px"
+              v-else-if="!autocomplete && tipoCod === 'nome'">
+        <q-autocomplete @search="search" 
+                        @selected="listarProdutos"
+                        :filter="filtrarProdutos"
+                        :static-data="{field: 'label', list: listaItens}"
+                        @keyup.enter="listarProdutos"
+                        />
+    </q-search>
+   
+      
     <q-search
              v-model="search" 
              color="none" 
              style="margin-left: 10px"
              placeholder="Procurar..."
              @keyup.enter="listarProdutos"
-             @blur="listarProdutos"
              v-else
              >
     </q-search>
@@ -255,7 +269,7 @@ export default {
     return {
       tipoCod: 'nome',
       search: '',
-      autocomplete: false,
+      autocomplete: (localStorage.getItem('autocomplete') === 'true'),
       transferencias: [],
       produtos: [],
       produto: '',
@@ -290,13 +304,13 @@ export default {
     },
     listaItens(){
       let a = this.produtos
-      let lista = []
+      let lista = [] 
       
       lista = a.map(row => ({
           label: row.nome, 
           value: row.codigo
       }))
-      //console.log(lista)
+      
       return lista
     },
   },
@@ -308,26 +322,38 @@ export default {
       this.produto = ''
       this.search = ''
     },
+    filtrarProdutos(){
+      let a = this.produtos
+      let lista, filter = []     
+      
+      filter = a.filter(row => row.nome.toLowerCase().indexOf(this.search) >=0)
+        
+      lista = filter.map(row => ({
+          label: row.nome, 
+          value: row.codigo
+      }))
+     
+      return lista
+    },
     listarProdutos(){
       if(localStorage.getItem('loadProdutos') !== 'true'){
           localforage.getItem('Produtos').then((value) => {
             if(value){
                 switch (this.tipoCod) {    
-                    case 'barra':
-                        let b = value.filter(row => row.codBarra === this.search);
+                    case 'barras':
+                        let b = value.filter(row => row.codBarra.toString() === this.search);
                         this.produto = b[0]
-                        console.log('produto', this.produto)
+                        console.log('produto codBarra', this.produto)
                         break;
                     case 'emp':
                         let e = value.filter(row => row.codEmpresa === this.search);
                         this.produto = e[0]
-                        console.log('produto', this.produto)
+                        console.log('produto codEmpresa', this.produto)
                         break;
                     case 'nome':
-                        
                         let n = value.filter(row => row.nome === this.search);
                         this.produto = n[0]
-                        console.log('produto', this.produto)
+                        console.log('produto nome', this.produto)
                     
                 }
                 
@@ -481,7 +507,7 @@ export default {
     obterPermissoes(){
         localforage.getItem('usuario').then((value) => {
             if(value){
-                //console.log(value)
+                console.log(value)
                 this.permissoes = value
             }
             else{
@@ -496,8 +522,11 @@ export default {
               
   },
   mounted(){
+    this.obterPermissoes()
+    
     if(localStorage.getItem('loadProdutos') === 'true'){
         this.todosProdutos()
+        console.log('sync get')
         return
     }
       
@@ -517,7 +546,7 @@ export default {
         console.log('fail')
     }) 
     
-    this.obterPermissoes()
+    
     
   },
   /*beforeUpdate(){

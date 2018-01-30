@@ -237,7 +237,7 @@ export default {
     return {
       tipoCod: 'nome',
       search: '',
-      autocomplete: false,
+      autocomplete: (localStorage.getItem('autocomplete') === 'true'),
       pessoas: [],
       pessoa: '',
       pessoaNome: '',
@@ -424,6 +424,9 @@ export default {
                 
                 });
                 console.log(this.pessoa)
+              }
+              if(this.autocomplete && this.search !== ''){
+                this.pessoa = value.filter(row => row.nome.indexOf(this.search) >= 0);
               }
               else {
                 this.pessoa = value.filter(row => row.nome.toLowerCase().indexOf(this.search) >= 0);
