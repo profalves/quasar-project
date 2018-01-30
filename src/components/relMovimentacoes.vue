@@ -580,7 +580,7 @@ export default {
               spinnerSize: 140,
               message: 'Aguardando Dados...'
           })
-          axios.get(API + 'pessoa/obterpessoa')
+          axios.get(API + 'pessoa/obterpessoa?todos=true')
           .then((res)=>{
             Loading.hide()
             this.clientes = res.data

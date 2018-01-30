@@ -82,12 +82,22 @@
               </div>
             </q-collapsible>
             <!-- BUSCAS -->
-            <q-collapsible icon="search" label="Buscas" sublabel="Configurações de buscas no sistema">
+            <q-collapsible icon="search" label="Buscas" sublabel="Configurações de buscas (Pessoas e Produtos)">
                 <q-list link no-border>
                     <q-item multiline tag="label">
                       <q-item-main>
+                        <q-item-tile label>Permitir autocompletar a pesquisa</q-item-tile>
+                        <q-item-tile sublabel lines="2">Exibir uma lista prévia de resultados conforme o que foi digitado na pesquisa</q-item-tile>
+                      </q-item-main>
+                      <q-item-side right>
+                        <q-checkbox v-model="autocomplete"
+                                    @change="setAutoComplete"/>
+                      </q-item-side>
+                    </q-item>
+                    <q-item multiline tag="label">
+                      <q-item-main>
                         <q-item-tile label>Número máximo de resultados</q-item-tile>
-                        <q-item-tile sublabel lines="2">Quantidade máxima de resultados exibidos durante a busca</q-item-tile>
+                        <q-item-tile sublabel lines="2">Quantidade máxima de resultados exibidos durante o autocompletar da busca</q-item-tile>
                       </q-item-main>
                       <q-item-side right>
                         <q-input v-model="maxResults" 
@@ -484,6 +494,7 @@ export default {
       canGoBack: window.history.length > 1,
       //buscas
       maxResults: parseInt(localStorage.getItem('maxResults')),
+      autocomplete: (localStorage.getItem('autocomplete') === 'true'),
       
       //Notificações
       boas: (localStorage.getItem('boasVindas') === 'true'),
@@ -602,6 +613,9 @@ export default {
     //buscas
     setMaxResults(){
         localStorage.setItem('maxResults', this.maxResults)    
+    },
+    setAutoComplete(){
+        localStorage.setItem('autocomplete', this.autocomplete)    
     },
       
     //Graficos

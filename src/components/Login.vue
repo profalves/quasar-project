@@ -295,7 +295,7 @@ export default {
               spinnerSize: 140,
               message: 'Obtendo Pessoas...'
           })
-          axios.get(API + 'pessoa/obterpessoa')
+          axios.get(API + 'pessoa/obterpessoa?todos=true')
           .then((res)=>{
               //console.log(res.data)
               localforage.setItem('Pessoas', res.data)

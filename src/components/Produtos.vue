@@ -55,6 +55,12 @@
                 style="margin-left:20px" 
                 @focus="search = ''" />
     </q-toolbar>
+      
+    <q-checkbox v-model="autocomplete" 
+                label="Permitir autocompletar a pesquisa"
+                v-if="tipoCod === 'nome'"
+                style="margin-left: 10px"
+                />
 
     <q-search  
              v-model="search" 
@@ -249,6 +255,7 @@ export default {
     return {
       tipoCod: 'nome',
       search: '',
+      autocomplete: false,
       transferencias: [],
       produtos: [],
       produto: '',
@@ -294,7 +301,7 @@ export default {
     },
   },
   methods:{
-     goBack(){
+    goBack(){
         window.history.back()
     },
     limpar(){
@@ -317,6 +324,7 @@ export default {
                         console.log('produto', this.produto)
                         break;
                     case 'nome':
+                        
                         let n = value.filter(row => row.nome === this.search);
                         this.produto = n[0]
                         console.log('produto', this.produto)

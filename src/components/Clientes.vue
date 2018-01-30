@@ -1,8 +1,8 @@
 <template>
 <div id="clientes">
-
+   
   <!-- Botão ADD -->
-  <q-fixed-position class="over" corner="bottom-right" :offset="[18, 18]">
+  <q-fixed-position class="fixo" corner="bottom-right" :offset="[18, 18]">
     <q-btn 
        round
        color="primary" 
@@ -25,7 +25,7 @@
     </q-fixed-position>
     
   <!-- Botão options -->
-  <q-fixed-position class="over" corner="bottom-left" :offset="[88, 18]">
+  <q-fixed-position class="fixo" corner="bottom-left" :offset="[88, 18]">
     <q-fab color="primary" icon="keyboard_arrow_right" direction="right">
       <q-fab-action color="purple" 
                     @click="$router.push('/nivers')" 
@@ -55,32 +55,43 @@
         <div class="col">
             <h5>Buscar Pessoa</h5>
         </div>
-    </div>
+  </div>
 
-    <!--<q-toolbar slot="header" inverted color="tertiary">
+    <q-toolbar slot="header" inverted color="tertiary">
        <q-radio v-model="tipoCod" 
-                val="barras"
-                label="Cód. Barras" 
-                @focus="search = ''" />
+                val="cpf"
+                label="CPF" 
+                @focus="setBusca" />
        <q-radio v-model="tipoCod" 
-                val="emp" 
-                label="Cód. Emp" 
+                val="cnpj" 
+                label="CNPJ" 
                 style="margin-left:20px"  
-                @focus="search = ''" />
+                @focus="setBusca" />
+       <q-radio v-model="tipoCod" 
+                val="telefone" 
+                label="Telefone"
+                style="margin-left:20px"  
+                @focus="setBusca" />
        <q-radio v-model="tipoCod" 
                 val="nome"
                 label="Nome" 
                 style="margin-left:20px" 
                 @focus="search = ''" />
-    </q-toolbar>-->
-
+    </q-toolbar>
+    
+    <q-checkbox v-model="autocomplete" 
+                label="Permitir autocompletar a pesquisa"
+                v-if="tipoCod === 'nome'"
+                style="margin-left: 10px"
+                />
+    
     <q-search  
              v-model="search" 
              color="none" 
              style="margin-left: 10px"
              placeholder="Procurar..."
              @keyup.enter="obterPessoa"
-             @blur="obterPessoa"
+             v-if="autocomplete"
              >
         <q-autocomplete
           :max-results="maxResults"
@@ -90,11 +101,24 @@
 
     </q-search>
     
+     <q-search
+             v-model="search" 
+             color="none" 
+             style="margin-left: 10px"
+             placeholder="Procurar..."
+             @keyup.enter="obterPessoa"
+             v-else
+             >
+    </q-search>
+    
     <div v-for="(pessoa, index) in pessoa">
         <q-card v-if="pessoa" no-border>
           <q-card-title>
             {{ pessoa.nome }}
-            <span slot="subtitle">{{ pessoa.apelido }}</span>
+            <span slot="subtitle">
+              <div v-if="pessoa.pj">CNPJ: {{ pessoa.cnpj }}</div>
+              <div v-else>CPF: {{ pessoa.cpf }}</div>
+            </span>
             <q-icon slot="right" name="more_vert">
               <q-popover ref="popover">
                 <q-list link class="no-border">
@@ -146,6 +170,7 @@
             </q-btn>
           </q-card-actions>
         </q-card>
+        
     </div>
     
     <q-modal minimized ref="telModal">
@@ -190,7 +215,7 @@
       </div>
     </q-modal>
     
-
+    
 
     
 </div>
@@ -210,7 +235,9 @@ const API = localStorage.getItem('wsAtual')
 export default { 
   data () {
     return {
-      search: '',  
+      tipoCod: 'nome',
+      search: '',
+      autocomplete: false,
       pessoas: [],
       pessoa: '',
       pessoaNome: '',
@@ -353,13 +380,17 @@ export default {
     goBack(){
         window.history.back()
     },
+    setBusca(){
+      this.search = ''
+      this.autocomplete = false
+    },
     listarPessoas(){
       Loading.show({
           spinner: AtomSpinner,
           spinnerSize: 140,
           message: 'Aguardando Dados...'
       })
-      axios.get(API + 'pessoa/obterpessoa')
+      axios.get(API + 'pessoa/obterpessoa?todos=true')
       .then((res)=>{
           this.pessoas = res.data
           Loading.hide()
@@ -373,22 +404,65 @@ export default {
       if(localStorage.getItem('loadPessoas') !== 'true'){
           localforage.getItem('Pessoas').then((value) => {
             if(value){
-                this.pessoa = value.filter(row => row.nome === this.search);
-                console.log('pessoa', this.pessoa)
+              if(this.search === ''){
+                this.pessoa = value
+              }
+              else if(this.tipoCod === 'cpf' && this.search !== ''){
+                this.pessoa = value.filter(row => row.cpf.indexOf(this.search) >= 0);
+              }
+              else if(this.tipoCod === 'cnpj' && this.search !== ''){
+                this.pessoa = value.filter(row => { 
+                  const cnpj = row.cnpj || ''
+                  return cnpj.indexOf(this.search) >= 0
+                })
+              }
+              else if(this.tipoCod === 'telefone' && this.search !== ''){
+                this.pessoa = value.filter(row => {
+                  if(row.telefones.length > 0){
+                    return row.telefones.filter(el => el.numero.indexOf(this.search) >=0)
+                  }
+                
+                });
+                console.log(this.pessoa)
+              }
+              else {
+                this.pessoa = value.filter(row => row.nome.toLowerCase().indexOf(this.search) >= 0);
+              }
+                
             }
           })
           return
       }
-        
+      
+      let URL
+      if(this.search === ''){
+        URL = API + 'pessoa/obterpessoa?todos=true'
+      }
+      else if(this.tipoCod === 'cpf' && this.search !== ''){
+        URL = API + 'pessoa/obterpessoa?cpf=' + this.search
+      }
+      else if(this.tipoCod === 'cnpj' && this.search !== ''){
+        URL = API + 'pessoa/obterpessoa?cnpj=' + this.search
+      }
+      else if(this.tipoCod === 'telefone' && this.search !== ''){
+        URL = API + 'pessoa/obterpessoa?telefone=' + this.search
+      }
+      else {
+          URL = API + 'pessoa/obterpessoa?nome=' + this.search
+      }
+      
       Loading.show({
           spinner: AtomSpinner,
           spinnerSize: 140,
           message: 'Aguardando Dados...'
       })
-      axios.get(API + 'pessoa/obterpessoa?nome=' + this.search)
+      axios.get(URL)
       .then((res)=>{
           console.log(res)
           this.pessoa = res.data
+          if(res.data.length === 0){
+            Toast.create('Nenhum resultado encontrado com ' + '"' + this.search + '"')
+          }
           Loading.hide()
       })
       .catch((e)=>{
@@ -589,7 +663,7 @@ export default {
           spinnerSize: 140,
           message: 'Sincronizando Dados...'
       })
-      axios.get(API + 'pessoa/obterpessoa')
+      axios.get(API + 'pessoa/obterpessoa?todos=true')
       .then((res)=>{
           //console.log(res.data)
           localforage.setItem('Pessoas', res.data).then((value) => {
@@ -670,6 +744,7 @@ export default {
   display inline-block
 .over
   z-index 5
+  position fixed
 .right 
   padding-right 3px
 </style>

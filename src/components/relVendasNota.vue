@@ -385,7 +385,7 @@ export default {
         })
       },
       listarClientes(){
-          axios.get(API + 'pessoa/obterpessoa')
+          axios.get(API + 'pessoa/obterpessoa?todos=true')
           .then((res)=>{
             this.clientes = res.data
           })

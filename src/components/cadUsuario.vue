@@ -425,7 +425,7 @@ export default {
           spinnerSize: 140,
           message: 'Aguardando Dados...'
       })
-      axios.get(API + 'pessoa/obterpessoa')
+      axios.get(API + 'pessoa/obterpessoa?todos=true')
       .then((res)=>{
           //console.log(res.data)
           this.pessoas = res.data
