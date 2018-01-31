@@ -77,6 +77,7 @@
                 <q-select v-model="familia"
                           float-label="Familias"
                           :options="familias"
+                          @change="modProdutos"
                           />
     
             </q-field>
@@ -88,6 +89,7 @@
                 <q-select v-model="categoria"
                           float-label="Categorias"
                           :options="categorias"
+                          @change="modProdutos"
                           />
     
             </q-field>
@@ -99,6 +101,7 @@
                 <q-select v-model="marca"
                           float-label="Marcas"
                           :options="marcas"
+                          @change="modProdutos"
                           />
     
             </q-field>
@@ -197,12 +200,12 @@
             <div class="col-xs-12 col-md-6">
                 <q-field
                   icon="fa-barcode"
-
+                    
                 >
                  <p class="fields">
                     <strong>Cód. Barras: </strong>{{ produto.codBarra }} 
                  </p>
-
+                    
                 </q-field>
             </div>
             <div class="col-xs-12 col-md-6">
@@ -247,18 +250,18 @@
                  <p class="fields">
                     <strong>Venda: {{ produto.valor | formatMoney }} </strong>
                  </p>
-
+                    
                 </q-field>
             </div>
             <div class="col">
                 <q-field
                   icon="store"
-
+                    
                 >
                  <p class="fields">
                     <strong>Estoque Atual: </strong><span :class="colorsClasses">{{ produto.qtd }}</span> 
                  </p>
-
+                    
                 </q-field>
             </div>
         </div>
@@ -266,18 +269,18 @@
             <div class="col-xs-12 col-md-6">
                 <q-field
                   icon="fa-th-large"
-
+                    
                 >
                  <p class="fields">
                     <strong>Categoria: </strong>{{ produto.categoria }} 
                  </p>
-
+                    
                 </q-field>
             </div>
             <div class="col">
                 <q-field
                   icon="local_grocery_store"
-
+                    
                 >
                  <p class="fields">
                     <strong>Família: </strong>{{ produto.familia }} 
@@ -408,10 +411,10 @@ export default {
       this.produto = ''
       this.search = ''
     },
-    filtrarProdutos(){
+    filtrarProdutos(){  
       let a = this.produtos
-      let lista, filter = []     
-      
+      let lista, filter = []
+       
       filter = a.filter(row => row.nome.toLowerCase().indexOf(this.search) >=0)
         
       lista = filter.map(row => ({
@@ -484,10 +487,6 @@ export default {
       
     },
     todosProdutos(){
-        if(this.familia){
-            let fam = '&codFamilia=' + this.familia
-        }
-        
         Loading.show({
           spinner: AtomSpinner,
           spinnerSize: 140,
@@ -497,7 +496,48 @@ export default {
           .then((res)=>{
             Loading.hide()
             this.produtos = res.data
+            console.log('produtos', this.produtos.length)
             localforage.setItem('Produtos', res.data)
+          })
+          .catch((e)=>{
+            Loading.hide()
+            console.log(e)
+            Toast.create({
+                html: 'Sem Conexão',
+                timeout: 6000,
+                bgColor: '#f44242',
+                icon: 'mood_bad'
+            })
+          })
+    },
+    modProdutos(){
+        let fam , cat, marca
+        
+        if(this.familia !== ''){
+            fam = 'codFamilia=' + this.familia
+        }
+        
+        if(this.categoria !== ''){
+            cat = '&codCategoria=' + this.categoria
+        }
+        
+        if(this.marca !== ''){
+            marca = '&codMarca=' + this.marca
+        }
+        
+        Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Aguardando Dados...'
+        })
+        axios.get(API + 'produto/obterproduto?' + fam + cat + marca)
+          .then((res)=>{
+            Loading.hide()
+            this.produtos = res.data
+            console.log('produtos', this.produtos.length)
+            console.log(res)
+            console.log(typeof res.data)
+            //if(typeof res.data === '){} //Quando não encontrar resultados
           })
           .catch((e)=>{
             Loading.hide()
