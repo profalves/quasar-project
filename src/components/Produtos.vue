@@ -33,10 +33,8 @@
     
    
     <!-- formulário -->
-    <div class="row">
-        <div class="col">
-            <h5>Buscar Produto</h5>
-        </div>
+    <div class="toolbar">
+        <h5>Buscar Produto</h5>
     </div>
 
     <q-toolbar slot="header" inverted color="tertiary">
@@ -55,11 +53,81 @@
                 style="margin-left:20px" 
                 @focus="search = ''" />
     </q-toolbar>
+    
+    <div class="row">
+        <!--<div class="col">
+            <q-field
+                label="Filtrar por"
+                style="margin-left: 10px;">
+                <q-select v-model="agrupar"
+                          :options="[
+                            {label: '', value: 0},
+                            {label: 'Familia', value: 1},
+                            {label: 'Categoria', value: 2},
+                            {label: 'Marca', value: 3},
+                          ]"
+                          />
+                            
+            </q-field>
+    
+        </div>-->
+        <div class="col-md-4 col-xs-12">
+            <q-field
+                style="margin-left: 10px;">
+                <q-select v-model="familia"
+                          float-label="Familias"
+                          :options="familias"
+                          />
+    
+            </q-field>
+    
+        </div>
+        <div class="col-md-4 col-xs-12">
+            <q-field
+                style="margin-left: 10px;">
+                <q-select v-model="categoria"
+                          float-label="Categorias"
+                          :options="categorias"
+                          />
+    
+            </q-field>
+    
+        </div>
+        <div class="col-md-4 col-xs-12">
+            <q-field
+                style="margin-left: 10px;">
+                <q-select v-model="marca"
+                          float-label="Marcas"
+                          :options="marcas"
+                          />
+    
+            </q-field>
+    
+        </div>
+    </div>
+      
+    <div class="row">
+        <div class="col">
+            <q-input v-model="menorValor"
+                     float-label="Menor Valor"
+                     v-money="money"
+                     style="margin-left: 10px"
+                     />
+        </div>
+        <div class="col">
+            <q-input v-model="maiorValor"
+                     float-label="Maior Valor"
+                     v-money="money"
+                     style="margin-left: 10px"
+                     />
+        </div>
+    </div>
+   
       
     <q-checkbox v-model="autocomplete" 
                 label="Permitir autocompletar a pesquisa"
                 v-if="tipoCod === 'nome'"
-                style="margin-left: 10px"
+                style="margin: 0 0 20px 10px"
                 />
 
     <q-search  
@@ -140,12 +208,12 @@
             <div class="col-xs-12 col-md-6">
                 <q-field
                   icon="domain"
-
+                
                 >
                  <p class="fields">
                     <strong>Cód. Empresa: </strong>{{ produto.codEmpresa }} 
                  </p>
-
+                
                 </q-field>
             </div>
         </div>
@@ -157,7 +225,7 @@
                  <p class="fields">
                     <strong>Custo: </strong>{{ produto.custo | formatMoney }} 
                  </p>
-
+                
                 </q-field>
             </div>
             <div class="col-xs-12 col-md-6">
@@ -167,7 +235,7 @@
                  <p class="fields">
                     <strong>Margem de Lucro: </strong>{{ produto.percLucro | formatPerc }} 
                  </p>
-
+                
                 </q-field>
             </div>
         </div>
@@ -272,13 +340,31 @@ export default {
       autocomplete: (localStorage.getItem('autocomplete') === 'true'),
       transferencias: [],
       produtos: [],
+      familias: [],
+      categorias: [],
+      marcas: [],
+      familia: '',
+      categoria: '',
+      marca: '',
+      menorValor: '',
+      maiorValor: '',
       produto: '',
       qtd: 1,
       index: '',
       dest: '',
       empDest: {},
       permissoes: '',
-      maxResults: parseInt(localStorage.getItem('maxResults')), 
+      maxResults: parseInt(localStorage.getItem('maxResults')),
+      
+      //v-money
+      money: {
+        decimal: ',',
+        thousands: '.',
+        //prefix: 'R$ ',
+        //suffix: ' #',
+        precision: 2,
+        masked: false /* doesn't work with directive */
+      },
       
       //tabela
       misc: 'bordered', //[{value: 'bordered'},{value: 'highlight'}]
@@ -398,6 +484,10 @@ export default {
       
     },
     todosProdutos(){
+        if(this.familia){
+            let fam = '&codFamilia=' + this.familia
+        }
+        
         Loading.show({
           spinner: AtomSpinner,
           spinnerSize: 140,
@@ -419,6 +509,42 @@ export default {
                 icon: 'mood_bad'
             })
           })
+    },
+    listarFamilias(){
+      axios.get(API + 'produto/obterProdutosFamilia')
+      .then((res)=>{
+        this.familias = res.data.map(row => ({
+          label: row.nome, 
+          value: row.codigo
+        }))
+      })
+      .catch((e)=>{
+        console.log(e)
+      })
+    },
+    listarCategorias(){
+      axios.get(API + 'produto/obterProdutosCategorias')
+      .then((res)=>{
+        this.categorias = res.data.map(row => ({
+          label: row.nome, 
+          value: row.codigo
+        }))
+      })
+      .catch((e)=>{
+        console.log(e)
+      })
+    },
+    listarMarcas(){
+      axios.get(API + 'produto/obterProdutosMarcas')
+      .then((res)=>{
+        this.marcas = res.data.map(row => ({
+          label: row.nome, 
+          value: row.codigo
+        }))
+      })
+      .catch((e)=>{
+        console.log(e)
+      })
     },
     novo(){
       localStorage.setItem('cadMode', 'save')
@@ -526,6 +652,9 @@ export default {
     
     if(localStorage.getItem('loadProdutos') === 'true'){
         this.todosProdutos()
+        this.listarFamilias()
+        this.listarCategorias()
+        this.listarMarcas()
         console.log('sync get')
         return
     }
