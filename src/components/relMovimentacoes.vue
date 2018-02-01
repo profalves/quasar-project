@@ -157,7 +157,7 @@
 
         <!-- itens -->
         <q-collapsible
-          label="Itens"
+          label="itens"
           icon="local_mall"
           style="background-color:white;
                  margin-bottom:20px;"
@@ -173,6 +173,16 @@
             </q-data-table>
           
         </q-collapsible>
+      
+        <q-card v-if="tipoMov === 6">
+          <q-card-title>
+            Motivo do cancelamento:
+          </q-card-title>
+          <q-card-separator />
+          <q-card-main>
+            {{obs}}
+          </q-card-main>
+        </q-card>
         
         <br><br><br><br>
         
@@ -220,6 +230,7 @@ export default {
           filtroColap: true,
           text: '',
           visivel: false,
+          obs: '',
           
           config: {
             title: '',
@@ -546,6 +557,9 @@ export default {
             p = '&codProduto=' + this.produto
         }
         
+        
+        
+        
         Loading.show({
           spinner: AtomSpinner,
           spinnerSize: 140,
@@ -655,6 +669,7 @@ export default {
           console.log(rows)
           if(rows.length > 0){
             this.itens = rows[0].data.itens
+            this.obs = rows[0].data.obs
             this.itensCollap = true
           }
           else {

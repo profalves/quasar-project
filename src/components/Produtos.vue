@@ -75,6 +75,8 @@
             <q-field
                 style="margin-left: 10px;">
                 <q-select v-model="familia"
+                          filter
+                          filter-placeholder="Procurar..."
                           float-label="Familias"
                           :options="familias"
                           @change="modProdutos"
@@ -87,6 +89,8 @@
             <q-field
                 style="margin-left: 10px;">
                 <q-select v-model="categoria"
+                          filter
+                          filter-placeholder="Procurar..."
                           float-label="Categorias"
                           :options="categorias"
                           @change="modProdutos"
@@ -99,6 +103,8 @@
             <q-field
                 style="margin-left: 10px;">
                 <q-select v-model="marca"
+                          filter
+                          filter-placeholder="Procurar..."
                           float-label="Marcas"
                           :options="marcas"
                           @change="modProdutos"
@@ -122,6 +128,7 @@
                      float-label="Maior Valor"
                      v-money="money"
                      style="margin-left: 10px"
+                     @keyup.enter="modProdutos"
                      />
         </div>
     </div>
@@ -139,7 +146,7 @@
              style="margin-left: 10px"
              placeholder="Procurar..."
              @keyup.enter="listarProdutos"
-             v-if="autocomplete"
+             v-if="autocomplete && familia === '' && categoria === '' && marca === ''"
              >
         <q-autocomplete
           @search="search"
@@ -154,7 +161,7 @@
     <q-search v-model="search" 
               placeholder="Procurar..."
               style="margin-left: 10px"
-              v-else-if="!autocomplete && tipoCod === 'nome'">
+              v-else-if="tipoCod === 'nome' && familia === '' && categoria === '' && marca === ''">
         <q-autocomplete @search="search" 
                         @selected="listarProdutos"
                         :filter="filtrarProdutos"
@@ -162,7 +169,14 @@
                         @keyup.enter="listarProdutos"
                         />
     </q-search>
-   
+    
+    <q-select v-model="search"
+              filter
+              filter-placeholder="Procurar..."
+              v-else-if="familia !== '' || categoria !== '' || marca !== '' && tipoCod === 'nome'"
+              :options="selectItens"
+              @change="listarProdutos"/>
+              
       
     <q-search
              v-model="search" 
@@ -393,11 +407,26 @@ export default {
     },
     listaItens(){
       let a = this.produtos
-      let lista = [] 
+      if(typeof a === 'string') return
+      let lista = []
+        
+      
       
       lista = a.map(row => ({
           label: row.nome, 
           value: row.codigo
+      }))
+      
+      return lista
+    },
+    selectItens(){
+      let a = this.produtos
+      if(typeof a === 'string') return
+      let lista = []
+      
+      lista = a.map(row => ({
+          label: row.nome + ' - R$ ' + row.valor.toFixed(2), 
+          value: row.nome
       }))
       
       return lista
@@ -511,18 +540,43 @@ export default {
           })
     },
     modProdutos(){
-        let fam , cat, marca
+        //consultar localmente
+        
+        //requisição
+        let 
+        fam = '',
+        cat = '',
+        marca = '',
+        valores = '',
+        uni = ''
         
         if(this.familia !== ''){
             fam = 'codFamilia=' + this.familia
         }
         
         if(this.categoria !== ''){
-            cat = '&codCategoria=' + this.categoria
+            if(fam){
+                uni = '&'
+            }
+            cat = uni + 'codCategoria=' + this.categoria
         }
         
         if(this.marca !== ''){
-            marca = '&codMarca=' + this.marca
+            if(fam || cat){
+                uni = '&'
+            }
+            marca = uni + 'codMarca=' + this.marca
+        }
+        
+        if(this.menorValor && this.maiorValor){
+            let menorValor = parseFloat(this.menorValor.replace(',','.'))
+            let maiorValor = parseFloat(this.maiorValor.replace(',','.'))
+            if(menorValor>0 && maiorValor>0){
+                if(fam || cat || marca){
+                    uni = '&'
+                }
+            valores = uni + 'menorvalor=' + menorValor + '&maiorvalor=' + maiorValor
+            }
         }
         
         Loading.show({
@@ -530,14 +584,16 @@ export default {
           spinnerSize: 140,
           message: 'Aguardando Dados...'
         })
-        axios.get(API + 'produto/obterproduto?' + fam + cat + marca)
+        axios.get(API + 'produto/obterproduto?' + fam + cat + marca + valores)
           .then((res)=>{
             Loading.hide()
             this.produtos = res.data
             console.log('produtos', this.produtos.length)
             console.log(res)
             console.log(typeof res.data)
-            //if(typeof res.data === '){} //Quando não encontrar resultados
+            if(typeof res.data === 'string'){
+                Toast.create.negative(res.data)
+            }
           })
           .catch((e)=>{
             Loading.hide()
@@ -685,7 +741,7 @@ export default {
             console.log('fail')
         }) 
     }
-              
+    
   },
   mounted(){
     this.obterPermissoes()
@@ -699,10 +755,11 @@ export default {
         return
     }
       
-    localforage.getItem('Produtos').then((value) => {
+    localforage.getItem('Produtos')
+    .then((value) => {
         if(value){
             console.log('localforage get')
-            console.log(value)
+            //console.log(value)
             this.produtos = value;
         }
         else{
@@ -710,9 +767,73 @@ export default {
             this.todosProdutos()
         }
         
-    }).catch((err) => {
+    })
+    .catch((err) => {
         console.log(err)
         console.log('fail')
+    }) 
+    
+    localforage.getItem('FamiliasProdutos')
+    .then((value) => {
+        if(value){
+            console.log('localforage get familias')
+            //console.log(value)
+            this.familias = value.map(row => ({
+              label: row.nome, 
+              value: row.codigo
+            }));
+        }
+        else{
+            console.log('localforage fail familias')
+            this.listarFamilias()
+        }
+        
+    })
+    .catch((err) => {
+        console.log(err)
+        console.log('fail familias')
+    }) 
+    
+    localforage.getItem('CategoriasProdutos')
+    .then((value) => {
+        if(value){
+            console.log('localforage get categorias')
+            //console.log(value)
+            this.categorias = value.map(row => ({
+              label: row.nome, 
+              value: row.codigo
+            }));
+        }
+        else{
+            console.log('localforage fail categorias')
+            this.listarCategorias()
+        }
+        
+    })
+    .catch((err) => {
+        console.log(err)
+        console.log('fail')
+    }) 
+    
+    localforage.getItem('MarcasProdutos')
+    .then((value) => {
+        if(value){
+            console.log('localforage get marcas')
+            //console.log(value)
+            this.marcas = value.map(row => ({
+              label: row.nome, 
+              value: row.codigo
+            }));
+        }
+        else{
+            console.log('localforage fail marcas')
+            this.todosProdutos()
+        }
+        
+    })
+    .catch((err) => {
+        console.log(err)
+        console.log('fail marcas')
     }) 
     
     

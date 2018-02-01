@@ -286,7 +286,7 @@
         </div>
         
         <div class="col-sm-12 col-md-4" v-if="permissoes.ret_VerCusto">
-            <q-card color="primary">
+            <q-card :color="colorsClasses">
               <center>
                 <q-card-title>Lucro</q-card-title>
                     <money v-model="CadProduto.produto.percLucro"
@@ -481,10 +481,7 @@
             </div>
         </q-collapsible>
            
-        <q-collapsible icon="add_circle" 
-                       label="Matéria-Prima" 
-                       v-if="visivel"
-                       >
+        <q-collapsible icon="add_circle" label="Matéria-Prima" v-if="visivel">
             <div class="row">
                 <div class="col">
                     <q-toolbar slot="header" inverted color="tertiary">
@@ -807,6 +804,14 @@ export default {
         classes.push(this.gutter)
       }
       return classes
+    },
+    colorsClasses(){
+      if(this.CadProduto.produto.percLucro <= 0){
+        return 'negative'
+      }
+      else {
+        return 'primary'
+      }
     },
     listaFamiliasProdutos: function () {
       var a = this.familias

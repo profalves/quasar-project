@@ -331,6 +331,33 @@ export default {
                 })
           })
         },
+        listarFamProdutos(){
+          axios.get(API + 'produto/obterProdutosFamilia')
+          .then((res)=>{
+            localforage.setItem('FamiliasProdutos', res.data)
+          })
+          .catch((e)=>{
+            console.log(e)
+          })
+        },
+        listarCategorias(){
+          axios.get(API + 'produto/obterProdutosCategorias')
+          .then((res)=>{
+            localforage.setItem('CategoriasProdutos', res.data)
+          })
+          .catch((e)=>{
+            console.log(e)
+          })
+        },
+        listarMarcas(){
+          axios.get(API + 'produto/obterProdutosMarcas')
+          .then((res)=>{
+            localforage.setItem('MarcasProdutos', res.data)
+          })
+          .catch((e)=>{
+            console.log(e)
+          })
+        },
         listarDespPagar(){
           let load = localStorage.getItem('loadContas')
           if(load === 'true') return
@@ -411,6 +438,9 @@ export default {
             if(localStorage.getItem('wsAtual') === '') return
             this.listarPessoas()
             this.todosProdutos()
+            this.listarFamProdutos()
+            this.listarCategorias()
+            this.listarMarcas()
             this.listarDespPagar()
             this.listarDespPagas()
             this.listarRecPagar()
