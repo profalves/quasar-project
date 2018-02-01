@@ -157,6 +157,9 @@
         
     </div>
     
+    <center>
+      <h4>Total: {{totalContas | formatMoney}}</h4>
+    </center>
     
     <q-data-table
       ref="dtable"
@@ -519,6 +522,18 @@ export default {
             return this.contas
         }
         
+    },
+    totalContas(){
+      let a = this.contas
+      if(a.length === 0) return
+      
+      let lista = a.map(row => row.valorTitulo)
+      
+      let total = lista.reduce(function(a, b) {
+        return a + b;
+      });
+            
+      return total
     }
   },
   methods: {

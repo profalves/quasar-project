@@ -28,9 +28,8 @@
                   :options="listaMovs"
                 />
             </div>
-            <div class="col-xs-12 col-md-6">
+            <div class="col-xs-12 col-md-6" v-if="tipoMov === 2">
                 <q-select
-                  v-if="tipoMov === 2"
                   v-model="tipoSai"
                   float-label="Tipo Saída"
                   :options="[
@@ -50,6 +49,20 @@
                   filter
                   clearable
                 />
+            </div>
+            <div class="col-xs-12 col-md-6" 
+                 v-if="tipoMov === 6"
+                 style="margin-top: 10px">
+                <q-radio  v-model="excluido"
+                          val=false
+                          label="Ver pedidos cancelados"
+                          style="margin-left: 15px"
+                          />
+                <q-radio  v-model="excluido"
+                          val=true
+                          label="Ver notas canceladas"
+                          style="margin-left: 15px"
+                          />
             </div>
         </div>
         <div class="row">
@@ -223,6 +236,7 @@ export default {
           dataFinal: '',
           tipoMov: 1,
           tipoSai: '',
+          excluido: false,
           cliente: '',
           produto: '',
           codTipo: '',
@@ -556,9 +570,10 @@ export default {
         if(this.produto !== ''){
             p = '&codProduto=' + this.produto
         }
-        
-        
-        
+        let excluido = ''
+        if(this.excluido){
+            excluido = '&excluido=' + this.excluido
+        }
         
         Loading.show({
           spinner: AtomSpinner,
@@ -569,13 +584,17 @@ export default {
                 'dataInicial=' + this.dataInicial +
                 '&dataFinal=' + this.dataFinal + 
                 '&CodTipoMovimentacao=' + this.tipoMov +
-                tipoSai + c + p)
+                tipoSai + c + p + excluido)
         .then((res)=>{
             Loading.hide()
-            console.log(res.data)
+            console.log(res)
             this.relMovs = res.data
             this.pedidos = this.relMovs.pedidos
             this.visivel = true
+            this.obs = ''
+            if(res.data[0].value) { 
+              Toast.create.negative('Erro: ' + res.data[0].value)
+            }
         })
         .catch((e)=>{
             console.log(e.response)

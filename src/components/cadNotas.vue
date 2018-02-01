@@ -531,7 +531,7 @@
     </div>-->
     
     <!--MODAL-->
-    <q-modal ref="layoutModal" :content-css="{minWidth: '60vw', minHeight: '60vh'}">
+    <q-modal ref="layoutModal" :content-css="{minWidth: '60vw', minHeight: '100vh'}">
       <q-modal-layout>
         <q-toolbar slot="header" color="black">
           <q-btn flat @click="$refs.layoutModal.close()">
