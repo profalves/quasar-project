@@ -1,13 +1,14 @@
 import {
-    Bar,
-    mixins
+    Bar
 }
 from 'vue-chartjs'
+import reactiveData from './mixins/reactiveData'
+
 
 export default {
     extends: Bar,
     props: ['data'],
-    mixins: [mixins.reactiveProp],
+    mixins: [reactiveData],
     data() {
         return {
             options: {

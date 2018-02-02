@@ -62,10 +62,17 @@
     
   </div>
     
-  <q-collapsible label="Exibir gráfico" @open="">
+  <q-collapsible label="Exibir gráfico" @open="montarGrafico">
     <div>
       <div class="layout-view">
-      <donut :data="data"></donut>   
+      <q-select v-model="tipo"
+                Float-label="Lançar gráfico"
+                @change="montarGrafico"
+                :options="[
+                  { label: 'Despesas', value: 1},
+                  { label: 'Receitas', value: 2}
+                ]" />
+      <donut :data="data" v-if="visivel"></donut>   
       </div>
     </div>
   </q-collapsible>
@@ -127,14 +134,13 @@ export default {
       width: 100,
       height: parseInt(localStorage.getItem('alturaGrafico')),
       data: {
-          labels: ['Pagas', 'Pagar'],
+          labels: ['Pagas', 'Total'],
           datasets: [
             {
               backgroundColor: [
                 '#41B883',
-                '#DD1B16'
-              ],
-              data: [this.getRandomInt(), this.getRandomInt()]
+                '#DD1B16',
+              ]
             }
           ],
           option: {
@@ -405,14 +411,16 @@ export default {
       });
     },
     montarGrafico(){
-        let a = this.data.datasets[0].data
-
-        a.push([this.somaDespPagar.toFixed(2),this.somaDespPagas.toFixed(2)])
-
+        let a = this.data.datasets[0]
+        
+        if(this.tipo === 1){
+          Object.assign(a, {data:[this.somaDespPagas.toFixed(2),this.despesas.toFixed(2)]})
+        }
+        else{
+          Object.assign(a, {data:[this.somaRecPagas.toFixed(2),this.receitas.toFixed(2)]})
+        }
+        
         this.visivel = true
-    },
-    getRandomInt(){
-        return Math.floor(Math.random() * (50 - 5 + 1)) + 5
     },
     listar(){
         let t = this

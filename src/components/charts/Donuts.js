@@ -1,13 +1,14 @@
 import {
-    Doughnut,
-    mixins
+    Doughnut
 }
 from 'vue-chartjs'
+import reactiveProp from './mixins/reactiveProp'
+
 
 export default {
     extends: Doughnut,
+    mixins: [reactiveProp],
     props: ['data'],
-    mixins: [mixins.reactiveProp],
     data() {
         return {
             options: {
@@ -20,5 +21,12 @@ export default {
     },
     mounted: function (){
         this.renderChart(this.data, this.options)
+        
+    },
+    watch: {
+        data: function () {
+          this._chart.destroy()
+          this.renderChart(this.data, this.options)
+        }
     }
 }
