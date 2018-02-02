@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import charts from './charts/examples/App'
 
 Vue.use(VueRouter)
 
@@ -61,7 +62,7 @@ export default new VueRouter({
     { path: '/dialog', component: load('Dialogs') },
     { path: '/test', component: load('Test') },
     { path: '/vuex', component: load('VuexContent') },
-    { path: '/dash', component: load('dashboard') },
+    { path: '/charts', component: charts },
 
     // Always leave this last one
     { path: '*', redirect: '/' }, // Evitar entrar em rotas inexistentes

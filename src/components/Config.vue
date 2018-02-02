@@ -9,15 +9,6 @@
         </q-btn>
       </q-fixed-position>
       
-      <q-fixed-position class="fixo" corner="bottom-right" :offset="[18, 18]">
-        <q-btn 
-           rounded
-           color="primary" 
-           @click="$router.push('test')">
-           Testes
-        </q-btn>
-      </q-fixed-position>
-      
       <div class="row">
         <div class="col-xl-6">
           <q-list inset-separator style="background-color: white; margin-bottom: 40px;">

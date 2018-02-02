@@ -62,10 +62,10 @@
     
   </div>
     
-  <q-collapsible label="Exibir gráfico" @open="montarGrafico">
+  <q-collapsible label="Exibir gráfico" @open="">
     <div>
       <div class="layout-view">
-      <bar :data="data" v-if="visivel"></bar>   
+      <donut :data="data"></donut>   
       </div>
     </div>
   </q-collapsible>
@@ -94,7 +94,7 @@
 import { Loading } from 'quasar' //Alert, Dialog, Toast, clone, date
 import axios from 'axios'
 import { AtomSpinner } from 'epic-spinners'
-import bar from './charts/Bar.js'
+import donut from './charts/Donuts.js'
 import localforage from 'localforage'
 var moment = require('moment');
 require("moment/min/locales.min");
@@ -122,21 +122,19 @@ export default {
       visivel: false,
       syncCount: 0,
         
-      //grafico  
-      tipo: 'bar',
+      //grafico
+      tipo: '',
       width: 100,
       height: parseInt(localStorage.getItem('alturaGrafico')),
       data: {
+          labels: ['Pagas', 'Pagar'],
           datasets: [
             {
-              label: 'Despesas',
-              backgroundColor: '#80CBC4',
-              data: []
-            },
-            {
-              label: 'Receitas',
-              backgroundColor: '#05CBE1',
-              data: []
+              backgroundColor: [
+                '#41B883',
+                '#DD1B16'
+              ],
+              data: [this.getRandomInt(), this.getRandomInt()]
             }
           ],
           option: {
@@ -151,7 +149,7 @@ export default {
     }
   },
   components: {
-    bar,
+    donut,
   },
   computed: {
     contasFilter(){
@@ -171,6 +169,8 @@ export default {
     receitas(){
         return this.somaRecPagar + this.somaRecPagas
     },
+    
+    
   },
   methods: {
     goBack(){
@@ -272,14 +272,13 @@ export default {
               spinnerSize: 140,
               message: 'Aguardando Dados...'
           })
-          axios.get(API + 'conta/obterContas?tipo=CP&pagas=false&dataInicial=' + this.dataInicial + '&dataInicial=' + this.dataFinal)
+          axios.get(API + 'conta/obterContas?tipo=CP&pagas=false&dataInicial=' + this.dataInicial + '&dataFinal=' + this.dataFinal)
           .then((res)=>{
               console.log('despPagar', res)
               this.despPagar = res.data
               if(res.data.length === 0){ return 0 }
-              let a = res.data
               let lista = []
-              lista = a.map(row => row.valorTitulo)
+              lista = this.despPagar.map(row => row.valorTitulo)
               this.somaDespPagar = lista.reduce(function(a, b) {
                 return a + b;
               });
@@ -296,16 +295,13 @@ export default {
           spinnerSize: 140,
           message: 'Aguardando Dados...'
       })
-      axios.get(API + 'conta/obterContas?tipo=CP&pagas=true&dataInicial=' + this.dataInicial + '&dataInicial=' + this.dataFinal)
+      axios.get(API + 'conta/obterContas?tipo=CP&pagas=true&dataInicial=' + this.dataInicial + '&dataFinal=' + this.dataFinal)
       .then((res)=>{
           console.log('despPagas', res)
           this.despPagas = res.data
           if(this.despPagas.length === 0){ return 0 }
-          let a = res.data
           let lista = []
-
-          lista = a.map(row => row.valorPago)
-
+          lista = this.despPagas.map(row => row.valorPago)
           this.somaDespPagas = lista.reduce(function(a, b) {
             return a + b;
           });
@@ -323,16 +319,13 @@ export default {
           spinnerSize: 140,
           message: 'Aguardando Dados...'
       })
-      axios.get(API + 'conta/obterContas?tipo=CR&pagas=false&dataInicial=' + this.dataInicial + '&dataInicial=' + this.dataFinal)
+      axios.get(API + 'conta/obterContas?tipo=CR&pagas=false&dataInicial=' + this.dataInicial + '&dataFinal=' + this.dataFinal)
       .then((res)=>{
           console.log('recPagar', res)
           this.recPagar = res.data
           if(this.recPagar.length === 0){ return 0 }
-          let a = res.data
           let lista = []
-
-          lista = a.map(row => row.valorTitulo)
-
+          lista = this.recPagar.map(row => row.valorTitulo)
           this.somaRecPagar = lista.reduce(function(a, b) {
             return a + b;
           });  
@@ -349,16 +342,13 @@ export default {
           spinnerSize: 140,
           message: 'Aguardando Dados...'
       })
-      axios.get(API + 'conta/obterContas?tipo=CR&pagas=true&dataInicial=' + this.dataInicial + '&dataInicial=' + this.dataFinal)
+      axios.get(API + 'conta/obterContas?tipo=CR&pagas=true&dataInicial=' + this.dataInicial + '&dataFinal=' + this.dataFinal)
       .then((res)=>{
           console.log('recPagas', res)
           this.recPagas = res.data
           if(this.recPagas.length === 0){ return 0 }
-          let a = res.data
           let lista = []
-
-          lista = a.map(row => row.valorPago)
-
+          lista = this.recPagas.map(row => row.valorPago)
           this.somaRecPagas = lista.reduce(function(a, b) {
             return a + b;
           });
@@ -416,12 +406,13 @@ export default {
     },
     montarGrafico(){
         let a = this.data.datasets[0].data
-        let b = this.data.datasets[1].data
 
-        a.push(this.despesas.toFixed(2))
-        b.push(this.receitas.toFixed(2))
+        a.push([this.somaDespPagar.toFixed(2),this.somaDespPagas.toFixed(2)])
 
         this.visivel = true
+    },
+    getRandomInt(){
+        return Math.floor(Math.random() * (50 - 5 + 1)) + 5
     },
     listar(){
         let t = this
@@ -436,7 +427,14 @@ export default {
         t.visivel = true
     },
     
+    
   },
+  watch: {
+    data: function () {
+      this._chart.destroy()
+      this.renderChart(this.data, this.options)
+    }
+  }
   
 }
 </script>

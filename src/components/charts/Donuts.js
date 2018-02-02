@@ -1,11 +1,13 @@
 import {
-    Doughnut
+    Doughnut,
+    mixins
 }
 from 'vue-chartjs'
 
 export default {
     extends: Doughnut,
     props: ['data'],
+    mixins: [mixins.reactiveProp],
     data() {
         return {
             options: {
