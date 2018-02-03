@@ -4,7 +4,6 @@ import {
 from 'vue-chartjs'
 import reactiveProp from './mixins/reactiveProp'
 
-
 export default {
     extends: Doughnut,
     mixins: [reactiveProp],
@@ -25,7 +24,7 @@ export default {
     },
     watch: {
         data: function () {
-          this._chart.destroy()
+          this.chart.destroy()
           this.renderChart(this.data, this.options)
         }
     }

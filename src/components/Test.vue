@@ -4,8 +4,8 @@
       <p class="caption">Implantando Scroll down infinite.</p>
 
       <br>
-      <q-infinite-scroll :handler="refresher">
-        <div v-for="(item, index) in items" class="caption" :key="index">
+      <q-infinite-scroll :handler="loadMore">
+        <div v-for="(item, index) in showingData" class="caption" :key="index">
           <q-chip square color="secondary" class="shadow-1">
             {{ index + 1 }}
           </q-chip>
@@ -39,10 +39,22 @@ export default {
   data () {
     return {
       data,
-      items: []
+      items: [],
+      actualMaxPosition: 5
+    }
+  },
+  computed: {
+    showingData () {
+      return this.data.slice(0, this.actualMaxPosition)
     }
   },
   methods: {
+    loadMore (index, done) {
+      setTimeout(() => {
+        this.actualMaxPosition += 5
+        done()
+      }, 2500)
+    },
     refresher (index, done) {
       setTimeout(() => {
         let items = this.items.length + 5
@@ -52,10 +64,9 @@ export default {
             this.items.push(d) 
         
         }
-
         this.items = this.items.concat(items)
         done()
-      }, 2500)
+      }, 2000)
     },
     incluir(){
      for(let i = 0; i < 9; i++){
@@ -66,7 +77,8 @@ export default {
     }
   },
   mounted(){
-    this.incluir()  
+    //this.incluir()
+    this.items = data
   }
 }
 </script>

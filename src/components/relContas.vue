@@ -62,17 +62,17 @@
     
   </div>
     
-  <q-collapsible label="Exibir gráfico" @open="montarGrafico">
+  <q-collapsible opened label="Exibir gráfico" @open="montarGrafico">
     <div>
       <div class="layout-view">
-      <q-select v-model="tipo"
+      <!--<q-select v-model="tipo"
                 Float-label="Lançar gráfico"
                 @change="montarGrafico"
                 :options="[
                   { label: 'Despesas', value: 1},
                   { label: 'Receitas', value: 2}
-                ]" />
-      <donut :data="data" v-if="visivel"></donut>   
+                ]" />-->
+      <donut :data="data" v-if="visivel"></donut>  <!-- v-if="visivel"-->
       </div>
     </div>
   </q-collapsible>
@@ -102,6 +102,8 @@ import { Loading } from 'quasar' //Alert, Dialog, Toast, clone, date
 import axios from 'axios'
 import { AtomSpinner } from 'epic-spinners'
 import donut from './charts/Donuts.js'
+import reactiveData from './charts/mixins/reactiveData'
+
 import localforage from 'localforage'
 var moment = require('moment');
 require("moment/min/locales.min");
@@ -112,6 +114,7 @@ const API = localStorage.getItem('wsAtual')
 //debug
 //const API = 'http://192.168.0.200:29755/'    
 export default {
+  mixins: [reactiveData],
   data () {
     return {
       contas: [],
@@ -413,12 +416,14 @@ export default {
     montarGrafico(){
         let a = this.data.datasets[0]
         
-        if(this.tipo === 1){
+        Object.assign(a, {data:[this.somaDespPagas.toFixed(2),this.despesas.toFixed(2)]})
+        
+        /*if(this.tipo === 1){
           Object.assign(a, {data:[this.somaDespPagas.toFixed(2),this.despesas.toFixed(2)]})
         }
         else{
           Object.assign(a, {data:[this.somaRecPagas.toFixed(2),this.receitas.toFixed(2)]})
-        }
+        }*/
         
         this.visivel = true
     },
@@ -432,7 +437,8 @@ export default {
     getContas(){
         let t = this
         t.listar()
-        t.visivel = true
+        //t.visivel = true
+        //t.montarGrafico()
     },
     
     
