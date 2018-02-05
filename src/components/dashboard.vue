@@ -1,8 +1,6 @@
 <template>
   <div id="dashboard">
-      
-      
-      
+    
     <h3 class="text-center">{{tempo}} {{user | capitalize}}</h3>
     <div class="text-center">{{today}}, {{currentDate}}</div>
     <div class="text-center clock" v-text="currentTime"></div>
@@ -123,53 +121,138 @@
                   </q-card>  
               </div>
             </div>
-
-
+            
           </q-collapsible>
+          <!-- Vendas -->
+          <q-collapsible v-if="permissoes.acessaFinanceiro" icon="grade" label="Vendas" sublabel="Total de vendas por vendedor"></q-collapsible>
           <!-- Contas -->
           <q-collapsible v-if="permissoes.acessaFinanceiro" icon="insert_chart" label="Contas" sublabel="Você tem 0 contas a pagar e 0 contas a receber hoje">
-
             <div class="layout-view">
-                 <q-select
-                    v-model="tipo"
-                    float-label="Tipo de Gráfico"
-                    :options="[
-                      {
-                        label: 'Linha',
-                        icon: 'show_chart',
-                        value: 'line'
-                      },
-                      {
-                        label: 'Barra',
-                        icon: 'insert_chart',
-                        value: 'bar'
-                      },
-                      {
-                        label: 'Pizza',
-                        icon: 'pie_chart',
-                        value: 'pie'
-                      },
-                      {
-                        label: 'Donut',
-                        icon: 'donut_large',
-                        value: 'donut'
-                      }
-                     ]"
-                 />
+              <div class="row">
+                <div class="col-md-3">
+                    <q-field>
+                        <q-select
+                            stack-label="Tipo"
+                            v-model="tipoConta"
+                            :options="tipos"
+                            @change="listarContas"
+                        />
+                    </q-field>
+                </div>
+                <div class="col-md-3 col-xs-12 offset-md-1">
+                    <q-field
+                        v-if="subDesp"
+                      >
+                        <q-select
+                            stack-label="Despesas"
+                            v-model="subtipo"
+                            :options="[
+                                { label: 'a pagar', value: false},
+                                { label: 'pagas', value: true}
+                            ]"
+                            @change="listarContas"
+                        />
+                    </q-field>
+                    <q-field
+                        v-else
+                      >
+                        <q-select
+                            stack-label="Receitas"
+                            v-model="subtipo"
+                            :options="[
+                                { label: 'a receber', value: false},
+                                { label: 'pagas', value: true}
+                            ]"
+                            @change="listarContas"
+                        />
+                    </q-field>
+                </div>  
+                <div class="col-md-4 col-xs-12 offset-md-1">
+                    <q-field
+                        icon="filter_list"
+                        >
+                        <q-select
+                            stack-label="Filtrar Data por"
+                            v-model="filtroPeriodo"
+                            :options="[
+                                { label: 'Periodo', value: true},
+                                { label: 'Dia Específico', value: false}
+                            ]"
+                            @change="listarContas"
+                        />
 
-                <chartLine :width="width" :height="height" :data="data" v-if="tipo === 'line'"></chartLine>
-                <bar :data="data" v-if="tipo === 'bar'"></bar>
-                <pie :data="data" v-if="tipo === 'pie'"></pie>
-                <donut :data="data" v-if="tipo === 'donut'"></donut>
-                <polar :data="data" v-if="tipo === 'polar'"></polar>
-                <radar :data="data" v-if="tipo === 'radar'"></radar>
-                <bubble :data="data" v-if="tipo === 'bolha'"></bubble>
+                    </q-field> 
+                </div>
+              </div>
+              <div class="row">
+                  <div v-if="filtroPeriodo" class="col">
+                      <div class="row">
+                          <div class="col-md-6 col-xs-12">
+                              <q-field
+                                  icon="date_range"
+                                  >
+                                  <q-datetime v-model="dataInicial"
+                                              type="date" 
+                                              float-label="Data Inicial" 
+                                              color="black"
+                                              format="DD/MM/YYYY"
+                                              ok-label="OK" 
+                                              clear-label="Limpar" 
+                                              cancel-label="Cancelar"
+                                              :day-names="dias"
+                                              :month-names="meses"
+
+                                  />
+
+                              </q-field>  
+                          </div> 
+                          <div class="col">
+                              <q-field
+                                  icon="date_range"
+                                  >
+                                  <q-datetime v-model="dataFinal"
+                                              type="date" 
+                                              float-label="Data Final" 
+                                              color="black"
+                                              format="DD/MM/YYYY"
+                                              ok-label="OK" 
+                                              clear-label="Limpar" 
+                                              cancel-label="Cancelar"
+                                              :day-names="dias"
+                                              :month-names="meses"
+
+                                  />
+
+                              </q-field>  
+                          </div>
+                      </div>
+                  </div>
+                  <div v-else class="col-md-6 col-xs-12">
+                      <q-field
+                          icon="today"
+                          >
+                          <q-datetime v-model="vencimento"
+                                      type="date" 
+                                      float-label="Dia Específico" 
+                                      color="black"
+                                      format="DD/MM/YYYY"
+                                      ok-label="OK" 
+                                      clear-label="Limpar" 
+                                      cancel-label="Cancelar"
+                                      :day-names="dias"
+                                      :month-names="meses"
+
+                          />
+
+                      </q-field>
+                  </div>
+              </div>
             </div>
 
           </q-collapsible>
           <!-- Estoque Mínimo -->
           <q-collapsible icon="system_update_alt" label="Estoque Mínimo" sublabel="Você tem 0 produtos abaixo do estoque mínimo">
-
+            
           </q-collapsible>
           <!-- Lista de Aniversariantes -->
           <q-collapsible icon="view_list" label="Lista de Aniversariantes" :sublabel="aniversariantes">
@@ -178,7 +261,6 @@
                 <q-item v-for="(item, index) in nivers" :key="index">
                   <q-item-main>
                     <q-item-tile label>{{ item.nome }}</q-item-tile>
-                    <!--<q-item-tile sublabel>{{ item.nome }}</q-item-tile>-->
                   </q-item-main>
                   <q-item-side right>
                     <q-fab color="primary" icon="keyboard_arrow_left" direction="left">
@@ -361,6 +443,31 @@
         
         //contas
         contas: [],
+        vencimento: moment().format('YYYY-MM-DDTHH:mm:SS'),
+        dataInicial: '',
+        dataFinal: '',
+        tipoConta: 'cp',
+        tipos: [
+          {
+            label: 'Despesas',
+            value: 'cp'
+          },
+          {
+            label: 'Receitas',
+            value: 'cr'
+          },
+        ],
+        subtipo: false,
+        subDesp: true,
+        filtroPeriodo: true,
+        excluidos: '',
+        codigoCab: '',
+        selecionados: '',
+        syncCount: 0,
+        
+        //datatime
+        dias: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
+        meses: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
       }
     },
     computed:{
@@ -556,13 +663,13 @@
           })
       },
       listarContas(){
-        if(localStorage.getItem('loadContas') === 'true'){
+        if(localStorage.getItem('loadContas') === 'false'){
             Loading.show({
                 spinner: AtomSpinner,
                 spinnerSize: 140,
                 message: 'Aguardando Dados...'
             })
-            axios.get(API + 'conta/obterContas?tipo=' + this.tipo + '&pagas=' + this.subtipo)
+            axios.get(API + 'conta/obterContas?tipo=' + this.tipoConta + '&pagas=' + this.subtipo)
             .then((res)=>{
                 console.log(res)
                 this.contas = res.data
@@ -676,7 +783,7 @@
     width: 100%;
     margin-top: 10px;
     color: slategray;
-    font-size: 40px;
+    font-size: 30px;
   }
   .tile {
     color: lightslategrey;
