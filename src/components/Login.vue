@@ -306,6 +306,23 @@ export default {
             Loading.hide()
           })  
         },
+        listarAniversariantes(){
+          Loading.show({
+              spinner: FulfillingBouncingCircleSpinner,
+              spinnerSize: 140,
+              message: 'Obtendo Aniversariantes...'
+          })
+          axios.get(API + 'pessoa/obteraniversariante')
+          .then((res)=>{
+              //console.log(res.data)
+              localforage.setItem('Aniversariantes', res.data)
+              Loading.hide()
+          })
+          .catch((e)=>{
+            console.log(e.response)
+            Loading.hide()
+          })  
+        },
         todosProdutos(){
           let load = localStorage.getItem('loadProdutos')
           if(load === 'true') return
@@ -437,6 +454,7 @@ export default {
         syncStart(){
             if(localStorage.getItem('wsAtual') === '') return
             this.listarPessoas()
+            this.listarAniversariantes()
             this.todosProdutos()
             this.listarFamProdutos()
             this.listarCategorias()

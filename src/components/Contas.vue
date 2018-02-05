@@ -524,7 +524,7 @@ export default {
         
     },
     totalContas(){
-      let a = this.contas
+      let a = this.contasFilter
       if(a.length === 0) return
       
       let lista = a.map(row => row.valorTitulo)

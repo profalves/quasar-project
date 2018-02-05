@@ -58,7 +58,7 @@ export default {
     refresher (index, done) {
       setTimeout(() => {
         let items = this.items.length + 5
-
+        
         for(let i = this.items.length; i < items; i++){
             let d = this.data[i]
             this.items.push(d) 

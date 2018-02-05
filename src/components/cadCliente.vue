@@ -1858,8 +1858,8 @@ export default {
           axios.get(API + 'pessoa/obterpessoa?codigo=' + localStorage.getItem('codPessoa'))
           .then((res)=>{
               Loading.hide()
-              //console.log(res.data)
-              this.CadPessoa.pessoa = res.data
+              console.log('cadastro', res.data[0])
+              this.CadPessoa.pessoa = res.data[0]
               this.cidade = this.CadPessoa.pessoa.codigoIBGE
               this.nome = this.CadPessoa.pessoa.nome
               if(this.CadPessoa.pessoa.cnpj!==""){
