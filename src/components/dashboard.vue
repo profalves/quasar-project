@@ -124,9 +124,13 @@
             
           </q-collapsible>
           <!-- Vendas -->
-          <q-collapsible v-if="permissoes.acessaFinanceiro" icon="grade" label="Vendas" sublabel="Total de vendas por vendedor"></q-collapsible>
+          <q-collapsible v-if="permissoes.acessaFinanceiro" icon="grade" label="Vendas" sublabel="Total de vendas por vendedor">
+            <horizontal-bar :datalabel="'TestDataLabel'" 
+                            :labels="['happy','myhappy','hello']" 
+                            :data="[100,40,60]" />
+          </q-collapsible>
           <!-- Contas -->
-          <q-collapsible v-if="permissoes.acessaFinanceiro" icon="insert_chart" label="Contas" sublabel="Você tem 0 contas a pagar e 0 contas a receber hoje">
+          <q-collapsible v-if="permissoes.acessaFinanceiro" icon="insert_chart" label="Contas" :sublabel="feedContas">
             <div class="layout-view">
               <div class="row">
                 <div class="col-md-5 col-xs-12"
@@ -134,15 +138,8 @@
                     <q-field
                         icon="today"
                         >
-                        <q-select v-model="tipoPagar"
-                                  :options="[
-                                    { label: 'Hoje', value: 'hoje'},
-                                    { label: 'Esta Semana', value: 'semana'},
-                                    { label: 'Este Mês', value: 'mes'},
-                                    { label: 'Na Data', value: 'data'},
-                                    { label: 'Todas', value: 'todas'},
-                                  ]"
-
+                        <q-select v-model="tipoConta"
+                                  :options="tipos"
                         />
 
                     </q-field>
@@ -151,7 +148,7 @@
                 <div class="col-md-5 col-xs-12">
                     <q-field
                         icon="today"
-                        v-if="tipoPagar === 'data'"
+                        v-if="tipoConta === 'data'"
                         >
                         <q-datetime v-model="vencimento"
                                     type="date" 
@@ -167,8 +164,9 @@
                         />
 
                     </q-field>
+                    <div v-else class="semana">{{semana}}</div>
                 </div>
-                <div class="text-right">{{periodo}}</div>
+                
               </div>
             </div>
             
@@ -176,7 +174,7 @@
               <q-list highlight v-if="contasPagar.length>0">
                 <q-list-header>Contas a Pagar</q-list-header>
                 <q-item v-for="(d, index) in contasPagar" :key="index">
-                  <q-item-side icon="thumb_down" class="text-negative"/>
+                  <q-item-side icon="fa-arrow-right" class="text-negative"/>
                   <q-item-main>
                     <q-item-tile label><strong>Vencimento:</strong> {{ d.vencimento | formatDate }}</q-item-tile>
                     <q-item-tile sublabel>{{ d.fornecedor }}</q-item-tile>
@@ -199,7 +197,7 @@
               <q-list highlight v-if="contasReceber.length>0">
                 <q-list-header>Contas a Receber</q-list-header>
                 <q-item v-for="(d, index) in contasReceber" :key="index">
-                  <q-item-side icon="thumb_up" class="text-positive"/>
+                  <q-item-side icon="fa-arrow-right" class="text-positive"/>
                   <q-item-main>
                     <q-item-tile label><strong>Vencimento:</strong> {{ d.vencimento | formatDate }}</q-item-tile>
                     <q-item-tile sublabel>{{ d.fornecedor }}</q-item-tile>
@@ -345,7 +343,7 @@
   import polar from './charts/Polar.js'
   import radar from './charts/Radar.js'
   import bubble from './charts/Bubble.js'
-  
+  import { HorizontalBar } from 'vue-chartjs/dist/vue-chartjs.js'
     
   export default {
     name: 'DashBoard',
@@ -356,7 +354,8 @@
         donut,
         polar,
         radar,
-        bubble
+        bubble,
+        HorizontalBar 
     },
     data () {
       return {
@@ -421,22 +420,18 @@
         vencimento: hoje,
         dataInicial: '',
         dataFinal: '',
-        tipoPagar: 'hoje',
-        tipoReceb: 'hoje',
+        tipoConta: 'hoje',
         tipos: [
-          {
-            label: 'Despesas',
-            value: 'cp'
-          },
-          {
-            label: 'Receitas',
-            value: 'cr'
-          },
+          {label: 'Hoje', value: 'hoje'},
+          {label: 'Esta Semana', value: 'semana'},
+          {label: 'Este Mês', value: 'mes'},
+          {label: 'Na Data', value: 'data'},
+          {label: 'Todas', value: 'todas'}
         ],
         subtipo: false,
         subDesp: true,
         filtroPeriodo: true,
-        periodo: '',
+        semana: '',
         excluidos: '',
         codigoCab: '',
         selecionados: '',
@@ -503,20 +498,29 @@
         return 'Aniversariantes Hoje: ' + this.nivers.length    
       },
       contasPagar(){
-        if(this.tipoPagar === 'semana'){
+        if(this.tipoConta === 'mes'){
+          this.semana = ''
+          let di = moment(dt.startOfDate(hoje, 'month')).format('YYYY-MM-DDTHH:mm:SS')
+          let df = moment(dt.endOfDate(hoje, 'month')).format('YYYY-MM-DDTHH:mm:SS')
+          this.semana = moment(hoje).format('MMMM/YYYY')
+          
+          return this.desp.filter(row => row.vencimento > di && row.vencimento < df)
+        }
+        
+        if(this.tipoConta === 'semana'){
           let dia = dt.getDayOfWeek(hoje)
           let di = moment(dt.subtractFromDate(hoje, { days: dia })).format('YYYY-MM-DDTHH:mm:SS')
-          let df = moment( dt.addToDate(hoje, { days: 6 - dia })).format('YYYY-MM-DDTHH:mm:SS')
+          let df = moment(dt.addToDate(hoje, { days: 6 - dia })).format('YYYY-MM-DDTHH:mm:SS')
           
-          this.periodo = '' // coloca aqui o periodo da semana
+          this.semana = 'Dom ' +  dt.formatDate(di, 'DD/MM/YYYY') + ' - ' + 'Sáb ' +  dt.formatDate(df, 'DD/MM/YYYY')
           
           return this.desp.filter(row => row.vencimento > di && row.vencimento < df)
           
         }
         
-        if(this.tipoPagar === 'hoje'){
+        if(this.tipoConta === 'hoje'){
+          this.semana = ''
           this.vencimento = hoje
-        
         }
         
         let data = new Date(this.vencimento).toISOString().split('T').shift()
@@ -524,6 +528,31 @@
         return this.desp.filter(row => row.vencimento.indexOf(data)>=0)
       },
       contasReceber(){
+        if(this.tipoConta === 'mes'){
+          this.semana = ''
+          let di = moment(dt.startOfDate(hoje, 'month')).format('YYYY-MM-DDTHH:mm:SS')
+          let df = moment(dt.endOfDate(hoje, 'month')).format('YYYY-MM-DDTHH:mm:SS')
+          this.semana = moment(hoje).format('MMMM/YYYY')
+          
+          return this.recs.filter(row => row.vencimento > di && row.vencimento < df)
+        }
+        
+        if(this.tipoConta === 'semana'){
+          let dia = dt.getDayOfWeek(hoje)
+          let di = moment(dt.subtractFromDate(hoje, { days: dia })).format('YYYY-MM-DDTHH:mm:SS')
+          let df = moment(dt.addToDate(hoje, { days: 6 - dia })).format('YYYY-MM-DDTHH:mm:SS')
+          
+          this.semana = 'Dom ' +  dt.formatDate(di, 'DD/MM/YYYY') + ' - ' + 'Sáb ' +  dt.formatDate(df, 'DD/MM/YYYY')
+          
+          return this.recs.filter(row => row.vencimento > di && row.vencimento < df)
+          
+        }
+        
+        if(this.tipoConta === 'hoje'){
+          this.semana = ''
+          this.vencimento = hoje
+        }
+        
         let data = new Date(this.vencimento).toISOString().split('T').shift()
         
         return this.recs.filter(row => row.vencimento.indexOf(data)>=0)
@@ -551,8 +580,19 @@
         });
 
         return total
+      },
+      feedContas(){
+        return 'Você tem ' + this.contasPagar.length + ' contas a pagar e ' + this.contasReceber.length + ' contas a receber'
       }
 
+    },
+    watch:{
+      tipoConta (value) {
+        if(value === 'todas'){
+          console.log('tipo: ', value);
+          return this.$router.push('contas')
+        }
+      }
     },
     methods:{
       updateCurrentTime() {
@@ -648,21 +688,54 @@
         }
       },
       obterPermissoes(){
-          localforage.getItem('usuario').then((value) => {
-              if(value){
-                  console.log(value)
-                  this.permissoes = value
-              }
-              else{
-                  console.log(value)
-              }
+        localforage.getItem('usuario').then((value) => {
+            if(value){
+                console.log(value)
+                this.permissoes = value
+            }
+            else{
+                console.log(value)
+            }
+
+        }).catch((err) => {
+            console.log(err)
+            console.log('fail')
+        })
+      },
+      listarContas(){
+        let load = localStorage.getItem('loadContas')
+        if(load === 'false'){
+          localforage.getItem('DespPagar').then((value) => {
+            if(value){
+              console.log('localforage get contas Pagar')
+              console.log(value)
+              this.desp = value;
+            }
 
           }).catch((err) => {
               console.log(err)
               console.log('fail')
           })
-      },
-      listarContas(){
+          
+          localforage.getItem('RecPagar').then((value) => {
+            if(value){
+              console.log('localforage get contas Receber')
+              console.log(value)
+              this.recs = value;
+
+            }
+
+          }).catch((err) => {
+              console.log(err)
+              console.log('fail')
+          })     
+        
+        }
+        
+        
+        
+        if(this.desp.length>0 && this.recs.length>0) return
+        
         Loading.show({
             spinner: AtomSpinner,
             spinnerSize: 140,
@@ -696,7 +769,6 @@
       }
     },
     mounted(){
-      //this.vencimento = moment()
       
       this.currentTime = moment().format('LTS');
       setInterval(() => this.updateCurrentTime(), 1 * 1000);  
@@ -714,10 +786,6 @@
       this.getHoje()
       this.obterPermissoes()
       this.listarContas()
-      
-      console.log('inicio: ', dt.startOfDate(hoje, 'year')) 
-      console.log('final: ', dt.endOfDate(hoje, 'month'))
-      
       
     }  
   }
@@ -745,5 +813,11 @@
     color: #757575;
     margin: 10px 15px 0;
     font-weight: bold;
+  }
+  .semana{
+    color: #757575;
+    text-align: right;
+    vertical-align: bottom;
+    padding-top: 40px;
   }
 </style>
