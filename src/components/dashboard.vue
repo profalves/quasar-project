@@ -4,7 +4,7 @@
     <h3 class="text-center">{{tempo}} {{user | capitalize}}</h3>
     <div class="text-center">{{today}}, {{currentDate}}</div>
     <div class="text-center clock" v-text="currentTime"></div>
-      
+    
     <div class="row">
       <div class="col-xl-6">
         <q-list inset-separator no-border>
@@ -129,124 +129,95 @@
           <q-collapsible v-if="permissoes.acessaFinanceiro" icon="insert_chart" label="Contas" sublabel="Você tem 0 contas a pagar e 0 contas a receber hoje">
             <div class="layout-view">
               <div class="row">
-                <div class="col-md-3">
-                    <q-field>
-                        <q-select
-                            stack-label="Tipo"
-                            v-model="tipoConta"
-                            :options="tipos"
-                            @change="listarContas"
-                        />
-                    </q-field>
-                </div>
-                <div class="col-md-3 col-xs-12 offset-md-1">
+                <div class="col-md-5 col-xs-12"
+                     style="margin-top: 9px">
                     <q-field
-                        v-if="subDesp"
-                      >
-                        <q-select
-                            stack-label="Despesas"
-                            v-model="subtipo"
-                            :options="[
-                                { label: 'a pagar', value: false},
-                                { label: 'pagas', value: true}
-                            ]"
-                            @change="listarContas"
-                        />
-                    </q-field>
-                    <q-field
-                        v-else
-                      >
-                        <q-select
-                            stack-label="Receitas"
-                            v-model="subtipo"
-                            :options="[
-                                { label: 'a receber', value: false},
-                                { label: 'pagas', value: true}
-                            ]"
-                            @change="listarContas"
-                        />
-                    </q-field>
-                </div>  
-                <div class="col-md-4 col-xs-12 offset-md-1">
-                    <q-field
-                        icon="filter_list"
+                        icon="today"
                         >
-                        <q-select
-                            stack-label="Filtrar Data por"
-                            v-model="filtroPeriodo"
-                            :options="[
-                                { label: 'Periodo', value: true},
-                                { label: 'Dia Específico', value: false}
-                            ]"
-                            @change="listarContas"
+                        <q-select v-model="tipoPagar"
+                                  :options="[
+                                    { label: 'Hoje', value: 'hoje'},
+                                    { label: 'Esta Semana', value: 'semana'},
+                                    { label: 'Este Mês', value: 'mes'},
+                                    { label: 'Na Data', value: 'data'},
+                                    { label: 'Todas', value: 'todas'},
+                                  ]"
+
                         />
 
-                    </q-field> 
+                    </q-field>
+                </div>
+                <div class="offset-md-2"></div>
+                <div class="col-md-5 col-xs-12">
+                    <q-field
+                        icon="today"
+                        v-if="tipoPagar === 'data'"
+                        >
+                        <q-datetime v-model="vencimento"
+                                    type="date" 
+                                    float-label="Vencimento" 
+                                    color="black"
+                                    format="DD/MM/YYYY"
+                                    ok-label="OK" 
+                                    clear-label="Limpar" 
+                                    cancel-label="Cancelar"
+                                    :day-names="dias"
+                                    :month-names="meses"
+
+                        />
+
+                    </q-field>
+                </div>
+                <div class="text-right">{{periodo}}</div>
+              </div>
+            </div>
+            
+            <div class="layout-view">
+              <q-list highlight v-if="contasPagar.length>0">
+                <q-list-header>Contas a Pagar</q-list-header>
+                <q-item v-for="(d, index) in contasPagar" :key="index">
+                  <q-item-side icon="thumb_down" class="text-negative"/>
+                  <q-item-main>
+                    <q-item-tile label><strong>Vencimento:</strong> {{ d.vencimento | formatDate }}</q-item-tile>
+                    <q-item-tile sublabel>{{ d.fornecedor }}</q-item-tile>
+                  </q-item-main>
+                  <q-item-side right >
+                    {{ d.valorTitulo | formatMoney }}
+                  </q-item-side>
+                </q-item>
+                <q-item-separator />
+                <div class="total">Total: {{ totalPagar | formatMoney }}</div>
+              </q-list>
+              <div v-else>
+                <div class="msg">
+                  <i class="fa fa-smile-o fa-3x text-positive"></i>
+                  <div style="margin: 10px">Você não tem contas a pagar!</div>
                 </div>
               </div>
-              <div class="row">
-                  <div v-if="filtroPeriodo" class="col">
-                      <div class="row">
-                          <div class="col-md-6 col-xs-12">
-                              <q-field
-                                  icon="date_range"
-                                  >
-                                  <q-datetime v-model="dataInicial"
-                                              type="date" 
-                                              float-label="Data Inicial" 
-                                              color="black"
-                                              format="DD/MM/YYYY"
-                                              ok-label="OK" 
-                                              clear-label="Limpar" 
-                                              cancel-label="Cancelar"
-                                              :day-names="dias"
-                                              :month-names="meses"
-
-                                  />
-
-                              </q-field>  
-                          </div> 
-                          <div class="col">
-                              <q-field
-                                  icon="date_range"
-                                  >
-                                  <q-datetime v-model="dataFinal"
-                                              type="date" 
-                                              float-label="Data Final" 
-                                              color="black"
-                                              format="DD/MM/YYYY"
-                                              ok-label="OK" 
-                                              clear-label="Limpar" 
-                                              cancel-label="Cancelar"
-                                              :day-names="dias"
-                                              :month-names="meses"
-
-                                  />
-
-                              </q-field>  
-                          </div>
-                      </div>
-                  </div>
-                  <div v-else class="col-md-6 col-xs-12">
-                      <q-field
-                          icon="today"
-                          >
-                          <q-datetime v-model="vencimento"
-                                      type="date" 
-                                      float-label="Dia Específico" 
-                                      color="black"
-                                      format="DD/MM/YYYY"
-                                      ok-label="OK" 
-                                      clear-label="Limpar" 
-                                      cancel-label="Cancelar"
-                                      :day-names="dias"
-                                      :month-names="meses"
-
-                          />
-
-                      </q-field>
-                  </div>
+              
+              
+              <q-list highlight v-if="contasReceber.length>0">
+                <q-list-header>Contas a Receber</q-list-header>
+                <q-item v-for="(d, index) in contasReceber" :key="index">
+                  <q-item-side icon="thumb_up" class="text-positive"/>
+                  <q-item-main>
+                    <q-item-tile label><strong>Vencimento:</strong> {{ d.vencimento | formatDate }}</q-item-tile>
+                    <q-item-tile sublabel>{{ d.fornecedor }}</q-item-tile>
+                  </q-item-main>
+                  <q-item-side right >
+                    {{ d.valorTitulo | formatMoney }}
+                  </q-item-side>
+                </q-item>
+                <q-item-separator />
+                <div class="total">Total: {{ totalReceber | formatMoney }}</div>
+              </q-list>
+              <div v-else>
+                <div class="msg">
+                  <i class="fa fa-frown-o fa-3x text-negative"></i>
+                  <div style="margin: 10px">Você não tem contas a receber!</div>
+                </div>
               </div>
+              
             </div>
 
           </q-collapsible>
@@ -350,11 +321,14 @@
   </div>
 </template>
 <script type="text/javascript">
-  import { Toast, Dialog, Loading, openURL } from 'quasar'
+  import { Toast, Dialog, Loading, openURL, date } from 'quasar'
   import axios from 'axios'
   import { AtomSpinner } from 'epic-spinners'
   import localforage from 'localforage'
-
+  
+  //datas
+  let dt = date
+  const hoje = new Date()
   var moment = require('moment');
   require("moment/min/locales.min");
   moment.locale('pt-br');
@@ -442,11 +416,13 @@
         gutter: 'none', // compact, loose
         
         //contas
-        contas: [],
-        vencimento: moment().format('YYYY-MM-DDTHH:mm:SS'),
+        desp: [],
+        recs: [],
+        vencimento: hoje,
         dataInicial: '',
         dataFinal: '',
-        tipoConta: 'cp',
+        tipoPagar: 'hoje',
+        tipoReceb: 'hoje',
         tipos: [
           {
             label: 'Despesas',
@@ -460,6 +436,7 @@
         subtipo: false,
         subDesp: true,
         filtroPeriodo: true,
+        periodo: '',
         excluidos: '',
         codigoCab: '',
         selecionados: '',
@@ -525,23 +502,46 @@
         if(this.msg) return this.msg
         return 'Aniversariantes Hoje: ' + this.nivers.length    
       },
-      contasFilter(){
-        if(this.vencimento){
-          let data = moment(this.vencimento).format('YYYY-MM-DDTHH:mm:SS')
-          return this.contas.filter(row => row.vencimento.indexOf(data)>=0)
-        }
-        else if(this.dataInicial && this.dataFinal){
-          let di = moment(this.dataInicial).format('YYYY-MM-DDTHH:mm:SS')
-          let df = moment(this.dataFinal).format('YYYY-MM-DDTHH:mm:SS')
-          return this.contas.filter(row => row.vencimento > di && row.vencimento < df)
-        }
-        else{
-          return this.contas
+      contasPagar(){
+        if(this.tipoPagar === 'semana'){
+          let dia = dt.getDayOfWeek(hoje)
+          let di = moment(dt.subtractFromDate(hoje, { days: dia })).format('YYYY-MM-DDTHH:mm:SS')
+          let df = moment( dt.addToDate(hoje, { days: 6 - dia })).format('YYYY-MM-DDTHH:mm:SS')
+          
+          this.periodo = '' // coloca aqui o periodo da semana
+          
+          return this.desp.filter(row => row.vencimento > di && row.vencimento < df)
+          
         }
         
+        if(this.tipoPagar === 'hoje'){
+          this.vencimento = hoje
+        
+        }
+        
+        let data = new Date(this.vencimento).toISOString().split('T').shift()
+        
+        return this.desp.filter(row => row.vencimento.indexOf(data)>=0)
       },
-      totalContas(){
-        let a = this.contasFilter
+      contasReceber(){
+        let data = new Date(this.vencimento).toISOString().split('T').shift()
+        
+        return this.recs.filter(row => row.vencimento.indexOf(data)>=0)
+      },
+      totalPagar(){
+        let a = this.contasPagar
+        if(a.length === 0) return
+
+        let lista = a.map(row => row.valorTitulo)
+
+        let total = lista.reduce(function(a, b) {
+          return a + b;
+        });
+
+        return total
+      },
+      totalReceber(){
+        let a = this.contasReceber
         if(a.length === 0) return
 
         let lista = a.map(row => row.valorTitulo)
@@ -663,105 +663,48 @@
           })
       },
       listarContas(){
-        if(localStorage.getItem('loadContas') === 'false'){
-            Loading.show({
-                spinner: AtomSpinner,
-                spinnerSize: 140,
-                message: 'Aguardando Dados...'
-            })
-            axios.get(API + 'conta/obterContas?tipo=' + this.tipoConta + '&pagas=' + this.subtipo)
-            .then((res)=>{
-                console.log(res)
-                this.contas = res.data
-                Loading.hide()
-            })
-            .catch((e)=>{
-              console.log(e)
-              Loading.hide()
-            })
-        }
-        else{
-          if(this.tipo === 'cp' && this.subtipo === false){
-              localforage.getItem('DespPagar').then((value) => {
-                  if(value){
-                      console.log('localforage get')
-                      console.log(value)
-                      this.contas = value;
-                  }
-                  else{
-                      console.log('localforage fail')
-                      this.listarContas()
-                  }
-
-              }).catch((err) => {
-                  console.log(err)
-                  console.log('fail')
-              })     
-          }
-          if(this.tipo === 'cp' && this.subtipo === true){
-              localforage.getItem('DespPagas').then((value) => {
-                  if(value){
-                      console.log('localforage get')
-                      console.log(value)
-                      this.contas = value;
-                  }
-                  else{
-                      console.log('localforage fail')
-                      this.listarContas()
-                  }
-
-              }).catch((err) => {
-                  console.log(err)
-                  console.log('fail')
-              })     
-          }
-          if(this.tipo === 'cr' && this.subtipo === false){
-              localforage.getItem('RecPagar').then((value) => {
-                  if(value){
-                      console.log('localforage get')
-                      console.log(value)
-                      this.contas = value;
-                  }
-                  else{
-                      console.log('localforage fail')
-                      this.listarContas()
-                  }
-
-              }).catch((err) => {
-                  console.log(err)
-                  console.log('fail')
-              })     
-          }
-          if(this.tipo === 'cr' && this.subtipo === true){
-              localforage.getItem('RecPagas').then((value) => {
-                  if(value){
-                      console.log('localforage get')
-                      console.log(value)
-                      this.contas = value;
-                  }
-                  else{
-                      console.log('localforage fail')
-                      this.listarContas()
-                  }
-
-              }).catch((err) => {
-                  console.log(err)
-                  console.log('fail')
-              })     
-          }
-
-        }
-      },
-      
+        Loading.show({
+            spinner: AtomSpinner,
+            spinnerSize: 140,
+            message: 'Aguardando Dados...'
+        })
+        
+        axios.get(API + 'conta/obterContas?tipo=cp')
+        .then((res)=>{
+            console.log(res)
+            this.desp = res.data
+            //Loading.hide()
+        })
+        .catch((e)=>{
+          console.log(e)
+          Loading.hide()
+        })
+        
+        
+        axios.get(API + 'conta/obterContas?tipo=cr')
+        .then((res)=>{
+            console.log(res)
+            this.recs = res.data
+            //Loading.hide()
+        })
+        .catch((e)=>{
+          console.log(e)
+          Loading.hide()
+        })
+        
+        if(this.desp.length>0 && this.recs.length>0) Loading.hide()
+      }
     },
     mounted(){
+      //this.vencimento = moment()
+      
       this.currentTime = moment().format('LTS');
       setInterval(() => this.updateCurrentTime(), 1 * 1000);  
 
-      if(new Date().getHours() < 12 && new Date().getHours() > 4){
+      if(hoje.getHours() < 12 && hoje.getHours() > 4){
         this.tempo = 'Bom dia'
       }
-      else if(new Date().getHours() >= 12 && new Date().getHours() < 18){
+      else if(hoje.getHours() >= 12 && hoje.getHours() < 18){
         this.tempo = 'Boa tarde'
       }
       else{
@@ -771,6 +714,10 @@
       this.getHoje()
       this.obterPermissoes()
       this.listarContas()
+      
+      console.log('inicio: ', dt.startOfDate(hoje, 'year')) 
+      console.log('final: ', dt.endOfDate(hoje, 'month'))
+      
       
     }  
   }
@@ -787,6 +734,16 @@
   }
   .tile {
     color: lightslategrey;
+    font-weight: bold;
+  }
+  .msg {
+    vertical-align: middle;
+    text-align: center;
+    margin: 20px;
+  }
+  .total{
+    color: #757575;
+    margin: 10px 15px 0;
     font-weight: bold;
   }
 </style>
