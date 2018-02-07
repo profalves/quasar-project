@@ -29,11 +29,12 @@
       <router-view class="container"></router-view>    
     </transition>
       
-    <!--<q-toolbar slot="footer" color="black">
-      <q-toolbar-title>
-        Layout Footer
-      </q-toolbar-title>
-    </q-toolbar>-->
+    <q-toolbar slot="footer" color="black" v-if="$route.path !== '/login' && !$route.query.config">
+      <center>
+        Muito obrigado por usar 
+        <a href="http://7virtual.com.br/" target="_blank">7Virtual</a> Sistemas
+      </center>
+    </q-toolbar>
     
   </q-layout>
   </div>
@@ -95,8 +96,8 @@ export default {
         left: 0;
 		text-align: center;
         z-index: 5;
-	}
-    
+	}  
+  
     .boxInput {
         text-align: center;
         font-size: 30px;

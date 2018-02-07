@@ -13,15 +13,15 @@
           <q-collapsible icon="menu" label="Menu">
             <div class="row text-center">
               <div class="col" @click="$router.push('clientes')">
-                  <i class="fa fa-user fa-4x text-center text-blue-grey mHover"></i><br>
+                  <i class="fa fa-user fa-4x text-center text-cyan mHover"></i><br>
                   <p class="tile">Pessoas</p>
               </div>
               <div class="col" @click="$router.push('produtos')">
-                  <i class="fa fa-shopping-basket fa-4x center text-secondary mHover"></i><br>
+                  <i class="fa fa-shopping-basket fa-4x center text-warning mHover"></i><br>
                   <p class="tile">Produtos</p>
               </div>
-              <div class="col" @click="$router.push('contas')">
-                  <i class="fa fa-money fa-4x center text-warning mHover"></i><br>
+              <div class="col" @click="$router.push('contas')" v-if="permissoes.acessaFinanceiro">
+                  <i class="fa fa-money fa-4x center text-secondary mHover"></i><br>
                   <p class="tile">Contas</p>
               </div>
             </div>
@@ -34,12 +34,20 @@
                   <i class="fa fa-line-chart fa-4x center text-primary mHover"></i><br>
                   <p class="tile">Relatórios</p>
               </div>
-              <div class="col" @click="$router.push('usuarios')">
-                  <i class="fa fa-users fa-4x center text-cyan mHover"></i><br>
+              <div class="col" @click="$router.push('usuarios')" v-if="permissoes.cadUsuario">
+                  <i class="fa fa-users fa-4x center text-blue-grey-4 mHover"></i><br>
                   <p class="tile">Usuários</p>
               </div>
             </div>
             <div class="row text-center">
+              <div class="col" @click="$router.push('nivers')">
+                  <i class="fa fa-birthday-cake fa-4x text-center text-indigo-5 mHover"></i><br>
+                  <p class="tile">Aniversariantes</p>
+              </div>
+              <div class="col" @click="$router.push('transFiliais')" v-if="permissoes.pdV_PermitirTransfProduto">
+                  <i class="fa fa-truck fa-4x text-center text-orange mHover"></i><br>
+                  <p class="tile">Transferências</p>
+              </div>
               <div class="col" @click="$router.push('config')">
                   <i class="fa fa-cog fa-4x text-center mHover"></i><br>
                   <p class="tile">Configurações</p>
@@ -48,7 +56,7 @@
             
           </q-collapsible>
           <!-- Faturamento -->
-          <q-collapsible v-if="permissoes.acessaFinanceiro" icon="attach_money" label="Faturamento" sublabel="Faturamento do dia: R$ 0,00 / Saldo: R$ 0,00">
+          <q-collapsible v-if="permissoes.acessaFinanceiro" icon="attach_money" label="Faturamento" sublabel="Faturamento do dia: R$ 0,00">
             <div class="row">
               <div class="col">
                   <q-card>
@@ -124,10 +132,8 @@
             
           </q-collapsible>
           <!-- Vendas -->
-          <q-collapsible v-if="permissoes.acessaFinanceiro" icon="grade" label="Vendas" sublabel="Total de vendas por vendedor">
-            <horizontal-bar :datalabel="'TestDataLabel'" 
-                            :labels="['happy','myhappy','hello']" 
-                            :data="[100,40,60]" />
+          <q-collapsible v-if="permissoes.acessaFinanceiro" icon="fa-handshake-o" label="Vendas" sublabel="Total de vendas por vendedor">
+          
           </q-collapsible>
           <!-- Contas -->
           <q-collapsible v-if="permissoes.acessaFinanceiro" icon="insert_chart" label="Contas" :sublabel="feedContas">
@@ -216,6 +222,11 @@
                 </div>
               </div>
               
+            </div>
+            
+            <div class="layout-view">
+              <p class="total">Seu saldo: <strong>R$ 0,00</strong>
+              </p>
             </div>
 
           </q-collapsible>
@@ -343,7 +354,6 @@
   import polar from './charts/Polar.js'
   import radar from './charts/Radar.js'
   import bubble from './charts/Bubble.js'
-  import { HorizontalBar } from 'vue-chartjs/dist/vue-chartjs.js'
     
   export default {
     name: 'DashBoard',
@@ -354,8 +364,7 @@
         donut,
         polar,
         radar,
-        bubble,
-        HorizontalBar 
+        bubble
     },
     data () {
       return {
@@ -365,6 +374,7 @@
         currentDate: moment().format('LL'),
         currentTime: null,
         today: moment().format('dddd'),
+        tempo: '',
           
         //faturamento
         dia: 0,
@@ -372,7 +382,11 @@
         min: 0,
         maxDia: parseInt(localStorage.getItem('tetoDia')),
         maxMes: parseInt(localStorage.getItem('tetoMes')),
-        tempo: '',
+        periodo: '',
+        
+        //vendas por vendedor
+        vendas: [],
+        metaVendedor: 4550,
         
         //gráficos
         user: localStorage.getItem('nameUser'),
@@ -583,7 +597,7 @@
       },
       feedContas(){
         return 'Você tem ' + this.contasPagar.length + ' contas a pagar e ' + this.contasReceber.length + ' contas a receber'
-      }
+      },
 
     },
     watch:{
@@ -766,7 +780,44 @@
         })
         
         if(this.desp.length>0 && this.recs.length>0) Loading.hide()
-      }
+      },
+      getVendas(){
+        let h = '2017-07-10T00:00:00'
+        console.log('h', h);
+        
+        Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Aguardando Dados...'
+        })
+        axios.get(API + 'relatorio/obterRptPorFormaPgto?' +
+                'dataInicial=' + h + '&dataFinal=' + h)
+        .then((res)=>{
+          let tot = res.data.shift()
+          console.log('vendas:', res.data)
+          console.log('tot:', tot)
+          this.vendas = res.data
+
+          this.visivel = true
+          Loading.hide()
+        })
+        .catch((e)=>{
+          console.log(e.response)
+          Loading.hide()
+        })
+      },
+      vendasVendedor(value){
+        if(this.meta === 0) return
+        value = this.vendas.map(row => ({
+          vendedor: row.vendedor,
+          porcentagem: parseFloat(((row.venda / this.meta)*100).toFixed(2))
+        }))
+        
+        console.log('novo vendas', value);
+        return value
+      },
+      totalVendas(){},
+      totalLucro(){},
     },
     mounted(){
       
@@ -786,6 +837,8 @@
       this.getHoje()
       this.obterPermissoes()
       this.listarContas()
+      this.getVendas()
+      this.vendasVendedor()
       
     }  
   }

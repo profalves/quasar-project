@@ -112,7 +112,7 @@
     </q-search>
     
     <div v-for="(pessoa, index) in pessoa">
-        <q-card v-if="pessoa" no-border>
+        <q-card no-border>
           <q-card-title>
             {{ pessoa.nome }}
             <span slot="subtitle">
@@ -216,7 +216,7 @@
     </q-modal>
     
     
-
+    <br><br><br><br><br>
     
 </div>
 </template>
@@ -406,6 +406,7 @@ export default {
             if(value){
               if(this.search === ''){
                 this.pessoa = value
+                console.log(this.pessoa)
               }
               else if(this.tipoCod === 'cpf' && this.search !== ''){
                 this.pessoa = value.filter(row => row.cpf.indexOf(this.search) >= 0);
@@ -415,6 +416,7 @@ export default {
                   const cnpj = row.cnpj || ''
                   return cnpj.indexOf(this.search) >= 0
                 })
+                console.log(this.pessoa)
               }
               else if(this.tipoCod === 'telefone' && this.search !== ''){
                 this.pessoa = value.filter(row => {
@@ -425,11 +427,13 @@ export default {
                 });
                 console.log(this.pessoa)
               }
-              if(this.autocomplete && this.search !== ''){
+              else if(this.autocomplete && this.search !== ''){
                 this.pessoa = value.filter(row => row.nome.indexOf(this.search) >= 0);
+                console.log(this.pessoa)
               }
               else {
                 this.pessoa = value.filter(row => row.nome.toLowerCase().indexOf(this.search) >= 0);
+                console.log(this.pessoa)
               }
                 
             }

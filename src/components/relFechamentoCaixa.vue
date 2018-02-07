@@ -537,7 +537,7 @@ export default {
       axios.get(API + 'caixa/obterFechamentoCaixa?codigocaixa=' + this.idCaixa + '&FechamentoTodos=true')
       .then((res)=>{  
         Loading.hide()
-        //console.log(res.data)
+        console.log(res)
         this.relFechamento = res.data
         this.nomeUsuario = this.relFechamento.abertura.nomeUsuario
         this.numeroCaixa = this.relFechamento.abertura.numeroCaixa

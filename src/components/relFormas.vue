@@ -335,7 +335,7 @@ export default {
                 'dataInicial=' + this.dataInicial +
                 '&dataFinal=' + this.dataFinal + f)
         .then((res)=>{
-            //console.log(res.data)
+            console.log(res.data)
             this.vendas = res.data
             this.totalizadores = this.vendas.shift()
             this.opened = false

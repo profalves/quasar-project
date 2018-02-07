@@ -321,7 +321,7 @@
 
                 >
                  <p class="fields">
-                    <strong>Tipo: </strong>{{ produto.tipo }} 
+                    <strong>Estoque Mínimo: </strong><!--{{ produto.tipo }} -->
                  </p>
 
                 </q-field>
@@ -334,7 +334,8 @@
         <q-btn flat @click="limpar">Fechar</q-btn>
       </q-card-actions>-->
     </q-card>
-        
+       
+    <br><br><br><br>
   </div>
 </template>
 
@@ -540,6 +541,8 @@ export default {
           })
     },
     modProdutos(){
+        this.tipoCod = 'nome'
+      
         //consultar localmente
         
         //requisição

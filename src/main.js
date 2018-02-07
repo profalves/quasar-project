@@ -42,7 +42,6 @@ import VueTheMask from 'vue-the-mask'
 Vue.use(VueTheMask)
 
 import money from 'v-money'
-// register directive v-money and component <money>
 Vue.use(money)
 
 import JsPDF from 'jspdf'
@@ -82,7 +81,7 @@ Vue.filter('formatPerc', function (value) {
 })
 
 Vue.filter('formatDate', function (value) {
-  if (value === null) { return null }
+  if (value === null) return null
   return new Date(value).toLocaleString('pt-BR', {year: 'numeric', month: '2-digit', day: '2-digit'})
 })
 
