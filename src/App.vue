@@ -29,12 +29,12 @@
       <router-view class="container"></router-view>    
     </transition>
       
-    <q-toolbar slot="footer" color="black" v-if="$route.path !== '/login' && !$route.query.config">
+    <!--<q-toolbar slot="footer" color="black" v-if="$route.path !== '/login' && !$route.query.config">
       <center>
         Muito obrigado por usar 
         <a href="http://7virtual.com.br/" target="_blank">7Virtual</a> Sistemas
       </center>
-    </q-toolbar>
+    </q-toolbar>-->
     
   </q-layout>
   </div>
@@ -77,78 +77,78 @@ export default {
 }
 </script>
 <style>
-    body {
-        background-image: url("../img/fundo.png");
-        background-size: auto;
-        background-repeat: repeat-x;
-        background-color: white;
-    }
-    .container {
-        margin: 20px 20px 0 20px;
-    }
-    
-    .topo {
-        margin-top: -90px;
-		padding-top: 60px;
-		width: 100%; 
-		position: sticky;
-		top: 0; 
-        left: 0;
-		text-align: center;
-        z-index: 5;
-	}  
-  
-    .boxInput {
-        text-align: center;
-        font-size: 30px;
-        color: white;
-        background:transparent;
-        outline:none;
-        border: 0px;
-        width:85%;
-    }
-    
-    .mdInput {
-        /*margin-top: 10px;
-        width: 90%;*/
-        background:transparent;
-        outline:none;
-        border: 0px;
-        /*border-bottom-color: #D3DAE0;*/
-    }
-    
-    .mHover {
-        cursor: pointer;
-    }
-    
-    #table {
-        overflow: scroll;
-    }
-    
-    .fixo{
-        z-index: 5
-    }
-    
-    /*transitions router*/
-    .fade-enter-active, .fade-leave-active {
-      transition: opacity .5s ease;
-    }
-    .fade-enter, .fade-leave-active {
-      opacity: 0
-    }
-    .child-view {
-      position: absolute;
-      transition: all .5s cubic-bezier(.55,0,.1,1);
-    }
-    .slide-left-enter, .slide-right-leave-active {
-      opacity: 0;
-      -webkit-transform: translate(30px, 0);
-      transform: translate(30px, 0);
-    }
-    .slide-left-leave-active, .slide-right-enter {
-      opacity: 0;
-      -webkit-transform: translate(-30px, 0);
-      transform: translate(-30px, 0);
-    }
+  body {
+    background-image: url("../img/fundo.png");
+    background-size: auto;
+    background-repeat: repeat-x;
+    background-color: white;
+  }
+  .container {
+    margin: 20px 20px 0 20px;
+  }
+
+  .topo {
+    margin-top: -90px;
+    padding-top: 60px;
+    width: 100%; 
+    position: sticky;
+    top: 0; 
+    left: 0;
+    text-align: center;
+    z-index: 5;
+  }  
+
+  .boxInput {
+    text-align: center;
+    font-size: 30px;
+    color: white;
+    background:transparent;
+    outline:none;
+    border: 0px;
+    width:85%;
+  }
+
+  .mdInput {
+    /*margin-top: 10px;
+    width: 90%;*/
+    background:transparent;
+    outline:none;
+    border: 0px;
+    /*border-bottom-color: #D3DAE0;*/
+  }
+
+  .mHover {
+    cursor: pointer;
+  }
+
+  #table {
+    overflow: scroll;
+  }
+
+  .fixo{
+    z-index: 5
+  }
+
+  /*transitions router*/
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity .5s ease;
+  }
+  .fade-enter, .fade-leave-active {
+    opacity: 0
+  }
+  .child-view {
+    position: absolute;
+    transition: all .5s cubic-bezier(.55,0,.1,1);
+  }
+  .slide-left-enter, .slide-right-leave-active {
+    opacity: 0;
+    -webkit-transform: translate(30px, 0);
+    transform: translate(30px, 0);
+  }
+  .slide-left-leave-active, .slide-right-enter {
+    opacity: 0;
+    -webkit-transform: translate(-30px, 0);
+    transform: translate(-30px, 0);
+  }
     
 </style>

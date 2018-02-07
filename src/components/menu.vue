@@ -83,6 +83,13 @@
           </q-side-link>
           
         </q-item>
+        <q-item to="/">
+          <q-item-side icon="fa-life-ring" />
+          <q-side-link to="/" class="link">
+                <q-item-main label="Suporte" sublabel="Solicitar Ajuda do Suporte Remoto" />
+          </q-side-link>
+          
+        </q-item>
         <q-item to="/login">
           <q-item-side icon="exit_to_app" />
           <q-side-link to="/login" class="link">
@@ -175,10 +182,11 @@ export default {
 }
 </script>
 <style scoped>
-    .link{
-        margin-left: 10px
-    }
-    .user{
-        margin: 10px 15px 0
-    }
+  .link{
+    margin-left: 10px
+  }
+  .user{
+    margin: 10px 15px 0;
+    text-align: center;
+  }
 </style>

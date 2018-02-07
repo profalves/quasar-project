@@ -14,6 +14,43 @@
           <q-list inset-separator style="background-color: white; margin-bottom: 40px;">
             <q-list-header>Configurações Gerais</q-list-header>
             
+            <!-- DASHBOARD -->
+            <q-collapsible icon="fa-tachometer" label="Painel de Abertura" sublabel="Configurações de exibição do painel inicial">
+              
+              <q-list highlight no-border>
+                <q-list-header>Menu</q-list-header>
+                <q-item multiline tag="label">
+                  <q-item-main>
+                    <q-item-tile label>Exibir Icones do Menu Principal</q-item-tile>
+                    <q-item-tile sublabel lines="2">Permitir acessar o menu principal através do painel inicial</q-item-tile>
+                  </q-item-main>
+                  <q-item-side right>
+                    <q-checkbox v-model="autocomplete"
+                                @change=""/>
+                  </q-item-side>
+                </q-item>
+                <q-item-separator />
+                <q-list-header>Vendas</q-list-header>
+                <q-item>
+                  <q-item-main>
+                    <q-item-tile label>Meta do Mês Padrão</q-item-tile>
+                  </q-item-main>
+                  <q-item-side right>
+                    <q-input v-model="metaVendedor" type="number" align="right" />
+                  </q-item-side>
+                </q-item>
+                <q-item>
+                  <q-item-main label="John Doe" sublabel="Quasar enthusiast" />
+                  <q-item-side right icon="chat_bubble" />
+                </q-item>
+                <q-item-separator />
+                <q-list-header>Previous chats</q-list-header>
+                <q-item>
+                  <q-item-main label="Jack Doe" />
+                </q-item>
+              </q-list>
+              
+            </q-collapsible>
             <!-- Notificações -->
             <q-collapsible icon="notifications" label="Notificações" sublabel="Configurações de exibição de Notificações no sistema">
               <div>
@@ -483,6 +520,11 @@ export default {
     return {
       //btn voltar
       canGoBack: window.history.length > 1,
+      
+      //dashboard
+      
+      metaVendedor: '',
+      
       //buscas
       maxResults: parseInt(localStorage.getItem('maxResults')),
       autocomplete: (localStorage.getItem('autocomplete') === 'true'),

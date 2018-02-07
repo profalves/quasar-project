@@ -133,7 +133,32 @@
           </q-collapsible>
           <!-- Vendas -->
           <q-collapsible v-if="permissoes.acessaFinanceiro" icon="fa-handshake-o" label="Vendas" sublabel="Total de vendas por vendedor">
-          
+            <q-list highlight>
+              <q-list-header>Ranking</q-list-header>
+              <q-item>
+                <q-item-main>Meta do Mês</q-item-main>
+                <q-item-side right>
+                  <q-input v-model="metaVendedor" type="number" align="right" />
+                </q-item-side>
+              </q-item>
+              <q-item v-for="(v, index) in vendasVendedor" :key="index">
+                <q-item-side>{{index + 1}}</q-item-side>
+                <q-item-main>
+                  <q-item-tile label>{{v.vendedor}}</q-item-tile>
+                  <q-item-tile sublabel>{{v.total | formatMoney}}</q-item-tile>
+                  <q-progress :percentage="v.porcentagem"
+                              color="orange"
+                              stripe animate 
+                              style="height: 25px" />
+                </q-item-main>
+                <q-item-side right>{{v.porcentagem}}%</q-item-side>
+                <!--<q-item-main>
+                  <q-progress :percentage="v.total" stripe animate style="height: 45px" />
+                </q-item-main>-->
+              </q-item>
+              
+              
+            </q-list>
           </q-collapsible>
           <!-- Contas -->
           <q-collapsible v-if="permissoes.acessaFinanceiro" icon="insert_chart" label="Contas" :sublabel="feedContas">
@@ -272,6 +297,7 @@
 
       </div>
     </div>
+    <br><br><br>
       
     <q-modal minimized ref="telModal">
         <div>
@@ -326,6 +352,12 @@
             <q-btn color="primary" @click="$refs.emailModal.close()" id="btn-modal">Fechar</q-btn>
         </div>
     </q-modal>
+    
+    <footer slot="footer" color="black" v-if="$route.path !== '/login' && !$route.query.config">
+      <center>
+        Obrigado por usar <a href="http://7virtual.com.br/" target="_blank">7Virtual</a> Sistemas
+      </center>
+    </footer>
       
   </div>
 </template>
@@ -598,6 +630,21 @@
       feedContas(){
         return 'Você tem ' + this.contasPagar.length + ' contas a pagar e ' + this.contasReceber.length + ' contas a receber'
       },
+      vendasVendedor(){
+        if(this.metaVendedor === 0) return
+        
+        let vendedores = this.vendas.map(row => ({
+          vendedor: row.vendedor,
+          total: row.venda,
+          porcentagem: parseFloat(((row.venda / this.metaVendedor)*100).toFixed(2))
+        }))
+        
+        return vendedores.sort(function(a,b) {
+            return a.total < b.total ? 1 : a.total > b.total ? -1 : 0;
+        });
+        
+        
+      }
 
     },
     watch:{
@@ -704,7 +751,7 @@
       obterPermissoes(){
         localforage.getItem('usuario').then((value) => {
             if(value){
-                console.log(value)
+                //console.log(value)
                 this.permissoes = value
             }
             else{
@@ -713,7 +760,7 @@
 
         }).catch((err) => {
             console.log(err)
-            console.log('fail')
+            console.log('fail get permissions')
         })
       },
       listarContas(){
@@ -722,7 +769,7 @@
           localforage.getItem('DespPagar').then((value) => {
             if(value){
               console.log('localforage get contas Pagar')
-              console.log(value)
+              //console.log(value)
               this.desp = value;
             }
 
@@ -734,7 +781,7 @@
           localforage.getItem('RecPagar').then((value) => {
             if(value){
               console.log('localforage get contas Receber')
-              console.log(value)
+              //console.log(value)
               this.recs = value;
 
             }
@@ -758,9 +805,8 @@
         
         axios.get(API + 'conta/obterContas?tipo=cp')
         .then((res)=>{
-            console.log(res)
+            //console.log(res)
             this.desp = res.data
-            //Loading.hide()
         })
         .catch((e)=>{
           console.log(e)
@@ -770,9 +816,8 @@
         
         axios.get(API + 'conta/obterContas?tipo=cr')
         .then((res)=>{
-            console.log(res)
+            //console.log(res)
             this.recs = res.data
-            //Loading.hide()
         })
         .catch((e)=>{
           console.log(e)
@@ -783,7 +828,6 @@
       },
       getVendas(){
         let h = '2017-07-10T00:00:00'
-        console.log('h', h);
         
         Loading.show({
           spinner: AtomSpinner,
@@ -793,11 +837,9 @@
         axios.get(API + 'relatorio/obterRptPorFormaPgto?' +
                 'dataInicial=' + h + '&dataFinal=' + h)
         .then((res)=>{
-          let tot = res.data.shift()
-          console.log('vendas:', res.data)
-          console.log('tot:', tot)
+          res.data.shift()
           this.vendas = res.data
-
+          console.log('vendas:', this.vendas)
           this.visivel = true
           Loading.hide()
         })
@@ -805,16 +847,6 @@
           console.log(e.response)
           Loading.hide()
         })
-      },
-      vendasVendedor(value){
-        if(this.meta === 0) return
-        value = this.vendas.map(row => ({
-          vendedor: row.vendedor,
-          porcentagem: parseFloat(((row.venda / this.meta)*100).toFixed(2))
-        }))
-        
-        console.log('novo vendas', value);
-        return value
       },
       totalVendas(){},
       totalLucro(){},
@@ -838,7 +870,6 @@
       this.obterPermissoes()
       this.listarContas()
       this.getVendas()
-      this.vendasVendedor()
       
     }  
   }
@@ -872,5 +903,13 @@
     text-align: right;
     vertical-align: bottom;
     padding-top: 40px;
+  }
+  footer{
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 1rem;
+    text-align: center;
   }
 </style>
