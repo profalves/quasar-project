@@ -242,6 +242,7 @@ export default {
                 localStorage.setItem('loadUsuarios', false)
                 localStorage.setItem('maxResults', 6)
                 localStorage.getItem('wsAtual', '')
+                localStorage.getItem('menu', 'true')
                 Loading.hide()
             }
             

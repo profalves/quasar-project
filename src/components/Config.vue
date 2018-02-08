@@ -25,28 +25,91 @@
                     <q-item-tile sublabel lines="2">Permitir acessar o menu principal através do painel inicial</q-item-tile>
                   </q-item-main>
                   <q-item-side right>
-                    <q-checkbox v-model="autocomplete"
-                                @change=""/>
+                    <q-toggle
+                        v-model="menu"
+                        checked-icon="visibility"
+                        unchecked-icon="visibility_off"
+                        style="margin-left: 25px"
+                        @change="menuVisibility"
+                    />
+
                   </q-item-side>
                 </q-item>
                 <q-item-separator />
                 <q-list-header>Vendas</q-list-header>
+                <div style="margin-left: 15px">
+                  <strong>Geral</strong>
+                </div>
+                <q-item>
+                  <q-item-main>
+                    <q-item-tile label>Meta do Dia Padrão</q-item-tile>
+                  </q-item-main>
+                  <q-item-side right>
+                    <q-input v-model="metaDiaVendedor" type="number" align="right" />
+                  </q-item-side>
+                </q-item>
+                <q-item>
+                  <q-item-main>
+                    <q-item-tile label>Quase Meta do Dia Padrão</q-item-tile>
+                  </q-item-main>
+                  <q-item-side right>
+                    <q-input v-model="metaDiaVendedor" type="number" align="right" />
+                  </q-item-side>
+                </q-item>
+                <q-item>
+                  <q-item-main>
+                    <q-item-tile label>Teto Meta do Dia Padrão</q-item-tile>
+                  </q-item-main>
+                  <q-item-side right>
+                    <q-input v-model="metaDiaVendedor" type="number" align="right" />
+                  </q-item-side>
+                </q-item>
+                
+                <strong>ou sugerir baseado nas cores (porcentagem)</strong>
+                
                 <q-item>
                   <q-item-main>
                     <q-item-tile label>Meta do Mês Padrão</q-item-tile>
                   </q-item-main>
                   <q-item-side right>
-                    <q-input v-model="metaVendedor" type="number" align="right" />
+                    <q-input v-model="metaMesVendedor" type="number" align="right" />
+                  </q-item-side>
+                </q-item>
+                
+                <div style="margin-left: 15px">
+                  <strong>Vendedor</strong>
+                </div>
+                <q-item>
+                  <q-item-main>
+                    <q-item-tile label>Meta do Mês Padrão</q-item-tile>
+                  </q-item-main>
+                  <q-item-side right>
+                    <q-input v-model="metaMesVendedor" type="number" align="right" />
                   </q-item-side>
                 </q-item>
                 <q-item>
-                  <q-item-main label="John Doe" sublabel="Quasar enthusiast" />
-                  <q-item-side right icon="chat_bubble" />
+                  <q-item-main>
+                    <q-item-tile label>Meta do Dia Padrão</q-item-tile>
+                    <q-item-tile sublabel>
+                      <q-btn color="primary"
+                             small rounded
+                             @click="sugerir"
+                             >Sugerir</q-btn>
+                    </q-item-tile>
+                  </q-item-main>
+                  <q-item-side right>
+                    <q-input v-model="metaDiaVendedor" type="number" align="right" />
+                  </q-item-side>
                 </q-item>
-                <q-item-separator />
-                <q-list-header>Previous chats</q-list-header>
                 <q-item>
-                  <q-item-main label="Jack Doe" />
+                  <q-item-main>
+                    <q-item-tile label>Meta editável</q-item-tile>
+                    <q-item-tile sublabel lines="2">Permite editar a meta no próprio painel de vendas</q-item-tile>
+                  </q-item-main>
+                  <q-item-side right>
+                    <q-checkbox v-model="editMeta"
+                                @change="setEditMeta"/>
+                  </q-item-side>
                 </q-item>
               </q-list>
               
@@ -495,12 +558,13 @@
             </q-collapsible>
             <!-- RESET -->
             <q-collapsible  icon="delete_forever" 
-                            label="Restaurar Configurações iniciais" 
+                            label="Restaurar Configurações de Fábrica" 
                             sublabel="Resetar todas as configurações">
                 <q-btn
                     color="negative"
                     icon="warning"
                     @click="resetarTudo"
+                    style="margin-left: 48px"
                 >Resetar Tudo</q-btn>    
                                 
             </q-collapsible>
@@ -522,8 +586,10 @@ export default {
       canGoBack: window.history.length > 1,
       
       //dashboard
-      
-      metaVendedor: '',
+      menu: (localStorage.getItem('menu') === 'true'),
+      metaDiaVendedor: parseInt(localStorage.getItem('metaDiaVendedor')),
+      metaMesVendedor: parseInt(localStorage.getItem('metaMesVendedor')),
+      editMeta: (localStorage.getItem('editMeta') === 'true'),
       
       //buscas
       maxResults: parseInt(localStorage.getItem('maxResults')),
@@ -616,6 +682,18 @@ export default {
     goBack(){
       window.history.go(-1)
     },
+    
+    //dashboard
+    menuVisibility(){
+      localStorage.setItem('menu', this.menu)  
+    },
+    //===============================
+    sugerir(){
+      this.metaDiaVendedor = Math.round(this.metaMesVendedor / 25)
+    },
+    setEditMeta(){
+      localStorage.setItem('editMeta', this.editMeta)
+    },
       
     //notificações
     solicitarNotificacoes(){
@@ -645,10 +723,10 @@ export default {
       
     //buscas
     setMaxResults(){
-        localStorage.setItem('maxResults', this.maxResults)    
+      localStorage.setItem('maxResults', this.maxResults)    
     },
     setAutoComplete(){
-        localStorage.setItem('autocomplete', this.autocomplete)    
+      localStorage.setItem('autocomplete', this.autocomplete)    
     },
       
     //Graficos
@@ -902,7 +980,7 @@ export default {
     //Resetar TODAS Configurações
     resetarTudo(){
         Dialog.create({
-          title: 'Você tem certeza que deseja voltar TODAS para as configurações iniciais do sistema?',
+          title: 'Você tem certeza que deseja voltar TODAS as configurações para as iniciais do sistema?',
           message: 'Depois de confirmado, esta ação irá excluir todas as configurações e NÃO poderá ser revertida...',
           buttons: [
             {
@@ -911,7 +989,7 @@ export default {
               raised: true,
               style: 'margin-top: 20px',
               handler () {
-                Toast.create('NÃO RESETADO: As configurações do aplicativo continuam as mesmas')
+                Toast.create.warning('NÃO RESETADO: As configurações do aplicativo continuam as mesmas')
               }
             },
             {
@@ -922,7 +1000,7 @@ export default {
               handler: () => {
                 localStorage.clear()
                 this.$router.push('login')
-                Toast.create('Todas as configurações foram deletadas')
+                Toast.create.negative('Todas as configurações foram deletadas')
               }
             }
           ]
@@ -962,13 +1040,13 @@ export default {
 </script>
 
 <style>
-    #config{
-        overflow: scroll;
-    }
-    .low{
-        margin-bottom: 50px;
-    }
-    #btn-save{
-        margin: 20px 0 0 40px;            
-    }
+  #config{
+    overflow: scroll;
+  }
+  .low{
+    margin-bottom: 50px;
+  }
+  #btn-save{
+    margin: 20px 0 0 40px; 
+  }
 </style>
