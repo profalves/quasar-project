@@ -56,8 +56,8 @@
             
           </q-collapsible>
           <!-- Vendas -->
-          <q-collapsible v-if="permissoes.acessaFinanceiro" icon="fa-handshake-o" label="Vendas" :sublabel="feedVendas">
-            <div class="row">
+          <q-collapsible icon="fa-handshake-o" label="Vendas" :sublabel="feedVendas">
+            <div class="row" v-if="permissoes.acessaFinanceiro">
               <div class="col">
                   <q-card>
                     <q-card-title>
@@ -132,7 +132,8 @@
             </div>
             
             <q-list highlight id="ranking">
-              <q-list-header>Ranking</q-list-header>
+              <q-list-header v-if="permissoes.funcao === 'ADMIN'">Ranking</q-list-header>
+              <q-list-header v-else>Meta</q-list-header>
               <q-item>
                 <q-item-main>
                   <q-select v-model="mensal"
@@ -160,7 +161,36 @@
                            :disable="editMeta"/>
                 </q-item-side>
               </q-item>
-              <q-item v-for="(v, index) in vendasVendedor" :key="index">
+              <q-item v-for="(v, index) in vendasVendedor" :key="index" v-if="permissoes.funcao === 'VENDEDOR' && v.vendedor === user">
+                <!--<q-item-side v-if="v.vendedor === user">{{index + 1}}</q-item-side>--> <!--caso queira observar a posição-->
+                <q-item-main v-if="v.vendedor === user">
+                  <q-item-tile label>{{v.vendedor}}</q-item-tile>
+                  <q-item-tile sublabel>{{v.total | formatMoney}}</q-item-tile>
+                  <q-progress :percentage="v.porcentagem"
+                              color="orange"
+                              stripe animate 
+                              style="height: 25px" />
+                </q-item-main>
+                <q-item-side right v-if="v.vendedor === user">{{v.porcentagem}}%</q-item-side>
+                
+              </q-item>
+              
+              <q-item v-for="(v, index) in vendasVendedor" :key="index" v-if="permissoes.funcao === 'CAIXA' && v.vendedor === user">
+                <!--<q-item-side v-if="v.vendedor === user">{{index + 1}}</q-item-side>--> <!--caso queira observar a posição-->
+                <q-item-main v-if="v.vendedor === user">
+                  <q-item-tile label>{{v.vendedor}}</q-item-tile>
+                  <q-item-tile sublabel>{{v.total | formatMoney}}</q-item-tile>
+                  <q-progress :percentage="v.porcentagem"
+                              color="orange"
+                              stripe animate 
+                              style="height: 25px" />
+                </q-item-main>
+                <q-item-side right v-if="v.vendedor === user">{{v.porcentagem}}%</q-item-side>
+                
+              </q-item>
+              
+              
+              <q-item v-for="(v, index) in vendasVendedor" :key="index" v-if="permissoes.funcao === 'ADMIN'">
                 <q-item-side>{{index + 1}}</q-item-side>
                 <q-item-main>
                   <q-item-tile label>{{v.vendedor}}</q-item-tile>
@@ -275,8 +305,16 @@
 
           </q-collapsible>
           <!-- Estoque Mínimo -->
-          <q-collapsible icon="system_update_alt" label="Estoque Mínimo" sublabel="Você tem 0 produtos abaixo do estoque mínimo">
-            
+          <q-collapsible icon="system_update_alt" label="Estoque Mínimo" :sublabel="estoqueMin">
+            <q-list highlight>
+              <q-item v-for="produto in produtos">
+                <q-item-main>
+                  <q-item-tile label>{{produto.nome}}</q-item-tile>
+                  <q-item-tile sublabel>Cod. Barras: {{produto.codBarra}}</q-item-tile>
+                  <q-item-tile sublabel>Estoque: {{produto.qtd}}</q-item-tile>
+                </q-item-main>
+              </q-item>
+            </q-list>
           </q-collapsible>
           <!-- Lista de Aniversariantes -->
           <q-collapsible icon="view_list" label="Lista de Aniversariantes" :sublabel="aniversariantes">
@@ -420,6 +458,7 @@
     data () {
       return {
         permissoes: {},
+        user: localStorage.getItem('nameUser'),
         menu: (localStorage.getItem('menu') === 'true'),
         
         //relógio
@@ -445,7 +484,6 @@
         mensal: false,
         
         //gráficos
-        user: localStorage.getItem('nameUser'),
         tipo: localStorage.getItem('tipoGrafico'),
         width: 100,
         height: parseInt(localStorage.getItem('alturaGrafico')),
@@ -506,6 +544,10 @@
         codigoCab: '',
         selecionados: '',
         syncCount: 0,
+        
+        //estoque
+        produtos: [],
+        estoque: '',
         
         //datatime
         dias: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
@@ -693,6 +735,8 @@
         return 'Você tem ' + this.contasPagar.length + ' contas a pagar e ' + this.contasReceber.length + ' contas a receber'
       },
       feedVendas(){
+        if(this.permissoes.funcao !== 'ADMIN') return
+        
         let tituloDia
         if(this.lucroDia){
           tituloDia = 'Lucro'
@@ -709,7 +753,7 @@
           tituloMes = 'Vendas'
         }
         
-        return tituloDia + ' do dia: R$ ' + this.dia + ' / ' + tituloMes + ' do mês: R$ ' + this.mes
+        return tituloDia + ' do dia: R$ ' + this.dia.toFixed(2) + ' / ' + tituloMes + ' do mês: R$ ' + this.mes.toFixed(2)
       },
       vendasVendedor(){
         let vendedores
@@ -734,7 +778,11 @@
         });
         
         
-      }
+      },
+      estoqueMin(){
+        if(this.estoque) return this.estoque
+        return 'Você tem ' + this.produtos.length + ' produtos abaixo do estoque mínimo'
+      },
 
     },
     watch:{
@@ -841,7 +889,7 @@
       obterPermissoes(){
         localforage.getItem('usuario').then((value) => {
             if(value){
-                //console.log(value)
+                console.log('permissoes:', value)
                 this.permissoes = value
             }
             else{
@@ -950,6 +998,35 @@
           Loading.hide()
         })
       },
+      estoqueMinimo(){
+        Loading.show({
+          spinner: AtomSpinner,
+          spinnerSize: 140,
+          message: 'Aguardando Dados...'
+        })
+        axios.get(API + 'produto/obterproduto?abaixoEstoqueMin=true')
+          .then((res)=>{
+            Loading.hide()
+            if(typeof res.data !== 'string'){
+              this.produtos = res.data
+            }
+            else{
+              this.estoque = res.data
+            }
+            console.log('produtos', this.produtos.length)
+            localforage.setItem('Produtos', res.data)
+          })
+          .catch((e)=>{
+            Loading.hide()
+            console.log(e)
+            Toast.create({
+                html: 'Sem Conexão',
+                timeout: 6000,
+                bgColor: '#f44242',
+                icon: 'mood_bad'
+            })
+          })
+      },
     },
     mounted(){
       
@@ -971,7 +1048,27 @@
       this.listarContas()
       this.getVendas()
       this.getVendasMes()
+      this.estoqueMinimo()
       
+      /*
+      localforage.getItem('Produtos')
+      .then((value) => {
+        if(value){
+          console.log('localforage get Produtos')
+          //console.log(value)
+          this.produtos = value.filter(row => row.estoqueMinimo > row.qtd)
+        }
+        else{
+          console.log('localforage fail')
+          this.todosProdutos()
+        }
+
+      })
+      .catch((err) => {
+        console.log(err)
+        console.log('fail')
+      }) 
+      */
     }  
   }
 </script>

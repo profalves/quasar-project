@@ -45,37 +45,101 @@
                     <q-item-tile label>Meta do Dia Padrão</q-item-tile>
                   </q-item-main>
                   <q-item-side right>
-                    <q-input v-model="metaDiaVendedor" type="number" align="right" />
+                    <q-input v-model="metaDia" 
+                             type="number" 
+                             align="right"
+                             @change="setMetaDia"
+                             />
                   </q-item-side>
                 </q-item>
                 <q-item>
+                  <q-item-side >
+                    <i class="ion-record text-warning" />
+                  </q-item-side>
                   <q-item-main>
                     <q-item-tile label>Quase Meta do Dia Padrão</q-item-tile>
                   </q-item-main>
                   <q-item-side right>
-                    <q-input v-model="metaDiaVendedor" type="number" align="right" />
+                    <q-input v-model="quaseDia" 
+                             float-label="Acima de"
+                             type="number" 
+                             align="right"
+                             @change="setQuaseDia"
+                             />
                   </q-item-side>
                 </q-item>
                 <q-item>
+                  <q-item-side >
+                    <i class="ion-record text-positive" />
+                  </q-item-side>
                   <q-item-main>
                     <q-item-tile label>Teto Meta do Dia Padrão</q-item-tile>
                   </q-item-main>
                   <q-item-side right>
-                    <q-input v-model="metaDiaVendedor" type="number" align="right" />
+                    <q-input v-model="tetoDia" 
+                             float-label="Até"
+                             type="number" 
+                             align="right"
+                             @change="setTetoDia"
+                             />
                   </q-item-side>
                 </q-item>
-                
-                <strong>ou sugerir baseado nas cores (porcentagem)</strong>
-                
+                <q-item-separator />
                 <q-item>
                   <q-item-main>
                     <q-item-tile label>Meta do Mês Padrão</q-item-tile>
                   </q-item-main>
                   <q-item-side right>
-                    <q-input v-model="metaMesVendedor" type="number" align="right" />
+                    <q-input v-model="metaMes" 
+                             type="number" 
+                             align="right"
+                             @change="setMetaMes"
+                             />
                   </q-item-side>
                 </q-item>
-                
+                <q-item>
+                  <q-item-side >
+                    <i class="ion-record text-warning" />
+                  </q-item-side>
+                  <q-item-main>
+                    <q-item-tile label>Quase Meta do Mês Padrão</q-item-tile>
+                  </q-item-main>
+                  <q-item-side right>
+                    <q-input v-model="quaseMes" 
+                             float-label="Acima de"
+                             type="number" 
+                             align="right"
+                             @change="setQuaseMes"
+                             />
+                  </q-item-side>
+                </q-item>
+                <q-item>
+                  <q-item-side >
+                    <i class="ion-record text-positive" />
+                  </q-item-side>
+                  <q-item-main>
+                    <q-item-tile label>Teto Meta do Mês Padrão</q-item-tile>
+                  </q-item-main>
+                  <q-item-side right>
+                    <q-input v-model="tetoMes" 
+                             float-label="Até"
+                             type="number" 
+                             align="right"
+                             @change="setTetoMes"
+                             />
+                  </q-item-side>
+                </q-item>
+                <div ref="quase">
+                  <q-chip tag closable color="warning" @close="$refs.quase.remove()">
+                    <i>AMARELO: Escolher um resultado que pode ser considerado como o que for abaixo desse será marcado com a cor vermelha no painel. Acima dele ficará amarelo até atingir a meta</i>
+                  </q-chip>
+                </div>
+                <div ref="teto">
+                  <q-chip tag closable color="positive" @close="$refs.teto.remove()">
+                    <i>VERDE: Escolher um resultado que pode ser considerado um resultado máximo onde permite o painel ficar verde e ainda mostrando o resultado depois que a meta for atingida. Por padrão, será a metade do dobro da meta</i>
+                  </q-chip>
+                </div>
+                <q-item-separator />
                 <div style="margin-left: 15px">
                   <strong>Vendedor</strong>
                 </div>
@@ -84,7 +148,11 @@
                     <q-item-tile label>Meta do Mês Padrão</q-item-tile>
                   </q-item-main>
                   <q-item-side right>
-                    <q-input v-model="metaMesVendedor" type="number" align="right" />
+                    <q-input v-model="metaMesVendedor" 
+                             type="number" 
+                             align="right"
+                             @change="setMetaMesVendedor"
+                             />
                   </q-item-side>
                 </q-item>
                 <q-item>
@@ -98,9 +166,18 @@
                     </q-item-tile>
                   </q-item-main>
                   <q-item-side right>
-                    <q-input v-model="metaDiaVendedor" type="number" align="right" />
+                    <q-input v-model="metaDiaVendedor" 
+                             type="number" 
+                             align="right"
+                             @change="setMetaDiaVendedor"
+                             />
                   </q-item-side>
                 </q-item>
+                <div ref="info">
+                  <q-chip tag closable color="info" @close="$refs.info.remove()">
+                    <i>Sugerir a meta diária: Ao clicar no botão sugerir, ele calcula a meta do mês dividido pela jornada mensal de trabalho, normalmente 25 dias.</i>
+                  </q-chip>
+                </div>
                 <q-item>
                   <q-item-main>
                     <q-item-tile label>Meta editável</q-item-tile>
@@ -590,6 +667,12 @@ export default {
       metaDiaVendedor: parseInt(localStorage.getItem('metaDiaVendedor')),
       metaMesVendedor: parseInt(localStorage.getItem('metaMesVendedor')),
       editMeta: (localStorage.getItem('editMeta') === 'true'),
+      metaDia: localStorage.getItem('metaDia'),
+      quaseDia: localStorage.getItem('quaseDia'),
+      tetoDia: localStorage.getItem('tetoDia'),
+      metaMes: localStorage.getItem('metaMes'),
+      quaseMes: localStorage.getItem('quaseMes'),
+      tetoMes: localStorage.getItem('tetoMes'),
       
       //buscas
       maxResults: parseInt(localStorage.getItem('maxResults')),
@@ -690,11 +773,36 @@ export default {
     //===============================
     sugerir(){
       this.metaDiaVendedor = Math.round(this.metaMesVendedor / 25)
+      localStorage.setItem('metaDiaVendedor', this.metaDiaVendedor)
+    },
+    setMetaDiaVendedor(){
+      localStorage.setItem('metaDiaVendedor', this.metaDiaVendedor)
+    },
+    setMetaMesVendedor(){
+      localStorage.setItem('metaMesVendedor', this.metaMesVendedor)
     },
     setEditMeta(){
       localStorage.setItem('editMeta', this.editMeta)
     },
-      
+    setMetaDia(){
+      localStorage.setItem('metaDia', this.metaDia)  
+    },
+    setQuaseDia(){
+      localStorage.setItem('quaseDia', this.quaseDia)  
+    },
+    setTetoDia(){
+      localStorage.setItem('tetoDia', this.tetoDia)  
+    },
+    setMetaMes(){
+      localStorage.setItem('metaMes', this.metaMes)  
+    },
+    setQuaseMes(){
+      localStorage.setItem('quaseMes', this.quaseMes)  
+    },
+    setTetoMes(){
+      localStorage.setItem('tetoMes', this.tetoMes)  
+    },
+     
     //notificações
     solicitarNotificacoes(){
         if (!("Notification" in window)) {
@@ -1047,6 +1155,6 @@ export default {
     margin-bottom: 50px;
   }
   #btn-save{
-    margin: 20px 0 0 40px; 
+    margin: 20px 0 0 40px;
   }
 </style>

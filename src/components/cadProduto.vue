@@ -178,19 +178,22 @@
                 />
             </q-field>   
         </div>
-        <!--<div class="col-2 btn-plus" >
-            
-            <q-btn 
-               rounded
-               color="primary" 
-               @click="novaFamilia">
-               <q-icon name="add" />
-            </q-btn>
-        </div>-->
-        
     </div>
     
     <div class="row">
+        <div class="col-xs-12 col-md-6">
+            <q-field
+                icon="format_color_fill"
+             >
+                <q-select
+                    float-label="Unidade de Medida"
+                    filter
+                    v-model="CadProduto.produto.unmed"
+                    :options="listaMedidas"
+                    @change="novaUnidade"
+                />
+            </q-field>   
+        </div>
         <div class="col-xs-12 col-md-6">
             <q-field
                 icon="store"
@@ -204,6 +207,23 @@
                 />
             </q-field>
             
+        </div>
+        
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+          <q-field
+            icon="fa-battery-quarter"
+          >
+            <q-input v-model.number="CadProduto.produto.estoqueMinimo"
+                     type="number"
+                     float-label="Estoque Minimo" 
+                     clearable
+            />
+            
+          </q-field>
+        
         </div>
         <!--<div class="col-2 btn-plus" >
             <q-btn 
@@ -663,7 +683,8 @@ export default {
                 referencia: '',
                 posicaoFisica: '',
                 aplicacao: '',
-                unmed: 'UN'
+                unmed: 'UN',
+                estoqueMinimo: '',
             },
             precos: [
                 {
@@ -1529,7 +1550,7 @@ export default {
         })
         axios.get(API + 'produtomatprima/obtermateriaprima?codigoproduto=' + localStorage.getItem('codProduto'))
           .then((res)=>{
-            //console.log(res)
+            console.log(res)
             this.composicao = res.data
           })
           .catch((e)=>{

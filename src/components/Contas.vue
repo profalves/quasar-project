@@ -135,7 +135,7 @@
             </div>
              
         </div>
-        <div v-else class="col-md-6 col-xs-12">
+        <div v-else class="col-md-7 col-xs-12">
             <q-field
                 icon="today"
                 >

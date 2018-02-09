@@ -317,11 +317,11 @@
             </div>
             <div class="col-xs-12 col-md-6">
                 <q-field
-                  icon="fa-product-hunt"
+                  icon="ion-battery-low"
 
                 >
                  <p class="fields">
-                    <strong>Estoque Mínimo: </strong><!--{{ produto.tipo }} -->
+                    <strong>Estoque Mínimo: </strong>{{ produto.estoqueMinimo }}
                  </p>
 
                 </q-field>
@@ -761,7 +761,7 @@ export default {
     localforage.getItem('Produtos')
     .then((value) => {
         if(value){
-            console.log('localforage get')
+            console.log('localforage get produtos')
             //console.log(value)
             this.produtos = value;
         }
