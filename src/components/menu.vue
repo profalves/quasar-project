@@ -83,9 +83,9 @@
           </q-side-link>
           
         </q-item>
-        <q-item to="/">
+        <q-item to="/suporte">
           <q-item-side icon="fa-life-ring" />
-          <q-side-link to="/" class="link">
+          <q-side-link to="/suporte" class="link">
                 <q-item-main label="Suporte" sublabel="Solicitar Ajuda do Suporte Remoto" />
           </q-side-link>
           
@@ -118,18 +118,7 @@
 
 <script>
 import localforage from 'localforage'
-//import { Dialog } from 'quasar'
-
-/*let permissoes = localforage.getItem('usuario').then(function(value) {
-    // This code runs once the value has been loaded
-    // from the offline store.
-    permissoes = value;
-    console.log('value', value);
-}).catch(function(err) {
-    // This code runs if there were any errors
-    console.log(err);
-});*/
-
+  
 export default {
   data () {
     return {
@@ -159,13 +148,10 @@ export default {
             console.log('fail')
         })
     },
-    exitApp(){
-        window.close()
-    },
     sair(){
         window.close()
-    }
-    
+    },
+      
   },
   mounted(){
     let t = this

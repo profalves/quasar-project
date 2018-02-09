@@ -42,6 +42,7 @@ export default new VueRouter({
     { path: '/cadusuario', component: load('cadUsuario') },
     { path: '/login', component: load('Login') },
     { path: '/config', component: load('Config') },
+    { path: '/suporte', component: load('Suporte') },
       
     //Relatorios
     { path: '/relcaixa', component: load('relCaixa') },

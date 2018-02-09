@@ -44,7 +44,7 @@
                   <i class="fa fa-truck fa-4x text-center text-orange mHover"></i><br>
                   <p class="tile">Transferências</p>
               </div>
-              <div class="col" @click="">
+              <div class="col" @click="suporte">
                   <i class="fa fa-life-ring fa-4x text-center text-negative mHover"></i><br>
                   <p class="tile">Suporte</p>
               </div>
@@ -176,7 +176,6 @@
               </q-item>
               
               <q-item v-for="(v, index) in vendasVendedor" :key="index" v-if="permissoes.funcao === 'CAIXA' && v.vendedor === user">
-                <!--<q-item-side v-if="v.vendedor === user">{{index + 1}}</q-item-side>--> <!--caso queira observar a posição-->
                 <q-item-main v-if="v.vendedor === user">
                   <q-item-tile label>{{v.vendedor}}</q-item-tile>
                   <q-item-tile sublabel>{{v.total | formatMoney}}</q-item-tile>
@@ -191,7 +190,7 @@
               
               
               <q-item v-for="(v, index) in vendasVendedor" :key="index" v-if="permissoes.funcao === 'ADMIN'">
-                <q-item-side>{{index + 1}}</q-item-side>
+                <q-item-side>{{index + 1}}&ordm </q-item-side>
                 <q-item-main>
                   <q-item-tile label>{{v.vendedor}}</q-item-tile>
                   <q-item-tile sublabel>{{v.total | formatMoney}}</q-item-tile>
@@ -201,9 +200,6 @@
                               style="height: 25px" />
                 </q-item-main>
                 <q-item-side right>{{v.porcentagem}}%</q-item-side>
-                <!--<q-item-main>
-                  <q-progress :percentage="v.total" stripe animate style="height: 45px" />
-                </q-item-main>-->
               </q-item>
               
               
@@ -307,12 +303,17 @@
           <!-- Estoque Mínimo -->
           <q-collapsible icon="system_update_alt" label="Estoque Mínimo" :sublabel="estoqueMin">
             <q-list highlight>
-              <q-item v-for="produto in produtos">
+              <q-list-header>Ordem de Compra</q-list-header>
+              <q-item v-for="(produto, index) in produtos" :key="index">
                 <q-item-main>
                   <q-item-tile label>{{produto.nome}}</q-item-tile>
                   <q-item-tile sublabel>Cod. Barras: {{produto.codBarra}}</q-item-tile>
                   <q-item-tile sublabel>Estoque: {{produto.qtd}}</q-item-tile>
                 </q-item-main>
+                <q-item-side right>
+                  <q-btn v-if="produto.cotar" icon="send" color="positive" round small @click="cotarProduto(produto)" />
+                  <q-btn v-else icon="send" color="grey" round small @click="cotarProduto(produto)" />
+                </q-item-side>
               </q-item>
             </q-list>
           </q-collapsible>
@@ -351,7 +352,7 @@
           </q-collapsible>
 
         </q-list>
-
+        
       </div>
     </div>
     <br><br><br>
@@ -430,9 +431,11 @@
   var moment = require('moment');
   require("moment/min/locales.min");
   moment.locale('pt-br');
-
+  
+  const suporte = "5575992748983"
+  
   const API = localStorage.getItem('wsAtual')
-
+  
   //debug
   //const API = 'http://192.168.0.200:29755/'
    
@@ -545,9 +548,10 @@
         selecionados: '',
         syncCount: 0,
         
-        //estoque
+        //estoque minimo
         produtos: [],
         estoque: '',
+        ordem: false,
         
         //datatime
         dias: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
@@ -783,6 +787,7 @@
         if(this.estoque) return this.estoque
         return 'Você tem ' + this.produtos.length + ' produtos abaixo do estoque mínimo'
       },
+      
 
     },
     watch:{
@@ -794,7 +799,7 @@
       }
     },
     methods:{
-      updateCurrentTime() {
+      updateCurrentTime(){
         this.currentTime = moment().format('LTS');
       },
       getHoje(){
@@ -998,7 +1003,7 @@
           Loading.hide()
         })
       },
-      estoqueMinimo(){
+      getEstoqueMinimo(){
         Loading.show({
           spinner: AtomSpinner,
           spinnerSize: 140,
@@ -1027,6 +1032,47 @@
             })
           })
       },
+      cotarProduto(produto){
+        if(produto.cotar === undefined) {
+          Object.assign(produto, {cotar: true})
+        }
+        
+        else if(produto.cotar === true) {
+          Object.assign(produto, {cotar: false})
+        }
+        
+        else {
+          Object.assign(produto, {cotar: true})
+        }
+        
+      },
+      suporte(){
+        Dialog.create({
+          title: 'Peça ajuda ao suporte via Whatsapp',
+          message: 'Digite a sua solicitação aqui abaixo e clique em enviar. Aguarde o aplicativo abrir e envie a sua mensagem',
+          form: {
+            msg: {
+              type: 'textarea',
+              label: 'Mensagem',
+              model: ''
+            }
+          },
+          buttons: [
+            {
+              label: 'Cancelar',
+              color: 'negative',
+            },
+            {
+              label: 'Enviar',
+              color: 'positive',
+              handler:(data) => {
+                openURL('https://api.whatsapp.com/send?phone=' + suporte + '&text=' + data.msg)
+              }
+            }
+          ]
+        })  
+      }
+      
     },
     mounted(){
       
@@ -1048,19 +1094,19 @@
       this.listarContas()
       this.getVendas()
       this.getVendasMes()
-      this.estoqueMinimo()
+      //this.getEstoqueMinimo()
       
-      /*
+      
       localforage.getItem('Produtos')
       .then((value) => {
         if(value){
           console.log('localforage get Produtos')
-          //console.log(value)
-          this.produtos = value.filter(row => row.estoqueMinimo > row.qtd)
+          console.log('Produtoa', value[0])
+          this.produtos = [value[0]] //.filter(row => row.estoqueMinimo !== 'null')
         }
         else{
           console.log('localforage fail')
-          this.todosProdutos()
+          this.getEstoqueMinimo()
         }
 
       })
@@ -1068,7 +1114,7 @@
         console.log(err)
         console.log('fail')
       }) 
-      */
+      
     }  
   }
 </script>
@@ -1113,4 +1159,5 @@
   #ranking{
     margin-top: 30px;
   }
+  
 </style>
