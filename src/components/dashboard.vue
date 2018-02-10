@@ -161,6 +161,8 @@
                            :disable="editMeta"/>
                 </q-item-side>
               </q-item>
+              
+              
               <q-item v-for="(v, index) in vendasVendedor" :key="index" v-if="permissoes.funcao === 'VENDEDOR' && v.vendedor === user">
                 <!--<q-item-side v-if="v.vendedor === user">{{index + 1}}</q-item-side>--> <!--caso queira observar a posição-->
                 <q-item-main v-if="v.vendedor === user">
@@ -614,9 +616,9 @@
         } 
       },
       dia(){
-        if(this.vendas.length===0) return 0
+        if(this.vendas === null || this.vendas.length === 0) return 0
         
-        let a
+        let a = []
         if(!this.lucroDia){
           a = this.vendas.map(row => row.totalVendas)
         }
@@ -631,7 +633,7 @@
         return parseFloat(total)
       },
       mes(){
-        if(this.vendasMes.length===0) return 0
+        if(this.vendasMes === null || this.vendasMes.length === 0) return 0
         
         let a
         if(!this.lucroMes){
@@ -759,10 +761,16 @@
         
         return tituloDia + ' do dia: R$ ' + this.dia.toFixed(2) + ' / ' + tituloMes + ' do mês: R$ ' + this.mes.toFixed(2)
       },
-      vendasVendedor(){
+      vendasVendedor(){        
         let vendedores
         if(this.mensal){
-          
+          if(this.vendasMes === null){
+            return [{
+              vendedor: this.user,
+              total: 0,
+              porcentagem: 0.00
+            }]
+          }
           vendedores = this.vendasMes.map(row => ({
             vendedor: row.vendedor,
             total: row.totalVendas,
@@ -770,6 +778,13 @@
           }))
         }
         else{
+          if(this.vendas === null){
+            return [{
+              vendedor: this.user,
+              total: 0,
+              porcentagem: 0.00
+            }]
+          }
           vendedores = this.vendas.map(row => ({
             vendedor: row.vendedor,
             total: row.totalVendas,
@@ -780,8 +795,7 @@
         return vendedores.sort(function(a,b) {
             return a.total < b.total ? 1 : a.total > b.total ? -1 : 0;
         });
-        
-        
+         
       },
       estoqueMin(){
         if(this.estoque) return this.estoque
@@ -978,7 +992,10 @@
         axios.get(API + 'relatorio/obterTotalVendas')
         .then((res)=>{
           this.vendas = res.data
-          //console.log('vendas:', res.data)
+          
+          console.log('vendas:', res.data)
+          console.log('vendas tipo:', typeof res.data)
+          console.log('vendas tamanho:', res.data.length)
           Loading.hide()
         })
         .catch((e)=>{
@@ -996,6 +1013,7 @@
         .then((res)=>{
           this.vendasMes = res.data
           console.log('vendas do mês:', this.vendasMes)
+          console.log('vendas mês tipo:', typeof res.data)
           Loading.hide()
         })
         .catch((e)=>{
@@ -1019,7 +1037,6 @@
               this.estoque = res.data
             }
             console.log('produtos', this.produtos.length)
-            localforage.setItem('Produtos', res.data)
           })
           .catch((e)=>{
             Loading.hide()
@@ -1075,7 +1092,6 @@
       
     },
     mounted(){
-      
       this.currentTime = moment().format('LTS');
       setInterval(() => this.updateCurrentTime(), 1 * 1000);  
 
@@ -1094,7 +1110,6 @@
       this.listarContas()
       this.getVendas()
       this.getVendasMes()
-      //this.getEstoqueMinimo()
       
       
       localforage.getItem('Produtos')

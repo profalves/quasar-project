@@ -9,7 +9,10 @@
   >      
       
     <q-toolbar slot="header" color="black" v-if="$route.path !== '/login' && !$route.query.config">
-      <q-btn flat @click="$refs.layout.toggleLeft()">
+      <q-btn flat @click="$refs.layout.toggleLeft()" v-if="visivel">
+        <q-icon name="menu" />
+      </q-btn>
+      <q-btn @click="toggleMenu()" v-else>
         <q-icon name="menu" />
       </q-btn>
 
@@ -23,18 +26,25 @@
       </q-btn>
     </q-toolbar>
     
-    <menuLeft slot="left" v-if="$route.path !== '/login' && !$route.query.config"></menuLeft>
+    <menuLeft slot="left" v-if="$route.path !== '/login' && !$route.query.config && visivel"></menuLeft>
     
+    <mobileLeft id="sidenav"
+                class="sidenav fixo"
+                v-if="$route.path !== '/login' && !$route.query.config && !visivel"></mobileLeft>
+    
+    <!--<q-fixed-position class="fixo" corner="top-left" :offset="[0, 8]" v-if="open">
+      <q-btn 
+         flat
+         @click="closeNav">
+         <q-icon name="clear" class="fa-3x" />
+      </q-btn>
+    </q-fixed-position>-->
+
     <transition name="fade" mode="out-in">
       <router-view class="container"></router-view>    
     </transition>
       
-    <!--<q-toolbar slot="footer" color="black" v-if="$route.path !== '/login' && !$route.query.config">
-      <center>
-        Muito obrigado por usar 
-        <a href="http://7virtual.com.br/" target="_blank">7Virtual</a> Sistemas
-      </center>
-    </q-toolbar>-->
+    
     
   </q-layout>
   </div>
@@ -43,17 +53,21 @@
 <script>
 import { openURL, AppFullscreen } from 'quasar'
 import menuLeft from './components/menu.vue'
+import mobileLeft from './components/side.vue'
 
 export default {
   name: 'index',
   components: {
     openURL,
-    menuLeft
+    menuLeft,
+    mobileLeft
   },
   data () {
     return {
-        visivel: true,
-        Empresa: localStorage.getItem('nomeEmpresa')
+      open: false,
+      visivel: true,
+      Empresa: localStorage.getItem('nomeEmpresa'),
+      route: ''
     }
   },
   methods: {
@@ -71,9 +85,34 @@ export default {
       else{
         this.visivel = true
       } 
+    },
+    toggleMenu(){
+      if(this.open){
+        this.closeNav()
+      }
+      else{
+        this.openNav()
+      }
+    
+    },
+    openNav() {
+      this.open = true
+      document.getElementById("sidenav").style.width = "100%";
+    },
+    closeNav() {
+      this.open = false
+      document.getElementById("sidenav").style.width = "0";
     }
+  },
+  beforeUpdate(){
+    if(document.getElementById("sidenav") === null) return
+    if(this.$route.path !== this.route){
+      this.route = this.$route.path
+      this.closeNav()
+      //console.log('route', this.route);
+    }
+    console.log('route', this.route);
   }
-  
 }
 </script>
 <style>
@@ -95,7 +134,7 @@ export default {
     top: 0; 
     left: 0;
     text-align: center;
-    z-index: 5;
+    z-index: 4;
   }  
 
   .boxInput {
@@ -149,6 +188,19 @@ export default {
     opacity: 0;
     -webkit-transform: translate(-30px, 0);
     transform: translate(-30px, 0);
+  }
+  
+  .sidenav {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: gainsboro;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
   }
     
 </style>
