@@ -25,8 +25,8 @@
     </q-fixed-position>
     
   <!-- Botão options -->
-  <q-fixed-position class="fixo" corner="bottom-left" :offset="[88, 18]">
-    <q-fab color="primary" icon="keyboard_arrow_right" direction="right">
+  <!--<q-fixed-position class="fixo" corner="top-right" :offset="[18, 18]">
+    <q-fab color="primary" icon="menu" direction="left">
       <q-fab-action color="purple" 
                     @click="$router.push('/nivers')" 
                     icon="cake">
@@ -49,42 +49,81 @@
           </q-tooltip>
       </q-fab-action>
     </q-fab>
+  </q-fixed-position>-->
+  
+  <q-fixed-position class="fixo" corner="top-right" :offset="[18, 18]">
+    
+      <q-btn color="purple"
+             round small
+             @click="$router.push('/nivers')" 
+             icon="cake">
+          <q-tooltip>
+            Aniversariantes
+          </q-tooltip>
+      </q-btn>
+      <q-btn color="secondary"
+             round small
+             @click="" 
+             icon="fa-whatsapp">
+          <q-tooltip>
+            Enviar para Lista de Transmissão
+          </q-tooltip>
+      </q-btn>
+      <q-btn color="info"
+             round small
+             @click="sync" 
+             icon="sync">
+          <q-tooltip>
+            Sincronizar
+          </q-tooltip>
+      </q-btn>
+    
   </q-fixed-position>
   
-  <div class="row">
+  <div class="row" style="margin-bottom: 20px">
         <div class="col">
             <h5>Buscar Pessoa</h5>
         </div>
   </div>
 
-    <q-toolbar slot="header" inverted color="tertiary">
-       <q-radio v-model="tipoCod" 
-                val="cpf"
-                label="CPF" 
-                @focus="setBusca" />
-       <q-radio v-model="tipoCod" 
-                val="cnpj" 
-                label="CNPJ" 
-                style="margin-left:20px"  
-                @focus="setBusca" />
-       <q-radio v-model="tipoCod" 
-                val="telefone" 
-                label="Telefone"
-                style="margin-left:20px"  
-                @focus="setBusca" />
-       <q-radio v-model="tipoCod" 
-                val="nome"
-                label="Nome" 
-                style="margin-left:20px" 
-                @focus="search = ''" />
-    </q-toolbar>
+  <div class="row">
+    <div class="col-xs-6 col-md-3">
+     <q-radio v-model="tipoCod" 
+              val="cpf"
+              label="CPF"
+              style="margin-left:20px" 
+              @focus="setBusca" />
+    </div>
+    <div class="col-xs-6 col-md-3">
+     <q-radio v-model="tipoCod" 
+              val="cnpj" 
+              label="CNPJ" 
+              style="margin-left:20px"  
+              @focus="setBusca" />
+    </div>
+    <div class="col-xs-6 col-md-3">
+     <q-radio v-model="tipoCod" 
+              val="telefone" 
+              label="Telefone"
+              style="margin-left:20px"  
+              @focus="setBusca" />
+    </div>
+    <div class="col-xs-6 col-md-3">
+     <q-radio v-model="tipoCod" 
+              val="nome"
+              label="Nome" 
+              style="margin-left:20px" 
+              @focus="search = ''" />
+    </div>
+  </div>
     
+    <!--
     <q-checkbox v-model="autocomplete" 
                 label="Permitir autocompletar a pesquisa"
                 v-if="tipoCod === 'nome'"
                 style="margin-left: 10px"
                 />
-    
+    -->
     <q-search  
              v-model="search" 
              color="none" 
@@ -214,7 +253,6 @@
           <q-btn color="primary" @click="$refs.emailModal.close()">Fechar</q-btn>
       </div>
     </q-modal>
-    
     
     <br><br><br><br><br>
     

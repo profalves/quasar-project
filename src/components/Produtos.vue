@@ -133,13 +133,13 @@
         </div>
     </div>
    
-      
+    <!--  
     <q-checkbox v-model="autocomplete" 
                 label="Permitir autocompletar a pesquisa"
                 v-if="tipoCod === 'nome'"
                 style="margin: 0 0 20px 10px"
                 />
-
+    -->
     <q-search  
              v-model="search" 
              color="none" 

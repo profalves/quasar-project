@@ -97,7 +97,7 @@ export default {
     },
     openNav() {
       this.open = true
-      document.getElementById("sidenav").style.width = "100%";
+      document.getElementById("sidenav").style.width = "85%";
     },
     closeNav() {
       this.open = false

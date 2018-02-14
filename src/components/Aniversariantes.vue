@@ -33,20 +33,20 @@
     <div v-if="visivel">
       
         <div class="row">
-            <div class="col-xs-12 col-md-6">
+            <div class="col">
                 <q-field
                   icon="search"
                 >
                   <q-input v-model="filtroNome" float-label="Pesquisar pelo Nome"/>
                 </q-field>
             </div>
-            <div class="col">
+            <!--<div class="col-xs-12 col-md-6">
                 <q-field
                   icon="search"
                 >
                   <q-input v-model="filtroData" float-label="Pesquisar pela Data"/>
                 </q-field>
-            </div>
+            </div>-->
         </div>
     
         <div id="table">

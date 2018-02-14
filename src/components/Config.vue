@@ -19,7 +19,7 @@
               
               <q-list highlight no-border>
                 <q-list-header>Menu</q-list-header>
-                <q-item multiline tag="label">
+                <q-item>
                   <q-item-main>
                     <q-item-tile label>Exibir Icones do Menu Principal</q-item-tile>
                     <q-item-tile sublabel lines="2">Permitir acessar o menu principal através do painel inicial</q-item-tile>
@@ -31,6 +31,21 @@
                         unchecked-icon="visibility_off"
                         style="margin-left: 25px"
                         @change="menuVisibility"
+                    />
+
+                  </q-item-side>
+                </q-item>
+                <q-item>
+                  <q-item-main>
+                    <q-item-tile label>Exibir botão de configurações no Menu Principal</q-item-tile>
+                  </q-item-main>
+                  <q-item-side right>
+                    <q-toggle
+                        v-model="configBtn"
+                        checked-icon="visibility"
+                        unchecked-icon="visibility_off"
+                        style="margin-left: 25px"
+                        @change="configVisibility"
                     />
 
                   </q-item-side>
@@ -664,6 +679,7 @@ export default {
       
       //dashboard
       menu: (localStorage.getItem('menu') === 'true'),
+      configBtn: (localStorage.getItem('configBtn') === 'true'),
       metaDiaVendedor: parseInt(localStorage.getItem('metaDiaVendedor')),
       metaMesVendedor: parseInt(localStorage.getItem('metaMesVendedor')),
       editMeta: (localStorage.getItem('editMeta') === 'true'),
@@ -769,6 +785,9 @@ export default {
     //dashboard
     menuVisibility(){
       localStorage.setItem('menu', this.menu)  
+    },
+    configVisibility(){
+      localStorage.setItem('configBtn', this.configBtn)  
     },
     //===============================
     sugerir(){

@@ -41,14 +41,14 @@
             </div>
             <div class="row text-center">
               <div class="col" @click="$router.push('transFiliais')" v-if="permissoes.pdV_PermitirTransfProduto">
-                  <i class="fa fa-truck fa-4x text-center text-orange mHover"></i><br>
+                  <i class="fa fa-truck fa-4x text-center text-negative mHover"></i><br>
                   <p class="tile">Transferências</p>
               </div>
               <div class="col" @click="suporte">
-                  <i class="fa fa-life-ring fa-4x text-center text-negative mHover"></i><br>
+                  <i class="fa fa-life-ring fa-4x text-center text-orange mHover"></i><br>
                   <p class="tile">Suporte</p>
               </div>
-              <div class="col" @click="$router.push('config')">
+             <div class="col" @click="$router.push('config')" v-if="configBtn">
                   <i class="fa fa-cog fa-4x text-center mHover"></i><br>
                   <p class="tile">Configurações</p>
               </div>
@@ -56,7 +56,7 @@
             
           </q-collapsible>
           <!-- Vendas -->
-          <q-collapsible icon="fa-handshake-o" label="Vendas" :sublabel="feedVendas">
+          <q-collapsible opened icon="fa-handshake-o" label="Vendas" :sublabel="feedVendas">
             <div class="row" v-if="permissoes.acessaFinanceiro">
               <div class="col">
                   <q-card>
@@ -208,7 +208,7 @@
             </q-list>
           </q-collapsible>
           <!-- Contas -->
-          <q-collapsible v-if="permissoes.acessaFinanceiro" icon="insert_chart" label="Contas" :sublabel="feedContas">
+          <q-collapsible opened v-if="permissoes.acessaFinanceiro" icon="insert_chart" label="Contas" :sublabel="feedContas">
             <div class="layout-view">
               <div class="row">
                 <div class="col-md-5 col-xs-12"
@@ -303,7 +303,7 @@
 
           </q-collapsible>
           <!-- Estoque Mínimo -->
-          <q-collapsible icon="system_update_alt" label="Estoque Mínimo" :sublabel="estoqueMin">
+          <q-collapsible opened icon="system_update_alt" label="Estoque Mínimo" :sublabel="estoqueMin">
             <q-list highlight>
               <q-list-header>Ordem de Compra</q-list-header>
               <q-item v-for="(produto, index) in produtos" :key="index">
@@ -465,6 +465,7 @@
         permissoes: {},
         user: localStorage.getItem('nameUser'),
         menu: (localStorage.getItem('menu') === 'true'),
+        configBtn: (localStorage.getItem('configBtn') === 'true'),
         
         //relógio
         currentDate: moment().format('LL'),
