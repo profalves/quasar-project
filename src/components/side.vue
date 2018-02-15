@@ -24,14 +24,14 @@
               <q-item-main label="Produtos" sublabel="Cadastros de clientes, fornecedores, etc." />
           </q-side-link>
         </q-item>
-        <q-collapsible icon="assignment_turned_in" label="Produtos" sublabel="Listagem e Cadastro de Produtos" v-if="permissoes.pdv_PermitirTransfProduto || permissoes.ret_AlteraTabPreco">
+        <q-collapsible icon="assignment_turned_in" label="Produtos" sublabel="Listagem e Cadastro de Produtos" v-if="permissoes.pdV_PermitirTransfProduto || permissoes.ret_AlteraTabPreco">
           <q-list highlight no-border>
             <q-item>
               <q-side-link to="/produtos">
                 <q-item-main label="Localizar Produtos" sublabel="Listagem e Cadastro de Produtos" />
               </q-side-link>
             </q-item>
-            <q-item v-if="permissoes.pdv_PermitirTransfProduto">
+            <q-item v-if="permissoes.pdV_PermitirTransfProduto">
               <q-side-link to="/transFiliais">
                 <q-item-main label="Transferencias" sublabel="Transferencias entre filiais" />
               </q-side-link>

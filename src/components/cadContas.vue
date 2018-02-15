@@ -682,32 +682,32 @@ export default {
       
     },
     baixar(){
-        Loading.show({message: 'Enviando Dados...'})
-        axios.post(API + 'conta/pagarContas', [this.conta])
-          .then((res)=>{
-            Loading.hide()
-            Toast.create.positive({
-                html: 'Titulo baixado com sucesso',
-                icon: 'done'
-            })
-            //console.log(res)
-            console.log(res.data)
-            console.log(res.response)
-            console.log('sucesso')
-            this.listarContas()
-            //this.$router.push('contas')
+      Loading.show({message: 'Enviando Dados...'})
+      axios.post(API + 'conta/pagarContas', [this.conta])
+        .then((res)=>{
+          Loading.hide()
+          Toast.create.positive({
+              html: 'Titulo baixado com sucesso',
+              icon: 'done'
           })
-          .catch((e)=>{
-            Loading.hide()
-            //console.log('error')
-            console.log(e)
-            console.log(String(e))
-            let error = e.response.data
-            console.log(error)
-            for(var i=0; error.length; i++){
-                Toast.create.negative(error[i].value)
-            }
+          //console.log(res)
+          console.log(res.data)
+          console.log(res.response)
+          console.log('sucesso')
+          this.listarContas()
+          //this.$router.push('contas')
         })
+        .catch((e)=>{
+          Loading.hide()
+          //console.log('error')
+          console.log(e)
+          console.log(String(e))
+          let error = e.response.data
+          console.log(error)
+          for(var i=0; error.length; i++){
+              Toast.create.negative(error[i].value)
+          }
+      })
       
     },
     excluir(){

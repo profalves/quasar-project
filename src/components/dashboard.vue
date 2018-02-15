@@ -1,12 +1,9 @@
 <template>
   <div id="dashboard">
     <q-window-resize-observable @resize="onResize" />
-    
     <h3 class="text-center">{{tempo}} {{user | capitalize}}</h3>
     <div class="text-center">{{today}}, {{currentDate}}</div>
     <div class="text-center clock" v-text="currentTime"></div>
-    
-    
     <q-list inset-separator no-border>
       <q-list-header>Painel {{permissoes.funcao | capitalize}}</q-list-header>
       <!-- Menu -->
@@ -53,7 +50,6 @@
               <p class="tile">Configurações</p>
           </div>
         </div>
-
       </q-collapsible>
       <!-- Vendas -->
       <q-collapsible opened icon="fa-handshake-o" label="Vendas" :sublabel="feedVendas">
@@ -171,7 +167,6 @@
             </q-knob>
           </div>
         </div>
-        
         <q-list highlight id="ranking">
           <q-list-header v-if="permissoes.funcao === 'ADMIN'">Ranking</q-list-header>
           <q-list-header v-else>Meta</q-list-header>
@@ -202,8 +197,6 @@
                        :disable="editMeta"/>
             </q-item-side>
           </q-item>
-
-
           <q-item v-for="(v, index) in vendasVendedor" :key="index" v-if="permissoes.funcao === 'VENDEDOR' && v.vendedor === user">
             <!--<q-item-side v-if="v.vendedor === user">{{index + 1}}</q-item-side>--> <!--caso queira observar a posição-->
             <q-item-main v-if="v.vendedor === user">
@@ -215,9 +208,7 @@
                           style="height: 25px" />
             </q-item-main>
             <q-item-side right v-if="v.vendedor === user">{{v.porcentagem}}%</q-item-side>
-
           </q-item>
-
           <q-item v-for="(v, index) in vendasVendedor" :key="index" v-if="permissoes.funcao === 'CAIXA' && v.vendedor === user">
             <q-item-main v-if="v.vendedor === user">
               <q-item-tile label>{{v.vendedor}}</q-item-tile>
@@ -228,10 +219,7 @@
                           style="height: 25px" />
             </q-item-main>
             <q-item-side right v-if="v.vendedor === user">{{v.porcentagem}}%</q-item-side>
-
           </q-item>
-
-
           <q-item v-for="(v, index) in vendasVendedor" :key="index" v-if="permissoes.funcao === 'ADMIN'">
             <q-item-side>{{index + 1}}&ordm </q-item-side>
             <q-item-main>
@@ -244,8 +232,6 @@
             </q-item-main>
             <q-item-side right>{{v.porcentagem}}%</q-item-side>
           </q-item>
-
-
         </q-list>
       </q-collapsible>
       <!-- Contas -->
@@ -260,7 +246,6 @@
                     <q-select v-model="tipoConta"
                               :options="tipos"
                     />
-
                 </q-field>
             </div>
             <div class="offset-md-2"></div>
@@ -279,20 +264,16 @@
                                 cancel-label="Cancelar"
                                 :day-names="dias"
                                 :month-names="meses"
-
                     />
-
                 </q-field>
                 <div v-else class="semana">{{semana}}</div>
             </div>
-
           </div>
         </div>
-
         <div class="layout-view">
           <q-list highlight v-if="contasPagar.length>0">
             <q-list-header>Contas a Pagar</q-list-header>
-            <q-item v-for="(d, index) in contasPagar" :key="index">
+            <q-item v-for="(d, index) in contasPagar" :key="index" @click="baixar(d)">
               <q-item-side icon="fa-arrow-right" class="text-negative"/>
               <q-item-main>
                 <q-item-tile label><strong>Vencimento:</strong> {{ d.vencimento | formatDate }}</q-item-tile>
@@ -311,11 +292,9 @@
               <div style="margin: 10px">Você não tem contas a pagar!</div>
             </div>
           </div>
-
-
           <q-list highlight v-if="contasReceber.length>0">
             <q-list-header>Contas a Receber</q-list-header>
-            <q-item v-for="(d, index) in contasReceber" :key="index">
+            <q-item v-for="(d, index) in contasReceber" :key="index" @click="baixar(d)">
               <q-item-side icon="fa-arrow-right" class="text-positive"/>
               <q-item-main>
                 <q-item-tile label><strong>Vencimento:</strong> {{ d.vencimento | formatDate }}</q-item-tile>
@@ -334,19 +313,25 @@
               <div style="margin: 10px">Você não tem contas a receber!</div>
             </div>
           </div>
-
         </div>
-
         <div class="layout-view">
           <p class="total">Seu saldo: <strong>R$ 0,00</strong>
           </p>
         </div>
-
       </q-collapsible>
       <!-- Estoque Mínimo -->
       <q-collapsible opened icon="system_update_alt" label="Estoque Mínimo" :sublabel="estoqueMin">
+        
         <q-list highlight>
-          <q-list-header>Ordem de Compra</q-list-header>
+          <!--<q-list-header>Ordem de Compra</q-list-header>-->
+          <q-item>
+            <q-item-main>
+              <q-item-tile label class="text-bold">Ordem de Compra</q-item-tile>
+            </q-item-main>
+            <q-item-side right>
+                <q-btn color="primary" rounded @click="">enviar</q-btn>
+            </q-item-side>
+          </q-item>
           <q-item v-for="(produto, index) in produtos" :key="index">
             <q-item-main>
               <q-item-tile label>{{produto.nome}}</q-item-tile>
@@ -359,6 +344,7 @@
             </q-item-side>
           </q-item>
         </q-list>
+        
       </q-collapsible>
       <!-- Lista de Aniversariantes -->
       <q-collapsible icon="view_list" label="Lista de Aniversariantes" :sublabel="aniversariantes">
@@ -390,19 +376,15 @@
                 </q-fab>
               </q-item-side>
             </q-item>
-
           </q-list>
       </q-collapsible>
-
     </q-list>
-      
     <br><br><br>
-      
+    
     <q-modal minimized ref="telModal">
         <div>
             <div v-if="fones.length === 0" class="layout-padding">
                 <q-item>Nenhum telefone cadastrado</q-item>
-
             </div>
             <q-list link no-border v-else>
                 <q-list-header>Ligar para Telefone de {{pessoa}}</q-list-header>
@@ -415,12 +397,10 @@
             <q-btn color="primary" @click="$refs.telModal.close()" id="btn-modal">Fechar</q-btn>
         </div>
     </q-modal>
-
     <q-modal minimized ref="smsModal">
         <div>
             <div v-if="fones.length === 0" class="layout-padding">
                 <q-item>Nenhum telefone válido cadastrado</q-item>
-
             </div>
             <q-list link no-border v-else>
                 <q-list-header>Enviar SMS para {{pessoa}}</q-list-header>
@@ -433,12 +413,10 @@
             <q-btn color="primary" @click="$refs.smsModal.close()" id="btn-modal">Fechar</q-btn>
         </div>
     </q-modal>
-
     <q-modal minimized ref="emailModal">
         <div>
             <div v-if="emails.length === 0" class="layout-padding">
                 <q-item>Nenhum email cadastrado</q-item>
-
             </div>
             <q-list link no-border v-else>
                 <q-list-header>Enviar Email para {{pessoa}}</q-list-header>
@@ -451,13 +429,60 @@
             <q-btn color="primary" @click="$refs.emailModal.close()" id="btn-modal">Fechar</q-btn>
         </div>
     </q-modal>
+    <q-modal minimized ref="baixarConta">
+      <div style="padding: 20px">
+        <h5>Baixar conta de {{conta.fornecedor}}</h5>
+        
+        <div class="text-bold">Valor: {{conta.valorTitulo | formatMoney}}</div>
+      
+
+        <q-field
+          icon="date_range"
+          >
+          <q-datetime v-model="conta.pagamento"
+                      type="date" 
+                      float-label="Pagamento" 
+                      color="black"
+                      format="DD/MM/YYYY"
+                      ok-label="OK" 
+                      clear-label="Limpar" 
+                      cancel-label="Cancelar"
+                      :day-names="dias"
+                      :month-names="meses"
+                      @change="conta.valorPago = conta.valorTitulo"
+
+          />
+
+        </q-field>  
+        <q-field
+          helper="Valor Pago"
+          >
+          <money v-model="conta.valorPago"
+                 v-bind="money"
+                 class="mdInput"
+                 style="margin-top:12px"
+          />
+        </q-field> 
+
+      </div>
+      <q-btn color="positive" 
+             @click="enviarBaixa"
+             id="btn-modal"
+             >
+        Baixar Título
+      </q-btn>
+      <q-btn color="negative" 
+             @click="$refs.baixarConta.close()" 
+             id="btn-modal">
+        Cancelar
+      </q-btn>
+    </q-modal>
     
     <footer slot="footer" color="black" v-if="$route.path !== '/login' && !$route.query.config">
       <center>
         Obrigado por usar <a href="http://7virtual.com.br/" target="_blank">7Virtual</a> Sistemas
       </center>
     </footer>
-      
   </div>
 </template>
 <script type="text/javascript">
@@ -465,21 +490,16 @@
   import axios from 'axios'
   import { AtomSpinner } from 'epic-spinners'
   import localforage from 'localforage'
-  
   //datas
   let dt = date
   const hoje = new Date()
   var moment = require('moment');
   require("moment/min/locales.min");
   moment.locale('pt-br');
-  
   const suporte = "5575992748983"
-  
   const API = localStorage.getItem('wsAtual')
-  
   //debug
   //const API = 'http://192.168.0.200:29755/'
-   
   import chartLine from './charts/Line.js'
   import bar from './charts/Bar.js'
   import pie from './charts/Pizza.js'
@@ -487,7 +507,6 @@
   import polar from './charts/Polar.js'
   import radar from './charts/Radar.js'
   import bubble from './charts/Bubble.js'
-    
   export default {
     name: 'DashBoard',
     components: {
@@ -513,7 +532,7 @@
         currentTime: null,
         today: moment().format('dddd'),
         tempo: '',
-         
+        
         //vendas
         lucro: false,
         min: 0,
@@ -590,6 +609,7 @@
         codigoCab: '',
         selecionados: '',
         syncCount: 0,
+        conta: '',
         
         //estoque minimo
         produtos: [],
@@ -599,6 +619,16 @@
         //datatime
         dias: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
         meses: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+        
+        //v-money
+        money: {
+            decimal: ',',
+            thousands: '.',
+            prefix: 'R$ ',
+            //suffix: ' #',
+            precision: 2,
+            masked: false /* doesn't work with directive */
+        },
       }
     },
     computed:{
@@ -627,9 +657,7 @@
       faturaCorDia(){
         let meta = parseInt(localStorage.getItem('metaDia'))
         let quase = parseInt(localStorage.getItem('quaseDia'))
-        
-        if(this.lucroDia) return 'blue-grey-5'
-
+        if(this.lucro) return 'blue-grey-5'
         if(this.dia>meta){
             return 'positive'
         }
@@ -643,9 +671,7 @@
       faturaCorMes(){
         let meta = parseInt(localStorage.getItem('metaMes'))
         let quase = parseInt(localStorage.getItem('quaseMes'))
-        
-        if(this.lucroMes) return 'blue-grey-5'
-
+        if(this.lucro) return 'blue-grey-5'
         if(this.mes>meta){
             return 'positive'
         }
@@ -658,7 +684,6 @@
       },
       dia(){
         if(this.vendas === null || this.vendas.length === 0) return 0
-        
         let a = []
         if(!this.lucro){
           a = this.vendas.map(row => row.totalVendas)
@@ -666,16 +691,13 @@
         else{
           a = this.vendas.map(row => row.lucroRS)
         } 
-        
         let total = a.reduce(function(a, b){
           return a + b
         })
-        
         return parseFloat(total)
       },
       mes(){
         if(this.vendasMes === null || this.vendasMes.length === 0) return 0
-        
         let a
         if(!this.lucro){
           a = this.vendasMes.map(row => row.totalVendas)
@@ -683,11 +705,9 @@
         else{
           a = this.vendasMes.map(row => row.lucroRS)
         } 
-        
         let total = a.reduce(function(a, b){
           return a + b;
         })
-        
         return parseFloat(total)
       },
       aniversariantes(){
@@ -700,28 +720,23 @@
           let di = moment(dt.startOfDate(hoje, 'month')).format('YYYY-MM-DDTHH:mm:SS')
           let df = moment(dt.endOfDate(hoje, 'month')).format('YYYY-MM-DDTHH:mm:SS')
           this.semana = moment(hoje).format('MMMM/YYYY')
-          
           return this.desp.filter(row => row.vencimento > di && row.vencimento < df)
         }
-        
         if(this.tipoConta === 'semana'){
           let dia = dt.getDayOfWeek(hoje)
-          let di = moment(dt.subtractFromDate(hoje, { days: dia })).format('YYYY-MM-DDTHH:mm:SS')
-          let df = moment(dt.addToDate(hoje, { days: 6 - dia })).format('YYYY-MM-DDTHH:mm:SS')
-          
+          let di = moment(dt.subtractFromDate(hoje, { days: dia })).toISOString()//.format('YYYY-MM-DDTHH:mm:SS')
+          console.log('data inicial:', di);
+          let df = moment(dt.addToDate(hoje, { days: 6 - dia })).toISOString()//.format('YYYY-MM-DDTHH:mm:SS')
+          console.log('data final:', df);
           this.semana = 'Dom ' +  dt.formatDate(di, 'DD/MM/YYYY') + ' - ' + 'Sáb ' +  dt.formatDate(df, 'DD/MM/YYYY')
-          
+          console.log('semana:', this.semana);
           return this.desp.filter(row => row.vencimento > di && row.vencimento < df)
-          
         }
-        
         if(this.tipoConta === 'hoje'){
           this.semana = ''
           this.vencimento = hoje
         }
-        
         let data = new Date(this.vencimento).toISOString().split('T').shift()
-        
         return this.desp.filter(row => row.vencimento.indexOf(data)>=0)
       },
       contasReceber(){
@@ -730,52 +745,38 @@
           let di = moment(dt.startOfDate(hoje, 'month')).format('YYYY-MM-DDTHH:mm:SS')
           let df = moment(dt.endOfDate(hoje, 'month')).format('YYYY-MM-DDTHH:mm:SS')
           this.semana = moment(hoje).format('MMMM/YYYY')
-          
           return this.recs.filter(row => row.vencimento > di && row.vencimento < df)
         }
-        
         if(this.tipoConta === 'semana'){
           let dia = dt.getDayOfWeek(hoje)
           let di = moment(dt.subtractFromDate(hoje, { days: dia })).format('YYYY-MM-DDTHH:mm:SS')
           let df = moment(dt.addToDate(hoje, { days: 6 - dia })).format('YYYY-MM-DDTHH:mm:SS')
-          
           this.semana = 'Dom ' +  dt.formatDate(di, 'DD/MM/YYYY') + ' - ' + 'Sáb ' +  dt.formatDate(df, 'DD/MM/YYYY')
-          
           return this.recs.filter(row => row.vencimento > di && row.vencimento < df)
-          
         }
-        
         if(this.tipoConta === 'hoje'){
           this.semana = ''
           this.vencimento = hoje
         }
-        
         let data = new Date(this.vencimento).toISOString().split('T').shift()
-        
         return this.recs.filter(row => row.vencimento.indexOf(data)>=0)
       },
       totalPagar(){
         let a = this.contasPagar
         if(a.length === 0) return
-
         let lista = a.map(row => row.valorTitulo)
-
         let total = lista.reduce(function(a, b) {
           return a + b;
         });
-
         return total
       },
       totalReceber(){
         let a = this.contasReceber
         if(a.length === 0) return
-
         let lista = a.map(row => row.valorTitulo)
-
         let total = lista.reduce(function(a, b) {
           return a + b;
         });
-
         return total
       },
       feedContas(){
@@ -783,7 +784,6 @@
       },
       feedVendas(){
         if(this.permissoes.funcao !== 'ADMIN') return
-        
         let rotulo
         if(this.lucro){
           rotulo = 'Lucro'
@@ -791,8 +791,6 @@
         else {
           rotulo = 'Vendas'
         }
-        
-        
         return rotulo + ' do dia: R$ ' + this.dia.toFixed(2) + ' / ' + rotulo + ' do mês: R$ ' + this.mes.toFixed(2)
       },
       vendasVendedor(){        
@@ -825,18 +823,14 @@
             porcentagem: parseFloat(((row.totalVendas / this.metaDia)*100).toFixed(2))
           }))
         }
-                
         return vendedores.sort(function(a,b) {
             return a.total < b.total ? 1 : a.total > b.total ? -1 : 0;
         });
-         
       },
       estoqueMin(){
         if(this.estoque) return this.estoque
         return 'Você tem ' + this.produtos.length + ' produtos abaixo do estoque mínimo'
       },
-      
-
     },
     watch:{
       tipoConta (value) {
@@ -855,13 +849,13 @@
           console.log('font', this.font);
         }
         else if(size.width < 999){
-          this.size = Math.round((size.width - (size.width * 0.80))) + 'px'
+          this.size = Math.round((size.width - (size.width * 0.75))) + 'px'
           this.font = 'font-size: ' + Math.round((size.width - (size.width * 0.97))) + 'px'
           console.log('size', this.size); 
           console.log('font', this.font); 
         }
         else{
-          this.size = Math.round((size.width - (size.width * 0.75))) + 'px'
+          this.size = Math.round((size.width - (size.width * 0.80))) + 'px'
           this.font = 'font-size: ' + Math.round((size.width - (size.width * 0.97))) + 'px'
           console.log('size', this.size); 
           console.log('font', this.font); 
@@ -904,7 +898,6 @@
         this.$refs.emailModal.open()
         this.emails = item.endEletronico
         this.pessoa = item.nome
-        //console.info(this.fones)
       },
       fone(item){
         this.$refs.telModal.open()
@@ -968,7 +961,6 @@
             else{
                 console.log(value)
             }
-
         }).catch((err) => {
             console.log(err)
             console.log('fail get permissions')
@@ -983,37 +975,27 @@
               //console.log(value)
               this.desp = value;
             }
-
           }).catch((err) => {
               console.log(err)
               console.log('fail')
           })
-          
           localforage.getItem('RecPagar').then((value) => {
             if(value){
               console.log('localforage get contas Receber')
               //console.log(value)
               this.recs = value;
-
             }
-
           }).catch((err) => {
               console.log(err)
               console.log('fail')
           })     
-        
         }
-        
-        
-        
         if(this.desp.length>0 && this.recs.length>0) return
-        
         Loading.show({
             spinner: AtomSpinner,
             spinnerSize: 140,
             message: 'Aguardando Dados...'
         })
-        
         axios.get(API + 'conta/obterContas?tipo=cp')
         .then((res)=>{
             //console.log(res)
@@ -1023,8 +1005,6 @@
           console.log(e)
           Loading.hide()
         })
-        
-        
         axios.get(API + 'conta/obterContas?tipo=cr')
         .then((res)=>{
             //console.log(res)
@@ -1034,8 +1014,40 @@
           console.log(e)
           Loading.hide()
         })
-        
         if(this.desp.length>0 && this.recs.length>0) Loading.hide()
+      },
+      baixar(d){
+        this.$refs.baixarConta.open()
+        this.conta = d
+      },
+      enviarBaixa(){
+        Loading.show({message: 'Enviando Dados...'})
+        axios.post(API + 'conta/pagarContas', [this.conta])
+          .then((res)=>{
+            Loading.hide()
+            Toast.create.positive({
+                html: 'Titulo baixado com sucesso',
+                icon: 'done'
+            })
+            console.log(res)
+            console.log(res.data)
+            console.log(res.response)
+            console.log('sucesso')
+            this.$refs.baixarConta.close()
+            //this.$router.push('contas')
+          })
+          .catch((e)=>{
+            Loading.hide()
+            //console.log('error')
+            console.log(e)
+            console.log(String(e))
+            let error = e.response.data
+            console.log(error)
+            for(var i=0; error.length; i++){
+                Toast.create.negative(error[i].value)
+            }
+        })
+      
       },
       getVendas(){
         Loading.show({
@@ -1046,7 +1058,6 @@
         axios.get(API + 'relatorio/obterTotalVendas')
         .then((res)=>{
           this.vendas = res.data
-          
           console.log('vendas:', res.data)
           console.log('vendas tipo:', typeof res.data)
           console.log('vendas tamanho:', res.data.length)
@@ -1115,15 +1126,12 @@
         if(produto.cotar === undefined) {
           Object.assign(produto, {cotar: true})
         }
-        
         else if(produto.cotar === true) {
           Object.assign(produto, {cotar: false})
         }
-        
         else {
           Object.assign(produto, {cotar: true})
         }
-        
       },
       suporte(){
         Dialog.create({
@@ -1151,12 +1159,10 @@
           ]
         })  
       }
-      
     },
     mounted(){
       this.currentTime = moment().format('LTS');
       setInterval(() => this.updateCurrentTime(), 1 * 1000);  
-
       if(hoje.getHours() < 12 && hoje.getHours() > 4){
         this.tempo = 'Bom dia'
       }
@@ -1166,32 +1172,27 @@
       else{
         this.tempo = 'Boa noite'
       }
-      
       this.getHoje()
       this.obterPermissoes()
       this.listarContas()
       this.getVendas()
       this.getVendasMes()
-      
-      
       localforage.getItem('Produtos')
       .then((value) => {
         if(value){
           console.log('localforage get Produtos')
-          console.log('Produtoa', value[0])
-          this.produtos = [value[0]] //.filter(row => row.estoqueMinimo !== 'null')
+          console.log('Produtos:', value)
+          this.produtos = value.filter(row => row.estoqueMinimo !== 'null') //[value[0]] //.filter(row => row.estoqueMinimo !== 'null')
         }
         else{
           console.log('localforage fail')
           this.getEstoqueMinimo()
         }
-
       })
       .catch((err) => {
         console.log(err)
         console.log('fail')
       }) 
-      
     }  
   }
 </script>
@@ -1236,5 +1237,4 @@
   #ranking{
     margin-top: 30px;
   }
-  
 </style>
