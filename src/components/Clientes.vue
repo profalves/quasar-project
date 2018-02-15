@@ -1,5 +1,6 @@
 <template>
 <div id="clientes">
+  <q-window-resize-observable @resize="onResize" />
    
   <!-- Botão ADD -->
   <q-fixed-position class="fixo" corner="bottom-right" :offset="[18, 18]">
@@ -25,57 +26,39 @@
     </q-fixed-position>
     
   <!-- Botão options -->
-  <!--<q-fixed-position class="fixo" corner="top-right" :offset="[18, 18]">
-    <q-fab color="primary" icon="menu" direction="left">
+  <q-fixed-position class="fixo" corner="top-right" :offset="[18, 18]" v-if="!visivel">
+    <q-fab color="primary" icon="menu" direction="down">
       <q-fab-action color="purple" 
                     @click="$router.push('/nivers')" 
                     icon="cake">
-          <q-tooltip>
-            Aniversariantes
-          </q-tooltip>
       </q-fab-action>
       <q-fab-action color="secondary" 
                     @click="" 
                     icon="fa-whatsapp">
-          <q-tooltip>
-            Enviar para Lista de Transmissão
-          </q-tooltip>
       </q-fab-action>
       <q-fab-action color="info" 
                     @click="sync" 
                     icon="sync">
-          <q-tooltip>
-            Sincronizar
-          </q-tooltip>
       </q-fab-action>
     </q-fab>
-  </q-fixed-position>-->
+  </q-fixed-position>
   
-  <q-fixed-position class="fixo" corner="top-right" :offset="[18, 18]">
+  <q-fixed-position class="fixo" corner="top-right" :offset="[18, 18]" v-else>
     
       <q-btn color="purple"
              round small
              @click="$router.push('/nivers')" 
              icon="cake">
-          <q-tooltip>
-            Aniversariantes
-          </q-tooltip>
       </q-btn>
       <q-btn color="secondary"
              round small
              @click="" 
              icon="fa-whatsapp">
-          <q-tooltip>
-            Enviar para Lista de Transmissão
-          </q-tooltip>
       </q-btn>
       <q-btn color="info"
              round small
              @click="sync" 
              icon="sync">
-          <q-tooltip>
-            Sincronizar
-          </q-tooltip>
       </q-btn>
     
   </q-fixed-position>
@@ -724,7 +707,16 @@ export default {
         Loading.hide()
       })
       
-    }
+    },
+    onResize (size) {
+      //console.log(size)
+      if(size.width < 350 || size.height < 400){
+        this.visivel = false
+      }
+      else{
+        this.visivel = true
+      } 
+    },
     
   },
   watch: {

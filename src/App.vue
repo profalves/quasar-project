@@ -29,16 +29,19 @@
     <menuLeft slot="left" v-if="$route.path !== '/login' && !$route.query.config && visivel"></menuLeft>
     
     <mobileLeft id="sidenav"
-                class="sidenav fixo"
+                class="sidenav"
+                style="z-index: 6"
                 v-if="$route.path !== '/login' && !$route.query.config && !visivel"></mobileLeft>
     
-    <!--<q-fixed-position class="fixo" corner="top-left" :offset="[0, 8]" v-if="open">
+    <!--
+    <q-fixed-position class="fixo" corner="top-left" :offset="[5, 5]" v-if="open">
       <q-btn 
          flat
          @click="closeNav">
          <q-icon name="clear" class="fa-3x" />
       </q-btn>
-    </q-fixed-position>-->
+    </q-fixed-position>
+    -->
 
     <transition name="fade" mode="out-in">
       <router-view class="container"></router-view>    
@@ -51,7 +54,7 @@
 </template>
 
 <script>
-import { openURL, AppFullscreen } from 'quasar'
+import { openURL, AppFullscreen, event } from 'quasar'
 import menuLeft from './components/menu.vue'
 import mobileLeft from './components/side.vue'
 
@@ -112,6 +115,25 @@ export default {
       //console.log('route', this.route);
     }
     console.log('route', this.route);
+    
+    
+  },
+  mounted(){
+    document.addEventListener('click', evt => {
+      // right clicked?
+      //(Boolean) 
+      //event.rightClick(evt)
+      // position on viewport
+      // works both for mouse and touch events!
+      //(Object {top, left}) 
+      //event.position(evt)
+      // get target DOM Element on which mouse or touch
+      // event has fired upon
+      //(DOM Element) 
+      event.targetElement(evt)
+      console.log(evt.target.className)
+      
+    })
   }
 }
 </script>

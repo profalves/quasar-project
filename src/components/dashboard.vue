@@ -1,362 +1,401 @@
 <template>
   <div id="dashboard">
+    <q-window-resize-observable @resize="onResize" />
     
     <h3 class="text-center">{{tempo}} {{user | capitalize}}</h3>
     <div class="text-center">{{today}}, {{currentDate}}</div>
     <div class="text-center clock" v-text="currentTime"></div>
     
-    <div class="row">
-      <div class="col-xl-6">
-        <q-list inset-separator no-border>
-          <q-list-header>Painel {{permissoes.funcao | capitalize}}</q-list-header>
-          <!-- Menu -->
-          <q-collapsible icon="menu" label="Menu" v-if="menu">
-            <div class="row text-center">
-              <div class="col" @click="$router.push('clientes')">
-                  <i class="fa fa-user fa-4x text-center text-cyan mHover"></i><br>
-                  <p class="tile">Pessoas</p>
-              </div>
-              <div class="col" @click="$router.push('produtos')">
-                  <i class="fa fa-shopping-basket fa-4x center text-warning mHover"></i><br>
-                  <p class="tile">Produtos</p>
-              </div>
-              <div class="col" @click="$router.push('contas')" v-if="permissoes.acessaFinanceiro">
-                  <i class="fa fa-money fa-4x center text-secondary mHover"></i><br>
-                  <p class="tile">Contas</p>
-              </div>
-            </div>
-            <div class="row text-center">
-              <div class="col" @click="$router.push('cadnotas?q=save')">
-                  <i class="fa fa-file-text-o fa-4x text-center text-info mHover"></i><br>
-                  <p class="tile">NF de Entrada</p>
-              </div>
-              <div class="col" @click="$router.push('relatorios')">
-                  <i class="fa fa-line-chart fa-4x center text-primary mHover"></i><br>
-                  <p class="tile">Relatórios</p>
-              </div>
-              <div class="col" @click="$router.push('usuarios')" v-if="permissoes.cadUsuario">
-                  <i class="fa fa-users fa-4x center text-blue-grey-4 mHover"></i><br>
-                  <p class="tile">Usuários</p>
-              </div>
-            </div>
-            <div class="row text-center">
-              <div class="col" @click="$router.push('transFiliais')" v-if="permissoes.pdV_PermitirTransfProduto">
-                  <i class="fa fa-truck fa-4x text-center text-negative mHover"></i><br>
-                  <p class="tile">Transferências</p>
-              </div>
-              <div class="col" @click="suporte">
-                  <i class="fa fa-life-ring fa-4x text-center text-orange mHover"></i><br>
-                  <p class="tile">Suporte</p>
-              </div>
-             <div class="col" @click="$router.push('config')" v-if="configBtn">
-                  <i class="fa fa-cog fa-4x text-center mHover"></i><br>
-                  <p class="tile">Configurações</p>
-              </div>
-            </div>
-            
-          </q-collapsible>
-          <!-- Vendas -->
-          <q-collapsible opened icon="fa-handshake-o" label="Vendas" :sublabel="feedVendas">
-            <div class="row" v-if="permissoes.acessaFinanceiro">
-              <div class="col">
-                  <q-card>
-                    <q-card-title>
-                      Dia
-                      <q-icon slot="right" name="more_vert">
-                        <q-popover ref="popover">
-                          <q-list link class="no-border">
-                            <q-item @click="lucroDia = false">
-                              <q-item-main label="Total de Vendas" />
-                            </q-item>
-                            <q-item @click="lucroDia = true">
-                              <q-item-main label="Lucro" />
-                            </q-item>
-                          </q-list>
-                        </q-popover>
-                      </q-icon>
-                    </q-card-title>
-                    <q-card-separator />
-                    <q-card-main class="text-center">
-                        <q-knob
-                          v-model="dia"
-                          size="200px"
-                          style="font-size: 1.5rem"
-                          :color="faturaCorDia"
-                          line-width="5px"
-                          :min="min"
-                          :max="maxDia"
-                          :step="1"
-                          readonly
-                        >
-                          {{dia | formatMoney}}
-                        </q-knob>
-                    </q-card-main>
-                  </q-card>  
-              </div>
-              <div class="col">
-                  <q-card>
-                    <q-card-title>
-                      Mês
-                      <q-icon slot="right" name="more_vert">
-                        <q-popover ref="popover">
-                          <q-list link class="no-border">
-                            <q-item @click="lucroMes = false">
-                              <q-item-main label="Total de Vendas" />
-                            </q-item>
-                            <q-item @click="lucroMes = true">
-                              <q-item-main label="Lucro" />
-                            </q-item>
-                          </q-list>
-                        </q-popover>
-                      </q-icon>
-                    </q-card-title>
-                    <q-card-separator />
-                    <q-card-main class="text-center">
-                        <q-knob
-                          v-model="mes"
-                          size="200px"
-                          style="font-size: 1.5rem"
-                          :color="faturaCorMes"
-                          line-width="5px"
-                          :min="min"
-                          :max="maxMes"
-                          :step="1"
-                          readonly
-                        >
-                          <!--readonly-->
-                          {{mes | formatMoney}}
-                        </q-knob>
-                    </q-card-main>
-                  </q-card>  
-              </div>
-            </div>
-            
-            <q-list highlight id="ranking">
-              <q-list-header v-if="permissoes.funcao === 'ADMIN'">Ranking</q-list-header>
-              <q-list-header v-else>Meta</q-list-header>
-              <q-item>
-                <q-item-main>
-                  <q-select v-model="mensal"
-                            :options="[
-                              {
-                                label: 'Meta do Dia',
-                                value: false
-                              },
-                              {
-                                label: 'Meta do Mês',
-                                value: true
-                              },
-                            ]" />
-                </q-item-main>
-                <q-item-side right>
-                  <q-input v-if="!mensal" 
-                           v-model="metaDia" 
-                           type="number" 
-                           align="right"
-                           :disable="editMeta"/>
-                  <q-input v-else 
-                           v-model="metaMes" 
-                           type="number" 
-                           align="right"
-                           :disable="editMeta"/>
-                </q-item-side>
-              </q-item>
-              
-              
-              <q-item v-for="(v, index) in vendasVendedor" :key="index" v-if="permissoes.funcao === 'VENDEDOR' && v.vendedor === user">
-                <!--<q-item-side v-if="v.vendedor === user">{{index + 1}}</q-item-side>--> <!--caso queira observar a posição-->
-                <q-item-main v-if="v.vendedor === user">
-                  <q-item-tile label>{{v.vendedor}}</q-item-tile>
-                  <q-item-tile sublabel>{{v.total | formatMoney}}</q-item-tile>
-                  <q-progress :percentage="v.porcentagem"
-                              color="orange"
-                              stripe animate 
-                              style="height: 25px" />
-                </q-item-main>
-                <q-item-side right v-if="v.vendedor === user">{{v.porcentagem}}%</q-item-side>
-                
-              </q-item>
-              
-              <q-item v-for="(v, index) in vendasVendedor" :key="index" v-if="permissoes.funcao === 'CAIXA' && v.vendedor === user">
-                <q-item-main v-if="v.vendedor === user">
-                  <q-item-tile label>{{v.vendedor}}</q-item-tile>
-                  <q-item-tile sublabel>{{v.total | formatMoney}}</q-item-tile>
-                  <q-progress :percentage="v.porcentagem"
-                              color="orange"
-                              stripe animate 
-                              style="height: 25px" />
-                </q-item-main>
-                <q-item-side right v-if="v.vendedor === user">{{v.porcentagem}}%</q-item-side>
-                
-              </q-item>
-              
-              
-              <q-item v-for="(v, index) in vendasVendedor" :key="index" v-if="permissoes.funcao === 'ADMIN'">
-                <q-item-side>{{index + 1}}&ordm </q-item-side>
-                <q-item-main>
-                  <q-item-tile label>{{v.vendedor}}</q-item-tile>
-                  <q-item-tile sublabel>{{v.total | formatMoney}}</q-item-tile>
-                  <q-progress :percentage="v.porcentagem"
-                              color="orange"
-                              stripe animate 
-                              style="height: 25px" />
-                </q-item-main>
-                <q-item-side right>{{v.porcentagem}}%</q-item-side>
-              </q-item>
-              
-              
-            </q-list>
-          </q-collapsible>
-          <!-- Contas -->
-          <q-collapsible opened v-if="permissoes.acessaFinanceiro" icon="insert_chart" label="Contas" :sublabel="feedContas">
-            <div class="layout-view">
-              <div class="row">
-                <div class="col-md-5 col-xs-12"
-                     style="margin-top: 9px">
-                    <q-field
-                        icon="today"
-                        >
-                        <q-select v-model="tipoConta"
-                                  :options="tipos"
-                        />
+    
+    <q-list inset-separator no-border>
+      <q-list-header>Painel {{permissoes.funcao | capitalize}}</q-list-header>
+      <!-- Menu -->
+      <q-collapsible icon="menu" label="Menu" v-if="menu">
+        <div class="row text-center">
+          <div class="col" @click="$router.push('clientes')">
+              <i class="fa fa-user fa-4x text-center text-cyan mHover"></i><br>
+              <p class="tile">Pessoas</p>
+          </div>
+          <div class="col" @click="$router.push('produtos')">
+              <i class="fa fa-shopping-basket fa-4x center text-warning mHover"></i><br>
+              <p class="tile">Produtos</p>
+          </div>
+          <div class="col" @click="$router.push('contas')" v-if="permissoes.acessaFinanceiro">
+              <i class="fa fa-money fa-4x center text-secondary mHover"></i><br>
+              <p class="tile">Contas</p>
+          </div>
+        </div>
+        <div class="row text-center">
+          <div class="col" @click="$router.push('cadnotas?q=save')">
+              <i class="fa fa-file-text-o fa-4x text-center text-info mHover"></i><br>
+              <p class="tile">NF de Entrada</p>
+          </div>
+          <div class="col" @click="$router.push('relatorios')">
+              <i class="fa fa-line-chart fa-4x center text-primary mHover"></i><br>
+              <p class="tile">Relatórios</p>
+          </div>
+          <div class="col" @click="$router.push('usuarios')" v-if="permissoes.cadUsuario">
+              <i class="fa fa-users fa-4x center text-blue-grey-4 mHover"></i><br>
+              <p class="tile">Usuários</p>
+          </div>
+        </div>
+        <div class="row text-center">
+          <div class="col" @click="$router.push('transFiliais')" v-if="permissoes.pdV_PermitirTransfProduto">
+              <i class="fa fa-truck fa-4x text-center text-negative mHover"></i><br>
+              <p class="tile">Transferências</p>
+          </div>
+          <div class="col" @click="suporte">
+              <i class="fa fa-life-ring fa-4x text-center text-orange mHover"></i><br>
+              <p class="tile">Suporte</p>
+          </div>
+         <div class="col" @click="$router.push('config')" v-if="configBtn">
+              <i class="fa fa-cog fa-4x text-center mHover"></i><br>
+              <p class="tile">Configurações</p>
+          </div>
+        </div>
 
-                    </q-field>
-                </div>
-                <div class="offset-md-2"></div>
-                <div class="col-md-5 col-xs-12">
-                    <q-field
-                        icon="today"
-                        v-if="tipoConta === 'data'"
-                        >
-                        <q-datetime v-model="vencimento"
-                                    type="date" 
-                                    float-label="Vencimento" 
-                                    color="black"
-                                    format="DD/MM/YYYY"
-                                    ok-label="OK" 
-                                    clear-label="Limpar" 
-                                    cancel-label="Cancelar"
-                                    :day-names="dias"
-                                    :month-names="meses"
-
-                        />
-
-                    </q-field>
-                    <div v-else class="semana">{{semana}}</div>
-                </div>
-                
-              </div>
-            </div>
-            
-            <div class="layout-view">
-              <q-list highlight v-if="contasPagar.length>0">
-                <q-list-header>Contas a Pagar</q-list-header>
-                <q-item v-for="(d, index) in contasPagar" :key="index">
-                  <q-item-side icon="fa-arrow-right" class="text-negative"/>
-                  <q-item-main>
-                    <q-item-tile label><strong>Vencimento:</strong> {{ d.vencimento | formatDate }}</q-item-tile>
-                    <q-item-tile sublabel>{{ d.fornecedor }}</q-item-tile>
-                  </q-item-main>
-                  <q-item-side right >
-                    {{ d.valorTitulo | formatMoney }}
-                  </q-item-side>
+      </q-collapsible>
+      <!-- Vendas -->
+      <q-collapsible opened icon="fa-handshake-o" label="Vendas" :sublabel="feedVendas">
+        <q-item v-if="permissoes.acessaFinanceiro">
+          <q-item-main class="text-right">Ver Venda/Lucro</q-item-main>
+          <q-item-side right icon="more_vert">
+            <q-popover ref="popover">
+              <q-list link class="no-border">
+                <q-item @click="exibirVenda">
+                  <q-item-main label="Total de Vendas" />
                 </q-item>
-                <q-item-separator />
-                <div class="total">Total: {{ totalPagar | formatMoney }}</div>
-              </q-list>
-              <div v-else>
-                <div class="msg">
-                  <i class="fa fa-smile-o fa-3x text-positive"></i>
-                  <div style="margin: 10px">Você não tem contas a pagar!</div>
-                </div>
-              </div>
-              
-              
-              <q-list highlight v-if="contasReceber.length>0">
-                <q-list-header>Contas a Receber</q-list-header>
-                <q-item v-for="(d, index) in contasReceber" :key="index">
-                  <q-item-side icon="fa-arrow-right" class="text-positive"/>
-                  <q-item-main>
-                    <q-item-tile label><strong>Vencimento:</strong> {{ d.vencimento | formatDate }}</q-item-tile>
-                    <q-item-tile sublabel>{{ d.fornecedor }}</q-item-tile>
-                  </q-item-main>
-                  <q-item-side right >
-                    {{ d.valorTitulo | formatMoney }}
-                  </q-item-side>
+                <q-item @click="exibirLucro">
+                  <q-item-main label="Lucro" />
                 </q-item>
-                <q-item-separator />
-                <div class="total">Total: {{ totalReceber | formatMoney }}</div>
               </q-list>
-              <div v-else>
-                <div class="msg">
-                  <i class="fa fa-frown-o fa-3x text-negative"></i>
-                  <div style="margin: 10px">Você não tem contas a receber!</div>
-                </div>
-              </div>
-              
-            </div>
-            
-            <div class="layout-view">
-              <p class="total">Seu saldo: <strong>R$ 0,00</strong>
-              </p>
-            </div>
+            </q-popover> 
+          </q-item-side> 
+        </q-item>
+        <div class="row" v-if="permissoes.acessaFinanceiro">
+          <div class="col-6 text-center">
+             <!-- <q-card>
+                <q-card-title>
+                  Dia
+                  <q-icon slot="right" name="more_vert">
+                    <q-popover ref="popover">
+                      <q-list link class="no-border">
+                        <q-item @click="lucroDia = false">
+                          <q-item-main label="Total de Vendas" />
+                        </q-item>
+                        <q-item @click="lucroDia = true">
+                          <q-item-main label="Lucro" />
+                        </q-item>
+                      </q-list>
+                    </q-popover>
+                  </q-icon>
+                </q-card-title>
+                <q-card-separator />
+                <q-card-main class="text-center">
+                    <q-knob
+                      v-model="dia"
+                      size="200px"
+                      style="font-size: 1.5rem"
+                      :color="faturaCorDia"
+                      line-width="5px"
+                      :min="min"
+                      :max="maxDia"
+                      :step="1"
+                      readonly
+                    >
+                      {{dia | formatMoney}}
+                    </q-knob>
+                </q-card-main>
+              </q-card>-->
+            <q-knob
+              v-model="dia"
+              :size="size"
+              :style="font"
+              :color="faturaCorDia"
+              line-width="5px"
+              :min="min"
+              :max="maxDia"
+              :step="1"
+              readonly
+            >
+              {{dia | formatMoney}}
+            </q-knob>
+          </div>
+          <div class="col text-center">
+            <!--  <q-card>
+                <q-card-title>
+                  Mês
+                  <q-icon slot="right" name="more_vert">
+                    <q-popover ref="popover">
+                      <q-list link class="no-border">
+                        <q-item @click="lucroMes = false">
+                          <q-item-main label="Total de Vendas" />
+                        </q-item>
+                        <q-item @click="lucroMes = true">
+                          <q-item-main label="Lucro" />
+                        </q-item>
+                      </q-list>
+                    </q-popover>
+                  </q-icon>
+                </q-card-title>
+                <q-card-separator />
+                <q-card-main class="text-center">
+                    <q-knob
+                      v-model="mes"
+                      size="200px"
+                      style="font-size: 1.5rem"
+                      :color="faturaCorMes"
+                      line-width="5px"
+                      :min="min"
+                      :max="maxMes"
+                      :step="1"
+                      readonly
+                    >
+                      {{mes | formatMoney}}
+                    </q-knob>
+                </q-card-main>
+              </q-card> -->
+            <q-knob
+              v-model="mes"
+              :size="size"
+              :style="font"
+              :color="faturaCorMes"
+              line-width="5px"
+              :min="min"
+              :max="maxMes"
+              :step="1"
+              readonly
+            >
+              <!--readonly-->
+              {{mes | formatMoney}}
+            </q-knob>
+          </div>
+        </div>
+        
+        <q-list highlight id="ranking">
+          <q-list-header v-if="permissoes.funcao === 'ADMIN'">Ranking</q-list-header>
+          <q-list-header v-else>Meta</q-list-header>
+          <q-item>
+            <q-item-main>
+              <q-select v-model="mensal"
+                        :options="[
+                          {
+                            label: 'Meta do Dia',
+                            value: false
+                          },
+                          {
+                            label: 'Meta do Mês',
+                            value: true
+                          },
+                        ]" />
+            </q-item-main>
+            <q-item-side right>
+              <q-input v-if="!mensal" 
+                       v-model="metaDia" 
+                       type="number" 
+                       align="right"
+                       :disable="editMeta"/>
+              <q-input v-else 
+                       v-model="metaMes" 
+                       type="number" 
+                       align="right"
+                       :disable="editMeta"/>
+            </q-item-side>
+          </q-item>
 
-          </q-collapsible>
-          <!-- Estoque Mínimo -->
-          <q-collapsible opened icon="system_update_alt" label="Estoque Mínimo" :sublabel="estoqueMin">
-            <q-list highlight>
-              <q-list-header>Ordem de Compra</q-list-header>
-              <q-item v-for="(produto, index) in produtos" :key="index">
-                <q-item-main>
-                  <q-item-tile label>{{produto.nome}}</q-item-tile>
-                  <q-item-tile sublabel>Cod. Barras: {{produto.codBarra}}</q-item-tile>
-                  <q-item-tile sublabel>Estoque: {{produto.qtd}}</q-item-tile>
-                </q-item-main>
-                <q-item-side right>
-                  <q-btn v-if="produto.cotar" icon="send" color="positive" round small @click="cotarProduto(produto)" />
-                  <q-btn v-else icon="send" color="grey" round small @click="cotarProduto(produto)" />
-                </q-item-side>
-              </q-item>
-            </q-list>
-          </q-collapsible>
-          <!-- Lista de Aniversariantes -->
-          <q-collapsible icon="view_list" label="Lista de Aniversariantes" :sublabel="aniversariantes">
-              <q-list highlight no-border v-if="visivel">
-                <q-list-header>Aniversariantes</q-list-header>
-                <q-item v-for="(item, index) in nivers" :key="index">
-                  <q-item-main>
-                    <q-item-tile label>{{ item.nome }}</q-item-tile>
-                  </q-item-main>
-                  <q-item-side right>
-                    <q-fab color="primary" icon="keyboard_arrow_left" direction="left">
-                        <q-fab-action color="lime" @click="msgEmail(item)" icon="mail" />
-                        <q-btn
-                          color="faded" 
-                          rounded
-                          @click="sms(item)"
-                          >
-                          SMS
-                        </q-btn>
-                        <q-fab-action color="info" @click="fone(item)" icon="phone" />
-                        <q-fab-action color="secondary" @click="whats(item)" icon="fa-whatsapp" />
-                        <q-btn
-                          color="primary" 
-                          rounded
-                          @click="abrir(item)"
-                          >
-                          abrir
-                        </q-btn>
-                    </q-fab>
-                  </q-item-side>
-                </q-item>
 
-              </q-list>
-          </q-collapsible>
+          <q-item v-for="(v, index) in vendasVendedor" :key="index" v-if="permissoes.funcao === 'VENDEDOR' && v.vendedor === user">
+            <!--<q-item-side v-if="v.vendedor === user">{{index + 1}}</q-item-side>--> <!--caso queira observar a posição-->
+            <q-item-main v-if="v.vendedor === user">
+              <q-item-tile label>{{v.vendedor}}</q-item-tile>
+              <q-item-tile sublabel>{{v.total | formatMoney}}</q-item-tile>
+              <q-progress :percentage="v.porcentagem"
+                          color="orange"
+                          stripe animate 
+                          style="height: 25px" />
+            </q-item-main>
+            <q-item-side right v-if="v.vendedor === user">{{v.porcentagem}}%</q-item-side>
+
+          </q-item>
+
+          <q-item v-for="(v, index) in vendasVendedor" :key="index" v-if="permissoes.funcao === 'CAIXA' && v.vendedor === user">
+            <q-item-main v-if="v.vendedor === user">
+              <q-item-tile label>{{v.vendedor}}</q-item-tile>
+              <q-item-tile sublabel>{{v.total | formatMoney}}</q-item-tile>
+              <q-progress :percentage="v.porcentagem"
+                          color="orange"
+                          stripe animate 
+                          style="height: 25px" />
+            </q-item-main>
+            <q-item-side right v-if="v.vendedor === user">{{v.porcentagem}}%</q-item-side>
+
+          </q-item>
+
+
+          <q-item v-for="(v, index) in vendasVendedor" :key="index" v-if="permissoes.funcao === 'ADMIN'">
+            <q-item-side>{{index + 1}}&ordm </q-item-side>
+            <q-item-main>
+              <q-item-tile label>{{v.vendedor}}</q-item-tile>
+              <q-item-tile sublabel>{{v.total | formatMoney}}</q-item-tile>
+              <q-progress :percentage="v.porcentagem"
+                          color="orange"
+                          stripe animate 
+                          style="height: 25px" />
+            </q-item-main>
+            <q-item-side right>{{v.porcentagem}}%</q-item-side>
+          </q-item>
+
 
         </q-list>
-        
-      </div>
-    </div>
+      </q-collapsible>
+      <!-- Contas -->
+      <q-collapsible opened v-if="permissoes.acessaFinanceiro" icon="insert_chart" label="Contas" :sublabel="feedContas">
+        <div class="layout-view">
+          <div class="row">
+            <div class="col-md-5 col-xs-12"
+                 style="margin-top: 9px">
+                <q-field
+                    icon="today"
+                    >
+                    <q-select v-model="tipoConta"
+                              :options="tipos"
+                    />
+
+                </q-field>
+            </div>
+            <div class="offset-md-2"></div>
+            <div class="col-md-5 col-xs-12">
+                <q-field
+                    icon="today"
+                    v-if="tipoConta === 'data'"
+                    >
+                    <q-datetime v-model="vencimento"
+                                type="date" 
+                                float-label="Vencimento" 
+                                color="black"
+                                format="DD/MM/YYYY"
+                                ok-label="OK" 
+                                clear-label="Limpar" 
+                                cancel-label="Cancelar"
+                                :day-names="dias"
+                                :month-names="meses"
+
+                    />
+
+                </q-field>
+                <div v-else class="semana">{{semana}}</div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="layout-view">
+          <q-list highlight v-if="contasPagar.length>0">
+            <q-list-header>Contas a Pagar</q-list-header>
+            <q-item v-for="(d, index) in contasPagar" :key="index">
+              <q-item-side icon="fa-arrow-right" class="text-negative"/>
+              <q-item-main>
+                <q-item-tile label><strong>Vencimento:</strong> {{ d.vencimento | formatDate }}</q-item-tile>
+                <q-item-tile sublabel>{{ d.fornecedor }}</q-item-tile>
+              </q-item-main>
+              <q-item-side right >
+                {{ d.valorTitulo | formatMoney }}
+              </q-item-side>
+            </q-item>
+            <q-item-separator />
+            <div class="total">Total: {{ totalPagar | formatMoney }}</div>
+          </q-list>
+          <div v-else>
+            <div class="msg">
+              <i class="fa fa-smile-o fa-3x text-positive"></i>
+              <div style="margin: 10px">Você não tem contas a pagar!</div>
+            </div>
+          </div>
+
+
+          <q-list highlight v-if="contasReceber.length>0">
+            <q-list-header>Contas a Receber</q-list-header>
+            <q-item v-for="(d, index) in contasReceber" :key="index">
+              <q-item-side icon="fa-arrow-right" class="text-positive"/>
+              <q-item-main>
+                <q-item-tile label><strong>Vencimento:</strong> {{ d.vencimento | formatDate }}</q-item-tile>
+                <q-item-tile sublabel>{{ d.fornecedor }}</q-item-tile>
+              </q-item-main>
+              <q-item-side right >
+                {{ d.valorTitulo | formatMoney }}
+              </q-item-side>
+            </q-item>
+            <q-item-separator />
+            <div class="total">Total: {{ totalReceber | formatMoney }}</div>
+          </q-list>
+          <div v-else>
+            <div class="msg">
+              <i class="fa fa-frown-o fa-3x text-negative"></i>
+              <div style="margin: 10px">Você não tem contas a receber!</div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="layout-view">
+          <p class="total">Seu saldo: <strong>R$ 0,00</strong>
+          </p>
+        </div>
+
+      </q-collapsible>
+      <!-- Estoque Mínimo -->
+      <q-collapsible opened icon="system_update_alt" label="Estoque Mínimo" :sublabel="estoqueMin">
+        <q-list highlight>
+          <q-list-header>Ordem de Compra</q-list-header>
+          <q-item v-for="(produto, index) in produtos" :key="index">
+            <q-item-main>
+              <q-item-tile label>{{produto.nome}}</q-item-tile>
+              <q-item-tile sublabel>Cod. Barras: {{produto.codBarra}}</q-item-tile>
+              <q-item-tile sublabel>Estoque: {{produto.qtd}}</q-item-tile>
+            </q-item-main>
+            <q-item-side right>
+              <q-btn v-if="produto.cotar" icon="send" color="positive" round small @click="cotarProduto(produto)" />
+              <q-btn v-else icon="send" color="grey" round small @click="cotarProduto(produto)" />
+            </q-item-side>
+          </q-item>
+        </q-list>
+      </q-collapsible>
+      <!-- Lista de Aniversariantes -->
+      <q-collapsible icon="view_list" label="Lista de Aniversariantes" :sublabel="aniversariantes">
+          <q-list highlight no-border v-if="visivel">
+            <q-list-header>Aniversariantes</q-list-header>
+            <q-item v-for="(item, index) in nivers" :key="index">
+              <q-item-main>
+                <q-item-tile label>{{ item.nome }}</q-item-tile>
+              </q-item-main>
+              <q-item-side right>
+                <q-fab color="primary" icon="keyboard_arrow_left" direction="left">
+                    <q-fab-action color="lime" @click="msgEmail(item)" icon="mail" />
+                    <q-btn
+                      color="faded" 
+                      rounded
+                      @click="sms(item)"
+                      >
+                      SMS
+                    </q-btn>
+                    <q-fab-action color="info" @click="fone(item)" icon="phone" />
+                    <q-fab-action color="secondary" @click="whats(item)" icon="fa-whatsapp" />
+                    <q-btn
+                      color="primary" 
+                      rounded
+                      @click="abrir(item)"
+                      >
+                      abrir
+                    </q-btn>
+                </q-fab>
+              </q-item-side>
+            </q-item>
+
+          </q-list>
+      </q-collapsible>
+
+    </q-list>
+      
     <br><br><br>
       
     <q-modal minimized ref="telModal">
@@ -466,6 +505,8 @@
         user: localStorage.getItem('nameUser'),
         menu: (localStorage.getItem('menu') === 'true'),
         configBtn: (localStorage.getItem('configBtn') === 'true'),
+        size: '',
+        font: '',
         
         //relógio
         currentDate: moment().format('LL'),
@@ -474,8 +515,7 @@
         tempo: '',
          
         //vendas
-        lucroDia: false,
-        lucroMes: false,
+        lucro: false,
         min: 0,
         maxDia: parseInt(localStorage.getItem('tetoDia')),
         maxMes: parseInt(localStorage.getItem('tetoMes')),
@@ -620,7 +660,7 @@
         if(this.vendas === null || this.vendas.length === 0) return 0
         
         let a = []
-        if(!this.lucroDia){
+        if(!this.lucro){
           a = this.vendas.map(row => row.totalVendas)
         }
         else{
@@ -637,7 +677,7 @@
         if(this.vendasMes === null || this.vendasMes.length === 0) return 0
         
         let a
-        if(!this.lucroMes){
+        if(!this.lucro){
           a = this.vendasMes.map(row => row.totalVendas)
         }
         else{
@@ -744,23 +784,16 @@
       feedVendas(){
         if(this.permissoes.funcao !== 'ADMIN') return
         
-        let tituloDia
-        if(this.lucroDia){
-          tituloDia = 'Lucro'
+        let rotulo
+        if(this.lucro){
+          rotulo = 'Lucro'
         }
         else {
-          tituloDia = 'Vendas'
+          rotulo = 'Vendas'
         }
         
-        let tituloMes
-        if(this.lucroMes){
-          tituloMes = 'Lucro'
-        }
-        else {
-          tituloMes = 'Vendas'
-        }
         
-        return tituloDia + ' do dia: R$ ' + this.dia.toFixed(2) + ' / ' + tituloMes + ' do mês: R$ ' + this.mes.toFixed(2)
+        return rotulo + ' do dia: R$ ' + this.dia.toFixed(2) + ' / ' + rotulo + ' do mês: R$ ' + this.mes.toFixed(2)
       },
       vendasVendedor(){        
         let vendedores
@@ -814,6 +847,26 @@
       }
     },
     methods:{
+      onResize (size) {
+        if(size.width < 620){
+          this.size = Math.round((size.width - (size.width * 0.65))) + 'px'
+          this.font = 'font-size: ' + Math.round((size.width - (size.width * 0.95))) + 'px'
+          console.log('size', this.size);
+          console.log('font', this.font);
+        }
+        else if(size.width < 999){
+          this.size = Math.round((size.width - (size.width * 0.80))) + 'px'
+          this.font = 'font-size: ' + Math.round((size.width - (size.width * 0.97))) + 'px'
+          console.log('size', this.size); 
+          console.log('font', this.font); 
+        }
+        else{
+          this.size = Math.round((size.width - (size.width * 0.75))) + 'px'
+          this.font = 'font-size: ' + Math.round((size.width - (size.width * 0.97))) + 'px'
+          console.log('size', this.size); 
+          console.log('font', this.font); 
+        }
+      },
       updateCurrentTime(){
         this.currentTime = moment().format('LTS');
       },
@@ -1049,6 +1102,14 @@
                 icon: 'mood_bad'
             })
           })
+      },
+      exibirVenda(){
+        this.lucro = false
+        this.$refs.popover.close()
+      },
+      exibirLucro(){
+        this.lucro = true
+        this.$refs.popover.close()
       },
       cotarProduto(produto){
         if(produto.cotar === undefined) {

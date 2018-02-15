@@ -942,7 +942,7 @@ export default {
         //NOVO
         this.CadProduto.produto.nome = this.nome
                 
-        if(this.CadProduto.produto.codFabrica === ''){
+        /*if(this.CadProduto.produto.codFabrica === ''){
             this.CadProduto.produto.codFabrica = 0
         }
         if(this.CadProduto.produto.codBarra === ''){
@@ -953,7 +953,9 @@ export default {
         }
         if(this.CadProduto.produto.codFornecedor === ''){
             this.CadProduto.produto.codFornecedor = 0
-        }
+        }*/
+        
+        this.valor = this.valorVenda
         
         if(this.valor>0){
             this.CadProduto.precos[1].valor = this.valor
@@ -1616,18 +1618,106 @@ export default {
     }).catch((err) => {
         console.log(err)
         console.log('fail')
-    }) 
+    })
+    
+    
   },
   created(){
     let t = this
-    t.listarFamilias()
-    t.listarCategorias()
-    t.listarMarcas()
     t.listarUnidadesMedida()
     t.listarTabelasPreco()
     t.listarFatoresConv()
     t.listarProdutos()
-    t.todosProdutos()
+    
+    if(localStorage.getItem('loadProdutos') === 'true'){
+        this.todosProdutos()
+        this.listarFamilias()
+        this.listarCategorias()
+        this.listarMarcas()
+        console.log('sync get')
+        return
+    }
+      
+    localforage.getItem('Produtos')
+    .then((value) => {
+        if(value){
+            console.log('localforage get produtos')
+            //console.log(value)
+            this.produtos = value;
+        }
+        else{
+            console.log('localforage fail')
+            this.todosProdutos()
+        }
+        
+    })
+    .catch((err) => {
+        console.log(err)
+        console.log('fail')
+    }) 
+    
+    localforage.getItem('FamiliasProdutos')
+    .then((value) => {
+        if(value){
+            console.log('localforage get familias')
+            //console.log(value)
+            this.familias = value.map(row => ({
+              label: row.nome, 
+              value: row.codigo
+            }));
+        }
+        else{
+            console.log('localforage fail familias')
+            this.listarFamilias()
+        }
+        
+    })
+    .catch((err) => {
+        console.log(err)
+        console.log('fail familias')
+    }) 
+    
+    localforage.getItem('CategoriasProdutos')
+    .then((value) => {
+        if(value){
+            console.log('localforage get categorias')
+            //console.log(value)
+            this.categorias = value.map(row => ({
+              label: row.nome, 
+              value: row.codigo
+            }));
+        }
+        else{
+            console.log('localforage fail categorias')
+            this.listarCategorias()
+        }
+        
+    })
+    .catch((err) => {
+        console.log(err)
+        console.log('fail')
+    }) 
+    
+    localforage.getItem('MarcasProdutos')
+    .then((value) => {
+        if(value){
+            console.log('localforage get marcas')
+            //console.log(value)
+            this.marcas = value.map(row => ({
+              label: row.nome, 
+              value: row.codigo
+            }));
+        }
+        else{
+            console.log('localforage fail marcas')
+            this.todosProdutos()
+        }
+        
+    })
+    .catch((err) => {
+        console.log(err)
+        console.log('fail marcas')
+    }) 
       
     if(localStorage.getItem('cadMode') === 'edit'){
         t.btnDelete = true
