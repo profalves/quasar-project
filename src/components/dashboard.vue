@@ -1034,6 +1034,7 @@
             console.log(res.response)
             console.log('sucesso')
             this.$refs.baixarConta.close()
+            this.listarContas()
             //this.$router.push('contas')
           })
           .catch((e)=>{
