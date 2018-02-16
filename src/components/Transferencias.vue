@@ -147,7 +147,7 @@
       <p>Para sair, clique no botão sem selecionar nenhuma empresa</p>
       <q-select
           v-model="dest"
-          :options="listaEmpresas"
+          :options="listaConfigs"
       />
       <q-btn color="primary" rounded @click="$refs.modal.close(setEmpresa)">Selecionar</q-btn>
     </q-modal>
@@ -437,10 +437,7 @@ export default {
       
       lista = a.map(row => ({
           label: row.nomeFantasia, 
-          value: { 
-              codigo: row.$id,
-              url: row.urlWebServiceVS
-                 }
+          value: row.databaseName
       }))
       //console.log(lista)
       return lista    
@@ -503,6 +500,31 @@ export default {
      
     },
     todosProdutos(){
+      if(localStorage.getItem('loadProdutos') === 'true'){
+          Loading.show({
+            spinner: FulfillingBouncingCircleSpinner,
+            spinnerSize: 140,
+            message: 'Aguardando Dados...'
+          })
+          axios.get(API + 'produto/obterproduto')
+            .then((res)=>{
+              Loading.hide()
+              this.produtos = res.data
+              localforage.setItem('Produtos', res.data)
+              this.findTemp()
+          })
+            .catch((e)=>{
+              Loading.hide()
+              console.log(e)
+              Toast.create({
+                  html: 'Sem Conexão',
+                  timeout: 6000,
+                  bgColor: '#f44242',
+                  icon: 'mood_bad'
+              })
+          })
+      }
+      else{
         localforage.getItem('Produtos').then((value) => {
             this.findTemp()
             if(value){
@@ -518,32 +540,8 @@ export default {
         }).catch((err) => {
             console.log(err)
             console.log('fail')
-        }) 
-        
-        if(localStorage.getItem('loadProdutos') === 'true'){
-            Loading.show({
-              spinner: FulfillingBouncingCircleSpinner,
-              spinnerSize: 140,
-              message: 'Aguardando Dados...'
-            })
-            axios.get(API + 'produto/obterproduto')
-              .then((res)=>{
-                Loading.hide()
-                this.produtos = res.data
-                localforage.setItem('Produtos', res.data)
-                //this.findTemp()
-            })
-              .catch((e)=>{
-                Loading.hide()
-                console.log(e)
-                Toast.create({
-                    html: 'Sem Conexão',
-                    timeout: 6000,
-                    bgColor: '#f44242',
-                    icon: 'mood_bad'
-                })
-            })
-        }
+        })
+      }
     },
     findTemp(){
       localforage.getItem('transfTemp').then((value) => {
@@ -655,7 +653,8 @@ export default {
             codigo: this.produto.codigo,
             codBarra: this.produto.codBarra,
             nome: this.produto.nome,
-            posicaoFisica: this.qtd
+            qtd: this.qtd,
+            
         })
     },
     limpar(){
@@ -675,7 +674,7 @@ export default {
         Loading.show({
           spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
-          message: 'Aguardando Dados...'
+          message: 'Obtendo Empresas...'
         })
         axios.get(API + 'estoque/obterEmpresaDestino')
           .then((res)=>{
@@ -695,31 +694,35 @@ export default {
           })
     },
     enviar(){
-        Loading.show({
-          spinner: FulfillingBouncingCircleSpinner,
-          spinnerSize: 140,
-          message: 'Enviando Dados...'
+      let transferencias = this.transferencias.map(row => ({
+        CodigoProduto: row.codigo,
+        Qtd: row.qtd,
+        CodigoUsuario: parseInt(localStorage.getItem('codUser')),
+      }))
+      
+      Loading.show({
+        spinner: FulfillingBouncingCircleSpinner,
+        spinnerSize: 140,
+        message: 'Enviando Dados...'
+      })
+      axios.post(API + 'estoque/TransferirEstoque', [
+        transferencias,
+        'CC', //nome do Config = "databaseName": "CC",
+      ])
+      .then((res)=>{
+        Loading.hide()
+        console.log('SUCESSO', res)
+      })
+      .catch((e)=>{
+        Loading.hide()
+        console.log(e)
+        Toast.create({
+            html: 'Sem Conexão',
+            timeout: 6000,
+            bgColor: '#f44242',
+            icon: 'mood_bad'
         })
-        axios.post(API + 'estoque/TransferirEstoque', [
-          this.transferencias,
-          'CC', //nome do Config = "databaseName": "CC",
-
-            
-        ])
-          .then((res)=>{
-            Loading.hide()
-            //console.log(res)
-          })
-          .catch((e)=>{
-            Loading.hide()
-            console.log(e)
-            Toast.create({
-                html: 'Sem Conexão',
-                timeout: 6000,
-                bgColor: '#f44242',
-                icon: 'mood_bad'
-            })
-          })
+      })
     },
   },
   mounted(){
@@ -772,7 +775,7 @@ export default {
     })
   },
   created(){
-    this.obterConfigs()
+    //this.obterConfigs()
   }
   
 }

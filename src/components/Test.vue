@@ -17,7 +17,7 @@
     </div>
     <div class="row">
       <q-btn push big glossy color="primary" @click="produtoPromo">produtoPromo</q-btn>
-      <q-btn push big glossy color="primary" @click="clientePromo">clientePromo</q-btn>
+      <q-btn push big glossy color="primary" outline @click="clientePromo">clientePromo</q-btn>
   
     </div>
     

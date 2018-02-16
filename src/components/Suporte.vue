@@ -33,11 +33,19 @@ export default {
         {
           label: 'Cancelar',
           color: 'negative',
+          handler:() => {
+            this.$router.push('/')
+          }
         },
         {
           label: 'Enviar',
           color: 'positive',
           handler:(data) => {
+            console.log(data)
+            if(!data.msg){
+              //data.msg = 'Digite sua mensagem'
+              return
+            }
             openURL('https://api.whatsapp.com/send?phone=' + this.suporte + '&text=' + data.msg)
             this.$router.push('/')
           }
