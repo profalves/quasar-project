@@ -913,7 +913,7 @@ import axios from 'axios'
 import VMasker from 'vanilla-masker'
 import { required, minLength, maxLength, email } from 'vuelidate/lib/validators'
 import { Dialog, Toast, Loading, openURL } from 'quasar'
-import { SelfBuildingSquareSpinner, AtomSpinner } from 'epic-spinners'
+import { SelfBuildingSquareSpinner, FulfillingBouncingCircleSpinner } from 'epic-spinners'
 
 //dev
 const API = localStorage.getItem('wsAtual')
@@ -1353,7 +1353,7 @@ export default {
         let tela = localStorage.getItem('tela')
         
         Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Enviando Dados...'
         })
@@ -1411,7 +1411,7 @@ export default {
               handler: () => {
                 let nome = this.CadPessoa.pessoa.nome
                 Loading.show({
-                  spinner: AtomSpinner,
+                  spinner: FulfillingBouncingCircleSpinner,
                   spinnerSize: 140,
                   message: 'Excluindo Dados...'
                 })
@@ -1464,7 +1464,7 @@ export default {
     },
     adicionarEnd(){
         Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Aguardando Dados...'
         })
@@ -1518,7 +1518,7 @@ export default {
                 data = endEx
                 endEx.excluido = true
                 Loading.show({
-                  spinner: AtomSpinner,
+                  spinner: FulfillingBouncingCircleSpinner,
                   spinnerSize: 140,
                   message: 'Enviando Dados...'
                 })
@@ -1604,7 +1604,7 @@ export default {
         this.foneADD.Numero = this.fone
         this.foneADD.CodPessoa = localStorage.getItem('codPessoa')
         Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Enviando Dados...'
         })
@@ -1678,7 +1678,7 @@ export default {
         this.emailADD.Endereco = this.email
         this.emailADD.CodPessoa = localStorage.getItem('codPessoa')
         Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Enviando Dados...'
         })
@@ -1774,7 +1774,7 @@ export default {
                     return
                 }
                 Loading.show({
-                  spinner: AtomSpinner,
+                  spinner: FulfillingBouncingCircleSpinner,
                   spinnerSize: 140,
                   message: 'Enviando Dados...'
                 })
@@ -1851,7 +1851,7 @@ export default {
     listarPessoas(){
       if (localStorage.getItem('cadMode')==='edit'){
           Loading.show({
-              spinner: AtomSpinner,
+              spinner: FulfillingBouncingCircleSpinner,
               spinnerSize: 140,
               message: 'Enviando Dados...'
           })

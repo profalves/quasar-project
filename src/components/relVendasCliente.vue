@@ -157,7 +157,7 @@
 </template>
 
 <script>
-import { AtomSpinner } from 'epic-spinners'    
+import { FulfillingBouncingCircleSpinner } from 'epic-spinners'    
 import { Loading, Toast, clone } from 'quasar'
 import axios from 'axios'
 import localforage from 'localforage'
@@ -337,7 +337,7 @@ export default {
         }
           
         Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Aguardando Dados...'
         })
@@ -364,7 +364,7 @@ export default {
       },
       listarVendedores(){
           Loading.show({
-              spinner: AtomSpinner,
+              spinner: FulfillingBouncingCircleSpinner,
               spinnerSize: 140,
               message: 'Aguardando Dados...'
           })

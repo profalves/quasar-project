@@ -46,7 +46,7 @@
 
 import { Loading } from 'quasar'
 import axios from 'axios'
-import { AtomSpinner } from 'epic-spinners'
+import { FulfillingBouncingCircleSpinner } from 'epic-spinners'
     
 const API = localStorage.getItem('wsAtual')
   
@@ -144,7 +144,7 @@ export default {
   methods: {
     getCaixaMes(){
       Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Aguardando Dados...'
       })

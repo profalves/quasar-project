@@ -322,7 +322,7 @@
       <!-- Estoque Mínimo -->
       <q-collapsible opened icon="system_update_alt" label="Estoque Mínimo" :sublabel="estoqueMin">
         
-        <q-list highlight>
+        <q-list highlight v-if="produtos.length>0">
           <!--<q-list-header>Ordem de Compra</q-list-header>-->
           <q-item>
             <q-item-main>
@@ -488,8 +488,9 @@
 <script type="text/javascript">
   import { Toast, Dialog, Loading, openURL, date } from 'quasar'
   import axios from 'axios'
-  import { AtomSpinner } from 'epic-spinners'
+  import { FulfillingBouncingCircleSpinner } from 'epic-spinners'
   import localforage from 'localforage'
+  
   //datas
   let dt = date
   const hoje = new Date()
@@ -497,9 +498,11 @@
   require("moment/min/locales.min");
   moment.locale('pt-br');
   const suporte = "5575992748983"
+  
   const API = localStorage.getItem('wsAtual')
   //debug
   //const API = 'http://192.168.0.200:29755/'
+  
   import chartLine from './charts/Line.js'
   import bar from './charts/Bar.js'
   import pie from './charts/Pizza.js'
@@ -507,6 +510,7 @@
   import polar from './charts/Polar.js'
   import radar from './charts/Radar.js'
   import bubble from './charts/Bubble.js'
+  
   export default {
     name: 'DashBoard',
     components: {
@@ -866,7 +870,7 @@
       },
       getHoje(){
         Loading.show({
-            spinner: AtomSpinner,
+            spinner: FulfillingBouncingCircleSpinner,
             spinnerSize: 140,
             message: 'Aguardando Dados...'
         })
@@ -992,7 +996,7 @@
         }
         if(this.desp.length>0 && this.recs.length>0) return
         Loading.show({
-            spinner: AtomSpinner,
+            spinner: FulfillingBouncingCircleSpinner,
             spinnerSize: 140,
             message: 'Aguardando Dados...'
         })
@@ -1030,11 +1034,24 @@
                 icon: 'done'
             })
             console.log(res)
-            console.log(res.data)
-            console.log(res.response)
             console.log('sucesso')
             this.$refs.baixarConta.close()
-            this.listarContas()
+            axios.get(API + 'conta/obterContas?tipo=cp')
+            .then((res)=>{
+                //console.log(res)
+                this.desp = res.data
+            })
+            .catch((e)=>{
+              console.log(e)
+            })
+            axios.get(API + 'conta/obterContas?tipo=cr')
+            .then((res)=>{
+                //console.log(res)
+                this.recs = res.data
+            })
+            .catch((e)=>{
+              console.log(e)
+            })
             //this.$router.push('contas')
           })
           .catch((e)=>{
@@ -1052,7 +1069,7 @@
       },
       getVendas(){
         Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Aguardando Dados...'
         })
@@ -1071,7 +1088,7 @@
       },
       getVendasMes(){
         Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Aguardando Dados...'
         })
@@ -1089,7 +1106,7 @@
       },
       getEstoqueMinimo(){
         Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Aguardando Dados...'
         })
@@ -1102,7 +1119,7 @@
             else{
               this.estoque = res.data
             }
-            console.log('produtos', this.produtos.length)
+            console.log('produtos:', this.produtos.length)
           })
           .catch((e)=>{
             Loading.hide()
@@ -1178,22 +1195,7 @@
       this.listarContas()
       this.getVendas()
       this.getVendasMes()
-      localforage.getItem('Produtos')
-      .then((value) => {
-        if(value){
-          console.log('localforage get Produtos')
-          console.log('Produtos:', value)
-          this.produtos = value.filter(row => row.estoqueMinimo !== 'null') //[value[0]] //.filter(row => row.estoqueMinimo !== 'null')
-        }
-        else{
-          console.log('localforage fail')
-          this.getEstoqueMinimo()
-        }
-      })
-      .catch((err) => {
-        console.log(err)
-        console.log('fail')
-      }) 
+      this.getEstoqueMinimo()
     }  
   }
 </script>

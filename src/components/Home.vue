@@ -102,7 +102,7 @@
 <script>
 import { Loading } from 'quasar'
 import axios from 'axios'
-import { AtomSpinner } from 'epic-spinners'
+import { FulfillingBouncingCircleSpinner } from 'epic-spinners'
 
 import moment from 'moment'
 //var moment = require('moment');
@@ -172,7 +172,7 @@ export default {
         }
         
         Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Aguardando Dados...'
         })

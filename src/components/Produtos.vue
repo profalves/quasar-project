@@ -342,7 +342,7 @@
 <script>
 import { Loading, Toast, Dialog } from 'quasar'
 import axios from 'axios'
-import { AtomSpinner } from 'epic-spinners'
+import { FulfillingBouncingCircleSpinner } from 'epic-spinners'
 import localforage from 'localforage'
     
 const API = localStorage.getItem('wsAtual')
@@ -493,7 +493,7 @@ export default {
       }
 
       Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Aguardando Dados...'
       })
@@ -518,7 +518,7 @@ export default {
     },
     todosProdutos(){
         Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Aguardando Dados...'
         })
@@ -583,7 +583,7 @@ export default {
         }
         
         Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Aguardando Dados...'
         })
@@ -680,7 +680,7 @@ export default {
                   obj.excluido = true
                   let produto  = obj.nome
                   Loading.show({
-                      spinner: AtomSpinner,
+                      spinner: FulfillingBouncingCircleSpinner,
                       spinnerSize: 140,
                       message: 'Excluindo Produto...'
                   })
@@ -708,7 +708,7 @@ export default {
     },
     sync(){
       Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Sincronizando Dados...'
       })

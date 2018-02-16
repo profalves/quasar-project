@@ -130,7 +130,7 @@
 <script>
 import { Toast, Dialog, Loading, openURL } from 'quasar'
 import axios from 'axios'
-import { AtomSpinner } from 'epic-spinners'
+import { FulfillingBouncingCircleSpinner } from 'epic-spinners'
 var moment = require('moment');
 require("moment/min/locales.min");
 moment.locale('pt-br');
@@ -259,7 +259,7 @@ export default {
     },
     getAniversariantes(){
       Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Aguardando Dados...'
       })
@@ -276,7 +276,7 @@ export default {
     },
     getHoje(){
       Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Aguardando Dados...'
       })

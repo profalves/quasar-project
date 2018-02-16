@@ -1,84 +1,105 @@
 <template>
-  <div class="layout-padding row justify-center">
-    <div style="width: 500px; max-width: 90vw;">
-      <p class="caption">Implantando Scroll down infinite.</p>
-
-      <br>
-      <q-infinite-scroll :handler="loadMore">
-        <div v-for="(item, index) in showingData" class="caption" :key="index">
-          <q-chip square color="secondary" class="shadow-1">
-            {{ index + 1 }}
-          </q-chip>
-          
-          <h4>{{items[index].value}}</h4>
-          <hr>
-        </div>
-
-        <div slot="message" class="row justify-center" style="margin-bottom: 50px;">
-          <q-spinner-dots :size="40" />
-        </div>
-      </q-infinite-scroll>
+  <div class="layout-padding">
+    <div class="q-toolbar-title">
+      Ajuste de Estoque
     </div>
+    <div class="row">
+      <div class="col-auto">
+        <q-btn push big glossy color="primary" @click="entradaEstoque">entrada estoque</q-btn>
+      </div>
+      <div class="col-auto">
+        <q-btn push big glossy color="primary" @click="saidaEstoque">saída estoque</q-btn>
+      </div>
+    </div>
+    <hr>
+    <div class="q-toolbar-title">
+      Promoções  
+    </div>
+    <div class="row">
+      <q-btn push big glossy color="primary" @click="produtoPromo">produtoPromo</q-btn>
+      <q-btn push big glossy color="primary" @click="clientePromo">clientePromo</q-btn>
+  
+    </div>
+    
+    
+      
   </div>
 </template>
 
 <script>
-import {
-  QInfiniteScroll,
-  QChip,
-  QSpinnerDots
-} from 'quasar'
-import data from 'data/CFOP.json'
-    
+import axios from 'axios'
+import { Loading } from 'quasar'
+//import { FulfillingBouncingCircleSpinner } from 'epic-spinners'
+
+//const API = localStorage.getItem('wsAtual')
+//debug
+const API = 'http://192.168.0.200:29755/'
+
 export default {
-  components: {
-    QInfiniteScroll,
-    QChip,
-    QSpinnerDots
-  },
-  data () {
+  data(){
     return {
-      data,
-      items: [],
-      actualMaxPosition: 5
+    
     }
   },
-  computed: {
-    showingData () {
-      return this.data.slice(0, this.actualMaxPosition)
-    }
-  },
-  methods: {
-    loadMore (index, done) {
-      setTimeout(() => {
-        this.actualMaxPosition += 5
-        done()
-      }, 2500)
+  methods:{
+    entradaEstoque(){
+      Loading.show()
+      axios.get(API + 'estoque/movimentaEstoque?codProduto=10561&codigoEmpresa=0&codigoUsuario=1&qtde=10&tipoMovimento=entrada&descricao=teste entrada')
+      .then(res => {
+        Loading.hide()
+        console.log('sucesso: ', res)
+        console.log('retorno: ', res.data)
+      })
+      .catch(e => {
+        Loading.hide()
+        console.log('erro: ', e)
+      })
     },
-    refresher (index, done) {
-      setTimeout(() => {
-        let items = this.items.length + 5
-        
-        for(let i = this.items.length; i < items; i++){
-            let d = this.data[i]
-            this.items.push(d) 
-        
-        }
-        this.items = this.items.concat(items)
-        done()
-      }, 2000)
+    saidaEstoque(){
+      Loading.show()
+      axios.get(API + 'estoque/movimentaEstoque?codProduto=10561&codigoEmpresa=0&codigoUsuario=1&qtde=5&tipoMovimento=saida&descricao=teste saida')
+      .then(res => {
+        Loading.hide()
+        console.log('sucesso: ', res)
+        console.log('retorno: ', res.data)
+      })
+      .catch(e => {
+        Loading.hide()
+        console.log('erro: ', e)
+      })
     },
-    incluir(){
-     for(let i = 0; i < 9; i++){
-        let d = this.data[i]
-        this.items.push(d) 
-        
-     }
-    }
-  },
-  mounted(){
-    //this.incluir()
-    this.items = data
+    produtoPromo(){
+      Loading.show()
+      axios.get(API + 'produto/gravarProdutoPromocao?codigoProduto=10561&preco=5&codigoUsuario=1')
+      .then(res => {
+        Loading.hide()
+        console.log('sucesso: ', res)
+        console.log('retorno: ', res.data)
+      })
+      .catch(e => {
+        Loading.hide()
+        console.log('erro: ', e)
+      })
+    },
+    clientePromo(){
+      Loading.show()
+      axios.get(API + 'produto/gravarPromocaoPorCliente?totalCompras=10&diaDoMes=16&descontoMax=60&codigoUsuario=1')
+      .then(res => {
+        Loading.hide()
+        console.log('sucesso: ', res)
+        console.log('retorno: ', res.data)
+      })
+      .catch(e => {
+        Loading.hide()
+        console.log('erro: ', e)
+      })
+    },
   }
 }
 </script>
+
+<style scoped>
+  .row{
+    margin: 10px;
+  }
+</style>

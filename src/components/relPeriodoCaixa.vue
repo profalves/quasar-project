@@ -193,7 +193,7 @@ import radar from './charts/Radar.js'
 import bubble from './charts/Bubble.js'
 import { Dialog, Loading } from 'quasar'
 import axios from 'axios'
-import { AtomSpinner } from 'epic-spinners'
+import { FulfillingBouncingCircleSpinner } from 'epic-spinners'
     
 const API = localStorage.getItem('wsAtual')
   
@@ -444,7 +444,7 @@ export default {
     },
     listarResumo(){
       Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Aguardando Dados...'
       })

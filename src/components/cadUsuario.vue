@@ -239,7 +239,7 @@ import axios from 'axios'
 import VMasker from 'vanilla-masker'
 import { required, between, minLength, maxLength, email } from 'vuelidate/lib/validators'
 import { Dialog, Toast, Loading } from 'quasar'
-import { AtomSpinner } from 'epic-spinners'
+import { FulfillingBouncingCircleSpinner } from 'epic-spinners'
     
 //dev
 const API = localStorage.getItem('wsAtual')
@@ -348,7 +348,7 @@ export default {
         this.usuario.senha = this.senha
       
         Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Enviando Dados...'
         })
@@ -398,7 +398,7 @@ export default {
               style: 'margin-top: 20px',
               handler: () => {
                 Loading.show({
-                  spinner: AtomSpinner,
+                  spinner: FulfillingBouncingCircleSpinner,
                   spinnerSize: 140,
                   message: 'Excluindo Usuário...'
                 })
@@ -421,7 +421,7 @@ export default {
     },
     listarPessoas(){
       Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Aguardando Dados...'
       })
@@ -438,7 +438,7 @@ export default {
     },
     listarUsuarios(){
       Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Aguardando Dados...'
       })
@@ -455,7 +455,7 @@ export default {
     editarUsuario(){
       if (localStorage.getItem('cadMode')==='edit'){
           Loading.show({
-              spinner: AtomSpinner,
+              spinner: FulfillingBouncingCircleSpinner,
               spinnerSize: 140,
               message: 'Editando Usuário...'
           })

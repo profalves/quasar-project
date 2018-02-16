@@ -238,7 +238,7 @@
 import axios from 'axios'
 import { Dialog, Loading } from 'quasar'
 import bar from './charts/Bar2.js' 
-import { AtomSpinner } from 'epic-spinners'
+import { FulfillingBouncingCircleSpinner } from 'epic-spinners'
     
 const API = localStorage.getItem('wsAtual')
   
@@ -530,7 +530,7 @@ export default {
     },
     getFechamento(){
       Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Aguardando Dados...'
       })
@@ -558,7 +558,7 @@ export default {
     },
     getCaixa(){
       Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Aguardando Dados...'
       })
@@ -638,7 +638,7 @@ export default {
     },
     fecharCaixa(){
       Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Aguardando Dados...'
       })

@@ -1,6 +1,5 @@
 <template>
-  <!-- Don't drop "q-app" class -->
-  <div id="q-app">
+  <div id="q-app"><!-- Don't drop "q-app" class -->
   <q-window-resize-observable @resize="onResize" /> 
   <q-layout
     ref="layout"
@@ -111,24 +110,25 @@ export default {
       let b = evt.path.map(row => row.className)
       //console.log('b', b);
       let side = a.indexOf('sidenav') > -1
-      //console.log('side', side)
+      console.log('side', side)
       let menu = a.indexOf('btn-menu') > -1
-      //console.log('menu', menu)
+      console.log('menu', menu)
       let link = b.filter(row => { 
                   const classes = row || ''
                   return classes.indexOf('q-item') >= 0
                 })
-      //console.log('link', link.length)
+      console.log('link', link.length)
       let c = b.filter(row => { 
                   const classes = row || ''
                   return classes.indexOf('q-collapsible') >= 0
                 })
       //console.log('collapsible', c.length)
-      //console.log('open:', this.open)
+      console.log('open:', this.open)
+      //console.log('sidenav:', document.getElementById("sidenav"))
       if(!side && !menu && this.open){
         this.closeNav()
       }
-      if(link.length>0 && c.length===0){
+      if(link.length>0 && c.length===0 && this.open){//&& document.getElementById("sidenav").style.width = "0"){
         this.closeNav()
       }
     }) 

@@ -159,7 +159,7 @@
     
 import { Loading, Toast, clone } from 'quasar'
 import axios from 'axios'
-import { AtomSpinner } from 'epic-spinners'
+import { FulfillingBouncingCircleSpinner } from 'epic-spinners'
 
 function numberToReal(numero) {
   numero = numero.toFixed(2).split('.');
@@ -327,7 +327,7 @@ export default {
         }
           
         Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Aguardando Dados...'
         })
@@ -349,7 +349,7 @@ export default {
       },
       listarFormas(){
           Loading.show({
-              spinner: AtomSpinner,
+              spinner: FulfillingBouncingCircleSpinner,
               spinnerSize: 140,
               message: 'Aguardando Dados...'
           })

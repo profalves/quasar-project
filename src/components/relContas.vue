@@ -100,7 +100,7 @@
 <script>
 import { Loading } from 'quasar' //Alert, Dialog, Toast, clone, date
 import axios from 'axios'
-import { AtomSpinner } from 'epic-spinners'
+import { FulfillingBouncingCircleSpinner } from 'epic-spinners'
 import donut from './charts/Donuts.js'
 import reactiveData from './charts/mixins/reactiveData'
 
@@ -188,7 +188,7 @@ export default {
     listarContas(){
       if(localStorage.getItem('loadContas') === 'true'){
           Loading.show({
-              spinner: AtomSpinner,
+              spinner: FulfillingBouncingCircleSpinner,
               spinnerSize: 140,
               message: 'Aguardando Dados...'
           })
@@ -277,7 +277,7 @@ export default {
     },
     listarDespesasAPagar(){
           Loading.show({
-              spinner: AtomSpinner,
+              spinner: FulfillingBouncingCircleSpinner,
               spinnerSize: 140,
               message: 'Aguardando Dados...'
           })
@@ -300,7 +300,7 @@ export default {
         },
     listarDespesasPagas(){
       Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Aguardando Dados...'
       })
@@ -324,7 +324,7 @@ export default {
     },
     listarReceitasAPagar(){
       Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Aguardando Dados...'
       })
@@ -347,7 +347,7 @@ export default {
     },
     listarReceitasPagas(){
       Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Aguardando Dados...'
       })

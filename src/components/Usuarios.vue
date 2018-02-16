@@ -169,7 +169,7 @@
 <script>
 import { Alert, Dialog, Toast, Loading, clone } from 'quasar'
 import axios from 'axios'
-import { AtomSpinner } from 'epic-spinners'
+import { FulfillingBouncingCircleSpinner } from 'epic-spinners'
 import localforage from 'localforage'
 
 const API = localStorage.getItem('wsAtual')
@@ -280,7 +280,7 @@ export default {
     },
     listarUsuarios(){
       Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Aguardando Dados...'
       })

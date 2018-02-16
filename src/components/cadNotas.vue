@@ -802,7 +802,7 @@
 
 <script>
 import axios from 'axios'
-import { AtomSpinner } from 'epic-spinners'
+import { FulfillingBouncingCircleSpinner } from 'epic-spinners'
 import listaCFOP from 'data/CFOP.json'
 import { minLength } from 'vuelidate/lib/validators'
 import { Dialog, Toast, Loading, Ripple } from 'quasar'
@@ -1384,7 +1384,7 @@ export default {
         }
         
         Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Enviando Dados...'
         })
@@ -1481,7 +1481,7 @@ export default {
         let FatorConversao = this.item.fator
         let tipoEntradaEstoque = 'compra'
         Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Enviando Dados...'
         })
@@ -1588,7 +1588,7 @@ export default {
     
     listarPessoas(){
       Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Aguardando Dados...'
       })
@@ -1610,7 +1610,7 @@ export default {
         
       if(this.tipoCod === 'barras'){
           Loading.show({
-              spinner: AtomSpinner,
+              spinner: FulfillingBouncingCircleSpinner,
               spinnerSize: 140,
               message: 'Aguardando Dados...'
           })
@@ -1659,7 +1659,7 @@ export default {
       }
       else {
           Loading.show({
-              spinner: AtomSpinner,
+              spinner: FulfillingBouncingCircleSpinner,
               spinnerSize: 140,
               message: 'Aguardando Dados...'
           })
@@ -1705,7 +1705,7 @@ export default {
         
         if(localStorage.getItem('loadProdutos') === 'true'){
             Loading.show({
-              spinner: AtomSpinner,
+              spinner: FulfillingBouncingCircleSpinner,
               spinnerSize: 140,
               message: 'Aguardando Dados...'
             })
@@ -1738,7 +1738,7 @@ export default {
     },
     listarTipos(){
       Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Aguardando Dados...'
       })
@@ -1755,7 +1755,7 @@ export default {
     },
     listarSubtipos(){
       Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Aguardando Dados...'
       })
@@ -1772,7 +1772,7 @@ export default {
     },
     listarFormasPgto(){
       Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Aguardando Dados...'
       })
@@ -1789,7 +1789,7 @@ export default {
     },
     listarNotas(){
       Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Aguardando Dados...'
       })
@@ -1807,7 +1807,7 @@ export default {
     },
     listarContas(){
       Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Aguardando Dados...'
       })

@@ -66,7 +66,7 @@
 <script>
 import axios from 'axios'
 import { Toast, Dialog, Loading, Events } from 'quasar'
-import { AtomSpinner, FulfillingBouncingCircleSpinner } from 'epic-spinners'
+import { FulfillingBouncingCircleSpinner } from 'epic-spinners'
 import localforage from 'localforage'
     
 //dev
@@ -83,9 +83,6 @@ export default {
             usuarios: [],
             bancosDados: []
         }
-    },
-    components:{
-        AtomSpinner
     },
     computed:{
         listaEmpresas(){
@@ -146,7 +143,7 @@ export default {
               return
           }
           API = localStorage.getItem('wsAtual')
-          Loading.show({ spinner: AtomSpinner })
+          Loading.show({ spinner: FulfillingBouncingCircleSpinner })
           axios.get(API + 'usuario/obterUsuario?usuario='+ this.user + '&senha=' + this.pass)
           .then((res)=>{
             localStorage.setItem('nomeEmpresa', localStorage.getItem('Empresa' + this.bd))
@@ -258,7 +255,7 @@ export default {
           API = localStorage.getItem('wsAtual')
           
           Loading.show({
-              spinner: AtomSpinner,
+              spinner: FulfillingBouncingCircleSpinner,
               spinnerSize: 140,
               message: 'Carregando Usuários...'
           })

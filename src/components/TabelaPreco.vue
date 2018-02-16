@@ -140,7 +140,7 @@
 import { Dialog, Toast, Loading } from 'quasar'
 import { required } from 'vuelidate/lib/validators'
 import axios from 'axios'
-import { AtomSpinner } from 'epic-spinners'
+import { FulfillingBouncingCircleSpinner } from 'epic-spinners'
     
 const API = localStorage.getItem('wsAtual')
   
@@ -223,7 +223,7 @@ export default {
     },
     listarTabs (){
         Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Aguardando Dados...'
         })
@@ -259,7 +259,7 @@ export default {
         }
         
         Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Enviando Dados...'
         })
@@ -314,7 +314,7 @@ export default {
               color: 'negative',
               handler: () => {
                 Loading.show({
-                    spinner: AtomSpinner,
+                    spinner: FulfillingBouncingCircleSpinner,
                     spinnerSize: 140,
                     message: 'Excluindo tabela...'
                 })

@@ -217,7 +217,7 @@
       :animation-duration="1000"
       :size="60"
       :color="'#ff1d5e'"
-      @click="AtomSpinner"
+      @click="FulfillingBouncingCircleSpinner"
     />
     <br>
     19
@@ -248,7 +248,7 @@ import table from 'data/table.json'
 import { openURL, Loading } from 'quasar'
 const $ = require("jquery");   
 import {
-    AtomSpinner,
+    FulfillingBouncingCircleSpinner,
     FlowerSpinner,
     HollowDotsSpinner,
     PixelSpinner,
@@ -262,7 +262,7 @@ import {
     BreedingRhombusSpinner,
     SwappingSquaresSpinner,
     ScalingSquaresSpinner,
-    FulfillingBouncingCircleSpinner,
+    AtomSpinner,
     RadarSpinner,
     SelfBuildingSquareSpinner,
     SpringSpinner,
@@ -283,7 +283,7 @@ export default {
     }
   },
   components: {
-    AtomSpinner,
+    FulfillingBouncingCircleSpinner,
     FlowerSpinner,
     HollowDotsSpinner,
     PixelSpinner,
@@ -297,7 +297,7 @@ export default {
     BreedingRhombusSpinner,
     SwappingSquaresSpinner,
     ScalingSquaresSpinner,
-    FulfillingBouncingCircleSpinner,
+    AtomSpinner,
     RadarSpinner,
     SelfBuildingSquareSpinner,
     SpringSpinner,
@@ -405,11 +405,11 @@ export default {
         doc.save('Test.pdf');
     },
     
-    AtomSpinner(){
+    FulfillingBouncingCircleSpinner(){
       Loading.show({
-        spinner: AtomSpinner,
+        spinner: FulfillingBouncingCircleSpinner,
         spinnerSize: 140,
-        message: 'AtomSpinner'
+        message: 'FulfillingBouncingCircleSpinner'
       })
       setTimeout(() => {
         Loading.hide()
@@ -545,11 +545,11 @@ export default {
         Loading.hide()
       }, 5000)
     },
-    FulfillingBouncingCircleSpinner(){
+    AtomSpinner(){
       Loading.show({
         spinner: FulfillingBouncingCircleSpinner,
         spinnerSize: 140,
-        message: 'FulfillingBouncingCircleSpinner'
+        message: 'AtomSpinner'
       })
       setTimeout(() => {
         Loading.hide()

@@ -245,7 +245,7 @@
 <script>
 import { Alert, Dialog, Toast, Loading, clone, openURL } from 'quasar'
 import axios from 'axios'
-import { AtomSpinner } from 'epic-spinners'
+import { FulfillingBouncingCircleSpinner } from 'epic-spinners'
 import localforage from 'localforage'
 
 const API = localStorage.getItem('wsAtual')
@@ -407,7 +407,7 @@ export default {
     },
     listarPessoas(){
       Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Aguardando Dados...'
       })
@@ -480,7 +480,7 @@ export default {
       }
       
       Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Aguardando Dados...'
       })
@@ -534,7 +534,7 @@ export default {
               handler: () => {
                   let cliente = pessoa
                   Loading.show({
-                      spinner: AtomSpinner,
+                      spinner: FulfillingBouncingCircleSpinner,
                       spinnerSize: 140,
                       message: 'Enviando Dados...'
                   })
@@ -687,7 +687,7 @@ export default {
     },
     sync(){
       Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Sincronizando Dados...'
       })

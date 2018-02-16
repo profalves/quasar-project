@@ -321,7 +321,7 @@
             <q-card color="positive" >
               <center>
                 <q-card-title>Venda</q-card-title>
-                    <money v-model="valorVenda"
+                    <money v-model="CadProduto.produto.valor"
                            v-bind="money"
                            class="boxInput"
                     />
@@ -646,11 +646,9 @@
 import axios from 'axios'
 import { required, minLength } from 'vuelidate/lib/validators'
 import { Dialog, Toast, Loading } from 'quasar'
-import { AtomSpinner } from 'epic-spinners'
+import { FulfillingBouncingCircleSpinner } from 'epic-spinners'
 import localforage from 'localforage'
-    
-
-    
+     
 //dev
 const API = localStorage.getItem('wsAtual')
 
@@ -927,42 +925,43 @@ export default {
       
       return lista
     },
-    valorVenda(){
-        if(this.CadProduto.produto.percLucro>0){
-            return this.CadProduto.produto.custo + (this.CadProduto.produto.custo*(this.CadProduto.produto.percLucro/100))
-        }
-    },
+    /*valorVenda(){
+      this.valor = this.CadProduto.produto.custo + (this.CadProduto.produto.custo*(this.CadProduto.produto.percLucro/100))
+      return this.valor
+        
+    },*/
     
+  },
+  watch:{
+    valor(){
+      this.valor = this.CadProduto.produto.custo + (this.CadProduto.produto.custo*(this.CadProduto.produto.percLucro/100))
+      return this.valor
+        
+    },
   },
   methods: {
     goBack(){
       window.history.go(-1)
     },
     salvar(){
-        //NOVO
+        if(localStorage.getItem('cadMode') === 'save'){//NOVO
+
+          if(this.CadProduto.produto.codBarra === ''){
+              this.CadProduto.produto.codBarra = '0000000000'
+          }
+          if(this.CadProduto.produto.codEmpresa === ''){
+              this.CadProduto.produto.codEmpresa = 0
+          }
+        }
+        
         this.CadProduto.produto.nome = this.nome
-                
-        /*if(this.CadProduto.produto.codFabrica === ''){
-            this.CadProduto.produto.codFabrica = 0
-        }
-        if(this.CadProduto.produto.codBarra === ''){
-            this.CadProduto.produto.codBarra = 0
-        }
-        if(this.CadProduto.produto.codEmpresa === ''){
-            this.CadProduto.produto.codEmpresa = 0
-        }
-        if(this.CadProduto.produto.codFornecedor === ''){
-            this.CadProduto.produto.codFornecedor = 0
-        }*/
         
-        this.valor = this.valorVenda
-        
-        if(this.valor>0){
-            this.CadProduto.precos[1].valor = this.valor
+        if(this.CadProduto.produto.valor>0){
+            this.CadProduto.precos[1].valor = this.CadProduto.produto.valor
         }
         
         Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Enviando Dados...'
         })
@@ -1013,7 +1012,7 @@ export default {
               handler: () => {
                 let produto  = this.CadProduto.produto.nome
                 Loading.show({
-                  spinner: AtomSpinner,
+                  spinner: FulfillingBouncingCircleSpinner,
                   spinnerSize: 140,
                   message: 'Aguardando Dados...'
                 })
@@ -1290,7 +1289,7 @@ export default {
     },
     listarTabPrecoDet(){
       let cod = localStorage.getItem('codProduto')
-      axios.get(API + 'produto/obterProdutosTBPrecoDet?CodigoProduto=' + cod)
+      axios.get(API + 'produto/obterProdutosTBPrecoDet?codigoProduto=' + cod)
       .then((res)=>{
         this.CadProduto.precos = res.data
       })
@@ -1301,7 +1300,7 @@ export default {
     listarProdutos(){
       if (localStorage.getItem('cadMode')==='edit'){
           Loading.show({
-              spinner: AtomSpinner,
+              spinner: FulfillingBouncingCircleSpinner,
               spinnerSize: 140,
               message: 'Aguardando Dados...'
           })
@@ -1321,7 +1320,7 @@ export default {
     },
     todosProdutos(){
         Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Aguardando Dados...'
         })
@@ -1361,7 +1360,7 @@ export default {
         this.fatorConv.valorVenda = this.CadProduto.produto.valor
         
         Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Aguardando Dados...'
         })
@@ -1426,7 +1425,7 @@ export default {
               handler: () => {
                 
                 Loading.show({
-                  spinner: AtomSpinner,
+                  spinner: FulfillingBouncingCircleSpinner,
                   spinnerSize: 140,
                   message: 'Aguardando Dados...'
                 })
@@ -1468,7 +1467,7 @@ export default {
       }
       
       Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Aguardando Dados...'
       })
@@ -1509,7 +1508,7 @@ export default {
         lista.push(this.matPrima)
         
         Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Aguardando Dados...'
         })
@@ -1546,7 +1545,7 @@ export default {
     },
     obterMateriaPrima(){
         Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Aguardando Dados...'
         })
@@ -1581,7 +1580,7 @@ export default {
               style: 'margin-top: 20px',
               handler: () => {
                 Loading.show({
-                  spinner: AtomSpinner,
+                  spinner: FulfillingBouncingCircleSpinner,
                   spinnerSize: 140,
                   message: 'Aguardando Dados...'
                 })
@@ -1628,6 +1627,14 @@ export default {
     t.listarTabelasPreco()
     t.listarFatoresConv()
     t.listarProdutos()
+    
+    if(localStorage.getItem('cadMode') === 'edit'){
+        t.btnDelete = true
+        t.visivel = true
+        t.listarTabPrecoDet()
+        t.obterMateriaPrima()
+        
+    }
     
     if(localStorage.getItem('loadProdutos') === 'true'){
         this.todosProdutos()
@@ -1718,14 +1725,7 @@ export default {
         console.log(err)
         console.log('fail marcas')
     }) 
-      
-    if(localStorage.getItem('cadMode') === 'edit'){
-        t.btnDelete = true
-        t.visivel = true
-        t.listarTabPrecoDet()
-        t.obterMateriaPrima()
-        
-    }
+    
 
   }
  

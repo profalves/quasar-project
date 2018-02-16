@@ -94,7 +94,7 @@
 <script>
 import { Toast, Loading, clone } from 'quasar'
 import axios from 'axios'
-import { AtomSpinner } from 'epic-spinners'
+import { FulfillingBouncingCircleSpinner } from 'epic-spinners'
 import localforage from 'localforage'
     
 function numberToReal(numero) {
@@ -432,7 +432,7 @@ export default {
     listarNotas(){
       if(this.fornecedor === ''){ return }
       Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Aguardando Dados...'
       })
@@ -452,7 +452,7 @@ export default {
     },
     listarFornecedores(){
       Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Aguardando Dados...'
       })
@@ -469,7 +469,7 @@ export default {
     },
     listarItens(){
       Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Aguardando Dados...'
       })
@@ -499,7 +499,7 @@ export default {
       let nota = props.rows[0].data.codigo
       
       Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Excluindo Nota...'
       })

@@ -49,6 +49,7 @@ export default new VueRouter({
     { path: '/caixaperiodo', component: load('relPeriodoCaixa') },
     { path: '/caixames', component: load('relCaixaMes') },
     { path: '/fechamento', component: load('relFechamentoCaixa') },
+    { path: '/fluxocaixa', component: load('relFluxoCaixa') },
     { path: '/relatoriocontas', component: load('relContas') },
     { path: '/relVendas', component: load('relVendas') },
     { path: '/relVendasEstoque', component: load('relEstoque') },

@@ -158,13 +158,13 @@
 <script>
 import { Loading, Toast, Dialog } from 'quasar'
 import axios from 'axios'
-import { AtomSpinner } from 'epic-spinners'
+import { FulfillingBouncingCircleSpinner } from 'epic-spinners'
 import localforage from 'localforage'
     
-const API = localStorage.getItem('wsAtual')
+//const API = localStorage.getItem('wsAtual')
   
 //debug
-//const API = 'http://192.168.0.200:29755/'     
+const API = 'http://192.168.0.200:29755/'     
 
 export default {
   data () {
@@ -479,7 +479,7 @@ export default {
       }
       
       Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Aguardando Dados...'
       })
@@ -522,7 +522,7 @@ export default {
         
         if(localStorage.getItem('loadProdutos') === 'true'){
             Loading.show({
-              spinner: AtomSpinner,
+              spinner: FulfillingBouncingCircleSpinner,
               spinnerSize: 140,
               message: 'Aguardando Dados...'
             })
@@ -531,7 +531,7 @@ export default {
                 Loading.hide()
                 this.produtos = res.data
                 localforage.setItem('Produtos', res.data)
-                this.findTemp()
+                //this.findTemp()
             })
               .catch((e)=>{
                 Loading.hide()
@@ -655,7 +655,7 @@ export default {
             codigo: this.produto.codigo,
             codBarra: this.produto.codBarra,
             nome: this.produto.nome,
-            qtd: this.qtd
+            posicaoFisica: this.qtd
         })
     },
     limpar(){
@@ -673,7 +673,7 @@ export default {
     obterConfigs(){
         //let url = 'http://192.168.0.200:29755/'
         Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Aguardando Dados...'
         })
@@ -696,16 +696,14 @@ export default {
     },
     enviar(){
         Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Enviando Dados...'
         })
         axios.post(API + 'estoque/TransferirEstoque', [
-            this.transferencias,
-            this.configDestino,
-            'transferencia',
-            16,
-            1
+          this.transferencias,
+          'CC', //nome do Config = "databaseName": "CC",
+
             
         ])
           .then((res)=>{
@@ -774,7 +772,7 @@ export default {
     })
   },
   created(){
-    //this.obterConfigs()
+    this.obterConfigs()
   }
   
 }

@@ -318,7 +318,7 @@
 <script>
 import { Alert, Dialog, Toast, Loading, clone, date } from 'quasar'
 import axios from 'axios'
-import { AtomSpinner } from 'epic-spinners'
+import { FulfillingBouncingCircleSpinner } from 'epic-spinners'
 import localforage from 'localforage'
 var moment = require('moment');
 require("moment/min/locales.min");
@@ -543,7 +543,7 @@ export default {
     listarContas(){
       if(localStorage.getItem('loadContas') === 'true'){
           Loading.show({
-              spinner: AtomSpinner,
+              spinner: FulfillingBouncingCircleSpinner,
               spinnerSize: 140,
               message: 'Aguardando Dados...'
           })
@@ -661,7 +661,7 @@ export default {
                       let f = obj.fornecedor
                       let p = obj.numeroDocumento.split('/').pop()
                       Loading.show({
-                          spinner: AtomSpinner,
+                          spinner: FulfillingBouncingCircleSpinner,
                           spinnerSize: 140,
                           message: 'Enviando Dados...'
                       })
@@ -711,7 +711,7 @@ export default {
                   let obj = a[0].data
                   let f = obj.fornecedor
                   Loading.show({
-                      spinner: AtomSpinner,
+                      spinner: FulfillingBouncingCircleSpinner,
                       spinnerSize: 140,
                       message: 'Enviando Dados...'
                   })
@@ -767,7 +767,7 @@ export default {
                   }
                   
                   Loading.show({
-                      spinner: AtomSpinner,
+                      spinner: FulfillingBouncingCircleSpinner,
                       spinnerSize: 140,
                       message: 'Enviando Dados...'
                   })
@@ -864,7 +864,7 @@ export default {
       let c = 0  
       
       Loading.show({
-          spinner: AtomSpinner,
+          spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Sincronizando contas...'
       })
