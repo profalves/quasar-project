@@ -128,7 +128,7 @@ export default {
       if(!side && !menu && this.open){
         this.closeNav()
       }
-      if(link.length>0 && c.length===0 && this.open){//&& document.getElementById("sidenav").style.width = "0"){
+      if(link.length>0 && c.length===0 && this.open){
         this.closeNav()
       }
     }) 

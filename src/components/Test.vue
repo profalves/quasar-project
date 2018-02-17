@@ -21,6 +21,10 @@
   
     </div>
     
+    <strong>>Quasar version:</strong> {{$q.version}}<br>
+    >Theme being used. Examples: mat, ios<br>
+    <strong>Theme:</strong> {{$q.theme}}<br>
+    <strong>>Platform:</strong> {{$q.platform}}
     
       
   </div>

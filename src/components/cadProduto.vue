@@ -333,7 +333,7 @@
     
     <q-list style="background-color: white;
                    margin-top: 20px">
-        <q-collapsible icon="monetization_on" label="Tabela de Preço">
+        <!--<q-collapsible icon="monetization_on" label="Tabela de Preço">
             <div class="row" id="table">    
                 <table class="q-table" :class="computedClasses">
                   <thead>
@@ -384,7 +384,8 @@
                   </tbody>
                 </table>
             </div>
-        </q-collapsible>
+          
+        </q-collapsible>-->
         
         <q-collapsible icon="explore" label="Fator de Conversão" v-if="visivel">
             <div class="row">
@@ -932,13 +933,13 @@ export default {
     },*/
     
   },
-  watch:{
+/*  watch:{
     valor(){
       this.valor = this.CadProduto.produto.custo + (this.CadProduto.produto.custo*(this.CadProduto.produto.percLucro/100))
       return this.valor
         
     },
-  },
+  },*/
   methods: {
     goBack(){
       window.history.go(-1)
@@ -1282,6 +1283,7 @@ export default {
       axios.get(API + 'produto/obterProdutosTbPrecoCab')
       .then((res)=>{
         this.tabPreco = res.data
+        console.log('TABELA:', res.data);
       })
       .catch((e)=>{
         console.log(e)
@@ -1292,6 +1294,7 @@ export default {
       axios.get(API + 'produto/obterProdutosTBPrecoDet?codigoProduto=' + cod)
       .then((res)=>{
         this.CadProduto.precos = res.data
+        console.log('PREÇOS:', res.data);
       })
       .catch((e)=>{
         console.log(e)
@@ -1307,7 +1310,7 @@ export default {
           axios.get(API + 'produto/obterproduto?codProduto=' + localStorage.getItem('codProduto'))
           .then((res)=>{
               Loading.hide()
-              //console.log(res.data)
+              console.log('Produto: ', res.data)
               this.CadProduto.produto = res.data
               this.nome = this.CadProduto.produto.nome  
               this.valor = this.CadProduto.produto.valor  
@@ -1607,7 +1610,7 @@ export default {
   mounted(){
     localforage.getItem('usuario').then((value) => {
         if(value){
-            console.log(value)
+            //console.log(value)
             this.permissoes = value
         }
         else{

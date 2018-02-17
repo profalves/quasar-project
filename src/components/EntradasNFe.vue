@@ -98,10 +98,12 @@ import { FulfillingBouncingCircleSpinner } from 'epic-spinners'
 import localforage from 'localforage'
     
 function numberToReal(numero) {
-    //if(numero === 0) { return 0.00 }
-    numero = numero.toFixed(2).split('.');
-    numero[0] = "R$ " + numero[0].split(/(?=(?:...)*$)/).join('.');
-    return numero.join(',');
+  console.log('numero', numero);
+  console.log('tipo numero', typeof numero);
+  if(!numero) { return 0.00 }
+  numero = numero.toFixed(2).split('.');
+  numero[0] = "R$ " + numero[0].split(/(?=(?:...)*$)/).join('.');
+  return numero.join(',');
 }
     
     
@@ -475,7 +477,7 @@ export default {
       })
       axios.get(API + 'pedido/obterPedidoNota?codigocab=' + this.codigo)
       .then((res)=>{
-          //console.log(res.data)
+          console.log(res)
           this.itensNota = res.data
           Loading.hide()
       })

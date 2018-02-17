@@ -329,14 +329,14 @@
               <q-item-tile label class="text-bold">Ordem de Compra</q-item-tile>
             </q-item-main>
             <q-item-side right>
-                <q-btn color="primary" rounded @click="">enviar</q-btn>
+                <q-btn color="primary" rounded @click="gerarOrdemCompra">enviar</q-btn>
             </q-item-side>
           </q-item>
           <q-item v-for="(produto, index) in produtos" :key="index">
             <q-item-main>
               <q-item-tile label>{{produto.nome}}</q-item-tile>
               <q-item-tile sublabel>Cod. Barras: {{produto.codBarra}}</q-item-tile>
-              <q-item-tile sublabel>Estoque: {{produto.qtd}}</q-item-tile>
+              <q-item-tile sublabel>Estoque: {{produto.qtd}} / Estoque Mínimo: {{produto.estoqueMinimo}}</q-item-tile>
             </q-item-main>
             <q-item-side right>
               <q-btn v-if="produto.cotar" icon="send" color="positive" round small @click="cotarProduto(produto)" />
@@ -476,6 +476,26 @@
              id="btn-modal">
         Cancelar
       </q-btn>
+    </q-modal>
+    <q-modal minimized ref="fornecedores">
+      <div style="padding: 20px">
+        <q-select
+          v-model="fornecedor"
+          float-label="Selecione um Fornecedor"
+          filter
+          :options="listaFornecedores"
+        />
+        <div class="row">
+          <div class="col text-left">
+            <q-btn color="faded" @click="$refs.fornecedores.close()">Fechar</q-btn>
+          </div>
+          <div class="col text-right">
+            <q-btn color="primary" @click="enviarOrdemCompra" id="btn-modal">Gerar Ordem</q-btn>
+          </div>  
+        </div>
+      </div>
+      
+      
     </q-modal>
     
     <footer slot="footer" color="black" v-if="$route.path !== '/login' && !$route.query.config">
@@ -619,6 +639,9 @@
         produtos: [],
         estoque: '',
         ordem: false,
+        ordemCompra: [],
+        fornecedores: [],
+        fornecedor: '',
         
         //datatime
         dias: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
@@ -835,6 +858,12 @@
         if(this.estoque) return this.estoque
         return 'Você tem ' + this.produtos.length + ' produtos abaixo do estoque mínimo'
       },
+      listaFornecedores(){
+        return this.fornecedores.map(row => ({
+          label: row.nome,
+          value: row.codigo
+        }))
+      }
     },
     watch:{
       tipoConta (value) {
@@ -1151,6 +1180,117 @@
           Object.assign(produto, {cotar: true})
         }
       },
+      gerarOrdemCompra(){
+        this.ordemCompra = this.produtos.filter(row => row.cotar === true)
+        
+        if(this.ordemCompra.length>0){
+          this.$refs.fornecedores.open()
+        }
+        else{
+          Toast.create.negative('Selecione pelo menos 1 (um) produto para enviar para a ordem de compras')
+        }
+      },
+      getFornecedores(){
+        Loading.show({
+          spinner: FulfillingBouncingCircleSpinner,
+          spinnerSize: 140,
+          message: 'Aguardando Dados...'
+        })
+        axios.get(API + 'pessoa/obterpessoa?codtipo=2')
+        .then((res)=>{
+          //console.log(res.data)
+          this.fornecedores = res.data
+          Loading.hide()
+        })
+        .catch((e)=>{
+          console.log(e)
+          Loading.hide()
+        })
+      },
+      listarFornecedores(){
+        if(localStorage.getItem('loadPessoas') === 'true'){
+          this.getFornecedores()
+          return
+        }
+        
+        localforage.getItem('Pessoas').then((value) => {
+          if(value){
+              console.log('localforage get')
+              console.log(value)
+              this.fornecedores = value.filter(row => row.codTipo === 2);
+          }
+          else{
+              console.log('localforage fail')
+              
+          }
+
+        }).catch((err) => {
+            console.log(err)
+            console.log('fail')
+        }) 
+      
+      },
+      enviarOrdemCompra(){
+        if(!this.fornecedor){
+          Toast.create.negative('Selecione um Fornecedor antes de enviar')
+          return
+        }
+        let data = new Date().toISOString()
+        localforage.setItem('ordemTemp', {
+          det: this.ordemCompra,
+          cab:{ //cab
+            vendaPrazo: false,
+            tipoNotaE: '', //4
+            tipoMovimento: 'E', //1
+            numeroCupom: 0, //int
+            numeroNotaE: '', //int
+            chaveAcesso: '', //44 carac.
+            dataVenda: data,
+            codPessoaEmissor: this.fornecedor,
+            codPessoaDestina: 1,
+            valorBruto: 0.00,
+            valorDesconto: 0.00,
+            valorAcrescimo: 0.00,
+            valorRecibo: 0.00,
+            troco: 0.00,
+            codigoCaixa: 1,
+            codigoOperacao: 1,
+            codigoParcelamento: 1,
+            codigoDependente: '',
+            codigoEmpresa: 1,
+            codigoUsuario: parseInt(localStorage.getItem('codUser')),
+            codigoVendedor: 1,
+            codigoStatus: '',
+            OBS: '',
+            dataEntrada: ''
+          },
+        }).then((value) => {
+          console.log('ordemTemp: ', value);
+          Dialog.create({
+            title: '<i class="fa fa-check-circle-o text-positive text-center fa-5x"></i>',
+            message: 'Ordem de compra gerada com sucesso. O que você deseja agora?',
+            buttons: [
+              {
+                label: 'continuar aqui mesmo',
+                handler:() => {
+                  this.$refs.fornecedores.close()
+                }
+              },
+              {
+                label: 'Ver Ordem e finalizar',
+                handler:() => {
+                  this.$router.push('/ordemCompra')
+                }
+              }
+            ]
+          })
+        }).catch((err) => {
+          console.log('erro ao gravar ordem: ', err);
+        });
+        
+        
+        
+      },
       suporte(){
         Dialog.create({
           title: 'Peça ajuda ao suporte via Whatsapp',
@@ -1196,6 +1336,7 @@
       this.getVendas()
       this.getVendasMes()
       this.getEstoqueMinimo()
+      this.listarFornecedores()
     }  
   }
 </script>
