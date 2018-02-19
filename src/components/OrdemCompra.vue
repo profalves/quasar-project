@@ -38,78 +38,9 @@
     <div class="row">            
         
         <div class="col">
-            <h5>Cadastro de Nota Fiscal</h5>
+            <h5>Ordem de Compra</h5>
         </div>
     </div>
-    <div class="row">
-        <div class="col-12">
-          <q-btn
-            color="primary"
-            class="full"
-            push
-            @click="$router.push('/entradanfe')"
-          >
-            <i class="material-icons">search</i>
-            Localizar notas
-          </q-btn>
-        </div>
-    </div><br>
-    <!--
-    <div class="row">
-        <div class="col">
-          <q-field
-            icon="assignment_turned_in"
-          >
-            <q-input v-model.number="doc"
-                     type="number"
-                     float-label="Chave de Acesso" 
-                     clearable
-            />
-            
-          </q-field>   
-        </div>
-    </div>
-    
-    <div class="row" style="margin:10px 0px 0px 45px">
-      <div class="col col-md-4" style="margin-bottom: 10px;">
-          <q-btn
-            color="primary"
-            class="full"
-            push
-            @click="visualizarDanfe"
-          >
-            <i class="material-icons">cloud_download</i>
-            Visualizar
-          </q-btn>
-      </div>
-      <div class="col" style="margin-bottom: 10px;">
-          <q-btn
-            color="primary"
-            push
-            class="full"
-            @click="importarDanfe"
-            :disabled="bloqueado"
-          >
-            <i class="material-icons">cloud_download</i>
-            Importar
-          </q-btn>
-      
-      </div>
-      <div class="col-xs-12 col-md-4">
-          <q-btn
-            color="primary"
-            class="full"
-            push
-            @click="listarDanfe"
-          >
-            <i class="material-icons">search</i>
-            Localizar notas
-          </q-btn>
-      </div>
-    </div>
-    
-    <span>{{danfe}}</span><br><br>
-    -->
     
     <q-list style="background-color: white;">
     
@@ -130,42 +61,9 @@
                     />
                 </q-field>   
             </div>
-            <!--<div class="col-2 btn-plus" >
-
-                <q-btn 
-                   rounded
-                   color="primary" 
-                   @click="cadFornecedor">
-                   <q-icon name="add" />
-                </q-btn>
-            </div>-->
+            
         </div>
-          
-        <!--
-        <div class="row">
-            <div class="col-10">
-                <q-field
-                    icon="store"
-                 >
-                    <q-select
-                        float-label="Empresa Destino"
-                        filter
-                        v-model="cabecalho.codPessoaDestina"
-                        :options="listaDestina"
-                    />
-                </q-field>   
-            </div>
-            <div class="col-2 btn-plus" >
-
-                <q-btn 
-                   rounded
-                   color="primary" 
-                   @click="$router.push('/cadcliente')">
-                   <q-icon name="add" />
-                </q-btn>
-            </div>
-        </div>
--->
+        
         
         <div class="row">
             <div class="col-md-6">
@@ -360,12 +258,12 @@
               <tbody>
                 <tr v-for="item in CadNotas.det">
                   <td class="text-left">{{ item.codigoProduto }}</td>
-                  <td class="text-right">{{ item.nomeProduto }}</td>
-                  <td class="text-left">{{ item.custo | formatMoney }}</td>
-                  <td class="text-left">{{ item.qtd }}</td>
-                  <td class="text-left">{{ item.totalItem | formatMoney }}</td>
+                  <td class="text-left">{{ item.nomeProduto }}</td>
+                  <td class="text-right">{{ item.custo | formatMoney }}</td>
+                  <td class="text-right">{{ item.qtd }}</td>
+                  <td class="text-right">{{ item.totalItem | formatMoney }}</td>
                   <td class="text-center">
-                    <q-btn round outline small color="info" icon="edit" @click=""></q-btn>    
+                    <q-btn round outline small color="info" icon="edit" @click="editItem(item)"></q-btn>    
                   </td>
                   <td class="text-center">
                     <q-btn round outline small color="negative" icon="delete_forever" @click="excluirItem(index)"></q-btn>  
@@ -517,18 +415,6 @@
     </q-list>
     <br><br>
     
-    <!--<div class="row">
-        <div class="col">
-            <q-btn
-                color="primary"
-                push
-                @click=""
-            >
-                Alterar preços de venda
-            </q-btn>
-        </div>
-        
-    </div>-->
     
     <!--MODAL-->
     <q-modal ref="layoutModal" :content-css="{minWidth: '60vw', minHeight: '100vh'}">
@@ -541,64 +427,70 @@
             Detalhes do item
           </q-toolbar-title>
         </q-toolbar>
-
-        <q-toolbar slot="header" color="tertiary">
-           <q-radio v-model="tipoCod" 
-                    val="barras" 
-                    color="white" 
-                    label="Cód. Barras" 
-                    @focus="search = ''" />
-           <q-radio v-model="tipoCod" 
-                    val="emp" color="white" 
-                    label="Cód. Emp" 
-                    style="margin-left: 20px"  
-                    @focus="search = ''" />
-           <q-radio v-model="tipoCod" 
-                    val="nome" color="white" 
-                    label="Nome" 
-                    style="margin-left: 20px" 
-                    @focus="search = ''" />
-        </q-toolbar>
         
-        <q-toolbar slot="header" color="tertiary" v-if="tipoCod === 'nome'">
-           <q-search inverted 
-                     v-model="search" 
-                     color="none" 
-                     style="margin-left: 10px"
-                     placeholder="Procurar..."
-                     @keyup.enter="listarProdutos"
-                     @blur="listarProdutos"
-                     >
-                <q-autocomplete
-                  :max-results="maxResults"
-                  :static-data="{field: 'label', list: listaItens}"
-                  @selected="listarProdutos"
-                />
-               
-           </q-search>
+        <div v-if="!editarItem">
+          <q-toolbar slot="header" color="tertiary">
+             <q-radio v-model="tipoCod" 
+                      val="barras" 
+                      color="white" 
+                      label="Cód. Barras" 
+                      @focus="search = ''" />
+             <q-radio v-model="tipoCod" 
+                      val="emp" color="white" 
+                      label="Cód. Emp" 
+                      style="margin-left: 20px"  
+                      @focus="search = ''" />
+             <q-radio v-model="tipoCod" 
+                      val="nome" color="white" 
+                      label="Nome" 
+                      style="margin-left: 20px" 
+                      @focus="search = ''" />
+          </q-toolbar>
+          <q-toolbar slot="header" color="tertiary" v-if="tipoCod === 'nome'">
+             <q-search inverted 
+                       v-model="search" 
+                       color="none" 
+                       style="margin-left: 10px"
+                       placeholder="Procurar..."
+                       @keyup.enter="listarProdutos"
+                       @blur="listarProdutos"
+                       >
+                  <q-autocomplete
+                    :max-results="maxResults"
+                    :static-data="{field: 'label', list: listaItens}"
+                    @selected="listarProdutos"
+                  />
+
+             </q-search>
+          </q-toolbar>
+          <q-toolbar slot="header" color="tertiary" v-else>
+             <q-search inverted 
+                       v-model="search" 
+                       color="none" 
+                       style="margin-left: 10px"
+                       placeholder="Procurar..."
+                       @keyup.enter="listarProdutos"
+                       @blur="listarProdutos"
+                       >
+
+             </q-search>
         </q-toolbar>
-        <q-toolbar slot="header" color="tertiary" v-else>
-           <q-search inverted 
-                     v-model="search" 
-                     color="none" 
-                     style="margin-left: 10px"
-                     placeholder="Procurar..."
-                     @keyup.enter="listarProdutos"
-                     @blur="listarProdutos"
-                     >
-               
-           </q-search>
-        </q-toolbar>
+        </div>
         
         <div class="layout-padding">
             
-            <div class="row" >
+            <div class="row" v-if="!editarItem">
                 <div class="col-8">
                     <h5>{{ produto.nome }}</h5>
                 </div>
                 <div class="col" style="margin-top: 20px;
                                         text-align: right;">
                     Estoque: <strong style="color: orangered;">{{ produto.qtd }}</strong>
+                </div>
+            </div>
+            <div v-else>
+                <div class="col-8">
+                    <h5>{{ detItem.nomeProduto }}</h5>
                 </div>
             </div>
             <hr />
@@ -836,7 +728,6 @@ const itemInit = { //det
     impresso: ''
 }
     
-    
 //dev
 const API = localStorage.getItem('wsAtual')
 
@@ -1035,6 +926,7 @@ export default {
         cat: [],
         sub: [],
         formas: [],
+        editarItem: false,
         
         //configs
         dias: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
@@ -1318,7 +1210,7 @@ export default {
       window.history.go(-1)
     },
     cadFornecedor(){
-        if(this.cabecalho.codPessoaEmissor !== 0){
+        if(this.cabecalho.codPessoaEmissor === 0){
             return;
         }
         localStorage.setItem('tela', 'fornNotas')
@@ -1384,6 +1276,7 @@ export default {
             console.log(res.data)
             console.log(res.response)
             console.log('sucesso')
+            this.CadNotas.det = []
             this.$router.push('entradanfe')
           })
           .catch((e)=>{
@@ -1430,13 +1323,15 @@ export default {
         this.search = ''
         this.detItem = itemInit
         this.produto = {}
+        this.editarItem = false
     },
     verificarDuplicidade(){
+      if(this.editarItem){
         let qtd = this.detItem.qtd //armazenar antes de limpar os campos
-        for(let i=0; i < this.CadNotas.det.length; i++){ //verificar duplicidade
+        for(let i in this.CadNotas.det){ //verificar duplicidade
             if(this.produto.codBarra === this.CadNotas.det[i].codBarra){
-                console.log('this.CadNotas.det[i].codBarra', this.CadNotas.det[i].codBarra);
-                console.log('this.produto.codBarra', this.produto.codBarra);
+                console.log('CadNotas.det.codBarra', this.CadNotas.det[i].codBarra);
+                console.log('produto.codBarra', this.produto.codBarra);
                 let s = this.CadNotas.det[i].qtd + qtd
                 this.CadNotas.det[i].qtd = s
                 let c = this.CadNotas.det[i].custo * s
@@ -1446,6 +1341,10 @@ export default {
         }
         
         this.addItem()
+      }
+      else {
+        this.enviarItem()
+      }
     },
     addItem(){
         if(this.produto === ''){
@@ -1463,7 +1362,7 @@ export default {
         let VendasDet = this.detItem
         let VendasDetImp = {}
         let FatorConversao = this.item.fator
-        let tipoEntradaEstoque = 'compra'
+        let tipoEntradaEstoque = 'ordemCompra'
         Loading.show({
           spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
@@ -1513,6 +1412,12 @@ export default {
           console.log(e.response)
           Loading.hide()
         })
+    },
+    editItem(item){
+        this.$refs.layoutModal.open()
+        this.search = ''
+        this.detItem = item
+        this.editarItem = true
     },
     excluirItem(index){
         this.indice = index
@@ -1641,7 +1546,7 @@ export default {
             }
           })
       }
-      else {
+      else {//nome
           Loading.show({
               spinner: FulfillingBouncingCircleSpinner,
               spinnerSize: 140,
@@ -1825,10 +1730,7 @@ export default {
     t.listarTipos()
     t.listarSubtipos()
     t.listarFormasPgto()
-    
-      
-    //console.log(this.CadNotas.titulos.length)
-    
+    t.findTemp()
     
   },
   beforeRouteLeave(to, from, next){

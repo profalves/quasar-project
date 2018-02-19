@@ -485,6 +485,44 @@
           filter
           :options="listaFornecedores"
         />
+        
+        <q-list highlight>
+          <q-list-header>Itens</q-list-header>
+          <q-item>
+            <q-item-side>
+              <q-item-tile>
+                <strong>Cód.</strong>
+              </q-item-tile>
+            </q-item-side>
+            <q-item-main>
+              <q-item-tile>
+                Nome
+              </q-item-tile>
+              <!--<strong style="color:#777777">Nome</strong>-->
+            </q-item-main>
+            <q-item-side right>
+              <strong>Qtd.</strong>
+            </q-item-side>
+          </q-item>
+          <q-item-separator />
+          <q-item v-for="(item, index) in ordemCompra" :key="index">
+            <q-item-side>
+              <q-item-tile>
+                {{item.codigoProduto}}
+              </q-item-tile>
+            </q-item-side>
+            <q-item-main>
+              <q-item-tile label>{{item.nomeProduto}}</q-item-tile>
+              <q-item-tile sublabel>Estoque: {{item.qtd}} / Estoque Mínimo: {{item.estoqueMinimo}}</q-item-tile>
+            </q-item-main>
+            <q-item-side right>
+              <q-input v-model="item.qtd" type="number" align="right" style="width: 30%" />
+            </q-item-side>
+          </q-item>
+          
+        </q-list>
+        <br>
+        
         <div class="row">
           <div class="col text-left">
             <q-btn color="faded" @click="$refs.fornecedores.close()">Fechar</q-btn>
@@ -1179,9 +1217,38 @@
         else {
           Object.assign(produto, {cotar: true})
         }
+        
       },
       gerarOrdemCompra(){
-        this.ordemCompra = this.produtos.filter(row => row.cotar === true)
+        let ordem = this.produtos.filter(row => row.cotar === true)
+        
+        this.ordemCompra = ordem.map(row => ({
+          codTabPreco: 2,
+          codigoProduto: row.codigo,
+          codigoUsuario: parseInt(localStorage.getItem('codUser')),
+          codigoComputador: '',    
+          custo: row.custo,   
+          desconto: 0.00,    
+          venda: row.valor,    
+          acrescimo: 0.00,    
+          unMedCom: row.unmed,    
+          unMedTrib: row.unmed,    
+          encargos: 0.00,    
+          IPI: 0.00,    
+          frete: 0.00,    
+          seguro: 0.00,    
+          outro: 0.00,    
+          qtd: row.qtd,   
+          tipoSaida: 'E',    
+          qtdDevolvida: 0.00,    
+          totalItem: '',    
+          cancelado: '',    
+          codPessoaEmpregado: '',
+          OBS: '',    
+          impresso: '',
+          nomeProduto: row.nome,
+          estoqueMinimo: row.estoqueMinimo
+        }))
         
         if(this.ordemCompra.length>0){
           this.$refs.fornecedores.open()
@@ -1235,10 +1302,17 @@
           Toast.create.negative('Selecione um Fornecedor antes de enviar')
           return
         }
+        
         let data = new Date().toISOString()
+        
+        for(let i in this.ordemCompra){
+          let item = this.ordemCompra[i]
+          item.totalItem = item.custo * item.qtd
+        }
+        
         localforage.setItem('ordemTemp', {
           det: this.ordemCompra,
-          cab:{ //cab
+          cab:{
             vendaPrazo: false,
             tipoNotaE: '', //4
             tipoMovimento: 'E', //1
@@ -1267,8 +1341,8 @@
         }).then((value) => {
           console.log('ordemTemp: ', value);
           Dialog.create({
-            title: '<i class="fa fa-check-circle-o text-positive text-center fa-5x"></i>',
-            message: 'Ordem de compra gerada com sucesso. O que você deseja agora?',
+            title: '<i class="fa fa-check-circle-o text-positive text-center fa-3x"></i>',
+            message: 'Ordem de compra gerada com sucesso. Você deseja finalizar agora?',
             buttons: [
               {
                 label: 'continuar aqui mesmo',
@@ -1337,6 +1411,8 @@
       this.getVendasMes()
       this.getEstoqueMinimo()
       this.listarFornecedores()
+      
+      localStorage.setItem('cadMode', 'save')
     }  
   }
 </script>
@@ -1381,4 +1457,5 @@
   #ranking{
     margin-top: 30px;
   }
+  
 </style>
