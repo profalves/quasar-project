@@ -358,14 +358,14 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="item in CadNotas.det">
+                <tr v-for="(item, index) in CadNotas.det">
                   <td class="text-left">{{ item.codigoProduto }}</td>
                   <td class="text-right">{{ item.nomeProduto }}</td>
                   <td class="text-left">{{ item.custo | formatMoney }}</td>
                   <td class="text-left">{{ item.qtd }}</td>
                   <td class="text-left">{{ item.totalItem | formatMoney }}</td>
                   <td class="text-center">
-                    <q-btn round outline small color="info" icon="edit" @click=""></q-btn>    
+                    <q-btn round outline small color="info" icon="edit" @click="editItem(item)"></q-btn>    
                   </td>
                   <td class="text-center">
                     <q-btn round outline small color="negative" icon="delete_forever" @click="excluirItem(index)"></q-btn>  
@@ -542,63 +542,69 @@
           </q-toolbar-title>
         </q-toolbar>
 
-        <q-toolbar slot="header" color="tertiary">
-           <q-radio v-model="tipoCod" 
-                    val="barras" 
-                    color="white" 
-                    label="Cód. Barras" 
-                    @focus="search = ''" />
-           <q-radio v-model="tipoCod" 
-                    val="emp" color="white" 
-                    label="Cód. Emp" 
-                    style="margin-left: 20px"  
-                    @focus="search = ''" />
-           <q-radio v-model="tipoCod" 
-                    val="nome" color="white" 
-                    label="Nome" 
-                    style="margin-left: 20px" 
-                    @focus="search = ''" />
+        <div v-if="!editarItem">
+          <q-toolbar slot="header" color="tertiary">
+             <q-radio v-model="tipoCod" 
+                      val="barras" 
+                      color="white" 
+                      label="Cód. Barras" 
+                      @focus="search = ''" />
+             <q-radio v-model="tipoCod" 
+                      val="emp" color="white" 
+                      label="Cód. Emp" 
+                      style="margin-left: 20px"  
+                      @focus="search = ''" />
+             <q-radio v-model="tipoCod" 
+                      val="nome" color="white" 
+                      label="Nome" 
+                      style="margin-left: 20px" 
+                      @focus="search = ''" />
+          </q-toolbar>
+          <q-toolbar slot="header" color="tertiary" v-if="tipoCod === 'nome'">
+             <q-search inverted 
+                       v-model="search" 
+                       color="none" 
+                       style="margin-left: 10px"
+                       placeholder="Procurar..."
+                       @keyup.enter="listarProdutos"
+                       @blur="listarProdutos"
+                       >
+                  <q-autocomplete
+                    :max-results="maxResults"
+                    :static-data="{field: 'label', list: listaItens}"
+                    @selected="listarProdutos"
+                  />
+
+             </q-search>
+          </q-toolbar>
+          <q-toolbar slot="header" color="tertiary" v-else>
+             <q-search inverted 
+                       v-model="search" 
+                       color="none" 
+                       style="margin-left: 10px"
+                       placeholder="Procurar..."
+                       @keyup.enter="listarProdutos"
+                       @blur="listarProdutos"
+                       >
+
+             </q-search>
         </q-toolbar>
-        
-        <q-toolbar slot="header" color="tertiary" v-if="tipoCod === 'nome'">
-           <q-search inverted 
-                     v-model="search" 
-                     color="none" 
-                     style="margin-left: 10px"
-                     placeholder="Procurar..."
-                     @keyup.enter="listarProdutos"
-                     @blur="listarProdutos"
-                     >
-                <q-autocomplete
-                  :max-results="maxResults"
-                  :static-data="{field: 'label', list: listaItens}"
-                  @selected="listarProdutos"
-                />
-               
-           </q-search>
-        </q-toolbar>
-        <q-toolbar slot="header" color="tertiary" v-else>
-           <q-search inverted 
-                     v-model="search" 
-                     color="none" 
-                     style="margin-left: 10px"
-                     placeholder="Procurar..."
-                     @keyup.enter="listarProdutos"
-                     @blur="listarProdutos"
-                     >
-               
-           </q-search>
-        </q-toolbar>
+        </div>
         
         <div class="layout-padding">
             
-            <div class="row" >
+            <div class="row" v-if="!editarItem">
                 <div class="col-8">
                     <h5>{{ produto.nome }}</h5>
                 </div>
                 <div class="col" style="margin-top: 20px;
                                         text-align: right;">
                     Estoque: <strong style="color: orangered;">{{ produto.qtd }}</strong>
+                </div>
+            </div>
+            <div v-else>
+                <div class="col-8">
+                    <h5>{{ detItem.nomeProduto }}</h5>
                 </div>
             </div>
             <hr />
@@ -786,7 +792,10 @@
         </div>
         
         <div class="row">
-            <div class="col" style="margin:10px">
+            <div class="col" style="margin:10px" v-if="editarItem">
+                <q-btn color="secondary" @click="endEdit($refs.layoutModal.close())">Editar item</q-btn>
+            </div>   
+            <div class="col" style="margin:10px" v-else>
                 <q-btn color="secondary" @click="verificarDuplicidade($refs.layoutModal.close())">Adicionar item</q-btn>
             </div>   
         </div>
@@ -1035,6 +1044,7 @@ export default {
         cat: [],
         sub: [],
         formas: [],
+        editarItem: false,
         
         //configs
         dias: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
@@ -1148,7 +1158,7 @@ export default {
     Ripple
   },
   computed: {
-    computedClasses () {
+    computedClasses() {
       let classes = []
       if (this.misc.includes('bordered')) {
         classes.push('bordered')
@@ -1170,7 +1180,7 @@ export default {
       }
       return classes
     },
-    listaCFOPEnt () {
+    listaCFOPEnt() {
       function cfopEntrada(cfop) {
         return cfop.value < 5000;
       }
@@ -1190,27 +1200,27 @@ export default {
       
       
     },
-    listaFornecedores: function () {
+    listaFornecedores() {
       var a = this.pessoas
       var lista = []
       
-      for (let i=0; i < a.length; i++) {
-          if(a[i].codTipo === 2){
-              let n = a[i].nome
-              let c = a[i].codigo
-              lista.push({label: n, value: c})  
-          }  
+      for(let i in a) {
+        if(a[i].codTipo === 2){
+            let n = a[i].nome
+            let c = a[i].codigo
+            lista.push({label: n, value: c})  
+        }  
       }
       
       lista.unshift({
-          label: 'NOVO...', 
-          value: 0
+        label: 'NOVO...', 
+        value: 0
       })
       
       return lista
     
     }, 
-    listaDestina: function () {
+    listaDestina() {
       let a = this.pessoas
       let lista = []
       
@@ -1222,7 +1232,7 @@ export default {
       return lista
     
     },
-    listaItens: function () {
+    listaItens() {
       var a = this.produtos
       var lista = []
       
@@ -1233,7 +1243,7 @@ export default {
       
       return lista
     },
-    listaMedidas: function () {
+    listaMedidas() {
       var a = this.unidades
       var lista = []
       
@@ -1244,7 +1254,7 @@ export default {
       
       return lista
     },
-    listaCategorias: function () {
+    listaCategorias() {
       var a = this.cat
       var lista = []
       
@@ -1256,7 +1266,7 @@ export default {
       return lista
     
     }, 
-    listaSubCategorias: function () {
+    listaSubCategorias() {
       var a = this.sub
       var lista = []
       
@@ -1268,7 +1278,7 @@ export default {
       return lista
     
     }, 
-    listaFormas: function () {
+    listaFormas() {
       var a = this.formas
       var lista = []
       
@@ -1305,23 +1315,6 @@ export default {
         return a + b;
       });
       return value
-    }
-  },
-  
-  filters: {
-    formatMoney: function (value) {
-        if(value === null) {return 'R$ 0,00'}
-        function numberToReal(numero) {
-            numero = numero.toFixed(2).split('.');
-            numero[0] = "R$ " + numero[0].split(/(?=(?:...)*$)/).join('.');
-            return numero.join(',');
-        }
-        let x = numberToReal(value);
-        return x
-    },
-    formatDates: function (value) {
-        if(value === null) {return null}
-        return new Date(value).toLocaleString('pt-BR', {year: 'numeric',month: '2-digit',day: '2-digit'})
     }
   },
   validations: {
@@ -1446,6 +1439,7 @@ export default {
         this.search = ''
         this.detItem = itemInit
         this.produto = {}
+        this.editarItem = false
     },
     verificarDuplicidade(){
         let qtd = this.detItem.qtd //armazenar antes de limpar os campos
@@ -1530,12 +1524,18 @@ export default {
           Loading.hide()
         })
     },
+    editItem(item){
+      this.$refs.layoutModal.open()
+      this.search = ''
+      this.detItem = item
+      this.editarItem = true
+    },
+    endEdit(){
+      this.detItem.totalItem = this.detItem.custo * this.detItem.qtd
+    },
     excluirItem(index){
-        this.indice = index
-        
-        if(this.indice !== -1) {
-            this.CadNotas.det.splice(index,1)
-        }
+      console.log(index)
+      this.CadNotas.det.splice(index,1) 
     },
      
     addDup(){

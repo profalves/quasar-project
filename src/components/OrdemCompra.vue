@@ -256,7 +256,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="item in CadNotas.det">
+                <tr v-for="(item , index) in CadNotas.det">
                   <td class="text-left">{{ item.codigoProduto }}</td>
                   <td class="text-left">{{ item.nomeProduto }}</td>
                   <td class="text-right">{{ item.custo | formatMoney }}</td>
@@ -495,38 +495,6 @@
             </div>
             <hr />
             
-            <!--<div class="row">
-                <div class="col-md-6">
-                    <q-field
-                        icon="explore"
-                        helper="NCM"
-                     >
-                        <the-mask class="mdInput"
-                                  v-model="ncm"
-                                  :mask="['####-##-##']"
-                        />
-                    </q-field>
-
-                </div>
-
-                <div class="col">
-                    <q-field
-                        icon="explore"
-                        helper="CFOP - clique para exibir a lista"
-                     >
-                        <div class="mdl-selectfield">
-                            <select class="browser-default" v-model="cfop" >
-                              <option disabled selected>Escolha um CFOP</option>
-                              <option v-for="cfop in listaCFOPEnt">{{cfop.value}} - {{cfop.label}}</option>
-                            </select>
-
-                        </div> 
-                    </q-field> 
-
-                </div>
-                <i class="material-icons">keyboard_arrow_down</i>
-            </div>-->
-            
             <div class="row">
                 <div class="col">
                     <q-field>
@@ -556,6 +524,7 @@
                     <q-field>
                         <q-input
                             float-label="Quantidade"
+                            type="number"
                             v-model="detItem.qtd"   
                         />
                     </q-field>
@@ -678,7 +647,10 @@
         </div>
         
         <div class="row">
-            <div class="col" style="margin:10px">
+            <div class="col" style="margin:10px" v-if="editarItem">
+                <q-btn color="secondary" @click="endEdit($refs.layoutModal.close())">Editar item</q-btn>
+            </div>   
+            <div class="col" style="margin:10px" v-else>
                 <q-btn color="secondary" @click="verificarDuplicidade($refs.layoutModal.close())">Adicionar item</q-btn>
             </div>   
         </div>
@@ -1326,25 +1298,21 @@ export default {
         this.editarItem = false
     },
     verificarDuplicidade(){
-      if(this.editarItem){
-        let qtd = this.detItem.qtd //armazenar antes de limpar os campos
-        for(let i in this.CadNotas.det){ //verificar duplicidade
-            if(this.produto.codBarra === this.CadNotas.det[i].codBarra){
-                console.log('CadNotas.det.codBarra', this.CadNotas.det[i].codBarra);
-                console.log('produto.codBarra', this.produto.codBarra);
-                let s = this.CadNotas.det[i].qtd + qtd
-                this.CadNotas.det[i].qtd = s
-                let c = this.CadNotas.det[i].custo * s
-                this.CadNotas.det[i].totalItem = c
-                return
-            }  
-        }
-        
-        this.addItem()
+      let qtd = this.detItem.qtd //armazenar antes de limpar os campos
+      console.log('qtd', qtd);
+      for(let i in this.CadNotas.det){ //verificar duplicidade
+        if(this.produto.codBarra === this.CadNotas.det[i].codBarra){
+          console.log('CadNotas.det.codBarra', this.CadNotas.det[i].codBarra);
+          console.log('produto.codBarra', this.produto.codBarra);
+          let s = this.CadNotas.det[i].qtd + qtd
+          this.CadNotas.det[i].qtd = s
+          let c = this.CadNotas.det[i].custo * s
+          this.CadNotas.det[i].totalItem = c
+          return
+        }  
       }
-      else {
-        this.enviarItem()
-      }
+
+      this.addItem()
     },
     addItem(){
         if(this.produto === ''){
@@ -1352,14 +1320,16 @@ export default {
             return
         }
         
+        this.detItem.codigoProduto = this.produto.codigo
         Object.assign(this.detItem, {nomeProduto: this.produto.nome})
         
         this.enviarItem()
             
     },
     enviarItem(){ //calcular impostos dos itens
-        let Fiscal = false //depois transformar em vaiável global
+        let Fiscal = (localStorage.getItem('fiscal') === 'true')
         let VendasDet = this.detItem
+        console.log('VendasDet:', VendasDet);
         let VendasDetImp = {}
         let FatorConversao = this.item.fator
         let tipoEntradaEstoque = 'ordemCompra'
@@ -1419,12 +1389,12 @@ export default {
         this.detItem = item
         this.editarItem = true
     },
+    endEdit(){
+      this.detItem.totalItem = this.detItem.custo * this.detItem.qtd
+    },
     excluirItem(index){
-        this.indice = index
-        
-        if(this.indice !== -1) {
-            this.CadNotas.det.splice(index,1)
-        }
+      console.log('index', index);  
+      this.CadNotas.det.splice(index,1)
     },
      
     addDup(){

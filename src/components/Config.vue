@@ -16,7 +16,6 @@
             
             <!-- DASHBOARD -->
             <q-collapsible icon="fa-tachometer" label="Painel de Abertura" sublabel="Configurações de exibição do painel inicial">
-              
               <q-list highlight no-border>
                 <q-list-header>Menu</q-list-header>
                 <q-item>
@@ -422,8 +421,8 @@
 
               </div>
             </q-collapsible>
-            <!-- WhatsApp -->
-            <q-collapsible icon="fa-whatsapp" label="WhatsApp" sublabel="Configure as mensagens prontas para enviar para as pessoas cadastradas"></q-collapsible>
+            <!-- WhatsApp --
+            <q-collapsible icon="fa-whatsapp" label="WhatsApp" sublabel="Configure as mensagens prontas para enviar para as listas de transmissão cadastradas no celular"></q-collapsible> -->
             <!-- BANCOS -->
             <q-collapsible  icon="device_hub" 
                             label="Banco de Dados" 
