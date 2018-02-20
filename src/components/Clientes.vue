@@ -31,6 +31,13 @@
       <q-fab-action color="purple" 
                     @click="$router.push('/nivers')" 
                     icon="cake">
+        <q-tooltip anchor="top middle" self="bottom middle" :offset="[10, 10]">
+          <!--
+            The DOM element(s) that make up the tooltip,
+            in this case a simple text:
+          -->
+          Some text as content of Tooltip
+        </q-tooltip>
       </q-fab-action>
       <q-fab-action color="secondary" 
                     @click="" 
@@ -260,6 +267,8 @@ export default {
       search: '',
       autocomplete: (localStorage.getItem('autocomplete') === 'true'),
       pessoas: [],
+      cidades: [],
+      bairros: [],
       pessoa: '',
       pessoaNome: '',
       fones: [],
@@ -374,27 +383,40 @@ export default {
     }
   },
   computed:{
-    /*colorsClasses() {
-      let classes
-      if(this.pessoa.qtd<0){
-        classes = 'text-negative'
-      }
-      else if(this.pessoa.qtd>0){
-        classes = 'text-primary'
-      }
-      
-      return classes
-    },*/
     listaItens(){
       let a = this.pessoas
       let lista = []
       
       lista = a.map(row => ({
-          label: row.nome, 
-          value: row.codigo
+        label: row.nome, 
+        value: row.codigo
       }))
       //console.log(lista)
       return lista
+    },
+    /*listaCidades(){
+      let a = this.cidades
+      let lista = []
+      
+      for(let i; i < 10; i++){
+        let n = a[i].nome
+        console.log('nome:', n);
+        let v = a[i].codigoIBGE
+        console.log('codigoIBGE:', v);
+        lista.push({
+          label: n,
+          value: v
+        })
+      }
+      
+      return lista
+    },*/
+    listaBairros(){
+      return this.bairros.map(row => ({
+        label: row.bairro, 
+        value: row.bairro
+      }))
+      
     },
   },
   methods: {
@@ -497,6 +519,44 @@ export default {
         console.log(e)
         Loading.hide()
       })  
+    },
+    listarCidadesCadastradas(){
+      Loading.show({
+          spinner: FulfillingBouncingCircleSpinner,
+          spinnerSize: 140,
+          message: 'Aguardando Dados...'
+      })
+      axios.get(API + '/cidade/obterCidades?somentecadastradas=true')
+      .then((res)=>{
+        console.log('cidades: ', res.data)
+        this.cidades = res.data.map(row => ({
+          label: row.nome,
+          value: row.codigo
+        }))
+        Loading.hide()
+      })
+      .catch((e)=>{
+        console.log(e)
+        Loading.hide()
+      }) 
+    },
+    
+    listarBairros(){
+       Loading.show({
+          spinner: FulfillingBouncingCircleSpinner,
+          spinnerSize: 140,
+          message: 'Aguardando Dados...'
+      })
+      axios.get(API + '/cidade/obterBairros')
+      .then((res)=>{
+        console.log('Bairros: ', res.data)
+        this.bairros = res.data
+        Loading.hide()
+      })
+      .catch((e)=>{
+        console.log(e)
+        Loading.hide()
+      }) 
     },
     limpar (){
       this.search = ''
@@ -755,7 +815,7 @@ export default {
     localforage.getItem('Pessoas').then((value) => {
         if(value){
             console.log('localforage get')
-            console.log(value)
+            //console.log(value)
             this.pessoas = value;
         }
         else{
@@ -766,7 +826,10 @@ export default {
     }).catch((err) => {
         console.log(err)
         console.log('fail')
-    }) 
+    })
+    
+    this.listarCidadesCadastradas()
+    this.listarBairros()
     
   },
   

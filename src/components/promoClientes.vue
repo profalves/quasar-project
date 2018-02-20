@@ -19,7 +19,7 @@
       <div class="row">
         <div class="col-xl-6">
           <q-list inset-separator style="background-color: white;">
-            <!-- Cadastrar Tab -->
+            <!-- Cadastrar Promoção -->
             <div class="layout-padding">
               
               <div class="row">
@@ -36,7 +36,7 @@
                 </div>
                 <div class="col-md-6">
                   <q-field
-                    icon="show_chart"
+                    icon="trending_up"
                     helper="Desconto %"
                   >
                     <money v-model="desc"
@@ -49,7 +49,7 @@
               <div class="row">
                 <div class="col">
                   <q-field
-                    icon="monetization_on"
+                    icon="date_range"
                     helper="Dia Mês"
                   >
                     <q-input v-model="dia"
@@ -63,7 +63,8 @@
                     <q-btn 
                        rounded
                        color="primary" 
-                       @click="salvar">
+                       @click="salvar"
+                       >
                        Incluir
                     </q-btn>
                 </div>
@@ -139,9 +140,10 @@ export default {
       tabs: [],
       acima: 0,
       desc: 0,
-      dia: 0,
+      dia: '',
       codigo: '',
       filtro: '',
+      user: localStorage.getItem('codUser'),
       indice: '',
       edit: false,
       check: false,
@@ -228,36 +230,38 @@ export default {
           })
     },
     salvar(){
-        let promocao = {
-            totalCompras: this.acima,
-            DiaDoMes: this.dia,
-            DescontoMax: this.desc,
-            CodigoUsuario: localStorage.getItem('codUser')
-        }
-        console.log(JSON.stringify(promocao))
-        
-        Loading.show({
-          spinner: FulfillingBouncingCircleSpinner,
-          spinnerSize: 140,
-          message: 'Enviando Dados...'
-        })
-        axios.get(API + 'produto/gravarPromocaoPorCliente?totalCompras=15.00&DiaDoMes=20&descontoMax=50.00&CodigoUsuario=1')
-          .then((res)=>{
-            Loading.hide()
-            console.log(res)
-            this.listarTabs()
-            Toast.create.positive('A Promocao foi salva com sucesso')
-            this.limpar()
-          })
-          .catch((e)=>{
-            Loading.hide()
-            console.log(e.response)
-            let error = e.response.data
-            for(var i=0; error.length; i++){
-                Toast.create.negative(error[i].value)
-            }
-          })
-        
+      if(this.dia<0 || this.dia>31 || this.dia === ''){
+        Toast.create.negative('Insira um dia válido')
+        return
+      }
+      
+      if(this.desc<=0 || this.acima<=0){
+        Toast.create.negative('Preferível que haja promoções acima de zero')
+        return
+      }
+      
+      Loading.show({
+        spinner: FulfillingBouncingCircleSpinner,
+        spinnerSize: 140,
+        message: 'Enviando Dados...'
+      })
+      axios.get(API + 'produto/gravarPromocaoPorCliente?totalCompras=' + this.acima + 
+                '&DiaDoMes=' + this.dia +
+                '&descontoMax=' + this.desc +
+                '&CodigoUsuario=' + this.user)
+      .then((res)=>{
+        Loading.hide()
+        console.log(res)
+        this.listarTabs()
+        Toast.create.positive('A Promoção foi salva com sucesso')
+        this.limpar()
+      })
+      .catch((e)=>{
+        Loading.hide()
+        console.log(e.response.data)
+        let error = e.response.data
+        Toast.create.negative(error)
+      })  
     },
     editar(item, index) {
         let t = this

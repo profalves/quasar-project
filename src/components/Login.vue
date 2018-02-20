@@ -304,22 +304,43 @@ export default {
             Loading.hide()
           })  
         },
-        listarAniversariantes(){
+        listarCidadesCadastradas(){
+          let load = localStorage.getItem('loadPessoas')
+          if(load === 'true') return
           Loading.show({
               spinner: FulfillingBouncingCircleSpinner,
               spinnerSize: 140,
-              message: 'Obtendo Aniversariantes...'
+              message: 'Aguardando Dados...'
           })
-          axios.get(API + 'pessoa/obteraniversariante')
+          axios.get(API + '/cidade/obterCidades?somentecadastradas=true')
           .then((res)=>{
-              //console.log(res.data)
-              localforage.setItem('Aniversariantes', res.data)
-              Loading.hide()
+            //console.log('cidades: ', res.data)
+            localforage.setItem('Cidades', res.data)
+            //Loading.hide()
           })
           .catch((e)=>{
-            console.log(e.response)
+            console.log(e)
             Loading.hide()
-          })  
+          }) 
+        },
+        listarBairros(){
+          let load = localStorage.getItem('loadPessoas')
+          if(load === 'true') return
+          Loading.show({
+              spinner: FulfillingBouncingCircleSpinner,
+              spinnerSize: 140,
+              message: 'Aguardando Dados...'
+          })
+          axios.get(API + '/cidade/obterBairros')
+          .then((res)=>{
+            //console.log('Bairros: ', res.data)
+            localforage.setItem('Bairros', res.data)
+            //Loading.hide()
+          })
+          .catch((e)=>{
+            console.log(e)
+            Loading.hide()
+          }) 
         },
         todosProdutos(){
           let load = localStorage.getItem('loadProdutos')
@@ -452,7 +473,8 @@ export default {
         syncStart(){
             if(localStorage.getItem('wsAtual') === '') return
             this.listarPessoas()
-            this.listarAniversariantes()
+            this.listarCidadesCadastradas()
+            this.listarBairros()
             this.todosProdutos()
             this.listarFamProdutos()
             this.listarCategorias()
@@ -491,8 +513,8 @@ export default {
         if(c === 4)return
         Loading.show({
           spinner: FulfillingBouncingCircleSpinner,
-          spinnerSize: 200,
-          message: ''
+          spinnerSize: 180,
+          //message: ''
         })    
     },
     updated(){ //a sincronização foi executada
