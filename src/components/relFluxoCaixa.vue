@@ -3,7 +3,7 @@
     
     <h5>Fluxo de Caixa</h5>
     <!-- Botão flutuante -->
-    <q-fixed-position class="over" corner="bottom-left" :offset="[18, 18]">
+    <q-fixed-position class="fixo" corner="bottom-left" :offset="[18, 18]">
         <q-btn 
            round
            color="primary" 
@@ -17,78 +17,87 @@
                      icon="filter_list" 
                      label="Filtros"
                      >
-                     
-            <q-radio v-model="ordem" val="PorReais" label="Ordenar por mais vendidos em reais" /><br>
-            <q-radio v-model="ordem" val="PorQtd" label="Ordenar por quantidade vendida" /><br>
-            <q-radio v-model="ordem" val="PorNome" label="Ordenar por nome" />
-               
-            <div class="row">
-                <div class="col">
-                    <q-select
-                        v-model="codTipo"
-                        float-label="Tipo de Produto"
-                        :options="[
-                            {label: 'Mercadoria para Revenda', value: 1},
-                            {label: 'Materia Prima', value: 2},
-                            {label: 'Item do Sistema', value: 3},
-                            {label: 'Mercadoria para Consumo', value: 4},
-                            {label: 'Fabricação para Venda', value: 5},
-                            {label: 'Venda Casada - Combo de Produtos', value: 6}
-                        ]"
-                    />
-                </div>
-                <div class="col-md-6">
-                    <q-select
-                      v-model="familia"
-                      float-label="Família"
-                      :options="listaFamiliasProdutos"
-                      filter
-                    />
-                </div>
+          
+          <div class="row">
+            <div class="col-md-6 col-xs-12">
+              <q-radio v-model="opcoes" val="todas" label="Mostrar tudo" /><br>
+              <q-radio v-model="opcoes" val="venda" label="Somente vendas" /><br>
+              <q-radio v-model="opcoes" val="recebimento" label="Somente recebimentos" />
             </div>
-            <div class="row">
+            <div class="col">
+              <q-radio v-model="opcoes" val="sangria" label="Somente sangrias" /><br>
+              <q-radio v-model="opcoes" val="suprimento" label="Somente suprimentos" /><br>
+            </div>  
+          </div>
+          
+          <div class="row">
+              <div class="col">
+                  <q-select
+                    filter
+                    float-label="Op. Caixa"
+                    v-model="idCaixa"
+                    :options="listaVendedores"
+                    filter
+                    filter-placeholder="Procurar..."
+                  />
+                  
+              </div>
+              <div class="col-md-6">
+                  <q-select
+                    v-model="periodo"
+                    float-label="Período"
+                    :options="listaCaixas"
+                    filter
+                    filter-placeholder="Procurar..."
+                  />
+              </div>
+          </div>
+          
+          <div class="row">
+             <div class="col">
+              <q-datetime v-model="dataInicial"
+                          type="date" 
+                          float-label="Data inicial" 
+                          color="black"
+                          format="DD/MM/YYYY"
+                          ok-label="OK" 
+                          clear-label="Limpar" 
+                          cancel-label="Cancelar"
+                          :day-names="dias"
+                          :month-names="meses"
+              />  
+              
+             </div>
+             <div class="col">
+              <q-datetime v-model="dataFinal"
+                          type="date" 
+                          float-label="Data Final" 
+                          color="black"
+                          format="DD/MM/YYYY"
+                          ok-label="OK" 
+                          clear-label="Limpar" 
+                          cancel-label="Cancelar"
+                          :day-names="dias"
+                          :month-names="meses"
+              />  
+              
+             </div>
+            
+          </div>
 
-            </div>
-
-            <div class="row">
-               <div class="col">
-                <q-datetime v-model="dataInicial"
-                            type="date" 
-                            float-label="Data inicial" 
-                            color="black"
-                            format="DD/MM/YYYY"
-                            ok-label="OK" 
-                            clear-label="Limpar" 
-                            cancel-label="Cancelar"
-                            :day-names="dias"
-                            :month-names="meses"
-                />  
-
-               </div>
-               <div class="col">
-                <q-datetime v-model="dataFinal"
-                            type="date" 
-                            float-label="Data Final" 
-                            color="black"
-                            format="DD/MM/YYYY"
-                            ok-label="OK" 
-                            clear-label="Limpar" 
-                            cancel-label="Cancelar"
-                            :day-names="dias"
-                            :month-names="meses"
-                />  
-
-               </div>
-
-            </div>
-
-
-            <q-btn color="primary"
-                   @click="getLucro"
-                   rounded
-                   style="margin-bottom: 20px"
-                   >
-                   Visualizar</q-btn>  
+          <q-select v-model="forma"
+                    float-label="Forma de Pagamento"
+                    :options="listaFormas"
+                    filter
+                    filter-placeholder="Procurar..."
+                  />
+          
+          <q-btn color="primary"
+                 @click="getFluxo"
+                 rounded
+                 style="margin-bottom: 20px"
+                 >
+                 Visualizar</q-btn>  
 
         </q-collapsible>
         
@@ -101,7 +110,6 @@
         <center>
             <h4>Totais Gerais</h4>
             
-            {{lucro.periodo}} <br>
             
             <table class="q-table responsive">
               <thead>
@@ -221,22 +229,19 @@ export default {
   data () {
     return {
       canGoBack: window.history.length > 1,
-      lucro: [],
-      familias: [],
+      idCaixa: '',
+      caixa: [],
+      periodo: '',
+      formas: [],
+      forma: '',
+      fluxoCaixa: [],
       vendedores: [],
       dataInicial: '',
       dataFinal: '',
-      agrup: '', // agrp: cat, marca, familia, ordem alfab.
-      familia: '',
       vendedor: '',
-      produto: '',
-      codTipo: '',
-      composicao: false,
       opened: true,
-      Produtos: [],
       itens: [],
-      formas: [],
-      ordem: 'PorReais',
+      opcoes: 'todas',
       visivel: false,
 
       //lista
@@ -342,31 +347,7 @@ export default {
     }
   },
   computed: {
-    listaFamiliasProdutos: function () {
-        let a = this.familias
-        let lista = []
-
-        lista = a.map(row => ({
-            label: row.nome, 
-            value: row.codigo
-        }))
-
-        //console.log(lista)
-        return lista
-    },
-    listaProdutos: function () {
-        let a = this.Produtos
-        let lista = []
-
-        for (let i=0; i < a.length; i++) {
-            let n = a[i].nome
-            let c = a[i].codigo
-            lista.push({label: n, value: c})    
-        }
-        //console.log(lista)
-        return lista
-    },
-    listaVendedores: function () {
+    listaVendedores(){
         let a = this.vendedores
         let lista = []
 
@@ -378,7 +359,42 @@ export default {
         //console.log(lista)
         return lista
 
+    },
+    listaCaixas(){
+      let a = this.caixa
+      let lista = []
+      let di, df = ''
+
+      for (let i in a){
+          if(a[i].usuario){
+              di = new Date(a[i].dataInicio).toLocaleString('pt-BR', {year: 'numeric',month: '2-digit',day: '2-digit'})
+              if(a[i].dataFechamento !== null){
+                df = new Date(a[i].dataFechamento).toLocaleString('pt-BR', {year: 'numeric',month: '2-digit',day: '2-digit'})
+              }
+              else {
+                df = ''
+              }
+              let n = 'Inicio: ' + di + ' - Fechamento: ' + df
+              let c = a[i].codigo
+              lista.unshift({label: n, value: c})
+          }
+      }
+      
+      return lista
+    },
+    listaFormas(){
+      let a = this.formas
+      let lista = []
+
+      lista = a.map(row => ({
+          label: row.nome, 
+          value: row.codigo
+      }))
+
+      return lista
+
     }
+
   },
   watch: {
     pagination (value) {
@@ -411,63 +427,110 @@ export default {
     goBack(){
       window.history.go(-1)
     },
-    getLucro(){
+    listarVendedores(){
+      Loading.show({
+          spinner: FulfillingBouncingCircleSpinner,
+          spinnerSize: 140,
+          message: 'Aguardando Dados...'
+      })
+      axios.get(API + 'usuario/obterUsuario')
+      .then((res)=>{
+        Loading.hide()
+        this.vendedores = res.data
+        //console.log(res.data)
+      })
+      .catch((e)=>{
+        Loading.hide()
+        console.log(e)
+      })
+    },
+    listarFormas(){
+      Loading.show({
+          spinner: FulfillingBouncingCircleSpinner,
+          spinnerSize: 140,
+          message: 'Aguardando Dados...'
+      })
+      axios.get(API + 'conta/obterFormasPgto')
+      .then((res)=>{
+        Loading.hide()
+        this.formas = res.data
+        //console.log(res.data)
+      })
+      .catch((e)=>{
+        Loading.hide()
+        console.log(e)
+      })
+    },
+    getCaixa(){
+      Loading.show({
+          spinner: FulfillingBouncingCircleSpinner,
+          spinnerSize: 140,
+          message: 'Aguardando Dados...'
+      })
+      axios.get(API + 'caixa/obterCaixaCab?aberto=true')
+      .then((res)=>{
+        Loading.hide()
+        //console.log(res.data)
+        this.caixa = res.data
+      })
+      .catch((e)=>{
+        Loading.hide()
+        console.log(e.response)
+        Toast.create('Não há dados para exibir')
+      })
+    },
+    getFluxo(){
       if(this.dataInicial === ''){
           Toast.create.negative('Selecione um período antes')
           return
       }
-
-      let tipo = ''
-      if(this.codTipo !== ''){
-          tipo = '&codTipo=' + this.codTipo
+      
+      let caixa = ''
+      if(this.idCaixa !== ''){
+        caixa = '&codigoCaixaPeriodo=' + this.idCaixa
       }
-      let fam = ''
-      if(this.familia !== ''){
-          fam = '&codFamilia=' + this.familia
+      
+      let operador = ''
+      if(this.vendedor !== ''){
+        caixa = '&codigoUsuario=' + this.vendedor
       }
-
+      
+      let forma = ''
+      if(this.forma !== ''){
+        caixa = '&CodFormaPgto=' + this.forma
+      }
+      
+      let opcoes = ''
+      if(this.opcoes !== 'todas'){
+        opcoes = '&' + this.opcoes + '=true'
+      }
+      
       Loading.show({
         spinner: FulfillingBouncingCircleSpinner,
         spinnerSize: 140,
         message: 'Aguardando Dados...'
       })
-      axios.get(API + 'relatorio/obterRptProdutosPorML?' +
+      axios.get(API + 'relatório/obterFluxoCaixa?' +
               'dataInicial=' + this.dataInicial +
               '&dataFinal=' + this.dataFinal + 
-              fam + tipo +
-              '&' + this.ordem + '=true')
+              opcoes + caixa + operador + forma)
       .then((res)=>{
           console.log(res.data)
-          this.lucro = res.data
-          if(this.lucro.value){
-              Toast.create.negative(this.lucro.value)
+          this.fluxoCaixa = res.data
+          if(this.fluxoCaixa.value){
+              Toast.create.negative(this.fluxoCaixa.value)
               return
           }
-          this.itens = this.lucro.vDet
+          this.itens = '' //relatorios
           this.opened = false
           this.visivel = true
           Loading.hide()
       })
       .catch((e)=>{
+          console.log(e)
           console.log(e.response)
           Loading.hide()
       })
-    },
-    listarFamilias(){
-        Loading.show({
-            spinner: FulfillingBouncingCircleSpinner,
-            spinnerSize: 140,
-            message: 'Aguardando Dados...'
-        })
-        axios.get(API + 'produto/obterProdutosFamilia')
-        .then((res)=>{
-          Loading.hide()
-          this.familias = res.data
-        })
-        .catch((e)=>{
-          Loading.hide()
-          console.log(e)
-        })
     },
     collapse(){
       if(this.opened === true){
@@ -476,17 +539,13 @@ export default {
       else{
           this.opened = true
       }
-    }
+    },
   },
   created(){
     let t = this
-    t.listarFamilias()
+    t.getCaixa()
+    t.listarVendedores()
+    t.listarFormas()
 }
 }
 </script>
-
-<style>
-  .over{
-      z-index: 5
-  }
-</style>

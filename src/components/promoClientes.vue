@@ -12,7 +12,7 @@
       
       <div class="row">
         <div class="col">
-            <h5>Cadastrar Nova Tabela de Preço</h5>
+            <h5>Cadastrar Promoções para Clientes</h5>
         </div>
       </div>
       
@@ -21,53 +21,41 @@
           <q-list inset-separator style="background-color: white;">
             <!-- Cadastrar Tab -->
             <div class="layout-padding">
-              <div class="row">
-                <div class="col">
-                  <q-field
-                    icon="assignment"
-                  >
-                    <q-input v-model="nome" 
-                             float-label="Nome da Tabela" 
-                             clearable
-                             @input="$v.nome.$touch()"
-                             :error="$v.nome.$error" />
-                    <span style="color:#DB2828; font-weight: bold" v-if="$v.$error">O Campo Nome é requerido</span>
-                  </q-field>   
-                </div>
-              </div>
+              
               <div class="row">
                 <div class="col-md-6">
                   <q-field
-                    icon="show_chart"
-                    helper="Margem de Lucro"
+                    icon="monetization_on"
+                    helper="Acima de R$"
                   >
-                    <money v-model="ml"
+                    <money v-model="acima"
+                           v-bind="money"
+                           class="mdInput"
+                    />
+                  </q-field>   
+                </div>
+                <div class="col-md-6">
+                  <q-field
+                    icon="show_chart"
+                    helper="Desconto %"
+                  >
+                    <money v-model="desc"
                            v-bind="perc"
                            class="mdInput"
                     />
                   </q-field>   
                 </div>
-                <div class="col-md-6">
-                  <q-field
-                    icon="multiline_chart"
-                    helper="Margem de Lucro Minima"
-                  >
-                    <money v-model="mlMin"
-                           v-bind="money"
-                           class="mdInput"
-                    />
-                  </q-field>   
-                </div>    
               </div>
               <div class="row">
                 <div class="col">
                   <q-field
                     icon="monetization_on"
-                    helper="Desconto Máximo"
+                    helper="Dia Mês"
                   >
-                    <money v-model="descMax"
-                           v-bind="perc"
-                           class="mdInput"
+                    <q-input v-model="dia"
+                             class="mdInput"
+                             :min="1"
+                             :max="31"
                     />
                   </q-field>   
                 </div> 
@@ -75,8 +63,8 @@
                     <q-btn 
                        rounded
                        color="primary" 
-                       @click="salvarTabela">
-                       Adicionar
+                       @click="salvar">
+                       Incluir
                     </q-btn>
                 </div>
               </div>
@@ -95,22 +83,18 @@
                 <table class="q-table" :class="computedClasses" style="width: 100%">
                   <thead>
                     <tr>
-                      <th class="text-left">Cód.</th>
-                      <th class="text-left">Nome</th>
-                      <th class="text-left">Margem Lucro</th>
-                      <th class="text-left">ML Min.</th>
-                      <th class="text-left">Desconto Máx</th>
+                      <th class="text-left">Valor</th>
+                      <th class="text-left">Desconto</th>
+                      <th class="text-left">Dia</th>
                       <th class="text-left">Editar</th>
                       <th class="text-left">Excluir</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr v-for="(item, index) in tabs">
-                      <td data-th="Cód." class="text-left">{{ item.codigo }}</td>
-                      <td data-th="Nome" class="text-left">{{ item.nome }}</td>
-                      <td data-th="Margem Lucro" class="text-left">{{ item.ml | formatPerc }}</td>
-                      <td data-th="ML Min." class="text-left">{{ item.mLminima | formatMoney }}</td>
-                      <td data-th="Desconto Máx" class="text-left">{{ item.descontoMax | formatPerc }}</td>
+                      <td data-th="Valor" class="text-left">{{ item.mLminima | formatMoney }}</td>
+                      <td data-th="Desconto" class="text-left">{{ item.descontoMax | formatPerc }}</td>
+                      <td data-th="Dia" class="text-left">{{ item.descontoMax }}</td>
                       <td class="text-center">
                         <a @click="editar(item)" color="info"><i class="material-icons fa-2x" >mode_edit</i></a>   
                       </td>
@@ -153,10 +137,9 @@ export default {
       //btn voltar
       canGoBack: window.history.length > 1,
       tabs: [],
-      nome: '',
-      ml: 0,
-      mlMin: 0,
-      descMax: 0,
+      acima: 0,
+      desc: 0,
+      dia: 0,
       codigo: '',
       filtro: '',
       indice: '',
@@ -225,9 +208,9 @@ export default {
         Loading.show({
           spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
-          message: 'Aguardando Dados...'
+          message: 'Obtendo Promoções...'
         })
-        axios.get(API + 'produto/obterProdutosTbPrecoCab')
+        axios.get(API + 'produto/obterPromocaoPorCliente')
           .then((res)=>{
             Loading.hide()
             this.tabs = res.data
@@ -244,31 +227,26 @@ export default {
             })
           })
     },
-    salvarTabela(){
-        
-        let tab = {
-            Nome: this.nome.trim(),
-            ML: this.ml,
-            MLminima: this.mlMin,
-            DescontoMax: this.descMax,
+    salvar(){
+        let promocao = {
+            totalCompras: this.acima,
+            DiaDoMes: this.dia,
+            DescontoMax: this.desc,
             CodigoUsuario: localStorage.getItem('codUser')
         }
-        
-        if(this.codigo){
-            Object.assign(tab,{Codigo: this.codigo})
-        }
+        console.log(JSON.stringify(promocao))
         
         Loading.show({
           spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Enviando Dados...'
         })
-        axios.post(API + 'produto/gravarTabPrecoCab', tab)
+        axios.get(API + 'produto/gravarPromocaoPorCliente?totalCompras=15.00&DiaDoMes=20&descontoMax=50.00&CodigoUsuario=1')
           .then((res)=>{
             Loading.hide()
             console.log(res)
             this.listarTabs()
-            Toast.create.positive('A tabela ' + tab.Nome + ' foi salva com sucesso')
+            Toast.create.positive('A Promocao foi salva com sucesso')
             this.limpar()
           })
           .catch((e)=>{
@@ -291,10 +269,9 @@ export default {
         
     },
     limpar(){
-        this.nome = ' ' //o espaço evita o erro requerido depois de salvar :D
-        this.ml = ''
-        this.mlMin = ''
-        this.descMax = ''
+        this.acima = ''
+        this.dia = ''
+        this.desc = ''
     },
     excluir(item, index) {
         item.excluido = true

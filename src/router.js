@@ -26,6 +26,7 @@ export default new VueRouter({
     { path: '/', component: load('dashboard') },
     { path: '/hello', component: load('Hello') },
     { path: '/clientes', component: load('Clientes') },
+    { path: '/promoClientes', component: load('promoClientes') },
     { path: '/nivers', component: load('Aniversariantes') },
     { path: '/cadcliente', component: load('cadCliente') },
     { path: '/produtos', component: load('Produtos') },
@@ -59,14 +60,13 @@ export default new VueRouter({
     { path: '/relFormas', component: load('relFormas') },
     { path: '/relVendasNota', component: load('relVendasNota') },
     { path: '/relVendasCliente', component: load('relVendasCliente') },
-      
     
     // Ambientes testes
     { path: '/dialog', component: load('Dialogs') },
     { path: '/test', component: load('Test') },
     { path: '/vuex', component: load('VuexContent') },
     { path: '/charts', component: charts },
-
+    
     // Always leave this last one
     { path: '*', redirect: '/' }, // Evitar entrar em rotas inexistentes
     { path: '*.vue', component: load('Error404') }

@@ -10,6 +10,14 @@
         </q-item-main>
       </q-item>
       
+      <q-item link to="/fluxocaixa">
+        <q-item-side />
+        <q-item-main>
+          <q-item-tile label>Fluxo de Caixa</q-item-tile>
+          <q-item-tile sublabel>Verifica o seu cumulativo de caixa de acordo com um período indicado</q-item-tile>
+        </q-item-main>
+      </q-item>
+      
       <q-item link to="/caixames">
         <q-item-side />
         <q-item-main>

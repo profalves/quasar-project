@@ -25,6 +25,7 @@
                   float-label="Forma Pgto"
                   :options="listaFormas"
                   filter
+                  filter-placeholder="Procurar..."
                 />
             </div>
         </div>
@@ -372,7 +373,7 @@ export default {
             this.opened = true
         }
       },
-      selection (number, rows) {
+      selection(number, rows){
           console.log(`selected ${number}: ${rows}`)
           //console.log(rows)
           if(rows.length > 0){

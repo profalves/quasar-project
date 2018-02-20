@@ -66,7 +66,7 @@
         
         
         <div class="row">
-            <div class="col-md-6">
+            <!--<div class="col-md-6">
                 <q-field
                     icon="date_range"
                  >
@@ -83,7 +83,7 @@
                                 />
                 </q-field>
 
-            </div>
+            </div>-->
 
             <div class="col-md-6">
                 <q-field
@@ -91,7 +91,7 @@
                  >
                     <q-datetime v-model="cabecalho.dataVenda" 
                                 type="date" 
-                                float-label="Data Emissão" 
+                                float-label="Data da Ordem" 
                                 color="black"
                                 format="DD/MM/YYYY"
                                 ok-label="OK" 
@@ -110,57 +110,13 @@
                     icon="explore"
                  >
                     <q-input
-                        float-label="N. Nota"
+                        float-label="N. Ordem de Compra"
                         v-model="cabecalho.numeroCupom"
                         type="number"
                     />
                 </q-field>
-
             </div>
-
-            <!--<div class="col">
-                <q-field
-                    icon="explore"
-                 >
-                    
-                    <q-search v-model="cfop"
-                              float-label="CFOP"
-                              
-                    >
-                        <q-autocomplete
-                          separator
-                          :static-data="{field: 'value', list: listaCFOPEnt}"
-                          @search="search"
-                        />
-                          
-                    </q-search>    
-                     
-                </q-field> 
-                
-            </div>-->
             
-        </div>
-          
-        <div class="row">
-            <div class="col">
-              <q-field
-                icon="done"
-                :error="$v.chave.$error"
-                helper="Chave de Acesso"
-              >
-                <the-mask v-model="cabecalho.chaveAcesso"
-                          :mask="['####-####-####-####-####-####-####-####-####-####-####']"
-                          @input="$v.chave.$touch()"
-                          class="mdInput"
-                          style="width: 100%"
-                />
-                  
-                
-              </q-field>
-                
-                <!--<span style="color:#878B8F; margin-left:43px" v-if="!$v.cpf.required">Este campo é requerido</span>-->
-                <div class="error" v-if="!$v.chave.minLength">Este campo deve ser conter  caracteres.</div>
-            </div>
         </div>
           
         <div class="row">
@@ -187,7 +143,7 @@
       
       </q-collapsible>
         
-      <!--Outros-->  
+      <!--Outros--  
       <q-collapsible :opened="open.desp" icon="monetization_on" label="Outras Despesas">
             <div class="row">
                 <div class="col-md-6">
@@ -223,6 +179,7 @@
             </div>
         
       </q-collapsible>
+      -->
         
       <!--Itens-->  
       <q-collapsible :opened="open.itens" icon="local_mall" label="Itens">

@@ -332,7 +332,7 @@
     </div>
     
     <q-list style="background-color: white;
-                   margin-top: 20px">
+                   margin-top: 20px" no-border>
         <!--<q-collapsible icon="monetization_on" label="Tabela de Preço">
             <div class="row" id="table">    
                 <table class="q-table" :class="computedClasses">
@@ -348,7 +348,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="(item, index) in tabPreco">
+                    <tr v-for="(item, index) in tabPreco" :key="index">
                       <td class="text-left">{{ item.nome }}</td>
                       <td class="text-left">
                         <money v-model="tabPreco[index].ml"

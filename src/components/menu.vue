@@ -37,6 +37,16 @@
                 <q-item-main label="Localizar Produtos" sublabel="Listagem e Cadastro de Produtos" />
               </q-side-link>
             </q-item>
+            <q-item>
+              <q-side-link to="/ordemCompra">
+                <q-item-main label="Promoções" sublabel="Cadastro de Promoções dos Produtos" />
+              </q-side-link>
+            </q-item>
+            <q-item>
+              <q-side-link to="/ordemCompra">
+                <q-item-main label="Ordem de Compra" sublabel="Geração de ordens de compra para Fornecedores" />
+              </q-side-link>
+            </q-item>
             <q-item v-if="permissoes.pdV_PermitirTransfProduto">
               <q-side-link to="/transFiliais">
                 <q-item-main label="Transferencias" sublabel="Transferencias entre filiais" />
