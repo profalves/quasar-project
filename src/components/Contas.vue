@@ -848,7 +848,7 @@ export default {
     selectAll(number, rows) {
         this.$refs.dtable.clearSelection()
         
-        for (let i = 0; i < this.contasFilter.length; i++){
+        for (let i in this.contasFilter){
             this.$refs.dtable.selectedRows.push(this.$refs.dtable.rows[i])
             this.$refs.dtable.rowSelection[i] = true
         }
