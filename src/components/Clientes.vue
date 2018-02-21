@@ -70,10 +70,32 @@
     
   </q-fixed-position>
   
-  <div class="row" style="margin-bottom: 20px">
+  <div class="row" style="margin-bottom: 10px">
         <div class="col">
             <h5>Buscar Pessoa</h5>
         </div>
+  </div>
+  
+  <div class="row" style="margin-bottom: 10px">
+    <div class="col-md-6 col-xs-12">
+      <q-select
+        v-model="select"
+        float-label="Cidade"
+        filter
+        filter-placeholder="Procurar..."
+        :options="listaCidades"
+      />
+    </div>
+    <div class="col-md-6 col-xs-12">
+      <q-select
+        v-model="select"
+        float-label="Bairro"
+        filter
+        filter-placeholder="Procurar..."
+        :options="listaBairros"
+      />
+    </div>
+    <div class="col"></div>
   </div>
 
   <div class="row">
@@ -106,7 +128,7 @@
               @focus="search = ''" />
     </div>
   </div>
-    
+   
     <!--
     <q-checkbox v-model="autocomplete" 
                 label="Permitir autocompletar a pesquisa"
@@ -139,7 +161,7 @@
              v-else
              >
     </q-search>
-    
+        
     <div v-for="(pessoa, index) in pessoa">
         <q-card no-border>
           <q-card-title>
@@ -201,6 +223,8 @@
         </q-card>
         
     </div>
+  
+    <div v-show="pessoa.length===0">Aperte enter para exibir todos os cadastros</div>
     
     <q-modal minimized ref="telModal">
       <div class="layout-padding">
@@ -263,6 +287,7 @@ const API = localStorage.getItem('wsAtual')
 export default { 
   data () {
     return {
+      select: '',
       tipoCod: 'nome',
       search: '',
       autocomplete: (localStorage.getItem('autocomplete') === 'true'),
@@ -394,23 +419,15 @@ export default {
       //console.log(lista)
       return lista
     },
-    /*listaCidades(){
-      let a = this.cidades
-      let lista = []
-      
-      for(let i; i < 10; i++){
-        let n = a[i].nome
-        console.log('nome:', n);
-        let v = a[i].codigoIBGE
-        console.log('codigoIBGE:', v);
-        lista.push({
-          label: n,
-          value: v
+    listaCidades(){
+      return this.cidades.map(row => {
+        const cidade = row || ''
+        return ({
+        label: cidade.nome, 
+        value: cidade.codigoIBGE
         })
-      }
-      
-      return lista
-    },*/
+      })
+    },
     listaBairros(){
       return this.bairros.map(row => ({
         label: row.bairro, 
@@ -529,10 +546,7 @@ export default {
       axios.get(API + '/cidade/obterCidades?somentecadastradas=true')
       .then((res)=>{
         console.log('cidades: ', res.data)
-        this.cidades = res.data.map(row => ({
-          label: row.nome,
-          value: row.codigo
-        }))
+        this.cidades = res.data
         Loading.hide()
       })
       .catch((e)=>{
@@ -540,7 +554,6 @@ export default {
         Loading.hide()
       }) 
     },
-    
     listarBairros(){
        Loading.show({
           spinner: FulfillingBouncingCircleSpinner,
