@@ -25,27 +25,40 @@
         </q-btn>
     </q-fixed-position>
     
+  <!-- Botão limpar -->
+    <q-fixed-position class="fixo" corner="bottom-left" :offset="[88, 28]" v-if="pessoa.length>0">
+        <q-btn 
+           rounded
+           color="grey" 
+           @click="pessoa = []">
+           <q-icon name="clear" />
+           Limpar
+        </q-btn>
+    </q-fixed-position>
+    
   <!-- Botão options -->
   <q-fixed-position class="fixo" corner="top-right" :offset="[18, 18]" v-if="!visivel">
     <q-fab color="primary" icon="menu" direction="down">
       <q-fab-action color="purple" 
                     @click="$router.push('/nivers')" 
                     icon="cake">
-        <q-tooltip anchor="top middle" self="bottom middle" :offset="[10, 10]">
-          <!--
-            The DOM element(s) that make up the tooltip,
-            in this case a simple text:
-          -->
-          Some text as content of Tooltip
+        <q-tooltip anchor="bottom left" self="top middle">
+          Aniversariantes
         </q-tooltip>
       </q-fab-action>
-      <q-fab-action color="secondary" 
-                    @click="" 
-                    icon="fa-whatsapp">
+      <q-fab-action color="warning" 
+                    @click="$router.push('/promoClientes')"
+                    icon="attach_money">
+        <q-tooltip anchor="bottom left" self="top middle">
+          Promoções
+        </q-tooltip>
       </q-fab-action>
       <q-fab-action color="info" 
                     @click="sync" 
                     icon="sync">
+        <q-tooltip anchor="bottom left" self="top middle">
+          Sincronizar
+        </q-tooltip>
       </q-fab-action>
     </q-fab>
   </q-fixed-position>
@@ -54,18 +67,27 @@
     
       <q-btn color="purple"
              round small
-             @click="$router.push('/nivers')" 
+             @click="$router.push('/nivers')"
              icon="cake">
+        <q-tooltip anchor="bottom left" self="top middle">
+          Aniversariantes
+        </q-tooltip>
       </q-btn>
-      <q-btn color="secondary"
-             round small
-             @click="" 
-             icon="fa-whatsapp">
+      <q-btn color="warning" 
+             @click="$router.push('/promoClientes')"
+             icon="attach_money"
+             round small>
+        <q-tooltip anchor="bottom left" self="top middle">
+          Promoções
+        </q-tooltip>
       </q-btn>
       <q-btn color="info"
              round small
              @click="sync" 
              icon="sync">
+        <q-tooltip anchor="bottom left" self="top middle">
+          Sincronizar
+        </q-tooltip>
       </q-btn>
     
   </q-fixed-position>
@@ -79,20 +101,22 @@
   <div class="row" style="margin-bottom: 10px">
     <div class="col-md-6 col-xs-12">
       <q-select
-        v-model="select"
+        v-model="cidade"
         float-label="Cidade"
         filter
         filter-placeholder="Procurar..."
         :options="listaCidades"
+        @change="filterbyCidade"
       />
     </div>
     <div class="col-md-6 col-xs-12">
       <q-select
-        v-model="select"
+        v-model="bairro"
         float-label="Bairro"
         filter
         filter-placeholder="Procurar..."
         :options="listaBairros"
+        @change="filterbyBairro"
       />
     </div>
     <div class="col"></div>
@@ -161,7 +185,7 @@
              v-else
              >
     </q-search>
-        
+  
     <div v-for="(pessoa, index) in pessoa">
         <q-card no-border>
           <q-card-title>
@@ -223,8 +247,9 @@
         </q-card>
         
     </div>
-  
+    
     <div v-show="pessoa.length===0">Aperte enter para exibir todos os cadastros</div>
+    
     
     <q-modal minimized ref="telModal">
       <div class="layout-padding">
@@ -287,7 +312,8 @@ const API = localStorage.getItem('wsAtual')
 export default { 
   data () {
     return {
-      select: '',
+      cidade: '',
+      bairro: '',
       tipoCod: 'nome',
       search: '',
       autocomplete: (localStorage.getItem('autocomplete') === 'true'),
@@ -536,6 +562,82 @@ export default {
         console.log(e)
         Loading.hide()
       })  
+    },
+    filterbyCidade(){
+      if(localStorage.getItem('loadPessoas') === 'true'){
+        Loading.show({
+            spinner: FulfillingBouncingCircleSpinner,
+            spinnerSize: 140,
+            message: 'Aguardando Dados...'
+        })
+        axios.get(API + 'pessoa/obterpessoa?CodigoIBGE=' + this.cidade)
+        .then((res)=>{
+          console.log('cidades: ', res.data)
+          this.pessoa = res.data
+          Loading.hide()
+        })
+        .catch((e)=>{
+          console.log(e)
+          Loading.hide()
+        })
+      }
+      
+      Loading.show()
+      localforage.getItem('Pessoas').then((value) => {
+        if(value){
+            Loading.hide()
+            console.log('localforage get')
+            //console.log(value)
+            this.pessoa = value.filter(row => row.codigoIBGE === this.cidade)
+        }
+        else{
+            console.log('localforage fail')
+            this.listarPessoas()
+        }
+        
+      }).catch((err) => {
+          console.log(err)
+          console.log('fail')
+          Loading.hide()
+      })
+    },
+    filterbyBairro(){
+      if(localStorage.getItem('loadPessoas') === 'true'){
+        Loading.show({
+            spinner: FulfillingBouncingCircleSpinner,
+            spinnerSize: 140,
+            message: 'Aguardando Dados...'
+        })
+        axios.get(API + 'pessoa/obterpessoa?bairro=' + this.bairro)
+        .then((res)=>{
+          console.log('bairro: ', res.data)
+          this.pessoa = res.data
+          Loading.hide()
+        })
+        .catch((e)=>{
+          console.log(e)
+          Loading.hide()
+        })
+      }
+      
+      Loading.show()
+      localforage.getItem('Pessoas').then((value) => {
+        if(value){
+            Loading.hide()
+            console.log('localforage get')
+            //console.log(value)
+            this.pessoa = value.filter(row => row.bairro === this.bairro)
+        }
+        else{
+            console.log('localforage fail')
+            this.listarPessoas()
+        }
+        
+      }).catch((err) => {
+          console.log(err)
+          console.log('fail')
+          Loading.hide()
+      })
     },
     listarCidadesCadastradas(){
       Loading.show({
