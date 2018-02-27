@@ -159,7 +159,7 @@
     
       
     <q-search v-model="search" 
-              placeholder="Procurar sem auto..."
+              placeholder="Procurar..."
               style="margin-left: 10px"
               v-else-if="tipoCod === 'nome' && familia === '' && categoria === '' && marca === ''">
         <q-autocomplete @search="search" 
@@ -457,7 +457,6 @@ export default {
       return lista
     },
     listarProdutos(){
-      
       if(localStorage.getItem('loadProdutos') !== 'true'){
           localforage.getItem('Produtos').then((value) => {
             if(value){
@@ -520,28 +519,28 @@ export default {
       
     },
     todosProdutos(){
-        Loading.show({
-          spinner: FulfillingBouncingCircleSpinner,
-          spinnerSize: 140,
-          message: 'Aguardando Dados...'
+      Loading.show({
+        spinner: FulfillingBouncingCircleSpinner,
+        spinnerSize: 140,
+        message: 'Aguardando Dados...'
+      })
+      axios.get(API + 'produto/obterproduto')
+        .then((res)=>{
+          Loading.hide()
+          this.produtos = res.data
+          console.log('produtos', this.produtos.length)
+          localforage.setItem('Produtos', res.data)
         })
-        axios.get(API + 'produto/obterproduto')
-          .then((res)=>{
-            Loading.hide()
-            this.produtos = res.data
-            console.log('produtos', this.produtos.length)
-            localforage.setItem('Produtos', res.data)
+        .catch((e)=>{
+          Loading.hide()
+          console.log(e)
+          Toast.create({
+              html: 'Sem Conexão',
+              timeout: 6000,
+              bgColor: '#f44242',
+              icon: 'mood_bad'
           })
-          .catch((e)=>{
-            Loading.hide()
-            console.log(e)
-            Toast.create({
-                html: 'Sem Conexão',
-                timeout: 6000,
-                bgColor: '#f44242',
-                icon: 'mood_bad'
-            })
-          })
+        })
     },
     modProdutos(){
         this.tipoCod = 'nome'

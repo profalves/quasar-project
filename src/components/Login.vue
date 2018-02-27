@@ -115,7 +115,7 @@ export default {
             }
             return lista
         },
-        listaUsuarios: function () {
+        listaUsuarios(){
           var a = this.usuarios
           var lista = []
           for (let i=0; i < a.length; i++) {
@@ -518,7 +518,7 @@ export default {
         Loading.show({
           spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 180,
-          //message: ''
+          message: ''
         })    
     },
     updated(){ //a sincronização foi executada

@@ -100,7 +100,6 @@
           >
             <q-input v-model.number="CadProduto.produto.codEmpresa"
                      float-label="Cód. Empresa"
-                     type="number"
             />
             
           </q-field>   
