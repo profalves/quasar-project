@@ -33,6 +33,7 @@ export default new VueRouter({
     { path: '/ordemCompra', component: load('OrdemCompra') },
     { path: '/tabprecos', component: load('TabelaPreco') },
     { path: '/cadproduto', component: load('cadProduto') },
+    { path: '/promoProdutos', component: load('promoProdutos') },
     { path: '/contas', component: load('Contas') },
     { path: '/cadcontas', component: load('cadContas') },
     { path: '/entradanfe', component: load('EntradasNFe') },

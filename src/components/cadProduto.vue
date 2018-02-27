@@ -259,28 +259,7 @@
     </div>
     
     <div class="row">
-        <div class="col-xs-12 col-md-6">
-            <q-field
-                icon="format_color_fill"
-             >
-                <q-select
-                    float-label="Unidade de Medida"
-                    filter
-                    v-model="CadProduto.produto.unmed"
-                    :options="listaMedidas"
-                    @change="novaUnidade"
-                />
-            </q-field>   
-        </div>
-        <!--<div class="col-2 btn-plus" >
-            
-            <q-btn 
-               rounded
-               color="primary" 
-               @click="novaUnidade">
-               <q-icon name="add" />
-            </q-btn>
-        </div>-->
+        
         <div class="col" id="estoque">
           <q-field
             icon="storage"
@@ -300,6 +279,7 @@
                     <money v-model="CadProduto.produto.custo"
                            v-bind="money"
                            class="boxInput"
+                           @blur="calcML"
                     />
             </center>
             </q-card>
@@ -321,7 +301,7 @@
             <q-card color="positive" >
               <center>
                 <q-card-title>Venda</q-card-title>
-                    <money v-model="CadProduto.produto.valor"
+                    <money v-model="valorVenda"
                            v-bind="money"
                            class="boxInput"
                     />
@@ -638,7 +618,7 @@
         </q-collapsible>
         
     </q-list>
-    <div style="margin-bottom: 30px"></div>
+    <!--<div style="margin-bottom: 10px"></div>-->
 </div>
     
 </template>
@@ -686,14 +666,14 @@ export default {
                 estoqueMinimo: '',
             },
             precos: [
-                {
+                { //Promocional
                     codigoCab: 1,
                     codProduto: 0,
                     valor: 0.00,
                     valorMinimo: 0.00,
                     codigoUsuario: parseInt(localStorage.getItem('codUser'))
                 },
-                {
+                { //Venda
                     codigoCab: 2,
                     codProduto: 0,
                     valor: 0.00,
@@ -803,7 +783,7 @@ export default {
     }
   },
   computed: {
-    computedClasses () {
+    computedClasses(){
       let classes = []
       if (this.misc.includes('bordered')) {
         classes.push('bordered')
@@ -833,55 +813,52 @@ export default {
         return 'primary'
       }
     },
-    listaFamiliasProdutos: function () {
-      var a = this.familias
-      var lista = []
+    listaFamiliasProdutos(){
+      let a = this.familias
       
-      lista = a.map(row => ({
+      a.map(row => ({
           label: row.nome, 
           value: row.codigo
       }))
         
-      lista.unshift({
+      a.unshift({
           label: 'NOVO...', 
           value: 0
       })
       
-      return lista
+      return a
     },
-    listaCategorias: function () {
+    listaCategorias(){
       var a = this.categorias
-      var lista = []
       
-      lista = a.map(row => ({
+      a.map(row => ({
           label: row.nome, 
           value: row.codigo
       }))
       
-      lista.unshift({
+      a.unshift({
           label: 'NOVO...', 
           value: 0
       })
         
-      return lista
+      return a
     },
-    listaMarcas: function () {
+    listaMarcas(){
       var a = this.marcas
-      var lista = []
       
-      lista = a.map(row => ({
+      a.map(row => ({
           label: row.nome, 
           value: row.codigo
       }))
         
-      lista.unshift({
+      a.unshift({
           label: 'NOVO...', 
           value: 0
       })
       
-      return lista
+      return a
     },
-    listaMedidas: function () {
+    listaMedidas(){
       var a = this.unidades
       var lista = []
       
@@ -897,7 +874,7 @@ export default {
         
       return lista
     },
-    listaProdutos: function () {
+    listaProdutos(){
       let a = this.produtos
       let lista = []
       
@@ -926,20 +903,14 @@ export default {
       
       return lista
     },
-    /*valorVenda(){
-      this.valor = this.CadProduto.produto.custo + (this.CadProduto.produto.custo*(this.CadProduto.produto.percLucro/100))
-      return this.valor
-        
-    },*/
-    
-  },
-/*  watch:{
-    valor(){
-      this.valor = this.CadProduto.produto.custo + (this.CadProduto.produto.custo*(this.CadProduto.produto.percLucro/100))
-      return this.valor
+    valorVenda(){
+      let valor = this.CadProduto.produto.custo + (this.CadProduto.produto.custo*(this.CadProduto.produto.percLucro/100))
+      this.CadProduto.precos[1].valor = valor
+      return valor
         
     },
-  },*/
+    
+  },
   methods: {
     goBack(){
       window.history.go(-1)
@@ -956,10 +927,6 @@ export default {
         }
         
         this.CadProduto.produto.nome = this.nome
-        
-        if(this.CadProduto.produto.valor>0){
-            this.CadProduto.precos[1].valor = this.CadProduto.produto.valor
-        }
         
         Loading.show({
           spinner: FulfillingBouncingCircleSpinner,
@@ -1038,7 +1005,10 @@ export default {
     listarFamilias(){
       axios.get(API + 'produto/obterProdutosFamilia')
       .then((res)=>{
-        this.familias = res.data
+        this.familias = res.data.map(row => ({
+          label: row.nome, 
+          value: row.codigo
+        }))
       })
       .catch((e)=>{
         console.log(e)
@@ -1604,6 +1574,9 @@ export default {
             }
           ]
         })
+    },
+    calcML(){
+      console.log(this.CadProduto.custo)
     }
    
   },
@@ -1628,14 +1601,14 @@ export default {
     let t = this
     t.listarUnidadesMedida()
     t.listarTabelasPreco()
-    t.listarFatoresConv()
     t.listarProdutos()
     
-    if(localStorage.getItem('cadMode') === 'edit'){
+    if(localStorage.getItem('cadMode') !== 'save'){
         t.btnDelete = true
         t.visivel = true
         t.listarTabPrecoDet()
         t.obterMateriaPrima()
+        t.listarFatoresConv()
         
     }
     

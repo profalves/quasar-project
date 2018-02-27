@@ -16,25 +16,25 @@
   </q-fixed-position>
     
   <!-- Botão voltar -->
-    <q-fixed-position class="fixo" corner="bottom-left" :offset="[18, 18]">
-        <q-btn 
-           round
-           color="primary" 
-           @click="goBack">
-           <q-icon name="keyboard_arrow_left" />
-        </q-btn>
-    </q-fixed-position>
+  <q-fixed-position class="fixo" corner="bottom-left" :offset="[18, 18]">
+      <q-btn 
+         round
+         color="primary" 
+         @click="goBack">
+         <q-icon name="keyboard_arrow_left" />
+      </q-btn>
+  </q-fixed-position>
     
   <!-- Botão limpar -->
-    <q-fixed-position class="fixo" corner="bottom-left" :offset="[88, 28]" v-if="pessoa.length>0">
-        <q-btn 
-           rounded
-           color="grey" 
-           @click="pessoa = []">
-           <q-icon name="clear" />
-           Limpar
-        </q-btn>
-    </q-fixed-position>
+  <q-fixed-position class="fixo" corner="bottom-left" :offset="[88, 28]" v-if="pessoa.length>0">
+      <q-btn 
+         rounded
+         color="grey" 
+         @click="pessoa = []">
+         <q-icon name="clear" />
+         Limpar
+      </q-btn>
+  </q-fixed-position>
     
   <!-- Botão options -->
   <q-fixed-position class="fixo" corner="top-right" :offset="[18, 18]" v-if="!visivel">
@@ -185,6 +185,10 @@
              v-else
              >
     </q-search>
+    
+    <div v-show="pessoa.length===0">Aperte enter para exibir todos os cadastros</div><br>
+  
+    <q-checkbox v-model="semCompra" label="Obter clientes sem compra" @change="listarSemCompra"/>
   
     <div v-for="(pessoa, index) in pessoa">
         <q-card no-border>
@@ -248,8 +252,6 @@
         
     </div>
     
-    <div v-show="pessoa.length===0">Aperte enter para exibir todos os cadastros</div>
-    
     
     <q-modal minimized ref="telModal">
       <div class="layout-padding">
@@ -299,7 +301,7 @@
 </template>
 
 <script>
-import { Alert, Dialog, Toast, Loading, clone, openURL } from 'quasar'
+import { Alert, Dialog, Toast, Loading, openURL } from 'quasar'
 import axios from 'axios'
 import { FulfillingBouncingCircleSpinner } from 'epic-spinners'
 import localforage from 'localforage'
@@ -341,95 +343,8 @@ export default {
       alert: false,
       row: '',
       maxResults: parseInt(localStorage.getItem('maxResults')),
+      semCompra: false,
       
-      //LISTA
-      config: {
-        title: '',
-        refresh: (localStorage.getItem('refresh') === 'true'),
-        noHeader: (localStorage.getItem('noHeader') === 'true'),
-        columnPicker: (localStorage.getItem('columnPicker') === 'true'),
-        bodyStyle: {
-          maxHeight: '500px'
-        },
-        rowHeight: localStorage.getItem('rowHeight') + 'px',
-        responsive: (localStorage.getItem('responsive') === 'true'),
-        pagination: {
-          rowsPerPage: parseInt(localStorage.getItem('rowsPerPage')),
-          options: [5, 10, 15, 30, 50, 100]
-        },
-        selection: localStorage.getItem('selection'),
-        messages: {
-          noData: '<i class="material-icons">warning</i> Não há dados para exibir.',
-          noDataAfterFiltering: '<i class="material-icons">warning</i> Sem resultados. Por favor, redefina suas buscas.'
-        },
-        // (optional) Override default labels. Useful for I18n.
-        labels: {
-          columns: 'Colunas',
-          allCols: 'Todas',
-          rows: 'Linhas',
-          selected: {
-            singular: 'item selecionado.',
-            plural: 'itens selecionados.'
-          },
-          clear: 'limpar seleção',
-          search: 'Buscar',
-          all: 'Todos'
-        }
-    
-      },
-      colunas: [
-        {
-          label: 'Cód.',
-          field: 'codigo',
-          filter: true,
-          sort: true,
-          type: 'number',
-          width: '60px'
-        },
-        {
-          label: 'Nome',
-          field: 'nome',
-          width: '150px',
-          //classes: 'bg-orange-2',
-          sort: true,
-          filter: true,
-          type: 'string',
-          /* sort (a, b) {
-            return (new Date(a)) - (new Date(b))
-          },
-          format (value) {
-            return new Date(value).toLocaleString()
-          }*/
-        },
-        /*{
-          label: 'Tipo',
-          field: 'gender',
-          //filter: 'true',
-          format (value) {
-            if (value === 'male') {
-              return '<i class="material-icons">account_circle</i> - Cliente'
-            }
-            return '<i class="material-icons">business_center</i> - Fornecedor'
-          },
-          width: '100px'
-        },*/
-        {
-          label: 'Tipo',
-          field: 'tipo',
-          filter: true,
-          sort: true,
-          type: 'string',
-          width: '120px'
-        }
-      ],
-      pagination: (localStorage.getItem('pagination') === 'true'),
-      oldPagination: {
-          rowsPerPage: parseInt(localStorage.getItem('rowsPerPage')),
-          options: [5, 10, 15, 30, 50, 100]
-      },
-      rowHeight: parseInt(localStorage.getItem('rowHeight')),
-      bodyHeightProp: localStorage.getItem('bodyHeightProp'),
-      bodyHeight: parseInt(localStorage.getItem('bodyHeight')),
       
     }
   },
@@ -485,6 +400,28 @@ export default {
         console.log(e)
         Loading.hide()
       })  
+    },
+    listarSemCompra(){
+      console.log('sem compra:', this.semCompra)
+      if(this.semCompra){
+        Loading.show({
+            spinner: FulfillingBouncingCircleSpinner,
+            spinnerSize: 140,
+            message: 'Aguardando Dados...'
+        })
+        axios.get(API + 'pessoa/obterpessoa?SemCompra=true')
+        .then((res)=>{
+            this.pessoa = res.data
+            Loading.hide()
+        })
+        .catch((e)=>{
+          console.log(e)
+          Loading.hide()
+        })
+      }else{
+        this.pessoas = []
+        Toast.create('Limpado')
+      }
     },
     obterPessoa(){
       if(localStorage.getItem('loadPessoas') !== 'true'){
@@ -673,21 +610,21 @@ export default {
         Loading.hide()
       }) 
     },
-    limpar (){
+    limpar(){
       this.search = ''
       this.pessoa = []
     },
-    abrir (pessoa) {
+    abrir(pessoa){
       localStorage.setItem('codPessoa', pessoa.codigo)
       localStorage.setItem('cadMode', 'edit')
       this.$router.push({ path: '/cadcliente' }) 
     },
-    fechar(index) {
+    fechar(index){
       this.pessoa.splice(index,1)
       this.search = ''
         
     },
-    excluir (pessoa) {
+    excluir(pessoa){
       Dialog.create({
           title: 'Excluir',
           message: 'Tem certeza que deseja excluir ' + pessoa.nome + ' registro(s)?',
@@ -731,7 +668,7 @@ export default {
           ]
       })
     },
-    whatsapp (pessoa) {
+    whatsapp(pessoa){
       this.row = pessoa.telefones
       let row = pessoa.telefones
       console.log('row', row.telefones);
@@ -776,7 +713,7 @@ export default {
 
       }
     },
-    telefones (pessoa){
+    telefones(pessoa){
         if(pessoa.telefones.length < 1){
             Toast.create('Não há numeros salvos para este cadastro')
             return
@@ -786,7 +723,7 @@ export default {
         this.fones = pessoa.telefones
         //console.log('telefones: ', row);
     },
-    sms (pessoa){
+    sms(pessoa){
         if(pessoa.telefones.length < 1){
             Toast.create('Não há numeros salvos para este cadastro')
             return
@@ -798,7 +735,7 @@ export default {
         this.fones = row
         //console.log('telefones: ', row);
     },
-    endElet (pessoa){
+    endElet(pessoa){
         if(pessoa.endEletronico.length < 1){
             Toast.create('Não há emails salvos para este cadastro')
             return
@@ -810,11 +747,11 @@ export default {
         this.emails = row
         //console.log('emails: ', row);
     },
-    refresh (done){
+    refresh(done){
       this.listarPessoas()
       done()
     },
-    selection (number, rows) {
+    selection(number, rows){
       if(rows.length > 1){
         this.visivel = false
       }
@@ -824,7 +761,7 @@ export default {
       console.log(`selecionou ${number}: ${rows}`)
       
     },
-    rowClick (row) {
+    rowClick(row) {
       console.log('clicked on a row', row)
       localStorage.setItem('codPessoa', row.codigo)
       localStorage.setItem('cadMode', 'edit')
@@ -856,7 +793,7 @@ export default {
       }
       this.alert = true
     },
-    novo (){
+    novo(){
       localStorage.setItem('cadMode', 'save')
       this.$router.push('/cadcliente')
     },
@@ -883,7 +820,7 @@ export default {
       })
       
     },
-    onResize (size) {
+    onResize(size){
       //console.log(size)
       if(size.width < 350 || size.height < 400){
         this.visivel = false
@@ -893,33 +830,6 @@ export default {
       } 
     },
     
-  },
-  watch: {
-    pagination (value) {
-      if (!value) {
-        this.oldPagination = clone(this.config.pagination)
-        this.config.pagination = false
-        return
-      }
-      this.config.pagination = this.oldPagination
-    },
-    rowHeight (value) {
-      this.config.rowHeight = value + 'px'
-    },
-    bodyHeight (value) {
-      let style = {}
-      if (this.bodyHeightProp !== 'auto') {
-        style[this.bodyHeightProp] = value + 'px'
-      }
-      this.config.bodyStyle = style
-    },
-    bodyHeightProp (value) {
-      let style = {}
-      if (value !== 'auto') {
-        style[value] = this.bodyHeight + 'px'
-      }
-      this.config.bodyStyle = style
-    }
   },
   mounted(){
     if(localStorage.getItem('loadPessoas') === 'true'){

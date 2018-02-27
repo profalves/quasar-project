@@ -56,7 +56,6 @@ localforage.config({
   name: 'localDB'
 })
 
-
 // ============= FILTERS ============================
 
 Vue.filter('formatMoney', function (value) {

@@ -233,6 +233,10 @@ export default {
             localStorage.setItem('tetoMes', 50000)
             localStorage.setItem('metaMes', 0)
             localStorage.setItem('quaseMes', 0)
+            localStorage.setItem('qdPerc', 75)
+            localStorage.setItem('qmPerc', 75)
+            localStorage.setItem('tdPerc', 100)
+            localStorage.setItem('tmPerc', 100)
             localStorage.setItem('loadPessoas', false)
             localStorage.setItem('loadProdutos', false)
             localStorage.setItem('loadContas', false)
@@ -471,7 +475,8 @@ export default {
           })  
         },
         syncStart(){
-            if(localStorage.getItem('wsAtual') === '') return
+            let ws = localStorage.getItem('wsAtual')
+            if(ws === '') return
             this.listarPessoas()
             this.listarCidadesCadastradas()
             this.listarBairros()
@@ -490,13 +495,12 @@ export default {
           console.log(`Loading está ${state ? 'ativo' : 'fechado'}`)
         })
         this.syncStart()
-        localStorage.setItem('tela', 'login')
         localStorage.removeItem('codUser')
+        
         
     },
     mounted(){
         this.loadConfig()
-        
         if(localStorage.getItem('wsAtual') === '') return
         //verificação de carregamento sendo executado
         let c = 0
@@ -518,7 +522,8 @@ export default {
         })    
     },
     updated(){ //a sincronização foi executada
-        Loading.hide() 
+        Loading.hide()
+        localStorage.setItem('tela', 'login')
     }
 }
 </script>

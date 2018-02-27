@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="scrollbar" id="style-2">
       <div class="user">
           <img src="../../img/newuser.png" class="avatar" /><br>
           {{user}} <br>
@@ -13,7 +13,6 @@
       -->
         
       <q-list no-border link inset-delimiter>
-        <q-list-header>Menu</q-list-header>
         <q-item to="/home">
           <q-item-side icon="flag" />
           <q-item-main label="Inicio" />
@@ -21,8 +20,13 @@
         <q-collapsible icon="people" label="Pessoas" sublabel="Listagem e Cadastro de clientes, fornecedores, etc.">
           <q-list highlight no-border>
             <q-item>
+              <q-side-link to="/cadcliente">
+                <q-item-main label="Novo Cadastro" sublabel="Criar e editar cadastro de Pessoas" />
+              </q-side-link>
+            </q-item>
+            <q-item>
               <q-side-link to="/clientes">
-                <q-item-main label="Localizar Pessoas" sublabel="Listagem e Cadastro de Pessoas" />
+                <q-item-main label="Localizar Pessoas" sublabel="Listagem e Busca de Pessoas" />
               </q-side-link>
             </q-item>
             <q-item>
@@ -45,18 +49,23 @@
         <q-item to="/produtos" v-if="!permissoes.pdV_PermitirTransfProduto && !permissoes.ret_AlteraTabPreco">
           <q-item-side icon="assignment_turned_in" />
           <q-side-link to="/produtos" class="link">
-              <q-item-main label="Produtos" sublabel="Cadastros de clientes, fornecedores, etc." />
+              <q-item-main label="Produtos" sublabel="Cadastros e Busca de Produtos" />
           </q-side-link>
         </q-item>
         <q-collapsible icon="assignment_turned_in" label="Produtos" sublabel="Listagem e Cadastro de Produtos" v-if="permissoes.pdV_PermitirTransfProduto || permissoes.ret_AlteraTabPreco">
           <q-list highlight no-border>
+            <q-item>
+              <q-side-link to="/cadproduto">
+                <q-item-main label="Novo Produto" sublabel="Cadastrar e Editar Produtos" />
+              </q-side-link>
+            </q-item>
             <q-item>
               <q-side-link to="/produtos">
                 <q-item-main label="Localizar Produtos" sublabel="Listagem e Cadastro de Produtos" />
               </q-side-link>
             </q-item>
             <q-item>
-              <q-side-link to="/ordemCompra">
+              <q-side-link to="/promoProdutos">
                 <q-item-main label="Promoções" sublabel="Cadastro de Promoções dos Produtos" />
               </q-side-link>
             </q-item>
@@ -203,4 +212,30 @@ export default {
     margin: 10px 15px 0;
     text-align: center;
   }
+  
+  .scrollbar{
+    float: left;
+    height: 725px;
+    width: 100%;
+    background: #F5F5F5;
+    overflow-y: scroll;
+  }
+  
+  #style-2::-webkit-scrollbar-track{
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    border-radius: 10px;
+    background-color: #F5F5F5;
+  }
+  
+  #style-2::-webkit-scrollbar{
+    width: 12px;
+    background-color: #F5F5F5;
+  }
+
+  #style-2::-webkit-scrollbar-thumb{
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+    background-color: darkgray;
+  }
+
 </style>

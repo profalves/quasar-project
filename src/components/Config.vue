@@ -52,7 +52,7 @@
                 <q-item-separator />
                 <q-list-header>Vendas</q-list-header>
                 <div style="margin-left: 15px">
-                  <strong>Geral</strong>
+                  <strong>Configuração da Exibição dos Relógios</strong>
                 </div>
                 <q-item>
                   <q-item-main>
@@ -63,6 +63,7 @@
                              type="number" 
                              align="right"
                              @change="setMetaDia"
+                             @blur="calcMetaDia"
                              />
                   </q-item-side>
                 </q-item>
@@ -71,15 +72,23 @@
                     <i class="ion-record text-warning" />
                   </q-item-side>
                   <q-item-main>
-                    <q-item-tile label>Quase Meta do Dia Padrão</q-item-tile>
+                    <q-item-tile label>Notificar com esta cor quando...</q-item-tile>
                   </q-item-main>
                   <q-item-side right>
+                    <q-input v-model="qdPerc" 
+                         suffix="%"
+                         type="number"
+                         align="right"
+                         @change="calcQuaseDia"
+                         @blur="calcQuaseDia"
+                         />
                     <q-input v-model="quaseDia" 
-                             float-label="Acima de"
-                             type="number" 
-                             align="right"
-                             @change="setQuaseDia"
-                             />
+                         float-label="Valor acima de"
+                         type="number" 
+                         align="right"
+                         @change="setQuaseDia"
+                         @blur="setPercQuaseDia"
+                         /> 
                   </q-item-side>
                 </q-item>
                 <q-item>
@@ -87,15 +96,23 @@
                     <i class="ion-record text-positive" />
                   </q-item-side>
                   <q-item-main>
-                    <q-item-tile label>Teto Meta do Dia Padrão</q-item-tile>
+                    <q-item-tile label>Notificar com esta cor a quando...</q-item-tile>
                   </q-item-main>
                   <q-item-side right>
+                    <q-input v-model="tdPerc" 
+                       suffix="%"
+                       type="number"
+                       align="right"
+                       @change="calcTetoDia"
+                       @blur="calcTetoDia"
+                       />
                     <q-input v-model="tetoDia" 
-                             float-label="Até"
-                             type="number" 
-                             align="right"
-                             @change="setTetoDia"
-                             />
+                       float-label="Até"
+                       type="number" 
+                       align="right"
+                       @change="setTetoDia"
+                       @blur="setPercTetoDia"
+                       />
                   </q-item-side>
                 </q-item>
                 <q-item-separator />
@@ -108,6 +125,7 @@
                              type="number" 
                              align="right"
                              @change="setMetaMes"
+                             @blur="calcMetaMes"
                              />
                   </q-item-side>
                 </q-item>
@@ -119,12 +137,20 @@
                     <q-item-tile label>Quase Meta do Mês Padrão</q-item-tile>
                   </q-item-main>
                   <q-item-side right>
+                    <q-input v-model="qmPerc" 
+                         suffix="%"
+                         type="number"
+                         align="right"
+                         @change="calcQuaseMes"
+                         @blur="calcQuaseMes"
+                         />
                     <q-input v-model="quaseMes" 
-                             float-label="Acima de"
-                             type="number" 
-                             align="right"
-                             @change="setQuaseMes"
-                             />
+                         float-label="Valor acima de"
+                         type="number" 
+                         align="right"
+                         @change="setQuaseMes"
+                         @blur="setPercQuaseMes"
+                         />
                   </q-item-side>
                 </q-item>
                 <q-item>
@@ -132,15 +158,23 @@
                     <i class="ion-record text-positive" />
                   </q-item-side>
                   <q-item-main>
-                    <q-item-tile label>Teto Meta do Mês Padrão</q-item-tile>
+                    <q-item-tile label>Notificar com esta cor quando...</q-item-tile>
                   </q-item-main>
                   <q-item-side right>
+                    <q-input v-model="tmPerc" 
+                       suffix="%"
+                       type="number"
+                       align="right"
+                       @change="calcTetoMes"
+                       @blur="calcTetoMes"
+                       />
                     <q-input v-model="tetoMes" 
-                             float-label="Até"
-                             type="number" 
-                             align="right"
-                             @change="setTetoMes"
-                             />
+                       float-label="Até"
+                       type="number" 
+                       align="right"
+                       @change="setTetoMes"
+                       @blur="setPercTetoMes"
+                       />
                   </q-item-side>
                 </q-item>
                 <div ref="quase">
@@ -541,14 +575,14 @@
                 <q-item multiline tag="label">
                   <q-item-main>
                     <q-item-tile label>Sincronizar agora</q-item-tile>
-                    <q-item-tile sublabel lines="2">Solicitar sincronização completa do app</q-item-tile>
+                    <q-item-tile sublabel>Solicitar sincronização completa do app</q-item-tile>
                   </q-item-main>
                   <q-item-side right>
                     <q-btn loader
                            push
                            round
                            class="text-secondary"
-                           @click="simulateProgress">
+                           @click="syncStart">
                       <i class="material-icons fa-2x">sync</i>
                     </q-btn>
                   </q-item-side>
@@ -668,7 +702,12 @@
 </template>
 
 <script>
-import { Dialog, Toast } from 'quasar'
+import { Toast, Dialog, Loading } from 'quasar'
+import { FulfillingBouncingCircleSpinner } from 'epic-spinners'
+import localforage from 'localforage'
+import axios from 'axios'
+  
+let API = localStorage.getItem('wsAtual')
 
 export default {
   data () {
@@ -682,12 +721,16 @@ export default {
       metaDiaVendedor: parseInt(localStorage.getItem('metaDiaVendedor')),
       metaMesVendedor: parseInt(localStorage.getItem('metaMesVendedor')),
       editMeta: (localStorage.getItem('editMeta') === 'true'),
-      metaDia: localStorage.getItem('metaDia'),
-      quaseDia: localStorage.getItem('quaseDia'),
-      tetoDia: localStorage.getItem('tetoDia'),
-      metaMes: localStorage.getItem('metaMes'),
-      quaseMes: localStorage.getItem('quaseMes'),
-      tetoMes: localStorage.getItem('tetoMes'),
+      metaDia: parseInt(localStorage.getItem('metaDia')),
+      qdPerc: parseInt(localStorage.getItem('qdPerc')),
+      quaseDia: parseInt(localStorage.getItem('quaseDia')),
+      tdPerc: parseInt(localStorage.getItem('tdPerc')),
+      tetoDia: parseInt(localStorage.getItem('tetoDia')),
+      metaMes: parseInt(localStorage.getItem('metaMes')),
+      qmPerc: parseInt(localStorage.getItem('qmPerc')),
+      quaseMes: parseInt(localStorage.getItem('quaseMes')),
+      tmPerc: parseInt(localStorage.getItem('tmPerc')),
+      tetoMes: parseInt(localStorage.getItem('tetoMes')),
       
       //buscas
       maxResults: parseInt(localStorage.getItem('maxResults')),
@@ -711,7 +754,6 @@ export default {
         responsive: (localStorage.getItem('responsive') === 'true'),
         selection: localStorage.getItem('selection')
       },
-      //ainda config. das tabelas
       pagination: (localStorage.getItem('pagination') === 'true'),
       rowsPerPage: parseInt(localStorage.getItem('rowsPerPage')),
       rowHeight: parseInt(localStorage.getItem('rowHeight')),
@@ -747,7 +789,8 @@ export default {
       loadPessoas: (localStorage.getItem('loadPessoas') === 'true'),
       loadProdutos: (localStorage.getItem('loadProdutos') === 'true'),
       loadContas: (localStorage.getItem('loadContas') === 'true'),
-      loadUsuarios: (localStorage.getItem('loadUsuarios') === 'true')
+      loadUsuarios: (localStorage.getItem('loadUsuarios') === 'true'),
+      syncCount: 0,
       
     }
   },
@@ -805,20 +848,72 @@ export default {
     setMetaDia(){
       localStorage.setItem('metaDia', this.metaDia)  
     },
+    calcMetaDia(){
+      this.calcQuaseDia()
+      this.setPercQuaseDia()
+      this.calcTetoDia()
+      this.setPercTetoDia()
+    },
+    calcQuaseDia(){
+      let perc = (this.qdPerc/100)*this.metaDia
+      this.quaseDia = Math.round(perc)
+      localStorage.setItem('quaseDia', this.quaseDia)  
+      localStorage.setItem('qdPerc', this.qdPerc)  
+    },
     setQuaseDia(){
       localStorage.setItem('quaseDia', this.quaseDia)  
+    },
+    setPercQuaseDia(){
+      this.qdPerc = Math.round((this.quaseDia/this.metaDia)*100)
+      localStorage.setItem('qdPerc', this.qdPerc);
+    },
+    calcTetoDia(){
+      let perc = (this.tdPerc/100)*this.metaDia
+      this.tetoDia = (Math.round(perc))+this.metaDia
+      localStorage.setItem('tetoDia', this.tetoDia)  
+      localStorage.setItem('tdPerc', this.tdPerc)  
     },
     setTetoDia(){
       localStorage.setItem('tetoDia', this.tetoDia)  
     },
+    setPercTetoDia(){
+      this.tdPerc = Math.round(((this.tetoDia/this.metaDia)*100)/2)
+      localStorage.setItem('tdPerc', this.tdPerc);
+    },
     setMetaMes(){
       localStorage.setItem('metaMes', this.metaMes)  
+    },
+    calcMetaMes(){
+      this.calcQuaseMes()
+      this.setPercQuaseMes()
+      this.calcTetoMes()
+      this.setPercTetoMes()
+    },
+    calcQuaseMes(){
+      let perc = (this.qmPerc/100)*this.metaMes
+      this.quaseMes = Math.round(perc)
+      localStorage.setItem('quaseMes', this.quaseMes)  
+      localStorage.setItem('qmPerc', this.qmPerc)  
     },
     setQuaseMes(){
       localStorage.setItem('quaseMes', this.quaseMes)  
     },
+    setPercQuaseMes(){
+      this.qmPerc = Math.round((this.quaseMes/this.metaMes)*100)
+      localStorage.setItem('qmPerc', this.qmPerc);
+    },
+    calcTetoMes(){
+      let perc = (this.tmPerc/100)*this.metaMes
+      this.tetoMes = (Math.round(perc))+this.metaMes
+      localStorage.setItem('tetoMes', this.tetoMes)
+      localStorage.setItem('tmPerc', this.tmPerc)
+    },
     setTetoMes(){
       localStorage.setItem('tetoMes', this.tetoMes)  
+    },
+    setPercTetoMes(){
+      this.tmPerc = Math.round(((this.tetoMes/this.metaMes)*100)/2)
+      localStorage.setItem('tmPerc', this.tmPerc);
     },
      
     //notificações
@@ -861,10 +956,6 @@ export default {
     },
     alterarTamGrafico(){
         parseInt(localStorage.setItem('alturaGrafico', this.height))
-    },
-    resetGerais(){
-        /* associar valores Default nos atributos de Gerais */
-    
     },
     
     //Listas
@@ -929,7 +1020,7 @@ export default {
     },
     
     //Bancos
-    listarBancos (){
+    listarBancos(){
         var i
         for (i = 1; i <= localStorage.getItem('bancoCont'); i++) {
             var lista = { 
@@ -1054,7 +1145,251 @@ export default {
     setLoadUsuarios(){
         localStorage.setItem('loadUsuarios', this.loadUsuarios)
     },
+    // sincronização: 
+    listarUsuarios(){
+      Loading.show({
+          spinner: FulfillingBouncingCircleSpinner,
+          spinnerSize: 140,
+          message: 'Carregando Usuários...'
+      })
+
+      axios.get(API + 'usuario/obterUsuario')
+      .then((res)=>{
+        this.syncCount++
+        console.log('syncCount', this.syncCount);
+        localforage.setItem('Usuários', res.data)
+        console.log('Usuários', res.data)
+        Loading.hide()
+      })
+      .catch((e)=>{
+        console.log(e.response)
+        Loading.hide()
+      })
+    },
+    listarPessoas(){
+      Loading.show({
+          spinner: FulfillingBouncingCircleSpinner,
+          spinnerSize: 140,
+          message: 'Obtendo Pessoas...'
+      })
+      axios.get(API + 'pessoa/obterpessoa?todos=true')
+      .then((res)=>{
+        this.syncCount++
+        console.log('syncCount', this.syncCount);
+        console.log('Pessoas', res.data)
+        localforage.setItem('Pessoas', res.data)
+        Loading.hide()
+      })
+      .catch((e)=>{
+        console.log(e.response)
+        Loading.hide()
+      })  
+    },
+    listarCidadesCadastradas(){
+      Loading.show({
+          spinner: FulfillingBouncingCircleSpinner,
+          spinnerSize: 140,
+          message: 'Aguardando Dados...'
+      })
+      axios.get(API + '/cidade/obterCidades?somentecadastradas=true')
+      .then((res)=>{
+        this.syncCount++
+        console.log('syncCount', this.syncCount);
+        console.log('cidades: ', res.data)
+        localforage.setItem('Cidades', res.data)
+        Loading.hide()
+      })
+      .catch((e)=>{
+        console.log(e)
+        Loading.hide()
+      }) 
+    },
+    listarBairros(){
+      Loading.show({
+          spinner: FulfillingBouncingCircleSpinner,
+          spinnerSize: 140,
+          message: 'Aguardando Dados...'
+      })
+      axios.get(API + '/cidade/obterBairros')
+      .then((res)=>{
+        this.syncCount++
+        console.log('syncCount', this.syncCount);
+        console.log('Bairros: ', res.data)
+        localforage.setItem('Bairros', res.data)
+        Loading.hide()
+      })
+      .catch((e)=>{
+        console.log(e)
+        Loading.hide()
+      }) 
+    },
+    todosProdutos(){
+      Loading.show({
+          spinner: FulfillingBouncingCircleSpinner,
+          spinnerSize: 140,
+          message: 'Obtendo Produtos...'
+      })
+      axios.get(API + 'produto/obterproduto')
+      .then((res)=>{
+        this.syncCount++
+        console.log('syncCount', this.syncCount);
+        Loading.hide()
+        localforage.setItem('Produtos', res.data)
+        console.log('Produtos', res.data)
+      })
+      .catch((e)=>{
+        Loading.hide()
+        console.log(e.response)
+        Toast.create({
+                html: 'Sem Conexão',
+                timeout: 6000,
+                bgColor: '#f44242',
+                icon: 'mood_bad'
+            })
+      })
+    },
+    listarFamProdutos(){
+      axios.get(API + 'produto/obterProdutosFamilia')
+      .then((res)=>{
+        this.syncCount++
+        console.log('syncCount', this.syncCount);
+        console.log('FamiliasProdutos', res.data)
+        localforage.setItem('FamiliasProdutos', res.data)
+      })
+      .catch((e)=>{
+        console.log(e)
+      })
+    },
+    listarCategorias(){
+      axios.get(API + 'produto/obterProdutosCategorias')
+      .then((res)=>{
+        this.syncCount++
+        console.log('syncCount', this.syncCount);
+        console.log('CategoriasProdutos', res.data)
+        localforage.setItem('CategoriasProdutos', res.data)
+      })
+      .catch((e)=>{
+        console.log(e)
+      })
+    },
+    listarMarcas(){
+      axios.get(API + 'produto/obterProdutosMarcas')
+      .then((res)=>{
+        this.syncCount++
+        console.log('syncCount', this.syncCount);
+        console.log('MarcasProdutos', res.data)
+        localforage.setItem('MarcasProdutos', res.data)
+      })
+      .catch((e)=>{
+        console.log(e)
+      })
+    },
+    listarDespPagar(){
+      Loading.show({
+          spinner: FulfillingBouncingCircleSpinner,
+          spinnerSize: 140,
+          message: 'Obtendo Depesas a pagar...'
+      })
+      axios.get(API + 'conta/obterContas?tipo=cp&pagas=false')
+      .then((res)=>{
+        this.syncCount++
+        console.log('syncCount', this.syncCount);
+          console.log('DespPagar', res.data)
+          localforage.setItem('DespPagar', res.data)
+          Loading.hide()
+      })
+      .catch((e)=>{
+        console.log(e.response)
+        Loading.hide()
+      })  
+    },
+    listarDespPagas(){
+      let load = localStorage.getItem('loadContas')
+      if(load === 'true') return
+      Loading.show({
+          spinner: FulfillingBouncingCircleSpinner,
+          spinnerSize: 140,
+          message: 'Obtendo Depesas pagas...'
+      })
+      axios.get(API + 'conta/obterContas?tipo=cp&pagas=true')
+      .then((res)=>{
+        this.syncCount++
+        console.log('syncCount', this.syncCount);
+          console.log('DespPagas', res.data)
+          localforage.setItem('DespPagas', res.data)
+          Loading.hide()
+      })
+      .catch((e)=>{
+        console.log(e.response)
+        Loading.hide()
+      })  
+    },
+    listarRecPagar(){
+      Loading.show({
+          spinner: FulfillingBouncingCircleSpinner,
+          spinnerSize: 140,
+          message: 'Obtendo Receitas a pagar...'
+      })
+      axios.get(API + 'conta/obterContas?tipo=cr&pagas=false')
+      .then((res)=>{
+        this.syncCount++
+        console.log('syncCount', this.syncCount);
+        console.log('RecPagar', res.data)
+        localforage.setItem('RecPagar', res.data)
+        Loading.hide()
+      })
+      .catch((e)=>{
+        console.log(e.response)
+        Loading.hide()
+      })  
+    },
+    listarRecPagas(){
+      let load = localStorage.getItem('loadContas')
+      if(load === 'true') return
+      Loading.show({
+          spinner: FulfillingBouncingCircleSpinner,
+          spinnerSize: 140,
+          message: 'Obtendo Receitas pagas...'
+      })
+      axios.get(API + 'conta/obterContas?tipo=cr&pagas=true')
+      .then((res)=>{
+        this.syncCount++
+        console.log('syncCount', this.syncCount);
+        console.log('RecPagas', res.data)
+        localforage.setItem('RecPagas', res.data)
+        Loading.hide()
+      })
+      .catch((e)=>{
+        console.log(e.response)
+        Loading.hide()
+      })  
+    },
+    syncStart(e, done){
+      let ws = localStorage.getItem('wsAtual')
+      if(ws === '') return
+      this.listarPessoas()
+      this.listarCidadesCadastradas()
+      this.listarBairros()
+      this.todosProdutos()
+      this.listarFamProdutos()
+      this.listarCategorias()
+      this.listarMarcas()
+      this.listarDespPagar()
+      this.listarDespPagas()
+      this.listarRecPagar()
+      this.listarRecPagas()
+      this.listarUsuarios()
+      this.interval = setInterval(() => {
+        if (this.syncCount >= 12) {
+          clearInterval(this.interval)
+          this.syncCount = 0
+          //console.log('interval', this.interval);
+          done()
+        }
+      }, 1000)
       
+    },
+     
     //Armazenamento interno
     getLocalStorage(){
         let total = 0;
@@ -1086,21 +1421,6 @@ export default {
         function(e) { 
             console.error('Error', e);
         });    
-    },
-      
-    //sync test
-    simulateProgress (event, done) {
-      // simulate a delay, like in
-      // waiting for an Ajax call
-      setTimeout(() => {
-        // delay is over, now we call
-        // done() function to inform button
-        // it must go to its initial state
-        done()
-        // DON't forget to call done() otherwise
-        // the button will keep on being in
-        // "loading" state
-      }, 3000)
     },
     
     //Resetar TODAS Configurações

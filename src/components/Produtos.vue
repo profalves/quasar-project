@@ -55,10 +55,10 @@
     </q-toolbar>
     
     <div class="row">
-        <!--<div class="col">
+        <div class="col">
             <q-field
                 label="Filtrar por"
-                style="margin-left: 10px;">
+                style="margin: 26px 0 0 10px;">
                 <q-select v-model="agrupar"
                           :options="[
                             {label: '', value: 0},
@@ -70,8 +70,8 @@
                             
             </q-field>
     
-        </div>-->
-        <div class="col-md-4 col-xs-12">
+        </div>
+        <div class="col-md-6 col-xs-12" v-if="agrupar === 1">
             <q-field
                 style="margin-left: 10px;">
                 <q-select v-model="familia"
@@ -85,7 +85,7 @@
             </q-field>
     
         </div>
-        <div class="col-md-4 col-xs-12">
+        <div class="col-md-6 col-xs-12" v-if="agrupar === 2">
             <q-field
                 style="margin-left: 10px;">
                 <q-select v-model="categoria"
@@ -99,7 +99,7 @@
             </q-field>
     
         </div>
-        <div class="col-md-4 col-xs-12">
+        <div class="col-md-6 col-xs-12" v-if="agrupar === 3">
             <q-field
                 style="margin-left: 10px;">
                 <q-select v-model="marca"
@@ -159,7 +159,7 @@
     
       
     <q-search v-model="search" 
-              placeholder="Procurar..."
+              placeholder="Procurar sem auto..."
               style="margin-left: 10px"
               v-else-if="tipoCod === 'nome' && familia === '' && categoria === '' && marca === ''">
         <q-autocomplete @search="search" 
@@ -184,6 +184,7 @@
              style="margin-left: 10px"
              placeholder="Procurar..."
              @keyup.enter="listarProdutos"
+             type="number"
              v-else
              >
     </q-search>
@@ -354,6 +355,7 @@ export default {
   data () {
     return {
       tipoCod: 'nome',
+      agrupar: 0,
       search: '',
       autocomplete: (localStorage.getItem('autocomplete') === 'true'),
       transferencias: [],
@@ -455,6 +457,7 @@ export default {
       return lista
     },
     listarProdutos(){
+      
       if(localStorage.getItem('loadProdutos') !== 'true'){
           localforage.getItem('Produtos').then((value) => {
             if(value){
