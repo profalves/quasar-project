@@ -223,7 +223,19 @@ export default{
     }
   },
   mounted(){
-    this.todosProdutos()
+    localforage.getItem('Produtos')
+    .then((value) => {
+        if(value){
+            console.log('localforage get produtos')
+            //console.log(value)
+            this.produtos = value;
+        }
+        else{
+            console.log('localforage fail')
+            this.todosProdutos()
+        }
+        
+    })
   },
   methods:{
     verTipo(){
@@ -247,6 +259,7 @@ export default{
       
     },
     todosProdutos(){
+      
       Loading.show({
         spinner: FulfillingBouncingCircleSpinner,
         spinnerSize: 140,

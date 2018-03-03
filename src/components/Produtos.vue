@@ -37,6 +37,7 @@
         <h5>Buscar Produto</h5>
     </div>
 
+    <!--
     <q-toolbar slot="header" inverted color="tertiary">
        <q-radio v-model="tipoCod" 
                 val="barras"
@@ -53,7 +54,7 @@
                 style="margin-left:20px" 
                 @focus="search = ''" />
     </q-toolbar>
-    
+    -->
     <div class="row">
         <div class="col">
             <q-field
@@ -140,7 +141,7 @@
                 style="margin: 0 0 20px 10px"
                 />
     -->
-    <q-search  
+   <q-search  
              v-model="search" 
              color="none" 
              style="margin-left: 10px"
@@ -157,7 +158,7 @@
 
     </q-search>
     
-      
+    <!--  
     <q-search v-model="search" 
               placeholder="Procurar..."
               style="margin-left: 10px"
@@ -168,17 +169,17 @@
                         :static-data="{field: 'label', list: listaItens}"
                         @keyup.enter="listarProdutos"
                         />
-    </q-search>
+    </q-search>-->
     
     <q-select v-model="search"
               filter
               filter-placeholder="Procurar..."
-              v-else-if="familia !== '' || categoria !== '' || marca !== '' && tipoCod === 'nome'"
+              v-else-if="agrupar > 0 && familia !== '' || categoria !== '' || marca !== ''"
               :options="selectItens"
               @change="listarProdutos"/>
               
       
-    <q-search
+    <!--<q-search
              v-model="search" 
              color="none" 
              style="margin-left: 10px"
@@ -187,7 +188,14 @@
              type="number"
              v-else
              >
-    </q-search>
+    </q-search>-->
+    
+    <q-search
+      v-model="search"
+      placeholder="Procurar..."
+      @change="verTipo"
+      v-else
+    /><br><br>
         
     <q-card v-if="produto">
       <q-card-title>
@@ -335,7 +343,162 @@
         <q-btn flat @click="limpar">Fechar</q-btn>
       </q-card-actions>-->
     </q-card>
-       
+    
+    <div v-if="listaProdutos.length>0 && search"
+         v-for="(produto, index) in listaProdutos"
+         :key="index"
+         >
+
+      <q-card>
+        <q-card-title>
+          {{ produto.nome }}
+          <span slot="subtitle">{{ produto.apelido }}</span>
+          <q-icon slot="right" name="more_vert" v-if="permissoes.alteraProduto">
+            <q-popover ref="popover">
+              <q-list link class="no-border">
+                <q-item @click="excluir()">
+                  <q-item-main label="Excluir item"/>
+                </q-item>
+                <q-item @click="abrirCad(produto)">
+                  <q-item-main label="Abrir Cadastro" />
+                </q-item>
+                <q-item @click="limpar()">
+                  <q-item-main label="Fechar" />
+                </q-item>
+              </q-list>
+            </q-popover>
+          </q-icon>
+          <q-icon slot="right" name="clear" class="link" @click="limpar()" v-else />
+        </q-card-title>
+        <q-card-main>
+          <div class="row">
+              <div class="col-xs-12 col-md-6">
+                  <q-field
+                    icon="fa-barcode"
+
+                  >
+                   <p class="fields">
+                      <strong>Cód. Barras: </strong>{{ produto.codBarra }} 
+                   </p>
+
+                  </q-field>
+              </div>
+              <div class="col-xs-12 col-md-6">
+                  <q-field
+                    icon="domain"
+
+                  >
+                   <p class="fields">
+                      <strong>Cód. Empresa: </strong>{{ produto.codEmpresa }} 
+                   </p>
+
+                  </q-field>
+              </div>
+          </div>
+          <div class="row" v-if="permissoes.ret_VerCusto">
+              <div class="col-xs-12 col-md-6"> <!--permissão ver custo-->
+                  <q-field
+                    icon="monetization_on"
+                  >
+                   <p class="fields">
+                      <strong>Custo: </strong>{{ produto.custo | formatMoney }} 
+                   </p>
+
+                  </q-field>
+              </div>
+              <div class="col-xs-12 col-md-6">
+                  <q-field
+                    icon="fa-percent"
+                  >
+                   <p class="fields">
+                      <strong>Margem de Lucro: </strong>{{ produto.percLucro | formatPerc }} 
+                   </p>
+
+                  </q-field>
+              </div>
+          </div>
+          <div class="row">
+              <div class="col-xs-12 col-md-6">
+                  <q-field
+                    icon="monetization_on"
+                  >
+                   <p class="fields">
+                      <strong>Venda: {{ produto.valor | formatMoney }} </strong>
+                   </p>
+
+                  </q-field>
+              </div>
+              <div class="col">
+                  <q-field
+                    icon="store"
+
+                  >
+                   <p class="fields">
+                      <strong>Estoque Atual: </strong><span :class="colorsClasses">{{ produto.qtd }}</span> 
+                   </p>
+
+                  </q-field>
+              </div>
+          </div>
+          <div class="row">
+              <div class="col-xs-12 col-md-6">
+                  <q-field
+                    icon="fa-th-large"
+
+                  >
+                   <p class="fields">
+                      <strong>Categoria: </strong>{{ produto.categoria }} 
+                   </p>
+
+                  </q-field>
+              </div>
+              <div class="col">
+                  <q-field
+                    icon="local_grocery_store"
+
+                  >
+                   <p class="fields">
+                      <strong>Família: </strong>{{ produto.familia }} 
+                   </p>
+
+                  </q-field>
+              </div>
+          </div>
+          <div class="row">
+              <div class="col">
+                  <q-field
+                    icon="fa-truck"
+
+                  >
+                   <p class="fields">
+                      <strong>Marca: </strong>{{ produto.marca }} 
+                   </p>
+
+                  </q-field>
+              </div>
+              <div class="col-xs-12 col-md-6">
+                  <q-field
+                    icon="ion-battery-low"
+
+                  >
+                   <p class="fields">
+                      <strong>Estoque Mínimo: </strong>{{ produto.estoqueMinimo }}
+                   </p>
+
+                  </q-field>
+              </div>
+          </div>
+        </q-card-main>
+       <q-card-separator />
+        <!--
+        <q-card-actions center>
+          <q-btn flat @click="abrir">Abrir</q-btn>
+          <q-btn flat @click="limpar">Fechar</q-btn>
+        </q-card-actions>-->
+      </q-card>
+      
+    </div>
+      
     <br><br><br><br>
   </div>
 </template>
@@ -434,6 +597,35 @@ export default {
       
       return lista
     },
+    listaProdutos(){
+      
+      if(this.type === 'number'){
+        
+        let value = this.produtos.filter(row => row.codBarra.toString().indexOf(this.search)>=0)
+        console.log('value', value.length);
+        if(value.length === 0){
+          console.log('produtos por codEmpresa', this.produtos);
+          console.log('search por codEmpresa', this.search);
+          return this.produtos.filter(row => row.codEmpresa.toString().indexOf(this.search)>=0)
+        }
+        console.log('produtos por codBarra', this.produtos);
+        console.log('search por codBarra', this.search);
+        return value
+        
+      }
+      else{
+        let value = this.produtos.filter(row => row.nome.toLowerCase().indexOf(this.search)>=0)
+        if(value.length === 0){
+          console.log('produtos por codEmpresa', this.produtos);
+          console.log('search por codEmpresa', this.search);
+          return this.produtos.filter(row => row.codEmpresa.toString().indexOf(this.search)>=0)
+        }
+        console.log('produtos por string', this.produtos);
+        return value
+        
+      }
+      
+    }
   },
   methods:{
     goBack(){
@@ -442,6 +634,26 @@ export default {
     limpar(){
       this.produto = ''
       this.search = ''
+    },
+    verTipo(){
+      console.log('tipo de pesquisa:', typeof this.search)
+      this.content = this.search.substring(0,1)
+      if(this.content === '0' ||
+         this.content === '1' ||
+         this.content === '2' ||
+         this.content === '3' ||
+         this.content === '4' ||
+         this.content === '5' ||
+         this.content === '6' ||
+         this.content === '7' ||
+         this.content === '8' ||
+         this.content === '9' ){
+        this.type = 'number'
+      }
+      else{
+        this.type = 'text'
+      }
+      
     },
     filtrarProdutos(){  
       let a = this.produtos
@@ -652,7 +864,16 @@ export default {
       this.$router.push('/cadproduto')
     },
     abrir(){
+      
       localStorage.setItem('codProduto', this.produto.codigo)
+      console.log('codProduto', this.listaProdutos.codigo)
+      
+      localStorage.setItem('cadMode', 'edit')
+      this.$router.push({ path: '/cadproduto' })
+    },
+    abrirCad(produto){
+      console.log('atual: ', produto)
+      localStorage.setItem('codProduto', produto.codigo)
       localStorage.setItem('cadMode', 'edit')
       this.$router.push({ path: '/cadproduto' })
     },

@@ -19,10 +19,8 @@
         </q-item>
         <q-collapsible icon="people" label="Pessoas" sublabel="Listagem e Cadastro de clientes, fornecedores, etc.">
           <q-list highlight no-border>
-            <q-item>
-              <q-side-link to="/cadcliente">
-                <q-item-main label="Novo Cadastro" sublabel="Criar e editar cadastro de Pessoas" />
-              </q-side-link>
+            <q-item @click="novoCliente">
+              <q-item-main label="Novo Cadastro" sublabel="Criar e editar cadastro de Pessoas" />
             </q-item>
             <q-item>
               <q-side-link to="/clientes">
@@ -48,16 +46,12 @@
         </q-collapsible>
         <q-item to="/produtos" v-if="!permissoes.pdV_PermitirTransfProduto && !permissoes.ret_AlteraTabPreco">
           <q-item-side icon="assignment_turned_in" />
-          <q-side-link to="/produtos" class="link">
-              <q-item-main label="Produtos" sublabel="Cadastros e Busca de Produtos" />
-          </q-side-link>
+          <q-item-main label="Produtos" sublabel="Cadastros e Busca de Produtos" />
         </q-item>
         <q-collapsible icon="assignment_turned_in" label="Produtos" sublabel="Listagem e Cadastro de Produtos" v-if="permissoes.pdV_PermitirTransfProduto || permissoes.ret_AlteraTabPreco">
           <q-list highlight no-border>
-            <q-item>
-              <q-side-link to="/cadproduto">
-                <q-item-main label="Novo Produto" sublabel="Cadastrar e Editar Produtos" />
-              </q-side-link>
+            <q-item @click="novoProduto">
+              <q-item-main label="Novo Produto" sublabel="Cadastrar e Editar Produtos" />
             </q-item>
             <q-item>
               <q-side-link to="/produtos">
@@ -185,6 +179,14 @@ export default {
             console.log('fail')
         })
     },
+    novoCliente(){
+      localStorage.setItem('cadMode', 'save')
+      this.$router.push('/cadcliente')
+    },
+    novoProduto(){
+      localStorage.setItem('cadMode', 'save')
+      this.$router.push('/cadproduto')
+    },
     sair(){
         window.close()
     },
@@ -215,23 +217,20 @@ export default {
   
   .scrollbar{
     float: left;
-    height: 725px;
+    height: 96%;
     width: 100%;
     background: #F5F5F5;
     overflow-y: scroll;
   }
-  
   #style-2::-webkit-scrollbar-track{
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
     border-radius: 10px;
     background-color: #F5F5F5;
   }
-  
   #style-2::-webkit-scrollbar{
     width: 12px;
     background-color: #F5F5F5;
   }
-
   #style-2::-webkit-scrollbar-thumb{
     border-radius: 10px;
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
