@@ -158,9 +158,15 @@
 
 <script>
 import { FulfillingBouncingCircleSpinner } from 'epic-spinners'    
-import { Loading, Toast, clone } from 'quasar'
+import { Loading, Toast, clone, date } from 'quasar'
 import axios from 'axios'
 import localforage from 'localforage'
+  
+let dt = date
+const hoje = new Date()
+var moment = require('moment');
+require("moment/min/locales.min");
+moment.locale('pt-br');
 
 function numberToReal(numero) {
   numero = numero.toFixed(2).split('.');
@@ -180,8 +186,8 @@ export default {
           vendas: [],
           totalizadores: '',
           vendedores: [],
-          dataInicial: '',
-          dataFinal: '',
+          dataInicial: moment(dt.startOfDate(hoje, 'month')).format('YYYY-MM-DDTHH:mm:SS'),
+          dataFinal: moment(dt.endOfDate(hoje, 'month')).format('YYYY-MM-DDTHH:mm:SS'),
           vendedor: '',
           opened: true,
           permissoes: '',

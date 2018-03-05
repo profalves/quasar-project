@@ -1,5 +1,14 @@
 <template>
-  <div class="layout-padding ">
+  <div class="layout-padding">
+    <q-fixed-position class="fixo" corner="bottom-left" :offset="[18, 18]">
+        <q-btn 
+           round
+           color="primary" 
+           @click="goBack">
+           <q-icon name="keyboard_arrow_left" />
+        </q-btn>
+    </q-fixed-position>
+    
     <q-list sparse highlight style="background-color: white">
       <q-list-header>Relatorios</q-list-header>
       <q-item link to="/fechamento?q=save">

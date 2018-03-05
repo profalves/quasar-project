@@ -16,9 +16,6 @@
       <q-collapsible :opened="filtroColap" 
                      icon="filter_list" 
                      label="Filtros"
-                     @open="collapse"
-                     @close="collapse"
-                     @click="collapse"
                      >
         <div class="row">
             <div class="col">
@@ -207,8 +204,14 @@
 
 <script>
 import { FulfillingBouncingCircleSpinner } from 'epic-spinners'    
-import { Loading, Toast, clone } from 'quasar'
+import { Loading, Toast, clone, date } from 'quasar'
 import axios from 'axios'
+  
+let dt = date
+const hoje = new Date()
+var moment = require('moment');
+require("moment/min/locales.min");
+moment.locale('pt-br');
     
 function numberToReal(numero) {
   numero = numero.toFixed(2).split('.');
@@ -232,8 +235,8 @@ export default {
           itens: [],
           itensCollap: false,
           Produtos: [], 
-          dataInicial: '',
-          dataFinal: '',
+          dataInicial: moment(dt.startOfDate(hoje, 'month')).format('YYYY-MM-DDTHH:mm:SS'),
+          dataFinal: moment(dt.endOfDate(hoje, 'month')).format('YYYY-MM-DDTHH:mm:SS'),
           tipoMov: 1,
           tipoSai: '',
           excluido: false,
@@ -592,19 +595,13 @@ export default {
             this.pedidos = this.relMovs.pedidos
             this.visivel = true
             this.obs = ''
-            if(res.data[0].value) { 
-              Toast.create.negative('Erro: ' + res.data[0].value)
-            }
+            this.filtroColap = false
         })
         .catch((e)=>{
             console.log(e.response)
             console.log('erro')
             Loading.hide()
-            let error = e.response.data
-            Toast.create.negative(error)
-            if(e.data[0].value) { Toast.create.negative('Erro: ' + e.data[0].value) }
-            
-            this.filtroColap = true
+            this.filtroColap = false
         })
       },
       listarClientes(){

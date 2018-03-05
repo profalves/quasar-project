@@ -104,7 +104,7 @@
 
         </div>
         
-        <q-checkbox v-model="composicao" label="Filtrar somente composições de produtos" /><br><br>
+        <!--<q-checkbox v-model="composicao" label="Filtrar somente composições de produtos" />--><br><br>
         
         <q-btn color="primary"
                @click="getEstoque"
@@ -218,12 +218,18 @@
   </div>
 </template>
 
-<script>
-    
-import { Loading, Toast, clone } from 'quasar'
+<script>    
+import { Loading, Toast, clone, date } from 'quasar'
 import axios from 'axios'
 import localforage from 'localforage'
 import { FulfillingBouncingCircleSpinner } from 'epic-spinners'
+  
+//datas
+let dt = date
+const hoje = new Date()
+var moment = require('moment');
+require("moment/min/locales.min");
+moment.locale('pt-br');
     
 const API = localStorage.getItem('wsAtual')
   
@@ -237,8 +243,8 @@ export default {
           estoque: [],
           familias: [],
           vendedores: [],
-          dataInicial: '',
-          dataFinal: '',
+          dataInicial: moment(dt.startOfDate(hoje, 'month')).format('YYYY-MM-DDTHH:mm:SS'),
+          dataFinal: moment(dt.endOfDate(hoje, 'month')).format('YYYY-MM-DDTHH:mm:SS'),
           agrup: 'Ordem alfabetica', // agrp: cat, marca, familia, ordem alfab.
           familia: '',
           vendedor: '',

@@ -124,9 +124,9 @@
       </q-collapsible>
     </div>
       
-    
+  <q-infinite-scroll :handler="loadMore" v-if="notas.length>0">
       
-    <q-list v-for="item in notas" 
+    <q-list v-for="item in showingData" 
             :key="item.cab.codigo"
             style="background-color: white;">
       <q-list-header>Nota Fiscal</q-list-header>
@@ -186,6 +186,14 @@
         </q-item-side>
       </q-item>
     </q-list>
+      
+      <div slot="message"
+           v-if="notas.length>0 && notas.length !== showingData.length"
+           class="row justify-center" 
+           style="margin: 50px;">
+        <q-spinner-dots :size="40" />
+      </div>
+  </q-infinite-scroll>
        
     <br><br><br><br>
         
@@ -194,10 +202,16 @@
 
 <script>
 import { FulfillingBouncingCircleSpinner } from 'epic-spinners'    
-import { Loading, Toast } from 'quasar'
+import { Loading, Toast, date } from 'quasar'
 import axios from 'axios'
 import localforage from 'localforage'
-    
+  
+let dt = date
+const hoje = new Date()
+var moment = require('moment');
+require("moment/min/locales.min");
+moment.locale('pt-br');  
+
 const API = localStorage.getItem('wsAtual')
   
 //debug
@@ -211,8 +225,8 @@ export default {
           clientes: [],
           Produtos: [], 
           vendedores: [],
-          dataInicial: '',
-          dataFinal: '',
+          dataInicial: moment(dt.startOfDate(hoje, 'month')).format('YYYY-MM-DDTHH:mm:SS'),
+          dataFinal: moment(dt.endOfDate(hoje, 'month')).format('YYYY-MM-DDTHH:mm:SS'),
           nCupomDe: '',
           nCupomAte: '',
           cliente: '',
@@ -222,6 +236,7 @@ export default {
           opened: true,
           permissoes: '',
           visivel: true,
+          actualMaxPosition: 5,
           
           styles: [
             '',
@@ -282,7 +297,7 @@ export default {
           
           return lista
       },
-      listaProdutos: function () {
+      listaProdutos(){
           let a = this.Produtos
           let lista = []
 
@@ -293,7 +308,7 @@ export default {
           
           return lista
       },
-      listaVendedores: function () {
+      listaVendedores(){
           let a = this.vendedores
           let lista = []
           
@@ -304,6 +319,9 @@ export default {
           
           return lista
     
+      },
+      showingData () {
+        return this.notas.slice(0, this.actualMaxPosition)
       }
   },
   filters:{
@@ -317,6 +335,13 @@ export default {
       }
   },
   methods:{
+      loadMore (index, done) {
+        setTimeout(() => {
+          this.actualMaxPosition += 5
+          done()
+        }, 2500)
+      },
+      
       goBack(){
         window.history.go(-1)
       },
@@ -368,7 +393,7 @@ export default {
                 */
                 '&ocultarExcluidos=' + this.ocultarCanceladas)
         .then((res)=>{
-            console.log(res.data)
+            //console.log(res.data)
             this.notas = res.data
             this.opened = false
             Loading.hide()

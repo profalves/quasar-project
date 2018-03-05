@@ -191,9 +191,15 @@ import donut from './charts/Donuts.js'
 import polar from './charts/Polar.js'
 import radar from './charts/Radar.js'
 import bubble from './charts/Bubble.js'
-import { Dialog, Loading } from 'quasar'
+import { Dialog, Loading, date } from 'quasar'
 import axios from 'axios'
 import { FulfillingBouncingCircleSpinner } from 'epic-spinners'
+  
+let dt = date
+const hoje = new Date()
+var moment = require('moment');
+require("moment/min/locales.min");
+moment.locale('pt-br');
     
 const API = localStorage.getItem('wsAtual')
   
@@ -204,8 +210,8 @@ export default {
   
   data () {
     return {
-      dataFinal: '',
-      dataInicial: '',
+      dataInicial: moment(dt.startOfDate(hoje, 'month')).format('YYYY-MM-DDTHH:mm:SS'),
+      dataFinal: moment(dt.endOfDate(hoje, 'month')).format('YYYY-MM-DDTHH:mm:SS'),
       vendas: [],
       vendasChart: false,
       formasV: [],
@@ -558,7 +564,8 @@ export default {
     
   },
   
-  created(){
+  mounted(){
+    this.listarResumo()
   }
 }
 </script>

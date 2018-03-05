@@ -555,6 +555,7 @@
   var moment = require('moment');
   require("moment/min/locales.min");
   moment.locale('pt-br');
+  
   const suporte = "5575992748983"
   
   const API = localStorage.getItem('wsAtual')

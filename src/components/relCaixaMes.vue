@@ -1,5 +1,15 @@
 <template>
   <div>
+    <q-fixed-position class="fixo" corner="bottom-left" :offset="[18, 18]">
+      <q-btn 
+         round
+         color="primary" 
+         @click="goBack">
+         <q-icon name="keyboard_arrow_left" />
+      </q-btn>
+    </q-fixed-position>
+    
+    
     <q-select
       float-label="Mês"
       v-model="mes"
@@ -142,6 +152,9 @@ export default {
     }
   },
   methods: {
+    goBack(){
+        window.history.back()
+    },
     getCaixaMes(){
       Loading.show({
           spinner: FulfillingBouncingCircleSpinner,

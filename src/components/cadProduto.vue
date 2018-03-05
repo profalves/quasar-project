@@ -312,312 +312,369 @@
     
     <q-list style="background-color: white;
                    margin-top: 20px" no-border>
-        <!--<q-collapsible icon="monetization_on" label="Tabela de Preço">
-            <div class="row" id="table">    
-                <table class="q-table" :class="computedClasses">
-                  <thead>
-                    <tr>
-                      <th class="text-left">Tabela</th>
-                      <th class="text-left">M. Lucro</th>
-                      <th class="text-left">Valor</th>
-                      <th class="text-left">ML Min.</th>
-                      <th class="text-left">Valor Min.</th>
-                      <th class="text-left">Editar</th>
-                      <th class="text-left">Excluir</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="(item, index) in tabPreco" :key="index">
-                      <td class="text-left">{{ item.nome }}</td>
-                      <td class="text-left">
-                        <money v-model="tabPreco[index].ml"
-                               v-bind="perc"
-                               class="mdInput"
-                        />  
-                      </td>
-                      <td class="text-left">
-                        <money v-model="CadProduto.precos[index].valor"
-                               v-bind="money"
-                               class="mdInput"
-                        />  
-                      </td>
-                      <td class="text-left">
-                        <money v-model="tabPreco[index].mLminima"
-                               v-bind="perc"
-                               class="mdInput"
-                        />  
-                      </td>
-                      <td class="text-left">
-                        <money v-model="CadProduto.precos[index].valorMinimo"
-                               v-bind="money"
-                               class="mdInput"
-                        />  
-                      </td>
-                      <td class="text-center">
-                        <a @click="" color="info"><i class="material-icons fa-2x">mode_edit</i></a>   
-                      </td>
-                      <td class="text-center">
-                        <i class="material-icons fa-2x mHover text-negative" @click="" color="negative">delete_forever</i> 
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-            </div>
-          
-        </q-collapsible>-->
+      <!--<q-collapsible icon="monetization_on" label="Tabela de Preço">
+          <div class="row" id="table">    
+              <table class="q-table" :class="computedClasses">
+                <thead>
+                  <tr>
+                    <th class="text-left">Tabela</th>
+                    <th class="text-left">M. Lucro</th>
+                    <th class="text-left">Valor</th>
+                    <th class="text-left">ML Min.</th>
+                    <th class="text-left">Valor Min.</th>
+                    <th class="text-left">Editar</th>
+                    <th class="text-left">Excluir</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(item, index) in tabPreco" :key="index">
+                    <td class="text-left">{{ item.nome }}</td>
+                    <td class="text-left">
+                      <money v-model="tabPreco[index].ml"
+                             v-bind="perc"
+                             class="mdInput"
+                      />  
+                    </td>
+                    <td class="text-left">
+                      <money v-model="CadProduto.precos[index].valor"
+                             v-bind="money"
+                             class="mdInput"
+                      />  
+                    </td>
+                    <td class="text-left">
+                      <money v-model="tabPreco[index].mLminima"
+                             v-bind="perc"
+                             class="mdInput"
+                      />  
+                    </td>
+                    <td class="text-left">
+                      <money v-model="CadProduto.precos[index].valorMinimo"
+                             v-bind="money"
+                             class="mdInput"
+                      />  
+                    </td>
+                    <td class="text-center">
+                      <a @click="" color="info"><i class="material-icons fa-2x">mode_edit</i></a>   
+                    </td>
+                    <td class="text-center">
+                      <i class="material-icons fa-2x mHover text-negative" @click="" color="negative">delete_forever</i> 
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+          </div>
+
+      </q-collapsible>-->
+      
+      <q-collapsible icon="compare_arrows" label="Ajustes de Estoque" v-if="visivel && permissoes.movimentaEstoqueES">
+        <div class="row">
+          <div class="col-xs-12 col-md-6">
+            <q-select
+              v-model="ajuste"
+              float-label="Tipo"
+              :options="[
+                {label:'Entrada', value:'entrada'},
+                {label:'Saída', value:'saida'}
+              ]"
+            />
+          </div>
+          <div class="col-xs-12 col-md-6">
+            <q-input
+              v-model="qtdeAjuste"
+              float-label="Quantidade"
+              type="number"
+            />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12" v-if="escrever">
+            <q-input
+              v-model="motivo"
+              float-label="Motivo?"
+              type="textarea"
+            />
+            <q-checkbox v-model="escrever" label="Escrever motivo" />
+          </div>
+          <div class="col-xs-12 col-md-6" v-else>
+            <q-select
+              v-model="motivo"
+              float-label="Motivo?"
+              :options="[
+                {label:'Ajuste de Estoque', value:'Ajuste de Estoque'},
+                {label:'Produção Diária', value:'Produção Diária'}
+              ]"
+            />
+            <q-checkbox v-model="escrever" label="Escrever motivo" />
+          </div>
+          <div class="col text-center">
+            <q-btn color="primary"
+                   style="margin-top: 20px"
+                   @click="ajustarEstoque">
+              Ajustar Estoque
+            </q-btn>
+                   
+          </div>
+        </div>
         
-        <q-collapsible icon="explore" label="Fator de Conversão" v-if="visivel">
-            <div class="row">
-                <div class="col-md-4">
-                    <q-field
-                        icon="format_color_fill"
-                     >
-                        <q-select
-                            float-label="Unidade de Medida"
-                            filter
-                            v-model="fatorConv.unMed"
-                            :options="listaMedidas"
-                        />
-                    </q-field>   
-                </div>
-                <!--<div class="col-2 btn-plus" >
 
-                    <q-btn 
-                       rounded
-                       color="primary" 
-                       @click="novaUnidade">
-                       <q-icon name="add" />
-                    </q-btn>
-                </div>-->
-                <div class="col">
-                    <q-field
-                        icon="library_books"
-                     >
-                        <q-input
-                            float-label="Fator de conversão"
-                            v-model="fatorConv.fatorConversao"
-                        />
-                    </q-field>   
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-4">
-                    <q-field helper="Valor de Custo R$">
-                        <money v-model="CadProduto.produto.custo"
-                               v-bind="money"
-                               class="mdInput"
-                        />
-                    </q-field> 
-                </div>
+        
+  
+  
+      </q-collapsible>
 
-                <div class="col-4">
-                    <q-field helper="Margem de Lucro %">
-                        <money v-model="CadProduto.produto.percLucro"
-                               v-bind="perc"
-                               class="mdInput"
-                        />
-                    </q-field> 
-                </div>
+      <q-collapsible icon="explore" label="Fator de Conversão" v-if="visivel">
+          <div class="row">
+              <div class="col-md-4">
+                  <q-field
+                      icon="format_color_fill"
+                   >
+                      <q-select
+                          float-label="Unidade de Medida"
+                          filter
+                          v-model="fatorConv.unMed"
+                          :options="listaMedidas"
+                      />
+                  </q-field>   
+              </div>
+              <!--<div class="col-2 btn-plus" >
 
-                <div class="col-4">
-                    <q-field helper="Valor de Venda R$">
-                        <money v-model="fatorConv.valorVenda"
-                               v-bind="money"
-                               class="mdInput"
-                        />
-                    </q-field>
-                </div>        
-            </div>
-            
-            
-            <div class="row">
-                <div class="col">
-                    <q-checkbox v-model="fatorConv.conversaoEntrada" label="Conversão padrão para NF de entrada" />
-                </div>
-            </div>
-            
-            <div class="row btn-plus left">
-                <div class="col">
-                    <q-btn 
-                        rounded
-                        color="primary" 
-                        @click="salvarFator"
-                    >adicionar fator
-                    </q-btn>
-                </div>
-            </div><br>
-            
-            <div class="row" id="table">    
-                <table class="q-table" :class="computedClasses">
-                  <thead>
-                    <tr>
-                      <th class="text-left">Un. Medida</th>
-                      <th class="text-left">Fator Conv.</th>
-                      <th class="text-left">Entrada</th>
-                      <th class="text-left">ML</th>
-                      <th class="text-left">Custo</th>
-                      <th class="text-left">Venda</th>
-                      <th class="text-left">Editar</th>
-                      <th class="text-left">Excluir</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="item in fatores">
-                      <td class="text-left">{{ item.unMed }}</td>
-                      <td class="text-right">{{ item.fatorConversao }}</td>
-                      <td class="text-left">{{ item.conversaoEntrada | boolString }}</td>
-                      <td class="text-left">{{ item.ml | decimal }}</td>
-                      <td class="text-left">{{ CadProduto.produto.custo | decimal }}</td>
-                      <td class="text-left">{{ item.valorVenda | decimal }}</td>
-                      <td class="text-center">
-                        <a @click="editarFator(item)" color="info"><i class="material-icons fa-2x">mode_edit</i></a>   
-                      </td>
-                      <td class="text-center">
-                        <i class="material-icons fa-2x mHover text-negative" @click="excluirFator(item)" color="negative">delete_forever</i> 
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-            </div>
-        </q-collapsible>
-           
-        <q-collapsible icon="add_circle" label="Matéria-Prima" v-if="visivel">
-            <div class="row">
-                <div class="col">
-                    <q-toolbar slot="header" inverted color="tertiary">
-                       <q-radio v-model="tipoCod" 
-                                val="barras"
-                                label="Cód. Barras" 
-                                @focus="search = ''" />
-                       <q-radio v-model="tipoCod" 
-                                val="emp" 
-                                label="Cód. Emp" 
-                                style="margin-left:20px"  
-                                @focus="search = ''" />
-                       <q-radio v-model="tipoCod" 
-                                val="nome"
-                                label="Nome" 
-                                style="margin-left:20px" 
-                                @focus="search = ''" />
-                    </q-toolbar>
+                  <q-btn 
+                     rounded
+                     color="primary" 
+                     @click="novaUnidade">
+                     <q-icon name="add" />
+                  </q-btn>
+              </div>-->
+              <div class="col">
+                  <q-field
+                      icon="library_books"
+                   >
+                      <q-input
+                          float-label="Fator de conversão"
+                          v-model="fatorConv.fatorConversao"
+                      />
+                  </q-field>   
+              </div>
+          </div>
+          <div class="row">
+              <div class="col-4">
+                  <q-field helper="Valor de Custo R$">
+                      <money v-model="CadProduto.produto.custo"
+                             v-bind="money"
+                             class="mdInput"
+                      />
+                  </q-field> 
+              </div>
 
-                    <q-search  
-                             v-model="search" 
-                             color="none" 
-                             style="margin-left: 10px"
-                             placeholder="Procurar..."
-                             @change="listarMateriaPrima"
-                             @keyup.enter="listarMateriaPrima"
-                             @blur="listarMateriaPrima"
-                             v-if="tipoCod === 'nome'"
-                             >
-                        <q-autocomplete
-                          :max-results="maxResults"
-                          :static-data="{field: 'label', list: listaProdutos}"
-                          @selected="listarProdutos"
-                        />
+              <div class="col-4">
+                  <q-field helper="Margem de Lucro %">
+                      <money v-model="CadProduto.produto.percLucro"
+                             v-bind="perc"
+                             class="mdInput"
+                      />
+                  </q-field> 
+              </div>
 
-                    </q-search>
-                    <q-search
-                             v-model="search" 
-                             color="none" 
-                             style="margin-left: 10px"
-                             placeholder="Procurar..."
-                             @keyup.enter="listarMateriaPrima"
-                             @blur="listarMateriaPrima"
-                             v-else
-                             >
+              <div class="col-4">
+                  <q-field helper="Valor de Venda R$">
+                      <money v-model="fatorConv.valorVenda"
+                             v-bind="money"
+                             class="mdInput"
+                      />
+                  </q-field>
+              </div>        
+          </div>
 
-                    </q-search> 
-                </div>
-            </div>
-            
-            <div class="row">
-                <div class="col">
-                    <q-checkbox v-model="mtProds" label="Somente matérias primas" />
-                </div>
-            </div>
-            
-            <div class="text-center">
-                <h5>{{prodMP.nome}}</h5>
-            </div>
-                      
-            <div class="row">
-                <div class="col">
-                    <q-field helper="Valor de Custo R$" disabled>
-                        <q-input v-model="CadProduto.produto.custo" readonly />
-                    </q-field> 
-                </div>
-                <div class="col">
-                    <q-field
-                        helper="Fator de conversão"
-                     >
-                        <q-input
-                            v-model="fcMatPrima"
-                            type="number"
-                        />
-                    </q-field>   
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-4">
-                    <q-field helper="Qte. Produzida">
-                        <q-input
-                            v-model="qteProd"
-                            color="info"
-                            type="number"
-                        />
-                    </q-field> 
-                </div>
 
-                <div class="col-4">
-                    <q-field helper="Qte. Utilizada">
-                        <q-input
-                            v-model="qteUtil"
-                            color="negative"
-                            type="number"
-                        />
-                    </q-field>
-                </div>
-                <div class="col text-center">
-                    <q-btn 
-                        rounded
-                        color="primary" 
-                        @click="salvarMateriaPrima"
-                    >adicionar Produto
-                    </q-btn>
-                </div>       
-            </div><br>
-            
-            <div class="row" id="table">    
-                <table class="q-table" :class="computedClasses">
-                  <thead>
-                    <tr>
-                      <th class="text-left">Matéria Prima</th>
-                      <th class="text-left">Valor Unit.</th>
-                      <th class="text-left">Qtde</th>
-                      <th class="text-left">Total</th>
-                      <th class="text-left">Excluir</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="item in composicao">
-                      <td class="text-left">{{ item.materiaPrima }}</td>
-                      <td class="text-right">{{ item.valorUnit | formatMoney }}</td>
-                      <td class="text-left">{{ item.qtde }}</td>
-                      <td class="text-left">{{ item.total | formatMoney }}</td>
-                      
-                      <td class="text-center">
-                        <i class="material-icons fa-2x mHover text-negative" @click="excluirMateriaPrima(item)" color="negative">delete_forever</i> 
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-            </div>
-        </q-collapsible>
+          <div class="row">
+              <div class="col">
+                  <q-checkbox v-model="fatorConv.conversaoEntrada" label="Conversão padrão para NF de entrada" />
+              </div>
+          </div>
+
+          <div class="row btn-plus left">
+              <div class="col">
+                  <q-btn 
+                      rounded
+                      color="primary" 
+                      @click="salvarFator"
+                  >adicionar fator
+                  </q-btn>
+              </div>
+          </div><br>
+
+          <div class="row" id="table">    
+              <table class="q-table" :class="computedClasses">
+                <thead>
+                  <tr>
+                    <th class="text-left">Un. Medida</th>
+                    <th class="text-left">Fator Conv.</th>
+                    <th class="text-left">Entrada</th>
+                    <th class="text-left">ML</th>
+                    <th class="text-left">Custo</th>
+                    <th class="text-left">Venda</th>
+                    <th class="text-left">Editar</th>
+                    <th class="text-left">Excluir</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="item in fatores">
+                    <td class="text-left">{{ item.unMed }}</td>
+                    <td class="text-right">{{ item.fatorConversao }}</td>
+                    <td class="text-left">{{ item.conversaoEntrada | boolString }}</td>
+                    <td class="text-left">{{ item.ml | decimal }}</td>
+                    <td class="text-left">{{ CadProduto.produto.custo | decimal }}</td>
+                    <td class="text-left">{{ item.valorVenda | decimal }}</td>
+                    <td class="text-center">
+                      <a @click="editarFator(item)" color="info"><i class="material-icons fa-2x">mode_edit</i></a>   
+                    </td>
+                    <td class="text-center">
+                      <i class="material-icons fa-2x mHover text-negative" @click="excluirFator(item)" color="negative">delete_forever</i> 
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+          </div>
+      </q-collapsible>
+
+      <q-collapsible icon="add_circle" label="Matéria-Prima" v-if="visivel">
+          <div class="row">
+              <div class="col">
+                  <q-toolbar slot="header" inverted color="tertiary">
+                     <q-radio v-model="tipoCod" 
+                              val="barras"
+                              label="Cód. Barras" 
+                              @focus="search = ''" />
+                     <q-radio v-model="tipoCod" 
+                              val="emp" 
+                              label="Cód. Emp" 
+                              style="margin-left:20px"  
+                              @focus="search = ''" />
+                     <q-radio v-model="tipoCod" 
+                              val="nome"
+                              label="Nome" 
+                              style="margin-left:20px" 
+                              @focus="search = ''" />
+                  </q-toolbar>
+
+                  <q-search  
+                           v-model="search" 
+                           color="none" 
+                           style="margin-left: 10px"
+                           placeholder="Procurar..."
+                           @change="listarMateriaPrima"
+                           @keyup.enter="listarMateriaPrima"
+                           @blur="listarMateriaPrima"
+                           v-if="tipoCod === 'nome'"
+                           >
+                      <q-autocomplete
+                        :max-results="maxResults"
+                        :static-data="{field: 'label', list: listaProdutos}"
+                        @selected="listarProdutos"
+                      />
+
+                  </q-search>
+                  <q-search
+                           v-model="search" 
+                           color="none" 
+                           style="margin-left: 10px"
+                           placeholder="Procurar..."
+                           @keyup.enter="listarMateriaPrima"
+                           @blur="listarMateriaPrima"
+                           v-else
+                           >
+
+                  </q-search> 
+              </div>
+          </div>
+
+          <div class="row">
+              <div class="col">
+                  <q-checkbox v-model="mtProds" label="Somente matérias primas" />
+              </div>
+          </div>
+
+          <div class="text-center">
+              <h5>{{prodMP.nome}}</h5>
+          </div>
+
+          <div class="row">
+              <div class="col">
+                  <q-field helper="Valor de Custo R$" disabled>
+                      <q-input v-model="CadProduto.produto.custo" readonly />
+                  </q-field> 
+              </div>
+              <div class="col">
+                  <q-field
+                      helper="Fator de conversão"
+                   >
+                      <q-input
+                          v-model="fcMatPrima"
+                          type="number"
+                      />
+                  </q-field>   
+              </div>
+          </div>
+          <div class="row">
+              <div class="col-4">
+                  <q-field helper="Qte. Produzida">
+                      <q-input
+                          v-model="qteProd"
+                          color="info"
+                          type="number"
+                      />
+                  </q-field> 
+              </div>
+
+              <div class="col-4">
+                  <q-field helper="Qte. Utilizada">
+                      <q-input
+                          v-model="qteUtil"
+                          color="negative"
+                          type="number"
+                      />
+                  </q-field>
+              </div>
+              <div class="col text-center">
+                  <q-btn 
+                      rounded
+                      color="primary" 
+                      @click="salvarMateriaPrima"
+                  >adicionar Produto
+                  </q-btn>
+              </div>       
+          </div><br>
+
+          <div class="row" id="table">    
+              <table class="q-table" :class="computedClasses">
+                <thead>
+                  <tr>
+                    <th class="text-left">Matéria Prima</th>
+                    <th class="text-left">Valor Unit.</th>
+                    <th class="text-left">Qtde</th>
+                    <th class="text-left">Total</th>
+                    <th class="text-left">Excluir</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="item in composicao">
+                    <td class="text-left">{{ item.materiaPrima }}</td>
+                    <td class="text-right">{{ item.valorUnit | formatMoney }}</td>
+                    <td class="text-left">{{ item.qtde }}</td>
+                    <td class="text-left">{{ item.total | formatMoney }}</td>
+
+                    <td class="text-center">
+                      <i class="material-icons fa-2x mHover text-negative" @click="excluirMateriaPrima(item)" color="negative">delete_forever</i> 
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+          </div>
+      </q-collapsible>
+      
         
     </q-list>
-    <!--<div style="margin-bottom: 10px"></div>-->
+    <div style="margin-bottom: 10px"></div>
 </div>
     
 </template>
@@ -749,6 +806,10 @@ export default {
         mtProds: false,
         permissoes: {},
         maxResults: parseInt(localStorage.getItem('maxResults')),
+        ajuste: '',
+        motivo: '',
+        escrever: false,
+        qtdeAjuste: '',
         
         //tabela
         misc: 'bordered', //[{value: 'bordered'},{value: 'highlight'}]
@@ -1576,13 +1637,37 @@ export default {
     },
     calcML(){
       console.log(this.CadProduto.custo)
+    },
+    ajustarEstoque(){
+      Loading.show()
+      let cod = localStorage.getItem('codProduto')
+      let user = localStorage.getItem('codUser')
+      axios.get(API + 'estoque/movimentaEstoque?codProduto='+ cod +
+                '&codigoEmpresa=0' + 
+                '&codigoUsuario=' + user +
+                '&qtde=' + this.qtdeAjuste +
+                '&tipoMovimento=entrada' + this.ajuste +
+                '&descricao=' + this.motivo)
+      .then(res => {
+        Loading.hide()
+        console.log('sucesso: ', res)
+        console.log('retorno: ', res.data)
+        this.motivo = ''
+        this.qtdeAjuste = ''
+        this.ajuste = ''
+        this.listarProdutos()
+      })
+      .catch(e => {
+        Loading.hide()
+        console.log('erro: ', e)
+      })
     }
    
   },
   mounted(){
     localforage.getItem('usuario').then((value) => {
         if(value){
-            //console.log(value)
+            console.log(value)
             this.permissoes = value
         }
         else{

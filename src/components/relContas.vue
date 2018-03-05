@@ -90,21 +90,21 @@
         <div class="col">Pagas: {{somaRecPagas | formatMoney}}</div>
     </div>
   </q-collapsible>
+  <br><br><br><br>
     
-  
-        
-        
 </div>
 </template>
 
 <script>
-import { Loading } from 'quasar' //Alert, Dialog, Toast, clone, date
+import { Loading, date } from 'quasar' //Alert, Dialog, Toast, clone, date
 import axios from 'axios'
 import { FulfillingBouncingCircleSpinner } from 'epic-spinners'
 import donut from './charts/Donuts.js'
 import reactiveData from './charts/mixins/reactiveData'
-
 import localforage from 'localforage'
+  
+let dt = date
+const hoje = new Date()
 var moment = require('moment');
 require("moment/min/locales.min");
 moment.locale('pt-br');
@@ -119,8 +119,8 @@ export default {
     return {
       contas: [],
       vencimento: '',
-      dataInicial: '',
-      dataFinal: '',
+      dataInicial: moment(dt.startOfDate(hoje, 'month')).format('YYYY-MM-DDTHH:mm:SS'),
+      dataFinal: moment(dt.endOfDate(hoje, 'month')).format('YYYY-MM-DDTHH:mm:SS'),
       despPagar: [],
       despPagas: [],
       recPagar: [],

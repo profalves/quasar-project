@@ -158,9 +158,15 @@
 
 <script>
     
-import { Loading, Toast, clone } from 'quasar'
+import { Loading, Toast, clone, date } from 'quasar'
 import axios from 'axios'
 import { FulfillingBouncingCircleSpinner } from 'epic-spinners'
+  
+let dt = date
+const hoje = new Date()
+var moment = require('moment');
+require("moment/min/locales.min");
+moment.locale('pt-br');
 
 function numberToReal(numero) {
   numero = numero.toFixed(2).split('.');
@@ -181,8 +187,8 @@ export default {
           totalizadores: '',
           formas: [],
           formasVendedor: [],
-          dataInicial: '',
-          dataFinal: '',
+          dataInicial: moment(dt.startOfDate(hoje, 'month')).format('YYYY-MM-DDTHH:mm:SS'),
+          dataFinal: moment(dt.endOfDate(hoje, 'month')).format('YYYY-MM-DDTHH:mm:SS'),
           forma: '',
           opened: true,
           visivel: false,
