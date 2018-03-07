@@ -93,9 +93,9 @@
                   </thead>
                   <tbody>
                     <tr v-for="(item, index) in tabs">
-                      <td data-th="Valor" class="text-left">{{ item.mLminima | formatMoney }}</td>
+                      <td data-th="Valor" class="text-left">{{ item.valorComprasTabela | formatMoney }}</td>
                       <td data-th="Desconto" class="text-left">{{ item.descontoMax | formatPerc }}</td>
-                      <td data-th="Dia" class="text-left">{{ item.descontoMax }}</td>
+                      <td data-th="Dia" class="text-left">{{ item.dia }}</td>
                       <td class="text-center">
                         <a @click="editar(item)" color="info"><i class="material-icons fa-2x" >mode_edit</i></a>   
                       </td>
@@ -178,6 +178,11 @@ export default {
   validations: {
     nome: { required },
   },
+  filters:{
+    valor: function(value){
+      return value.split(':').pop()
+    }
+  },
   computed: {
     computedClasses () {
       let classes = []
@@ -207,27 +212,27 @@ export default {
       window.history.go(-1)
     },
     listarTabs (){
-        Loading.show({
-          spinner: FulfillingBouncingCircleSpinner,
-          spinnerSize: 140,
-          message: 'Obtendo Promoções...'
+      Loading.show({
+        spinner: FulfillingBouncingCircleSpinner,
+        spinnerSize: 140,
+        message: 'Obtendo Promoções...'
+      })
+      axios.get(API + 'produto/obterPromocaoPorCliente')
+        .then((res)=>{
+          Loading.hide()
+          this.tabs = res.data
+          console.log(res.data)
         })
-        axios.get(API + 'produto/obterPromocaoPorCliente')
-          .then((res)=>{
-            Loading.hide()
-            this.tabs = res.data
-            //console.log(res)
+        .catch((e)=>{
+          Loading.hide()
+          console.log(e)
+          Toast.create({
+              html: 'Sem Conexão',
+              timeout: 6000,
+              bgColor: '#f44242',
+              icon: 'mood_bad'
           })
-          .catch((e)=>{
-            Loading.hide()
-            console.log(e)
-            Toast.create({
-                html: 'Sem Conexão',
-                timeout: 6000,
-                bgColor: '#f44242',
-                icon: 'mood_bad'
-            })
-          })
+        })
     },
     salvar(){
       if(this.dia<0 || this.dia>31 || this.dia === ''){
@@ -278,47 +283,47 @@ export default {
         this.desc = ''
     },
     excluir(item, index) {
-        item.excluido = true
-        Dialog.create({
-          title: '<i class="material-icons text-negative">warning</i> Atenção!',
-          message: 'Deseja excluir a tabela ' + item.nome + '?',
-          buttons: [
-            {
-              label: 'Cancelar',
-              raised: true,
-              color: 'faded',
-              handler: () => { return }
-            },
-            {
-              label: 'Excluir',
-              raised: true,
-              color: 'negative',
-              handler: () => {
-                Loading.show({
-                    spinner: FulfillingBouncingCircleSpinner,
-                    spinnerSize: 140,
-                    message: 'Excluindo tabela...'
+      item.excluido = true
+      Dialog.create({
+        title: '<i class="material-icons text-negative">warning</i> Atenção!',
+        message: 'Deseja excluir a tabela ' + item.nome + '?',
+        buttons: [
+          {
+            label: 'Cancelar',
+            raised: true,
+            color: 'faded',
+            handler: () => { return }
+          },
+          {
+            label: 'Excluir',
+            raised: true,
+            color: 'negative',
+            handler: () => {
+              Loading.show({
+                  spinner: FulfillingBouncingCircleSpinner,
+                  spinnerSize: 140,
+                  message: 'Excluindo tabela...'
+              })
+
+              axios.post(API + 'produto/gravarTabPrecoCab', item)
+                .then((res)=>{
+                  Loading.hide()
+                  console.log(res)
+                  this.listarTabs()
+                  Toast.create('A tabela ' + item.nome + ' foi excluida com sucesso')
                 })
-                
-                axios.post(API + 'produto/gravarTabPrecoCab', item)
-                  .then((res)=>{
-                    Loading.hide()
-                    console.log(res)
-                    this.listarTabs()
-                    Toast.create('A tabela ' + item.nome + ' foi excluida com sucesso')
-                  })
-                  .catch((e)=>{
-                    Loading.hide()
-                    console.log(e.response)
-                    let error = e.response.data
-                    for(var i=0; error.length; i++){
-                        Toast.create.negative(error[i].value)
-                    }
-                  })
-              }
+                .catch((e)=>{
+                  Loading.hide()
+                  console.log(e.response)
+                  let error = e.response.data
+                  for(var i=0; error.length; i++){
+                      Toast.create.negative(error[i].value)
+                  }
+                })
             }
-          ]
-        })
+          }
+        ]
+      })
         
           
     },
@@ -333,14 +338,13 @@ export default {
       
     },
     responsiva(){
-        if(this.check === true){
-            this.type = 'responsive'
-        }
-        else {
-            this.type = 'none'
-        }
+      if(this.check === true){
+          this.type = 'responsive'
+      }
+      else {
+          this.type = 'none'
+      }
     }
-    
   },
   mounted(){
     this.listarTabs()

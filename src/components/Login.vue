@@ -227,10 +227,10 @@ export default {
             localStorage.setItem('bodyHeight', 200)
             localStorage.setItem('alturaGrafico', 100)
             localStorage.setItem('rowsPerPage', 5)
-            localStorage.setItem('tetoDia', 1000)
+            localStorage.setItem('tetoDia', 100)
             localStorage.setItem('metaDia', 0)
             localStorage.setItem('quaseDia', 0)
-            localStorage.setItem('tetoMes', 50000)
+            localStorage.setItem('tetoMes', 500)
             localStorage.setItem('metaMes', 0)
             localStorage.setItem('quaseMes', 0)
             localStorage.setItem('qdPerc', 75)
@@ -245,6 +245,7 @@ export default {
             localStorage.setItem('wsAtual', '')
             localStorage.setItem('menu', 'true')
             localStorage.setItem('fiscal', 'false')
+            localStorage.setItem('foto', 'http://www.grafilino.pt/images/user60.png')
             Loading.hide()
           } 
         },

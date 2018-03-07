@@ -1469,11 +1469,15 @@ export default {
             
     },
     enviarItem(){ //calcular impostos dos itens
+        this.detItem.qtdCom = this.detItem.qtd
+        
         let Fiscal = false //depois transformar em vaiável global
         let VendasDet = this.detItem
         let VendasDetImp = {}
         let FatorConversao = this.item.fator
         let tipoEntradaEstoque = 'compra'
+        
+        
         Loading.show({
           spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,

@@ -364,13 +364,19 @@ export default {
       return this.cidades.map(row => {
         const cidade = row || ''
         return ({
-        label: cidade.nome, 
-        value: cidade.codigoIBGE
+          label: cidade.nome, 
+          value: cidade.codigoIBGE
         })
       })
     },
     listaBairros(){
-      return this.bairros.map(row => ({
+      let lista = []
+      for(let i in this.bairros){
+        if(this.bairros[i].bairro !== "-" && this.bairros[i].bairro !== "." && this.bairros[i].bairro !== ""){
+          lista.push(this.bairros[i])
+        }
+      }
+      return lista.map(row => ({
         label: row.bairro, 
         value: row.bairro
       }))

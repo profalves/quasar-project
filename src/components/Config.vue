@@ -457,6 +457,19 @@
             </q-collapsible>
             <!-- WhatsApp --
             <q-collapsible icon="fa-whatsapp" label="WhatsApp" sublabel="Configure as mensagens prontas para enviar para as listas de transmissão cadastradas no celular"></q-collapsible> -->
+            <!-- FOTO USUÁRIO -->
+            <q-collapsible icon="fa-id-badge" :opened="configFoto" label="Foto Pessoal" sublabel="Insira sua foto de identificação">
+              <div class="text-center">
+                <div class="fileUpload" v-if="!image">
+                    <span>Selecione uma imagem</span>
+                    <input type="file" class="upload" @change="onFileChange" />
+                </div>
+                <div v-else>
+                  <img :src="image" class="avatar" /><br>
+                  <q-btn color="primary" rounded @click="removeImage">Remover imagem</q-btn>
+                </div>
+              </div>
+            </q-collapsible>
             <!-- BANCOS -->
             <q-collapsible  icon="device_hub" 
                             label="Banco de Dados" 
@@ -760,6 +773,11 @@ export default {
       bodyHeightProp: localStorage.getItem('bodyHeightProp'),
       bodyHeight: parseInt(localStorage.getItem('bodyHeight')),
       
+      //foto
+      image: localStorage.getItem('foto'),
+      local: '',
+      configFoto: false,
+      
       // config. Banco de Dados
       empresa: '',
       ip: '',
@@ -1019,6 +1037,32 @@ export default {
         })
     },
     
+    //fotos
+    onFileChange(e) {
+      console.log('evento acionado!')
+      let files = e.target.files || e.dataTransfer.files;
+      if (!files.length)
+        return;
+      this.createImage(files[0]);
+    },
+    createImage(file) {
+      //let image = new Image();
+      let reader = new FileReader();
+      let vm = this;
+
+      reader.onload = (e) => {
+        vm.image = e.target.result
+        localStorage.setItem('foto', this.image)
+      };
+      reader.readAsDataURL(file);
+      
+      
+    },
+    removeImage(e) {
+      this.image = '';
+      localStorage.setItem('foto', 'http://www.grafilino.pt/images/user60.png');
+    },
+    
     //Bancos
     listarBancos(){
         var i
@@ -1145,7 +1189,7 @@ export default {
     setLoadUsuarios(){
         localStorage.setItem('loadUsuarios', this.loadUsuarios)
     },
-    // sincronização: 
+    //sincronização: 
     listarUsuarios(){
       Loading.show({
           spinner: FulfillingBouncingCircleSpinner,
@@ -1461,8 +1505,12 @@ export default {
   },
   created (){
     this.listarBancos()
+    if(this.$route.query.configFoto === 'true'){
+        this.configFoto = true
+    }
     if(this.$route.query.bdConfig === true){
         this.bdConfig = true
+        this.configFoto = true
         Dialog.create({
           title: 'Bem-vindo às Configurações',
           message: 'Você foi redirecionado para esta tela. Configure um banco de dados com as informações necessárias para a sua conexão.',
@@ -1485,7 +1533,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
   #config{
     overflow: scroll;
   }
@@ -1494,5 +1542,33 @@ export default {
   }
   #btn-save{
     margin: 20px 0 0 40px;
+  }
+  img.avatar{
+    width: 200px;
+    height: 200px;
+    margin: 10px;
+  }
+  .fileUpload {
+    position: relative;
+    overflow: hidden;
+    margin: 10px;
+  }
+  span{
+    background-color: #027BE3;
+    color: #fff;
+    font-weight: bold;
+    border: 5px;
+    padding: 20px;
+  }
+  .fileUpload input.upload {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0;
+    padding: 0;
+    font-size: 20px;
+    cursor: pointer;
+    opacity: 0;
+    filter: alpha(opacity=0);
   }
 </style>

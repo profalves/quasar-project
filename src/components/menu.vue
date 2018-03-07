@@ -1,7 +1,12 @@
 <template>
     <div class="scrollbar" id="style-2">
+      
+      
       <div class="user">
-          <img src="../../img/newuser.png" class="avatar" /><br>
+        <img :src="image"
+             class="avatar"
+             @click="$router.push('config?configFoto=true')"
+        ><br>
           {{user}} <br>
           {{emp}} <br>
       </div>
@@ -153,9 +158,10 @@ import localforage from 'localforage'
 export default {
   data () {
     return {
-        user: localStorage.getItem('nameUser'),
-        emp: localStorage.getItem('nomeEmpresa'),
-        permissoes: ''
+      user: localStorage.getItem('nameUser'),
+      emp: localStorage.getItem('nomeEmpresa'),
+      permissoes: '',
+      image: localStorage.getItem('foto')
     }
   },
   methods:{
@@ -187,6 +193,9 @@ export default {
       localStorage.setItem('cadMode', 'save')
       this.$router.push('/cadproduto')
     },
+    mouseout(){
+      this.image = localStorage.getItem('foto')
+    },
     sair(){
         window.close()
     },
@@ -199,8 +208,8 @@ export default {
     //console.log('mounted')
   },
   beforeUpdate(){
-      this.obterPermissoes()
-      //console.log('beforeUpdate')
+    this.obterPermissoes()
+    this.image = localStorage.getItem('foto')
   },
   
   
@@ -214,7 +223,15 @@ export default {
     margin: 10px 15px 0;
     text-align: center;
   }
-  
+  img.avatar{
+    width: 55px;
+    height: 55px;
+    margin: 5px;
+  }
+  img.avatar:hover{
+    cursor: pointer;
+    content: url(http://www.mysnappy.com.my/Content/img/Photo.png);
+  }
   .scrollbar{
     float: left;
     height: 96%;

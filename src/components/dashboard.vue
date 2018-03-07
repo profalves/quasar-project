@@ -114,6 +114,7 @@
               :step="1"
               readonly
             >
+              Dia<br>
               {{dia | formatMoney}}
             </q-knob>
           </div>
@@ -162,7 +163,7 @@
               :step="1"
               readonly
             >
-              <!--readonly-->
+              Mês<br>
               {{mes | formatMoney}}
             </q-knob>
           </div>

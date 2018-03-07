@@ -1,9 +1,12 @@
 <template>
     <div>
       <div class="user">
-          <img src="../../img/newuser.png" class="avatar" /><br>
-          {{user}} <br>
-          {{emp}} <br>
+        <img :src="image"
+           class="avatar"
+           @click="$router.push('config?configFoto=true')"
+        ><br>
+        {{user}} <br>
+        {{emp}} <br>
       </div>
         
       <q-list no-border link inset-delimiter>
@@ -118,7 +121,8 @@ export default {
     return {
         user: localStorage.getItem('nameUser'),
         emp: localStorage.getItem('nomeEmpresa'),
-        permissoes: ''
+        permissoes: '',
+        image: localStorage.getItem('foto')
     }
   },
   methods:{
