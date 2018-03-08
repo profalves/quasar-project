@@ -114,10 +114,15 @@
               <div class="col-md-6 col-xs-12">Normal: {{promo.precoNormal | formatMoney}}</div>
               <div class="col">Promocional: {{promo.precoPromo | formatMoney}}</div>
             </div>
+            <div class="row">
+              <div class="col-md-4 col-xs-12">Família: {{promo.familia}}</div>
+              <div class="col-md-4 col-xs-12">Categoria: {{promo.categoria}}</div>
+              <div class="col-md-4 col-xs-12">Marca: {{promo.marca}}</div>
+            </div>
           </q-card-main>
           <q-card-separator />
           <q-card-actions>
-            <q-btn color="primary" rounded small>lançar promoção</q-btn>
+            <q-btn color="primary" rounded small @click="lancarPromocao(promo)">lançar promoção</q-btn>
           </q-card-actions>
         </q-card>
       </div>
@@ -128,7 +133,7 @@
 
 <script>
     
-import { Loading, Toast } from 'quasar'
+import { Loading, Toast, Dialog } from 'quasar'
 import axios from 'axios'
 import localforage from 'localforage'
 import { FulfillingBouncingCircleSpinner } from 'epic-spinners'
@@ -158,9 +163,7 @@ export default {
           formas: [],
           permissoes: {},
           visivel: true,
-          msg: '',
-          
-
+          msg: ''
       }
   },
   methods:{
@@ -230,21 +233,57 @@ export default {
         axios.get(API + 'produto/obterProdutosPromocao?' +
                   fam + cat + marca + produto + promo)
         .then((res)=>{
-            console.log(res)
-            this.produtos = res.data
-            this.opened = false
-            Loading.hide()
-            
+          //console.log(res)
+          this.produtos = res.data
+          this.opened = false
+          Loading.hide()
         })
         .catch((e)=>{
-            Loading.hide()
-            console.log(e.response)
-            let error = e.response.data
-            console.log(error)
-            for(var i=0; error.length; i++){
-                Toast.create.negative(error[i].value)
+          Loading.hide()
+          console.log(e.response)
+          let error = e.response.data
+          console.log(error)
+          for(var i=0; error.length; i++){
+              Toast.create.negative(error[i].value)
+          }  
+        })
+      },
+      lancarPromocao(promo){
+        Dialog.create({
+          title: promo.produto,
+          message: 'Valor Atual: R$ ' + promo.precoNormal.toFixed(2),
+          form: {
+            valor: {
+              type: 'text',
+              label: 'Novo Valor Promocional',
+              model: '0.00'
             }
-            
+          },
+          buttons: [
+            'Cancelar',
+            {
+              label: 'Ok',
+              handler: (data) => {
+                Loading.show({
+                  spinner: FulfillingBouncingCircleSpinner,
+                  spinnerSize: 140,
+                  message: 'Cadastrando preço promocional...'
+                })
+                axios.get(API + 'produto/gravarProdutoPromocao?codigoProduto=' + promo.codigo +
+                                '&Preco=' + data.valor + 
+                                '&CodigoUsuario=' + localStorage.getItem('codUser'))
+                .then((res)=>{
+                  //console.log(res)
+                  Loading.hide()
+                  this.getPromocoes()
+                })
+                .catch((e)=>{
+                  Loading.hide()
+                  console.log(e.response)
+                })
+              }
+            }
+          ]
         })
       },
       listarFamilias(){
@@ -293,7 +332,7 @@ export default {
         .then((res)=>{
             Loading.hide()
             //console.log(res.data)
-            this.Produtos = res.data 
+            this.produtos = res.data 
         })
         .catch((e)=>{
           Loading.hide()
@@ -336,7 +375,6 @@ export default {
       t.listarFamilias()
       t.listarCategorias()
       t.listarMarcas()
-      t.todosProdutos()
       t.obterPermissoes()
   }
 }
