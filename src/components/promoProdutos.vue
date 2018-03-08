@@ -98,9 +98,31 @@
       </q-collapsible>
    
       <!--produtos-->
-          
-
+      
+      <div v-for="promo in produtos">
+        <q-card>
+          <q-card-title>
+            {{promo.produto}}
+          </q-card-title>
+          <q-card-main>
+            <div class="row">
+              <div class="col-md-6 col-xs-12">Cód. Barras: {{promo.codBarra}}</div>
+              <div class="col">Cód. Empresa: {{promo.codEmpresa}}</div>
+            </div>
+            <strong>Preço:</strong>
+            <div class="row">
+              <div class="col-md-6 col-xs-12">Normal: {{promo.precoNormal | formatMoney}}</div>
+              <div class="col">Promocional: {{promo.precoPromo | formatMoney}}</div>
+            </div>
+          </q-card-main>
+          <q-card-separator />
+          <q-card-actions>
+            <q-btn color="primary" rounded small>lançar promoção</q-btn>
+          </q-card-actions>
+        </q-card>
+      </div>
     </div>
+    <br><br><br><br>
   </div>
 </template>
 
@@ -120,7 +142,7 @@ export default {
   data () {
       return {
           canGoBack: window.history.length > 1,
-          estoque: [],
+          produtos: [],
           familias: [],
           categorias: [],
           marcas: [],
@@ -128,11 +150,10 @@ export default {
           categoria: '',
           marca: '',
           produto: '',
-          tipoCod: '',
+          tipoCod: 'nome',
           search: '',
           promocao: false,
           opened: true,
-          produtos: [],
           itens: [],
           formas: [],
           permissoes: {},
@@ -147,18 +168,70 @@ export default {
         window.history.go(-1)
       },
       getPromocoes(){
+        let e = '&'
+        
+        let fam = ''
+        if(this.familia){
+          fam = 'CodFamilia=' + this.familia
+        }
+        let cat = ''
+        if(this.categoria){
+          if(this.familia){
+            cat = e + 'CodCategoria=' + this.categoria
+          }
+          else{
+            cat = 'CodCategoria=' + this.categoria
+          }
+        }
+        let marca = ''
+        if(this.marca){
+          if(this.familia || this.categoria){
+            marca = e + 'CodMarca=' + this.marca
+          }
+          else{
+            marca = 'CodMarca=' + this.marca
+          }
+        }
+        let produto = ''
+        if(this.search){
+          if(this.tipoCod === 'barras'){
+            produto = 'CodBarra=' + this.search
+            console.log('produto', produto);
+          }
+          else if(this.tipoCod === 'emp'){
+            produto = 'CodEmpresa=' + this.search
+            console.log('produto', produto);
+          }
+          else{
+            produto = 'nomeProduto=' + this.search
+            console.log('produto', produto);
+          }
+          
+          if(this.familia || this.categoria || this.marca){
+            produto = produto.replace (/^/,'&'); //.unshift(e)
+            console.log('produto', produto);
+          }  
+        }
+        let promo = ''
+        if(this.promocao){
+          if(this.familia || this.categoria || this.marca){
+            promo = e + 'SomenteItensPromocao=true'
+          }
+          else{
+            promo = 'SomenteItensPromocao=true'
+          }
+        }
         
         Loading.show({
           spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Aguardando Dados...'
         })
-        axios.get(API + 'relatorio/obterVendasPorProduto?')
+        axios.get(API + 'produto/obterProdutosPromocao?' +
+                  fam + cat + marca + produto + promo)
         .then((res)=>{
-            console.log(res.data)
-            this.estoque = res.data
-            this.itens = this.estoque[0].itens
-            this.formas = this.estoque[0].formasPgto
+            console.log(res)
+            this.produtos = res.data
             this.opened = false
             Loading.hide()
             
@@ -228,7 +301,6 @@ export default {
         })
           
       },
-      
       collapse(){
         if(this.opened === true){
             this.opened = false

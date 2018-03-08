@@ -324,13 +324,13 @@ export default {
       },
       getVendas(){
         if(this.dataInicial === ''){
-            Toast.create.negative('Selecione um período antes')
-            return
+          Toast.create.negative('Selecione um período antes')
+          return
         }
         
         let f = ''
         if(this.forma !== ''){
-            f = '&CodFormaPgto=' + this.forma
+          f = '&CodFormaPgto=' + this.forma
         }
           
         Loading.show({

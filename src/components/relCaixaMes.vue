@@ -9,13 +9,29 @@
       </q-btn>
     </q-fixed-position>
     
+    <div class="row">
+      
+      <div class="col">
+        <q-select
+          float-label="Mês"
+          v-model="mes"
+          :options="meses"
+          @change="getCaixaMes"
+        /> 
+      </div>
+      
+      <div class="col">
+        <q-input
+          float-label="Ano"
+          v-model="ano"
+          type="number"
+          @blur="getCaixaMes"
+          @keyup.enter="getCaixaMes"
+        /> 
+      </div>
     
-    <q-select
-      float-label="Mês"
-      v-model="mes"
-      :options="meses"
-      @change="getCaixaMes"
-    />
+    
+    </div>
     
     <div id="table">
         <table class="q-table" :class="computedClasses" style="margin-left:1px">
@@ -118,6 +134,10 @@ export default {
           }
       ],
       mes: '',
+      anos: [
+        {label: '2017', value: 2017}
+      ],
+      ano: '',
         
       //tabela
       misc: 'highlight', //[{value: 'bordered'},{value: 'highlight'}]
@@ -149,19 +169,26 @@ export default {
         classes.push(this.gutter)
       }
       return classes
-    }
+    },
+    
   },
   methods: {
     goBack(){
         window.history.back()
     },
     getCaixaMes(){
+      
+      let ano = ''
+      if(this.ano){
+        ano = '&ano=' + this.ano
+      }
+      
       Loading.show({
           spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Aguardando Dados...'
       })
-      axios.get(API + 'caixa/obterCaixaMes?Mes=' + this.mes)
+      axios.get(API + 'caixa/obterCaixaMes?Mes=' + this.mes + ano)
       .then((res)=>{
         //console.log(res.data)
         this.caixa = res.data
