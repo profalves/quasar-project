@@ -283,6 +283,7 @@ export default {
         this.desc = ''
     },
     excluir(item, index) {
+      console.log(item)
       item.excluido = true
       Dialog.create({
         title: '<i class="material-icons text-negative">warning</i> Atenção!',
@@ -305,7 +306,7 @@ export default {
                   message: 'Excluindo tabela...'
               })
 
-              axios.post(API + 'produto/gravarTabPrecoCab', item)
+              axios.get(API + 'produto/excluirPromocaoPorCliente?codTabela=' + item.codigo)
                 .then((res)=>{
                   Loading.hide()
                   console.log(res)

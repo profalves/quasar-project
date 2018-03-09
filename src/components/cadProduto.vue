@@ -272,13 +272,13 @@
     
     <div class="row">
         <div class="col-sm-12 col-md-4" v-if="permissoes.ret_VerCusto">
+          
             <q-card color="faded">
             <center>
                 <q-card-title>Custo</q-card-title>
                     <money v-model="CadProduto.produto.custo"
                            v-bind="money"
                            class="boxInput"
-                           @blur="calcML"
                     />
             </center>
             </q-card>
@@ -300,7 +300,7 @@
             <q-card color="positive" >
               <center>
                 <q-card-title>Venda</q-card-title>
-                    <money v-model="valorVenda"
+                    <money v-model="CadProduto.produto.valor"
                            v-bind="money"
                            class="boxInput"
                     />
@@ -312,7 +312,7 @@
     
     <q-list style="background-color: white;
                    margin-top: 20px" no-border>
-      <!--<q-collapsible icon="monetization_on" label="Tabela de Preço">
+      <q-collapsible icon="monetization_on" label="Tabela de Preço"> 
           <div class="row" id="table">    
               <table class="q-table" :class="computedClasses">
                 <thead>
@@ -327,10 +327,10 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="(item, index) in tabPreco" :key="index">
+                  <tr v-for="(item, index) in tabelaPreco" :key="index">
                     <td class="text-left">{{ item.nome }}</td>
                     <td class="text-left">
-                      <money v-model="tabPreco[index].ml"
+                      <money v-model="item.ml"
                              v-bind="perc"
                              class="mdInput"
                       />  
@@ -339,10 +339,10 @@
                       <money v-model="CadProduto.precos[index].valor"
                              v-bind="money"
                              class="mdInput"
-                      />  
+                      />
                     </td>
                     <td class="text-left">
-                      <money v-model="tabPreco[index].mLminima"
+                      <money v-model="item.mLminima"
                              v-bind="perc"
                              class="mdInput"
                       />  
@@ -351,7 +351,7 @@
                       <money v-model="CadProduto.precos[index].valorMinimo"
                              v-bind="money"
                              class="mdInput"
-                      />  
+                      /> 
                     </td>
                     <td class="text-center">
                       <a @click="" color="info"><i class="material-icons fa-2x">mode_edit</i></a>   
@@ -364,7 +364,9 @@
               </table>
           </div>
 
-      </q-collapsible>-->
+         
+
+      </q-collapsible>
       
       <q-collapsible icon="compare_arrows" label="Ajustes de Estoque" v-if="visivel && permissoes.movimentaEstoqueES">
         <div class="row">
@@ -966,9 +968,13 @@ export default {
     valorVenda(){
       let valor = this.CadProduto.produto.custo + (this.CadProduto.produto.custo*(this.CadProduto.produto.percLucro/100))
       this.CadProduto.precos[1].valor = valor
+      this.CadProduto.produto.valor = valor
       return valor
         
     },
+    tabelaPreco(){
+      return this.tabPreco.slice(0,2)
+    }
     
   },
   methods: {
@@ -988,6 +994,10 @@ export default {
         
         this.CadProduto.produto.nome = this.nome
         
+        this.CadProduto.precos[1].valor = this.CadProduto.produto.valor
+      
+        
+        
         Loading.show({
           spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
@@ -1004,6 +1014,7 @@ export default {
             console.log(res.data)
             console.log(res.response)
             console.log('sucesso')
+            this.todosProdutos()
             this.$router.push('produtos')
           })
           .catch((e)=>{
@@ -1361,7 +1372,7 @@ export default {
           .then((res)=>{
             Loading.hide()
             this.produtos = res.data
-            //console.log(res)
+            localforage.setItem('Produtos', res.data)
           })
           .catch((e)=>{
             Loading.hide()
@@ -1636,7 +1647,10 @@ export default {
         })
     },
     calcML(){
-      console.log(this.CadProduto.custo)
+      
+      let valor = this.CadProduto.produto.custo + (this.CadProduto.produto.custo*(this.CadProduto.produto.percLucro/100))
+      this.CadProduto.precos[1].valor = valor
+      this.CadProduto.produto.valor = valor
     },
     ajustarEstoque(){
       Loading.show()
@@ -1664,6 +1678,10 @@ export default {
     }
    
   },
+  beforeUpdate(){
+    this.calcML()
+  },
+  
   mounted(){
     localforage.getItem('usuario').then((value) => {
         if(value){
@@ -1787,8 +1805,7 @@ export default {
     }) 
     
 
-  }
- 
+  },
 }
 </script>
 

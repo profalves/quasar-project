@@ -232,20 +232,20 @@ export default {
         //let v = '' // usando ip no value
         let a = ''
 
-        for (let i=0; i < localStorage.length; i++) {
-            if(localStorage.getItem('Empresa'+i)){
-                l = localStorage.getItem('Empresa'+i)   
-            }
-            /*if(localStorage.getItem('ip'+i) && localStorage.getItem('ip'+i)){
-                v = localStorage.getItem('ip'+i)    
-            }*/
-            if(l !== '' && a !== l){
-                lista.push({
-                    label: l,
-                    value: i // ou 'v' se for setar por IP
-                })
-            }
-            a = l 
+        for (let i in localStorage) {
+          if(localStorage.getItem('Empresa'+i)){
+              l = localStorage.getItem('Empresa'+i)   
+          }
+          /*if(localStorage.getItem('ip'+i) && localStorage.getItem('ip'+i)){
+              v = localStorage.getItem('ip'+i)    
+          }*/
+          if(l !== '' && a !== l){
+              lista.push({
+                  label: l,
+                  value: i // ou 'v' se for setar por IP
+              })
+          }
+          a = l 
         }
         
         return lista
@@ -258,6 +258,7 @@ export default {
           label: row.nomeFantasia, 
           value: {
             db: row.databaseName,
+            ip: row.ipBancoDados,
             nome: row.nomeFantasia,
           }
       }))
@@ -529,7 +530,8 @@ export default {
       })
       axios.post(API + 'estoque/TransferirEstoque', [
         transferencias,
-        this.dest, //nome do Config = "databaseName": "CC",
+        this.dest.db, //nome do Config = "databaseName"
+        this.dest.ip, //nome do Config = "ipbancodados"
       ])
       .then((res)=>{
         Loading.hide()

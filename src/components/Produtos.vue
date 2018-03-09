@@ -864,7 +864,6 @@ export default {
       this.$router.push('/cadproduto')
     },
     abrir(){
-      
       localStorage.setItem('codProduto', this.produto.codigo)
       console.log('codProduto', this.listaProdutos.codigo)
       

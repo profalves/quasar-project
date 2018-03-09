@@ -122,7 +122,24 @@
           </q-card-main>
           <q-card-separator />
           <q-card-actions>
-            <q-btn color="primary" rounded small @click="lancarPromocao(promo)">lançar promoção</q-btn>
+            <div class="row">
+              <div class="col-auto">
+                <q-btn color="primary" 
+                       rounded small 
+                       @click="lancarPromocao(promo)"
+                       style="margin-top: 10px"
+                       >lançar promoção</q-btn>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-auto offset-md-2">
+                <q-btn color="negative" 
+                       rounded small 
+                       @click="deletarPromocao(promo)"
+                       style="margin-top: 10px"
+                       >remover promoção</q-btn>
+              </div>
+            </div> 
           </q-card-actions>
         </q-card>
       </div>
@@ -233,7 +250,7 @@ export default {
         axios.get(API + 'produto/obterProdutosPromocao?' +
                   fam + cat + marca + produto + promo)
         .then((res)=>{
-          //console.log(res)
+          console.log(res)
           this.produtos = res.data
           this.opened = false
           Loading.hide()
@@ -281,6 +298,46 @@ export default {
                   Loading.hide()
                   console.log(e.response)
                 })
+              }
+            }
+          ]
+        })
+      },
+      deletarPromocao(promo){
+        Dialog.create({
+          title: 'Deseja remover o produto ' + promo.produto + ' da promoção?',
+          message: 'Valor Atual: R$ ' + promo.precoNormal.toFixed(2) + '<br />' +
+                   'Valor Promocional: R$ ' + promo.precoPromo.toFixed(2),
+          buttons: [
+            {
+              label: 'cancelar',
+              color: 'negative',
+              raised: true,
+              handler: () => { return }
+            },
+            {
+              label: 'Ok',
+              color: 'positive',
+              raised: true,
+              handler: () => {
+                Loading.show({
+                  spinner: FulfillingBouncingCircleSpinner,
+                  spinnerSize: 140,
+                  message: 'Cadastrando preço promocional...'
+                })
+                axios.get(API + 'produto/gravarProdutoPromocao?codigoProduto=' + promo.codigo +
+                                '&Preco=0' + 
+                                '&CodigoUsuario=' + localStorage.getItem('codUser'))
+                .then((res)=>{
+                  //console.log(res)
+                  Loading.hide()
+                  this.getPromocoes()
+                })
+                .catch((e)=>{
+                  Loading.hide()
+                  console.log(e.response)
+                })
+                
               }
             }
           ]
