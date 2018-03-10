@@ -17,6 +17,10 @@
         7Virtual Gestor
         <div slot="subtitle">{{ Empresa }}</div>
       </q-toolbar-title>
+      
+      <q-btn flat @click="blockScreen" v-if="visivel">
+        <q-icon name="block" />
+      </q-btn>
       <q-btn flat @click="toggleFullscreen" v-if="visivel">
         <q-icon name="fullscreen" />
       </q-btn>
@@ -42,9 +46,16 @@
   </div>
 </template>
 <script>
-import { openURL, AppFullscreen, event } from 'quasar'
+import { openURL, AppFullscreen, event, Toast, Dialog, Loading } from 'quasar'
 import menuLeft from './components/menu.vue'
 import mobileLeft from './components/side.vue'
+import axios from 'axios'
+    
+//dev
+let API = localStorage.getItem('wsAtual')
+//debug
+//const API = 'http://192.168.0.200:29755/'
+  
 export default {
   name: 'index',
   components: {
@@ -91,6 +102,52 @@ export default {
     closeNav() {
       this.open = false
       document.getElementById("sidenav").style.width = "0";
+    },
+    blockScreen(){
+      Dialog.create({
+        title: 'Login',
+        message: 'Faça login para desbloquear a tela',
+        noBackdropDismiss: true,
+        noEscDismiss: true,
+        form: {
+          user: {
+            type: 'text',
+            label: 'Usuário',
+            model: ''
+          },
+          pass: {
+            type: 'password',
+            label: 'Senha',
+            model: ''
+          }
+        },
+        buttons: [
+          {
+            label: 'Desbloquear',
+            raised: true,
+            color: 'primary',
+            handler: (data) => {
+              Loading.show()
+              axios.get(API + 'usuario/obterUsuario?usuario='+ data.user + '&senha=' + data.pass)
+              .then((res)=>{
+                Loading.hide()
+                console.log(res)
+                return
+              })
+              .catch((e)=>{
+                Loading.hide()
+                this.blockScreen()
+                Toast.create.negative({
+                  html: e.response.data[0].value
+
+                })
+                console.log(e.response)
+              })
+              
+            }
+          }
+        ]
+      })  
     }
   },
   beforeUpdate(){

@@ -37,8 +37,18 @@
                v-if="checked === false"
                @click="alertaAoFechar"
                >fechar este caixa
-        </q-btn><br><br>
-
+        </q-btn>
+        <!--
+        <q-btn color="primary"
+               rounded
+               @click="pdf"
+               >imprimir este caixa
+        </q-btn>
+        -->  
+        <br><br>
+        
+        <div ref="lista">
+          
         <q-list style="background-color: white">
           <q-list-header>Fechamento do Caixa</q-list-header>
           <q-item>
@@ -226,10 +236,13 @@
             </q-item-main>
           </q-item>
         </q-list> 
+          
+        </div>
 
         </div>
+      
     </div>
-    <br><br><br> 
+    <br><br><br><br> 
     
   </div>
 </template>
@@ -239,8 +252,13 @@ import axios from 'axios'
 import { Dialog, Loading } from 'quasar'
 import bar from './charts/Bar2.js' 
 import { FulfillingBouncingCircleSpinner } from 'epic-spinners'
-    
+
+//const $ = require("jquery")
+import JsPDF from 'jspdf'
+
 const API = localStorage.getItem('wsAtual')
+
+import html from './html.js'
   
 //debug
 //const API = 'http://192.168.0.200:29755/' 
@@ -248,6 +266,7 @@ const API = localStorage.getItem('wsAtual')
 export default {
   data () {
     return {
+        html,
         caixa: [],
         idCaixa: '',
         caixaLabel: 'Caixas Abertos',
@@ -661,7 +680,50 @@ export default {
         Loading.hide()
       })
     
-    }
+    },
+    pdf() {
+      let doc = new JsPDF('p', 'pt', 'a4')
+      // source can be HTML-formatted string, or a reference
+      // to an actual DOM element from which the text will be scraped.
+      //let source = this.$refs.lista.innerHTML //document.getElementById('lista').innerHTML
+      //let source = $('#lista').get(0).innerHTML
+      //let source = this.html.src
+      let source = '<h1>7Virtual</h1>'
+      console.log('source', source);
+      console.log('tipo source:', typeof source);
+      
+      // we support special element handlers. Register them with jQuery-style 
+      // ID selector for either ID or node name. ("#iAmID", "div", "span" etc.)
+      // There is no support for any other type of selectors 
+      // (class, of compound) at this time.
+      let specialElementHandlers = {
+          // element with id of "bypass" - jQuery style selector
+          'table': function (element, renderer) {
+              // true = "handled elsewhere, bypass text extraction"
+              return true
+          }
+      };
+      let margins = {
+          top: 30,
+          bottom: 30,
+          left: 20,
+          width: 900
+      };
+      // all coords and widths are in jsPDF instance's declared units
+      // 'inches' in this case
+      doc.fromHTML(
+          source.toString(), // HTML string or DOM elem ref.
+          margins.left, // x coord
+          margins.top, { // y coord
+              'width': margins.width, // max width of content on PDF
+              'elementHandlers': specialElementHandlers
+      })
+      
+      //doc.text('This is a test', 10, 10)
+      
+      
+      doc.save('Test.pdf');
+    },
   },
   created(){
     let t = this
@@ -671,7 +733,7 @@ export default {
 }
 </script>
 
-<style >
+<style scoped>
     .bold{
         font-weight: bold
     }
