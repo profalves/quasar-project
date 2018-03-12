@@ -257,7 +257,7 @@
               </q-list>
               
             </q-collapsible>
-            <!-- Notificações -->
+            <!-- Notificações --
             <q-collapsible icon="notifications" label="Notificações" sublabel="Configurações de exibição de Notificações no sistema">
               <div>
                <q-list link no-border>
@@ -314,7 +314,7 @@
                </q-list>
                  
               </div>
-            </q-collapsible>
+            </q-collapsible>-->
             <!-- BUSCAS -->
             <q-collapsible icon="search" label="Buscas" sublabel="Configurações de buscas (Pessoas e Produtos)">
                 <q-list link no-border>

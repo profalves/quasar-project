@@ -315,10 +315,12 @@
             </div>
           </div>
         </div>
+        <!--
         <div class="layout-view">
           <p class="total">Seu saldo: <strong>R$ 0,00</strong>
           </p>
         </div>
+        -->
       </q-collapsible>
       <!-- Estoque Mínimo -->
       <q-collapsible :opened="expandEstoque" icon="system_update_alt" label="Estoque Mínimo" :sublabel="estoqueMin">
