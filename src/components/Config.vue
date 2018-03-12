@@ -51,8 +51,11 @@
                 </q-item>
                 <q-item-separator />
                 <q-list-header>Vendas</q-list-header>
+                <q-item>
+                  <q-checkbox v-model="expandVendas" label="Trazer expandido" @change="expVendas" />
+                </q-item>
                 <div style="margin-left: 15px">
-                  <strong>Configuração da Exibição dos Relógios</strong>
+                  <strong>Configuração da Exibição dos Relógios (Gauges)</strong>
                 </div>
                 <q-item>
                   <q-item-main>
@@ -235,6 +238,21 @@
                     <q-checkbox v-model="editMeta"
                                 @change="setEditMeta"/>
                   </q-item-side>
+                </q-item>
+                <q-item-separator />
+                <q-list-header>Contas</q-list-header>
+                <q-item>
+                  <q-checkbox v-model="expandContas" label="Trazer expandido" @change="expContas" />
+                </q-item>
+                <q-item-separator />
+                <q-list-header>Estoque Mínimo</q-list-header>
+                <q-item>
+                  <q-checkbox v-model="expandEstoque" label="Trazer expandido" @change="expEstoque" />
+                </q-item>
+                <q-item-separator />
+                <q-list-header>Aniversários</q-list-header>
+                <q-item>
+                  <q-checkbox v-model="expandNivers" label="Trazer expandido" @change="expNivers" />
                 </q-item>
               </q-list>
               
@@ -744,6 +762,10 @@ export default {
       quaseMes: parseInt(localStorage.getItem('quaseMes')),
       tmPerc: parseInt(localStorage.getItem('tmPerc')),
       tetoMes: parseInt(localStorage.getItem('tetoMes')),
+      expandVendas: (localStorage.getItem('expandVendas') === 'true'),
+      expandContas: (localStorage.getItem('expandContas') === 'true'),
+      expandEstoque: (localStorage.getItem('expandEstoque') === 'true'),
+      expandNivers: (localStorage.getItem('expandNivers') === 'true'),
       
       //buscas
       maxResults: parseInt(localStorage.getItem('maxResults')),
@@ -933,7 +955,19 @@ export default {
       this.tmPerc = Math.round(((this.tetoMes/this.metaMes)*100)/2)
       localStorage.setItem('tmPerc', this.tmPerc);
     },
-     
+    expVendas(){
+      localStorage.setItem('expandVendas', this.expandVendas)
+    },
+    expContas(){
+      localStorage.setItem('expandContas', this.expandContas)
+    },
+    expEstoque(){
+      localStorage.setItem('expandEstoque', this.expandEstoque)
+    },
+    expNivers(){
+      localStorage.setItem('expandNivers', this.expandNivers)
+    },
+    
     //notificações
     solicitarNotificacoes(){
         if (!("Notification" in window)) {

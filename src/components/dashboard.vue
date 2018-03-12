@@ -52,7 +52,7 @@
         </div>
       </q-collapsible>
       <!-- Vendas -->
-      <q-collapsible opened icon="fa-handshake-o" label="Vendas" :sublabel="feedVendas">
+      <q-collapsible :opened="expandVendas" icon="fa-handshake-o" label="Vendas" :sublabel="feedVendas">
         <q-item v-if="permissoes.acessaFinanceiro">
           <q-item-main class="text-right">Ver Venda/Lucro</q-item-main>
           <q-item-side right icon="more_vert">
@@ -236,7 +236,7 @@
         </q-list>
       </q-collapsible>
       <!-- Contas -->
-      <q-collapsible opened v-if="permissoes.acessaFinanceiro" icon="insert_chart" label="Contas" :sublabel="feedContas">
+      <q-collapsible :opened="expandContas" v-if="permissoes.acessaFinanceiro" icon="insert_chart" label="Contas" :sublabel="feedContas">
         <div class="layout-view">
           <div class="row">
             <div class="col-md-5 col-xs-12"
@@ -321,7 +321,7 @@
         </div>
       </q-collapsible>
       <!-- Estoque Mínimo -->
-      <q-collapsible opened icon="system_update_alt" label="Estoque Mínimo" :sublabel="estoqueMin">
+      <q-collapsible :opened="expandEstoque" icon="system_update_alt" label="Estoque Mínimo" :sublabel="estoqueMin">
         
         <q-list highlight v-if="produtos.length>0">
           <!--<q-list-header>Ordem de Compra</q-list-header>-->
@@ -348,7 +348,7 @@
         
       </q-collapsible>
       <!-- Lista de Aniversariantes -->
-      <q-collapsible icon="view_list" label="Lista de Aniversariantes" :sublabel="aniversariantes">
+      <q-collapsible :opened="expandNivers" icon="view_list" label="Lista de Aniversariantes" :sublabel="aniversariantes">
           <q-list highlight no-border v-if="visivel">
             <q-list-header>Aniversariantes</q-list-header>
             <q-item v-for="(item, index) in nivers" :key="index">
@@ -380,7 +380,6 @@
           </q-list>
       </q-collapsible>
     </q-list>
-    <br><br><br>
     
     <q-modal minimized ref="telModal">
         <div>
@@ -537,7 +536,7 @@
       
     </q-modal>
     
-    <footer slot="footer" color="black" v-if="$route.path !== '/login' && !$route.query.config">
+    <footer slot="footer" color="black">
       <center>
         Obrigado por usar <a href="http://7virtual.com.br/" target="_blank">7Virtual</a> Sistemas
       </center>
@@ -598,6 +597,7 @@
         tempo: '',
         
         //vendas
+        expandVendas: (localStorage.getItem('expandVendas') === 'true'),
         lucro: false,
         min: 0,
         maxDia: parseInt(localStorage.getItem('tetoDia')),
@@ -637,6 +637,7 @@
         },
         
         //Aniversariantes
+        expandNivers: (localStorage.getItem('expandNivers') === 'true'),
         nivers: '',
         pessoa: '',
         visivel: false,
@@ -652,6 +653,7 @@
         gutter: 'none', // compact, loose
         
         //contas
+        expandContas: (localStorage.getItem('expandContas') === 'true'),
         desp: [],
         recs: [],
         vencimento: hoje,
@@ -676,6 +678,7 @@
         conta: '',
         
         //estoque minimo
+        expandEstoque: (localStorage.getItem('expandEstoque') === 'true'),
         produtos: [],
         estoque: '',
         ordem: false,
