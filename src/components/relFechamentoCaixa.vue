@@ -258,15 +258,12 @@ import JsPDF from 'jspdf'
 
 const API = localStorage.getItem('wsAtual')
 
-import html from './html.js'
-  
 //debug
 //const API = 'http://192.168.0.200:29755/' 
 
 export default {
   data () {
     return {
-        html,
         caixa: [],
         idCaixa: '',
         caixaLabel: 'Caixas Abertos',

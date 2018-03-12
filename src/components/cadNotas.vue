@@ -643,17 +643,19 @@
             
             <div class="row">
                 <div class="col">
-                    <q-field>
+                    <q-field
+                      helper="Fator de Conversão"         
+                    >
                         <q-input
-                            float-label="Fator de Conversão"
                             v-model.number="item.fator"   
                         />
                     </q-field>
                 </div>
                 <div class="col">
-                    <q-field>
+                    <q-field
+                      helper="Unidade de Medida"         
+                    >
                         <q-select
-                            float-label="Unidade de Medida"
                             filter
                             v-model="detItem.unMedCom"
                             :options="listaMedidas"
@@ -666,15 +668,17 @@
             
             
             <div class="row">
-                <div class="col">
-                    <q-field>
+                <div class="col-6">
+                    <q-field
+                      helper="Quantidade"
+                      style="margin-top: 26px"
+                    >
                         <q-input
-                            float-label="Quantidade"
-                            v-model="detItem.qtd"   
+                            v-model="detItem.qtd"
                         />
                     </q-field>
                 </div>
-                <div class="col">
+                <div class="col-6">
                     <q-field
                         helper="Custo"
                     >
@@ -690,7 +694,7 @@
             </div>
             
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-6">
                     <q-field
                         helper="Desconto"
                     >
@@ -700,7 +704,7 @@
                         />
                     </q-field>
                 </div>
-                <div class="col-md-6">
+                <div class="col-6">
                     <q-field
                         helper="Frete"
                     >
@@ -713,7 +717,7 @@
             </div>
             
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-6">
                     <q-field
                         helper="Seguro"
                     >
@@ -723,7 +727,7 @@
                         />
                     </q-field>
                 </div>
-                <div class="col-md-6">
+                <div class="col-6">
                     <q-field
                         helper="Outros Custos"
                     >
@@ -737,17 +741,18 @@
             
             <div class="row">
                 
-                <div class="col-md-6">
-                    <q-field>
+                <div class="col-6">
+                    <q-field
+                      helper="Aliq. IPI (%)"         
+                    >
                         <q-input
-                            float-label="Aliq. IPI (%)"
                             v-model="item.AliqIPI"
                             suffix="%"
                             style="padding-right: 20px"
                         />
                     </q-field>
                 </div>
-                <div class="col-md-6">
+                <div class="col-6">
                     <q-field
                         helper="IPI"
                              >

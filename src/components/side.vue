@@ -15,12 +15,33 @@
           <q-item-side icon="flag" />
           <q-item-main label="Inicio" />
         </q-item>
-        <q-item to="/clientes">
-          <q-item-side icon="people" />
-          <q-side-link to="/clientes" class="link">
-              <q-item-main label="Pessoas" sublabel="Cadastros de clientes, fornecedores, etc." />
-          </q-side-link>
-        </q-item>
+        <q-collapsible icon="people" label="Pessoas" sublabel="Listagem e Cadastro de clientes, fornecedores, etc.">
+          <q-list highlight no-border>
+            <q-item @click="novoCliente">
+              <q-item-main label="Novo Cadastro" sublabel="Criar e editar cadastro de Pessoas" />
+            </q-item>
+            <q-item>
+              <q-side-link to="/clientes">
+                <q-item-main label="Localizar Pessoas" sublabel="Listagem e Busca de Pessoas" />
+              </q-side-link>
+            </q-item>
+            <q-item>
+              <q-side-link to="/promoClientes">
+                <q-item-main label="Promoções para Clientes" sublabel="Cadastro de Promoções de compras acima de um certo valor" />
+              </q-side-link>
+            </q-item>
+            <q-item>
+              <q-side-link to="/nivers">
+                <q-item-main label="Aniversariantes" sublabel="Lista de Aniversariantes e seus contatos por cada mês" />
+              </q-side-link>
+            </q-item>
+            <!--<q-item>
+              <q-side-link to="/">
+                <q-item-main label="Whatsapp" sublabel="Mensagens para compartilhar em suas listas de transmissão" />
+              </q-side-link>
+            </q-item>-->
+          </q-list>  
+        </q-collapsible>
         <q-item to="/produtos" v-if="!permissoes.pdV_PermitirTransfProduto && !permissoes.ret_AlteraTabPreco">
           <q-item-side icon="assignment_turned_in" />
           <q-side-link to="/produtos" class="link">
@@ -46,7 +67,6 @@
             </q-item>
           </q-list>  
         </q-collapsible>
-        
         <q-item to="/contas" v-if="permissoes.acessaFinanceiro">
           <q-item-side icon="account_balance_wallet"/>
           <q-side-link to="/contas" class="link">
@@ -145,6 +165,10 @@ export default {
             console.log(err)
             console.log('fail')
         })
+    },
+    novoCliente(){
+      localStorage.setItem('cadMode', 'save')
+      this.$router.push('/cadcliente')
     },
     sair(){
         window.close()
