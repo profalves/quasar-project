@@ -1560,7 +1560,9 @@ export default {
     Notification.requestPermission()
   },
   beforeRouteLeave(to, from, next){
-    this.setWS()
+    if(this.bancosDados.length === 1){
+      this.setWS()
+    }
     next()
   },
   

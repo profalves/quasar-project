@@ -6,7 +6,7 @@
     view="lHh Lpr fff"
     :left-class="{'bg-grey-2': true}"
   >      
-    <q-toolbar slot="header" color="black" v-if="$route.path !== '/login' && !$route.query.config">
+    <q-toolbar slot="header" color="black" v-if="$route.path !== '/login' && !$route.query.config && !print">
       <q-btn flat @click="$refs.layout.toggleLeft()" v-if="visivel">
         <q-icon name="menu" />
       </q-btn>
@@ -25,11 +25,11 @@
         <q-icon name="fullscreen" />
       </q-btn>
     </q-toolbar>
-    <menuLeft slot="left" v-if="$route.path !== '/login' && !$route.query.config && visivel"></menuLeft>
+    <menuLeft slot="left" v-if="$route.path !== '/login' && !$route.query.config && visivel && !print"></menuLeft>
     <mobileLeft id="sidenav"
                 class="sidenav"
                 style="z-index: 6"
-                v-if="$route.path !== '/login' && !$route.query.config && !visivel"></mobileLeft>
+                v-if="$route.path !== '/login' && !$route.query.config && !visivel && !print"></mobileLeft>
     <!--
     <q-fixed-position class="fixo" corner="top-left" :offset="[5, 5]" v-if="open">
       <q-btn 
@@ -68,7 +68,8 @@ export default {
       open: false,
       visivel: true,
       Empresa: localStorage.getItem('nomeEmpresa'),
-      route: ''
+      route: '',
+      print: (localStorage.getItem('print') === 'true')
     }
   },
   methods: {
@@ -104,6 +105,8 @@ export default {
       document.getElementById("sidenav").style.width = "0";
     },
     blockScreen(){
+      localStorage.setItem('blockScreen', true)
+      
       Dialog.create({
         title: 'Login',
         message: 'Faça login para desbloquear a tela',
@@ -132,7 +135,8 @@ export default {
               .then((res)=>{
                 Loading.hide()
                 console.log(res)
-                return
+                localStorage.setItem('blockScreen', false)
+                //return
               })
               .catch((e)=>{
                 Loading.hide()
@@ -189,6 +193,11 @@ export default {
         this.closeNav()
       }
     }) 
+  },
+  created(){
+    if(localStorage.getItem('blockScreen') === 'true'){
+      this.blockScreen()
+    }
   }
 }
 </script>
@@ -270,5 +279,18 @@ export default {
     overflow-x: hidden;
     transition: 0.5s;
     padding-top: 60px;
+  }
+  @media print {
+    body * {
+      visibility: hidden;
+    }
+    #printable, #printable * {
+      visibility: visible;
+    }
+    #printable {
+      position: fixed;
+      left: 0;
+      top: 0;
+    }
   }
 </style>

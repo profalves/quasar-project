@@ -1069,30 +1069,31 @@
               console.log('fail')
           })     
         }
-        if(this.desp.length>0 && this.recs.length>0) return
-        Loading.show({
-            spinner: FulfillingBouncingCircleSpinner,
-            spinnerSize: 140,
-            message: 'Aguardando Dados...'
-        })
-        axios.get(API + 'conta/obterContas?tipo=cp')
-        .then((res)=>{
-            //console.log(res)
-            this.desp = res.data
-        })
-        .catch((e)=>{
-          console.log(e)
-          Loading.hide()
-        })
-        axios.get(API + 'conta/obterContas?tipo=cr')
-        .then((res)=>{
-            //console.log(res)
-            this.recs = res.data
-        })
-        .catch((e)=>{
-          console.log(e)
-          Loading.hide()
-        })
+        else{
+          Loading.show({
+              spinner: FulfillingBouncingCircleSpinner,
+              spinnerSize: 140,
+              message: 'Aguardando Dados...'
+          })
+          axios.get(API + 'conta/obterContas?tipo=cp')
+          .then((res)=>{
+              //console.log(res)
+              this.desp = res.data
+          })
+          .catch((e)=>{
+            console.log(e)
+            Loading.hide()
+          })
+          axios.get(API + 'conta/obterContas?tipo=cr')
+          .then((res)=>{
+              //console.log(res)
+              this.recs = res.data
+          })
+          .catch((e)=>{
+            console.log(e)
+            Loading.hide()
+          })
+        }
         if(this.desp.length>0 && this.recs.length>0) Loading.hide()
       },
       baixar(d){
@@ -1170,8 +1171,6 @@
         axios.get(API + 'relatorio/obterTotalVendas?mesAtual=true')
         .then((res)=>{
           this.vendasMes = res.data
-          console.log('vendas do mês:', this.vendasMes)
-          console.log('vendas mês tipo:', typeof res.data)
           Loading.hide()
         })
         .catch((e)=>{

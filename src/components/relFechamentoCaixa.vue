@@ -2,7 +2,7 @@
   <div>
     <h5>Caixa</h5>
     <!-- Botão flutuante -->
-    <q-fixed-position class="fixo" corner="bottom-left" :offset="[18, 18]">
+    <q-fixed-position class="fixo" corner="bottom-left" :offset="[18, 18]" v-if="!print">
         <q-btn 
            round
            color="primary" 
@@ -14,42 +14,44 @@
     <div class="row">
         <div class="col-xl-6">
         
-        <q-select
-          filter
-          :float-label="caixaLabel"
-          v-model="idCaixa"
-          :options="listaCaixas"
-          @change="getFechamento"
-        />
-        
-        <q-checkbox
-          v-model="checked"
-          color="primary"
-          left-label
-          label="Obter Caixas Fechados"
-          @change="obterCaixasFechados"
-          style="margin-bottom: 30px"
-        /><br />
-        
-        
-        <q-btn color="primary"
-               rounded
-               v-if="checked === false"
-               @click="alertaAoFechar"
-               >fechar este caixa
-        </q-btn>
-        <!--
-        <q-btn color="primary"
-               rounded
-               @click="pdf"
-               >imprimir este caixa
-        </q-btn>
-        -->  
+        <div v-if="!print">
+          <q-select
+            filter
+            :float-label="caixaLabel"
+            v-model="idCaixa"
+            :options="listaCaixas"
+            @change="getFechamento"
+          />
+
+          <q-checkbox
+            v-model="checked"
+            color="primary"
+            left-label
+            label="Obter Caixas Fechados"
+            @change="obterCaixasFechados"
+            style="margin-bottom: 30px"
+          /><br />
+
+
+          <q-btn color="primary"
+                 rounded
+                 v-if="checked === false && relFechamento"
+                 @click="alertaAoFechar"
+                 >fechar este caixa
+          </q-btn>
+
+          <q-btn color="primary"
+                 rounded
+                 @click="pdf"
+                 v-if="relFechamento"
+                 >imprimir este caixa
+          </q-btn>
+
+        </div>
         <br><br>
         
-        <div ref="lista">
           
-        <q-list style="background-color: white">
+        <q-list id="printable" style="background-color: white" v-if="relFechamento">
           <q-list-header>Fechamento do Caixa</q-list-header>
           <q-item>
             <q-item-side icon="attach_money" />
@@ -238,8 +240,6 @@
         </q-list> 
           
         </div>
-
-        </div>
       
     </div>
     <br><br><br><br> 
@@ -252,9 +252,8 @@ import axios from 'axios'
 import { Dialog, Loading } from 'quasar'
 import bar from './charts/Bar2.js' 
 import { FulfillingBouncingCircleSpinner } from 'epic-spinners'
-
 //const $ = require("jquery")
-import JsPDF from 'jspdf'
+//import JsPDF from 'jspdf'
 
 const API = localStorage.getItem('wsAtual')
 
@@ -264,27 +263,28 @@ const API = localStorage.getItem('wsAtual')
 export default {
   data () {
     return {
-        caixa: [],
-        idCaixa: '',
-        caixaLabel: 'Caixas Abertos',
-        checked: false,
-        abertos: true,
-        relFechamento: [],
-        nomeUsuario: '',
-        numeroCaixa: '',
-        periodo: '',
-        status: '',
-        view: '',
-        canGoBack: window.history.length > 1,
-        
-        data: { // gráfico
-          labels:  [],
-          datasets: []
-        },
-        visivel: false,
-        width: 100,
-        height: parseInt(localStorage.getItem('alturaGrafico')),
-        tipo: '',
+      caixa: [],
+      idCaixa: '',
+      caixaLabel: 'Caixas Abertos',
+      checked: false,
+      abertos: true,
+      relFechamento: '',
+      nomeUsuario: '',
+      numeroCaixa: '',
+      periodo: '',
+      status: '',
+      view: '',
+      canGoBack: window.history.length > 1,
+
+      data: { // gráfico
+        labels:  [],
+        datasets: []
+      },
+      visivel: false,
+      width: 100,
+      height: parseInt(localStorage.getItem('alturaGrafico')),
+      tipo: '',
+      print: (localStorage.getItem('print') === 'true')
     }
   },
   components: {
@@ -678,48 +678,8 @@ export default {
       })
     
     },
-    pdf() {
-      let doc = new JsPDF('p', 'pt', 'a4')
-      // source can be HTML-formatted string, or a reference
-      // to an actual DOM element from which the text will be scraped.
-      //let source = this.$refs.lista.innerHTML //document.getElementById('lista').innerHTML
-      //let source = $('#lista').get(0).innerHTML
-      //let source = this.html.src
-      let source = '<h1>7Virtual</h1>'
-      console.log('source', source);
-      console.log('tipo source:', typeof source);
-      
-      // we support special element handlers. Register them with jQuery-style 
-      // ID selector for either ID or node name. ("#iAmID", "div", "span" etc.)
-      // There is no support for any other type of selectors 
-      // (class, of compound) at this time.
-      let specialElementHandlers = {
-          // element with id of "bypass" - jQuery style selector
-          'table': function (element, renderer) {
-              // true = "handled elsewhere, bypass text extraction"
-              return true
-          }
-      };
-      let margins = {
-          top: 30,
-          bottom: 30,
-          left: 20,
-          width: 900
-      };
-      // all coords and widths are in jsPDF instance's declared units
-      // 'inches' in this case
-      doc.fromHTML(
-          source.toString(), // HTML string or DOM elem ref.
-          margins.left, // x coord
-          margins.top, { // y coord
-              'width': margins.width, // max width of content on PDF
-              'elementHandlers': specialElementHandlers
-      })
-      
-      //doc.text('This is a test', 10, 10)
-      
-      
-      doc.save('Test.pdf');
+    pdf(){
+      window.print()
     },
   },
   created(){
@@ -731,21 +691,22 @@ export default {
 </script>
 
 <style scoped>
-    .bold{
-        font-weight: bold
-    }
-    .fixo{
-        z-index: 5
-    }
-    .isNegative{
-        color: red;
-        font-weight: bold
-    }
-    .isPositive{
-        color: limegreen;
-        font-weight: bold
-    }
-    table{
-       margin-left: -15px
-    }    
+  .bold{
+      font-weight: bold
+  }
+  .fixo{
+      z-index: 5
+  }
+  .isNegative{
+      color: red;
+      font-weight: bold
+  }
+  .isPositive{
+      color: limegreen;
+      font-weight: bold
+  }
+  table{
+     margin-left: -15px
+  } 
+  
 </style>

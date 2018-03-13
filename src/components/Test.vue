@@ -1,5 +1,7 @@
 <template>
   <div id="testes">
+    
+    <q-btn color="dark" @click="refresh()">refresh</q-btn><br><br>
       
     <div id="notify">
      <q-btn color="dark" @click="vibrateMe()">S.O.S!</q-btn><br><br>
@@ -329,6 +331,10 @@ export default {
     },
   },
   methods: {
+    refresh(){
+      localStorage.setItem('print', true)
+      window.location.reload();
+    },
     store(){
         var teste = this.$setItem('teste', 'localForage')
         console.log('teste', teste);
