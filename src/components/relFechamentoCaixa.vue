@@ -653,12 +653,13 @@ export default {
         })    
     },
     fecharCaixa(){
+      let user = localStorage.getItem('codUser')
       Loading.show({
           spinner: FulfillingBouncingCircleSpinner,
           spinnerSize: 140,
           message: 'Aguardando Dados...'
       })
-      axios.post(API + 'caixa/GRAVARFechamentoCaixa?codigocaixa=' + this.idCaixa)
+      axios.get(API + 'caixa/GRAVARFechamentoCaixa?codigocaixa=' + this.idCaixa + '&codigoUsuario=' + user)
       .then((res)=>{  
         Loading.hide()
         console.log(res.data)
@@ -670,7 +671,6 @@ export default {
         let df = new Date(d.dataFechamento).toLocaleString('pt-BR', {year: 'numeric',month: '2-digit',day: '2-digit'})
         this.periodo = di + ' a ' + df
         this.checked = true
-
       })
       .catch((e)=>{
         console.log(e.response)

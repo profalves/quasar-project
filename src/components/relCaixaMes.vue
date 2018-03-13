@@ -33,14 +33,22 @@
     
     </div>
     
-    <div id="table">
+    <q-btn color="primary"
+           rounded
+           @click="pdf"
+           v-if="caixa.length>0"
+           >imprimir
+    </q-btn>
+    
+    <div id="printable" v-if="caixa.length>0">
+      
         <table class="q-table" :class="computedClasses" style="margin-left:1px">
           <thead>
             <tr>
-              <th>Abertura</th>
-              <th>Fechamento</th>
-              <th>Operador</th>
-              <th>Status</th>
+              <th @click="irFechamento(item)">Abertura</th>
+              <th @click="irFechamento(item)">Fechamento</th>
+              <th @click="irFechamento(item)">Operador</th>
+              <th @click="irFechamento(item)">Status</th>
               <th>Ver Caixa</th>
             </tr>
           </thead>
@@ -63,7 +71,7 @@
             </tr>
           </tbody>
         </table>
-    </div> 
+    </div>
       
   </div>
 </template>
@@ -209,52 +217,59 @@ export default {
         this.$router.push({ path: '/fechamento?a=aberto' })
       }
       
-    }
+    },
+    pdf(){
+      window.print()
+    },
   },
   
 }
 </script>
 
 <style scoped>
-    @media (max-height: 540px) {
-      #table {
-        margin-top: 10px;
-        max-width: 100%;
-        max-height: 400px;
-        line-height: 100%;
-        overflow: scroll;
-        }
-    }
-    @media (min-height: 550px ) {
-      #table {
-        margin-top: 10px;
-        max-width: 100%;
-        max-height: 420px;
-        line-height: 100%;
-        overflow: scroll;
-        }
-    }
-    @media (min-height: 730px) {
-      #table {
-        margin-top: 10px;
-        max-width: 100%;
-        max-height: 590px;
-        line-height: 100%;
-        overflow: scroll;
-        }
-    }
-    
+  @media (max-height: 540px) {
     #table {
-        margin-top: 10px;
-        max-width: 100%;
-        max-height: auto;
-        line-height: 100%;
-        overflow: scroll;
-    }
-    
-    table {
-        border-collapse: collapse;
-        border: 1px solid #666;
-        width: 100%;    
-    }
+      margin-top: 10px;
+      max-width: 100%;
+      max-height: 400px;
+      line-height: 100%;
+      overflow: scroll;
+      }
+  }
+  @media (min-height: 550px ) {
+    #table {
+      margin-top: 10px;
+      max-width: 100%;
+      max-height: 420px;
+      line-height: 100%;
+      overflow: scroll;
+      }
+  }
+  @media (min-height: 730px) {
+    #table {
+      margin-top: 10px;
+      max-width: 100%;
+      max-height: 590px;
+      line-height: 100%;
+      overflow: scroll;
+      }
+  }
+
+  #table {
+    margin-top: 10px;
+    max-width: 100%;
+    max-height: auto;
+    line-height: 100%;
+    overflow: scroll;
+  }
+
+  table {
+    border-collapse: collapse;
+    border: 1px solid #666;
+    width: 100%;    
+  }
+
+  #printable{
+    margin-top: 10px;
+  }
 </style>

@@ -13,7 +13,6 @@
         <div class="col-xl-6">
           <q-list inset-separator style="background-color: white; margin-bottom: 40px;">
             <q-list-header>Configurações Gerais</q-list-header>
-            
             <!-- DASHBOARD -->
             <q-collapsible icon="fa-tachometer" label="Painel de Abertura" sublabel="Configurações de exibição do painel inicial">
               <q-list highlight no-border>
@@ -476,7 +475,7 @@
             <!-- WhatsApp --
             <q-collapsible icon="fa-whatsapp" label="WhatsApp" sublabel="Configure as mensagens prontas para enviar para as listas de transmissão cadastradas no celular"></q-collapsible> -->
             <!-- FOTO USUÁRIO -->
-            <q-collapsible icon="fa-id-badge" :opened="configFoto" label="Foto Pessoal" sublabel="Insira sua foto de identificação">
+            <q-collapsible ref="foto" icon="fa-id-badge" :opened="configFoto" label="Foto Pessoal" sublabel="Insira sua foto de identificação">
               <div class="text-center">
                 <div class="fileUpload" v-if="!image">
                     <span>Selecione uma imagem</span>
@@ -1530,17 +1529,19 @@ export default {
           ]
         })
         
-    }
+    },
+    
     
   },
   mounted(){
     this.getLocalStorage()
     this.getDBLocal()
   },
-  created (){
+  created(){
     this.listarBancos()
     if(this.$route.query.configFoto === 'true'){
         this.configFoto = true
+        window.scrollTo(0,400)
     }
     if(this.$route.query.bdConfig === true){
         this.bdConfig = true

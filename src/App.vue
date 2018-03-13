@@ -1,5 +1,5 @@
 <template>
-  <div id="q-app"><!-- Don't drop "q-app" class -->
+  <div id="q-app"> <!-- Don't drop "q-app" class -->
   <q-window-resize-observable @resize="onResize" /> 
   <q-layout
     ref="layout"
@@ -291,6 +291,7 @@ export default {
       position: fixed;
       left: 0;
       top: 0;
+      margin: 20px;
     }
   }
 </style>

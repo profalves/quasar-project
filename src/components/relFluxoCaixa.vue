@@ -104,53 +104,60 @@
         
          
         <br>
-        
-        <div v-if="visivel">
-         
-        <center>
-          <h4>Fluxo de Caixa</h4>
+      
+        <!--
+        <q-btn color="primary"
+               rounded
+               @click="pdf"
+               v-if="visivel"
+               >imprimir
+        </q-btn>
+        -->
+        <div id="printable" v-if="visivel">
           
-          <strong v-if="fluxoCaixa.periodo !== null">Período:</strong> {{fluxoCaixa.periodo}} <br>
-          <strong>Forma de Pagamento:</strong> {{fluxoCaixa.formaPgto}} <br>
-          <strong>Total:</strong> {{fluxoCaixa.total | formatMoney}} <br><br>
+          <center>
+            <h4>Fluxo de Caixa</h4>
             
-          <q-infinite-scroll :handler="loadMore">  
-          
-            <table class="q-table responsive">
-              <thead>
-                <tr>
-                  <th class="text-left">Tipo Op.</th>
-                  <th class="text-left">N. Nota</th>
-                  <th class="text-left">Cliente</th>
-                  <th class="text-left">Data/Hora</th>
-                  <th class="text-left">Valor</th>
-                  <th class="text-left">Saldo</th>
-                </tr>
-              </thead>
+            <strong v-if="fluxoCaixa.periodo !== null">Período:</strong> {{fluxoCaixa.periodo}} <br>
+            <strong>Forma de Pagamento:</strong> {{fluxoCaixa.formaPgto}} <br>
+            <strong>Total:</strong> {{fluxoCaixa.total | formatMoney}} <br><br>
               
-              <tbody>
-                <tr v-for="fluxo in showingData">
-                  <td data-th="Tipo Op." class="text-left">{{fluxo.tipoOP}}</td>
-                  <td data-th="N. Nota" class="text-left">{{fluxo.nCupom}}</td>
-                  <td data-th="Cliente" class="text-left">{{fluxo.cliente}}</td>
-                  <td data-th="Data/Hora" class="text-left">{{fluxo.dataHora | date}}</td>
-                  <td data-th="Valor" class="text-right">{{fluxo.valor | formatMoney}}</td>
-                  <td data-th="Saldo" class="text-right">{{fluxo.saldo | formatMoney}}</td>
-                </tr>
-              </tbody>
-                
-                
-            </table>
+            <q-infinite-scroll :handler="loadMore">
+              <table class="q-table responsive">
+                <thead>
+                  <tr>
+                    <th class="text-left">Tipo Op.</th>
+                    <th class="text-left">N. Nota</th>
+                    <th class="text-left">Cliente</th>
+                    <th class="text-left">Data/Hora</th>
+                    <th class="text-left">Valor</th>
+                    <th class="text-left">Saldo</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <tr v-for="fluxo in showingData">
+                    <td data-th="Tipo Op." class="text-left">{{fluxo.tipoOP}}</td>
+                    <td data-th="N. Nota" class="text-left">{{fluxo.nCupom}}</td>
+                    <td data-th="Cliente" class="text-left">{{fluxo.cliente}}</td>
+                    <td data-th="Data/Hora" class="text-left">{{fluxo.dataHora | date}}</td>
+                    <td data-th="Valor" class="text-right">{{fluxo.valor | formatMoney}}</td>
+                    <td data-th="Saldo" class="text-right">{{fluxo.saldo | formatMoney}}</td>
+                  </tr>
+                </tbody>
+
+
+              </table>
+              
+              <div slot="message" class="row justify-center" style="margin-bottom: 50px;">
+                <q-spinner-dots :size="40" />
+              </div>
+            </q-infinite-scroll>
             
-            <div slot="message" class="row justify-center" style="margin-bottom: 50px;">
-              <q-spinner-dots :size="40" />
-            </div>
-          </q-infinite-scroll>
-            
-        </center>
+          </center>
          
-        
-        <br><br><br><br>
+          
+          <br><br><br><br>
         
         </div> 
     </div>
@@ -248,7 +255,7 @@ export default {
       return lista
 
     },
-    showingData () {
+    showingData(){
       return this.fluxoCaixa.caixas.slice(0, this.actualMaxPosition)
     }
 
@@ -259,7 +266,7 @@ export default {
     }
   },
   methods:{
-    loadMore (index, done) {
+    loadMore(index, done){
       setTimeout(() => {
         this.actualMaxPosition += 5
         done()
@@ -380,6 +387,10 @@ export default {
           this.opened = true
       }
     },
+    pdf(){
+      window.print()
+    },
+
   },
   created(){
     let t = this

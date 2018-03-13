@@ -48,6 +48,14 @@
           
     </div>
     
+    <q-btn color="primary"
+           rounded
+           @click="pdf"
+           >imprimir
+    </q-btn>
+    
+    <div id="printable">
+    
     <!--graficos-->
     <q-card style="background-color: white">
       <q-card-separator />
@@ -59,7 +67,7 @@
               :options="options"
           />
 
-          
+
           <bar :width="width" :height="height" :data="data" v-if="tipo === 'bar'"></bar>
           <pie :width="width" :height="height" :data="data2" v-if="tipo === 'pie'"></pie>
           <donut :width="width" :height="height" :data="data2" v-if="tipo === 'donut'"></donut>
@@ -69,7 +77,7 @@
         </div> 
       </q-card-main>
     </q-card>
-    
+
     <div class="row">
         <div class="col">
             <q-card style="background-color: white">
@@ -106,7 +114,7 @@
               <div id="total"><b>Total :</b> {{ somaVendas | formatMoney}}</div>
             </q-card>      
         </div>
-    
+
         <div class="col">
             <q-card style="background-color: white">
               <q-card-title>
@@ -143,36 +151,39 @@
               <div id="total"><b>Total :</b> {{ somaRecs | formatMoney }}</div>
             </q-card>      
         </div>
-        
+
     </div>
-        
+      
+    </div>
+      
     <q-card style="background-color: white">
-      <q-card-title>Grafico de Formas Detalhadas</q-card-title>
-      <q-card-separator />
-      <q-card-main>
-        
-        <div class="layout-view">
-          <q-select
-              v-model="tipoDet"
-              float-label="Tipo de Gráfico"
-              :options="[
-                 {
-                     label:'Detalhamento de Vendas',
-                     value: 1
-                 },
-                 {
-                     label:'Detalhamento de Recebimentos',
-                     value: 2
-                 }
-              ]"
-          />
-         
-         
-          <bar :width="width" :height="height" :data="formasGrafVendas" v-if="tipoDet === 1"></bar>
-          <bar2 :width="width" :height="height" :data="formasGrafRec" v-if="tipoDet === 2"></bar2>
-        </div> 
-      </q-card-main>
-    </q-card>   
+        <q-card-title>Grafico de Formas Detalhadas</q-card-title>
+        <q-card-separator />
+        <q-card-main>
+
+          <div class="layout-view">
+            <q-select
+                v-model="tipoDet"
+                float-label="Tipo de Gráfico"
+                :options="[
+                   {
+                       label:'Detalhamento de Vendas',
+                       value: 1
+                   },
+                   {
+                       label:'Detalhamento de Recebimentos',
+                       value: 2
+                   }
+                ]"
+            />
+
+
+            <bar :width="width" :height="height" :data="formasGrafVendas" v-if="tipoDet === 1"></bar>
+            <bar2 :width="width" :height="height" :data="formasGrafRec" v-if="tipoDet === 2"></bar2>
+          </div> 
+        </q-card-main>
+      </q-card>
+    
     
    <br><br><br>
    
@@ -555,15 +566,17 @@ export default {
             this.barRecs = false
         }
     },
-    
     refresh (done) {
       this.timeout = setTimeout(() => {
         this.listarPessoas()
       }, 5000)
     },
+    pdf(){
+      window.print()
+    },
     
   },
-  
+ 
   mounted(){
     this.listarResumo()
   }
