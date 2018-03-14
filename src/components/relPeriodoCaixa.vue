@@ -2,14 +2,21 @@
 <div>
   <h5>Período Caixa</h5>
   <!-- Botão flutuante -->
-    <q-fixed-position class="over" corner="bottom-left" :offset="[18, 18]">
-        <q-btn 
-           round
-           color="primary" 
-           @click="goBack">
-           <q-icon name="chevron_left" />
-        </q-btn>
-    </q-fixed-position>
+  <q-fixed-position class="over" corner="bottom-left" :offset="[18, 18]">
+    <q-btn 
+       round
+       color="primary" 
+       @click="goBack">
+       <q-icon name="chevron_left" />
+    </q-btn>
+  </q-fixed-position>
+  <q-fixed-position class="over" corner="bottom-right" :offset="[18, 18]">
+    <q-btn color="primary"
+           rounded
+           @click="pdf"
+           >imprimir
+    </q-btn>
+  </q-fixed-position>
 
   <div id="lista">
    
@@ -48,11 +55,6 @@
           
     </div>
     
-    <q-btn color="primary"
-           rounded
-           @click="pdf"
-           >imprimir
-    </q-btn>
     
     <div id="printable">
     

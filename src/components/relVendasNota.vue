@@ -11,6 +11,15 @@
            <q-icon name="chevron_left" />
         </q-btn>
     </q-fixed-position>
+    <q-fixed-position class="over" corner="bottom-right" :offset="[18, 8]">
+        <q-btn color="primary"
+               rounded
+               @click="pdf"
+               v-if="notas.length>0"
+               style="margin-bottom: 10px"
+               >imprimir
+        </q-btn>
+    </q-fixed-position>
 
     <div id="lista">
       <q-collapsible :opened="opened" 
@@ -124,19 +133,16 @@
       </q-collapsible>
     </div>
     
-  <!--<q-btn color="primary"
-         rounded
-         @click="pdf"
-         >imprimir
-  </q-btn>-->
+  
       
-  <q-infinite-scroll :handler="loadMore" v-if="notas.length>0">
+  <q-infinite-scroll :handler="loadMore" v-if="notas.length>0" id="printable">
       
     <q-list v-for="item in showingData" 
             :key="item.cab.codigo"
             style="background-color: white;"
-            id="printable"
-            >
+            v-if="item.cab.nomePessoaDestina !== ' -- TOTALIZADORES -- '"
+            no-border>
+      
       <q-list-header>Nota Fiscal</q-list-header>
       <q-item>
         <q-item-main>
@@ -189,8 +195,8 @@
           <q-item-tile>{{forma.valor | formatMoney}}</q-item-tile>
         </q-item-side>
       </q-item>
-    </q-list>
-      
+      <hr>
+    </q-list> 
       <div slot="message"
            v-if="notas.length>0 && notas.length !== showingData.length"
            class="row justify-center" 
@@ -223,49 +229,49 @@ const API = localStorage.getItem('wsAtual')
 
 export default {
   data () {
-      return {
-          canGoBack: window.history.length > 1,
-          notas: [],
-          clientes: [],
-          Produtos: [], 
-          vendedores: [],
-          dataInicial: moment(dt.startOfDate(hoje, 'month')).format('YYYY-MM-DDTHH:mm:SS'),
-          dataFinal: moment(dt.endOfDate(hoje, 'month')).format('YYYY-MM-DDTHH:mm:SS'),
-          nCupomDe: '',
-          nCupomAte: '',
-          cliente: '',
-          vendedor: '',
-          produto: '',
-          ocultarCanceladas: false,
-          opened: true,
-          permissoes: '',
-          visivel: true,
-          actualMaxPosition: 5,
-          
-          styles: [
-            '',
-            'bordered',
-            'horizontal-separator',
-            'vertical-separator',
-            'cell-separator',
-            'striped-odd',
-            'striped-even',
-            'highlight',
-            'compact',
-            'loose',
-            'flipped'
-          ],
-          misc: [],
-          separator: 'cell', //none, horizontal, vertical, cell
-          stripe: 'odd', //none, odd, even
-          type: 'none', //none, flipped, responsive
-          gutter: 'none', //none, compact, loose
-          
-          //datatime
-          dias: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
-          meses: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+    return {
+      canGoBack: window.history.length > 1,
+      notas: [],
+      clientes: [],
+      Produtos: [], 
+      vendedores: [],
+      dataInicial: moment(dt.startOfDate(hoje, 'month')).format('YYYY-MM-DDTHH:mm:SS'),
+      dataFinal: moment(dt.endOfDate(hoje, 'month')).format('YYYY-MM-DDTHH:mm:SS'),
+      nCupomDe: '',
+      nCupomAte: '',
+      cliente: '',
+      vendedor: '',
+      produto: '',
+      ocultarCanceladas: false,
+      opened: true,
+      permissoes: '',
+      visivel: true,
+      actualMaxPosition: 5,
 
-      }
+      styles: [
+        '',
+        'bordered',
+        'horizontal-separator',
+        'vertical-separator',
+        'cell-separator',
+        'striped-odd',
+        'striped-even',
+        'highlight',
+        'compact',
+        'loose',
+        'flipped'
+      ],
+      misc: [],
+      separator: 'cell', //none, horizontal, vertical, cell
+      stripe: 'odd', //none, odd, even
+      type: 'none', //none, flipped, responsive
+      gutter: 'none', //none, compact, loose
+
+      //datatime
+      dias: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
+      meses: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+
+    }
   },
   computed: {
     computedClasses () {
@@ -396,7 +402,7 @@ export default {
               */
               '&ocultarExcluidos=' + this.ocultarCanceladas)
       .then((res)=>{
-          //console.log(res.data)
+          console.log(res.data)
           this.notas = res.data
           this.opened = false
           Loading.hide()
@@ -487,7 +493,17 @@ export default {
       }) 
     },
     pdf(){
-      window.print()
+      var printContents = document.getElementById('printable').innerHTML
+      var w = window.open();
+      self.focus();
+      w.document.open();
+      w.document.write('<'+'html'+'><'+'body'+'>');
+      w.document.write('<h2>Vendas em Notas por Período</h2>');
+      w.document.write(printContents);
+      w.document.write('<'+'/body'+'><'+'/html'+'>');
+      w.document.close();
+      w.print();
+      w.close();
     },
   },
   mounted(){

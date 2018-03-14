@@ -11,6 +11,14 @@
            <q-icon name="chevron_left" />
         </q-btn>
     </q-fixed-position>
+    <q-fixed-position class="over" corner="bottom-right" :offset="[18, 18]" v-if="visivel">
+        <q-btn 
+           rounded
+           color="primary" 
+           @click="pdf">
+           imprimir
+        </q-btn>
+    </q-fixed-position>
 
     <div id="lista">
       <q-collapsible :opened="opened" 
@@ -150,6 +158,69 @@
         </q-collapsible>
         
         <br><br><br><br>
+        
+      </div>  
+      <div id="printable" v-show=false>
+        
+        <center>
+           
+            <h5>{{totalizadores.vendedor}}</h5>
+
+            <strong>Qtd. Notas:</strong> {{totalizadores.qtdNotas}}<br> 
+            <strong>Qtd. Clientes:</strong> {{totalizadores.qtdClientes}}<br>
+            <strong>Total Vendas:</strong> {{totalizadores.venda | formatMoney}}<br>
+            <strong>Comissão:</strong> {{totalizadores.valorComissao | formatMoney}}<br>
+            
+            <hr width="60%" />
+
+            <table class="q-table">
+              <thead>
+                <tr>
+                  <th class="text-left">Forma</th>
+                  <th class="text-center">Total</th>
+                  <th class="text-right">Percentual</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="forma in totalizadores.formasPgto">
+                  <td class="text-left">{{forma.formaPgto}}</td>
+                  <td class="text-right">{{forma.valorPgto | formatMoney}}</td>
+                  <td class="text-right">{{forma.percentual | formatPerc}}</td>
+                </tr>
+              </tbody>
+            </table>
+          
+        </center>
+          
+            <hr>
+          
+        <table border="1"
+               style="border-collapse: collapse;
+                      width: 100%;">
+          <thead>
+            <tr>
+              <th class="text-left">Vendedor</th>
+              <th class="text-center">Qtd. Clientes</th>
+              <th class="text-center">Qtd. Notas</th>
+              <th class="text-right">Total</th>
+              <th class="text-right">Forma</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(venda, index) in vendas">
+              <td class="text-left">{{venda.vendedor}}</td>
+              <td class="text-left">{{venda.qtdClientes}}</td>
+              <td class="text-left">{{venda.qtdNotas}}</td>
+              <td class="text-right">{{venda.venda | formatMoney}}</td>
+              <td v-for="forma in vendas[index].formasPgto" :key="forma.$id">
+                <div>Forma: {{forma.formaPgto}}</div>
+                <div>Total: {{forma.valorPgto | formatMoney}}</div>
+                <div>Percentual: {{forma.percentual | formatPerc}}</div>
+                <br>
+              </td>
+            </tr>
+          </tbody>
+        </table>
         
       </div>  
     </div>
@@ -391,6 +462,19 @@ export default {
           }
           
       },
+      pdf(){
+          var printContents = document.getElementById('printable').innerHTML
+          var w = window.open();
+          self.focus();
+          w.document.open();
+          w.document.write('<'+'html'+'><'+'body'+'>');
+          w.document.write('<center><h2>Vendas por Forma de Pagamento</h2></center>');
+          w.document.write(printContents);
+          w.document.write('<'+'/body'+'><'+'/html'+'>');
+          w.document.close();
+          w.print();
+          w.close();
+          }
   },
   created(){
       let t = this

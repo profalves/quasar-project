@@ -11,6 +11,16 @@
            <q-icon name="chevron_left" />
         </q-btn>
     </q-fixed-position>
+    <q-fixed-position class="over" corner="bottom-right" :offset="[18, 8]">
+        <q-btn color="primary"
+           @click="pdf"
+           rounded
+           style="margin-bottom: 20px"
+           v-if="vendas.length > 0"
+           >
+           imprimir
+        </q-btn>
+    </q-fixed-position>
 
     <div id="lista">
       <q-collapsible :opened="opened" 
@@ -73,7 +83,7 @@
       </q-collapsible>
       
     <div v-if="vendas.length > 0">
-    <!--periodo-->
+        <!--periodo-->
         <center>
            <h5>{{totalizadores.vendedor}}</h5>
            
@@ -153,6 +163,42 @@
         
     </div>   
     </div>
+    
+    <div id="printable" v-show="false">
+      <!--periodo-->
+      <center>
+         <h5>{{totalizadores.vendedor}}</h5>
+
+         <strong>Qtd. Notas:</strong> {{totalizadores.qtdNotas}}<br> 
+         <strong>Qtd. Clientes:</strong> {{totalizadores.qtdClientes}}<br>
+         <strong>Total Vendas:</strong> {{totalizadores.totalVenda | formatMoney}}<br>
+         <strong>Comissão:</strong> {{totalizadores.comissaoVendedor | formatMoney}}<br>
+      </center>
+      <br>
+      
+      <table class="q-table" :class="computedClasses">
+        <thead>
+          <tr>
+            <th class="text-left">Vendedor</th>
+            <th class="text-left">Cliente</th>
+            <th class="text-left">Qtd. Clientes</th>
+            <th class="text-left">Qtd. Notas</th>
+            <th class="text-left">Total</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr v-for="item in vendas">
+            <td class="text-left">{{item.vendedor}}</td>
+            <td class="text-left">{{item.cliente}}</td>
+            <td class="text-right">{{item.qtdClientes}}</td>
+            <td class="text-right">{{item.qtdNotas}}</td>
+            <td class="text-right">{{item.totalVenda | formatMoney}}</td>
+          </tr>
+        </tbody>
+      </table>
+        
+    </div>
   </div>
 </template>
 
@@ -181,124 +227,164 @@ const API = localStorage.getItem('wsAtual')
 
 export default {
   data () {
-      return {
-          canGoBack: window.history.length > 1,
-          vendas: [],
-          totalizadores: '',
-          vendedores: [],
-          dataInicial: moment(dt.startOfDate(hoje, 'month')).format('YYYY-MM-DDTHH:mm:SS'),
-          dataFinal: moment(dt.endOfDate(hoje, 'month')).format('YYYY-MM-DDTHH:mm:SS'),
-          vendedor: '',
-          opened: true,
-          permissoes: '',
-          visivel: true,
-          
-          //listas
-          config: {
-            title: '',
-            refresh: (localStorage.getItem('refresh') === 'true'),
-            noHeader: (localStorage.getItem('noHeader') === 'true'),
-            columnPicker: (localStorage.getItem('columnPicker') === 'true'),
-            bodyStyle: {
-              maxHeight: '500px'
-            },
-            rowHeight: localStorage.getItem('rowHeight') + 'px',
-            responsive: (localStorage.getItem('responsive') === 'true'),
-            pagination: {
-              rowsPerPage: 15,
-              options: [5, 10, 15, 30, 50, 100]
-            },
-            messages: {
-              noData: '<i class="material-icons">warning</i> Não há dados para exibir.',
-              noDataAfterFiltering: '<i class="material-icons">warning</i> Sem resultados. Por favor, redefina suas buscas.'
-            },
-            // (optional) Override default labels. Useful for I18n.
-            labels: {
-              columns: 'Colunas',
-              allCols: 'Todas',
-              rows: 'Linhas',
-              selected: {
-                singular: 'item selecionado.',
-                plural: 'itens selecionados.'
-              },
-              clear: 'limpar seleção',
-              search: 'Buscar',
-              all: 'Todos'
-            }
+    return {
+      canGoBack: window.history.length > 1,
+      vendas: [],
+      totalizadores: '',
+      vendedores: [],
+      dataInicial: moment(dt.startOfDate(hoje, 'month')).format('YYYY-MM-DDTHH:mm:SS'),
+      dataFinal: moment(dt.endOfDate(hoje, 'month')).format('YYYY-MM-DDTHH:mm:SS'),
+      vendedor: '',
+      opened: true,
+      permissoes: '',
+      visivel: true,
+      styles: [
+        '',
+        'bordered',
+        'horizontal-separator',
+        'vertical-separator',
+        'cell-separator',
+        'striped-odd',
+        'striped-even',
+        'highlight',
+        'compact',
+        'loose',
+        'flipped'
+      ],
+      misc: [],
+      separator: 'cell-separator',
+      stripe: 'striped-odd',
+      type: 'none',
+      gutter: 'none',
+      
+      //listas
+      config: {
+        title: '',
+        refresh: (localStorage.getItem('refresh') === 'true'),
+        noHeader: (localStorage.getItem('noHeader') === 'true'),
+        columnPicker: (localStorage.getItem('columnPicker') === 'true'),
+        bodyStyle: {
+          maxHeight: '500px'
+        },
+        rowHeight: localStorage.getItem('rowHeight') + 'px',
+        responsive: (localStorage.getItem('responsive') === 'true'),
+        pagination: {
+          rowsPerPage: 15,
+          options: [5, 10, 15, 30, 50, 100]
+        },
+        messages: {
+          noData: '<i class="material-icons">warning</i> Não há dados para exibir.',
+          noDataAfterFiltering: '<i class="material-icons">warning</i> Sem resultados. Por favor, redefina suas buscas.'
+        },
+        // (optional) Override default labels. Useful for I18n.
+        labels: {
+          columns: 'Colunas',
+          allCols: 'Todas',
+          rows: 'Linhas',
+          selected: {
+            singular: 'item selecionado.',
+            plural: 'itens selecionados.'
           },
-          colunas: [
-            {
-              label: 'Vendedor',
-              field: 'vendedor',
-              filter: true,
-              sort: true,
-              type: 'string',
-              width: '120px'
-            },
-            {
-              label: 'Cliente',
-              field: 'cliente',
-              filter: true,
-              sort: true,
-              type: 'string',
-              width: '200px'
-            },
-            {
-              label: 'qtd. Clientes',
-              field: 'qtdClientes',
-              sort: true,
-              filter: true,
-              type: 'number',
-              width: '100px'
-            },
-            {
-              label: 'qtd. Notas',
-              field: 'qtdNotas',
-              sort: true,
-              filter: true,
-              type: 'number',
-              width: '100px'
-            },
-            {
-              label: 'Total',
-              field: 'totalVenda',
-              width: '150px',
-              sort: true,
-              filter: true,
-              type: 'number',
-              format (value) {
-                let x = numberToReal(value);
-                return x
-              }
-            },
-            
-            
-            
-          ],
-          pagination: (localStorage.getItem('pagination') === 'true'),
-          rowHeight: parseInt(localStorage.getItem('rowHeight')),
-          bodyHeightProp: localStorage.getItem('bodyHeightProp'),
-          bodyHeight: parseInt(localStorage.getItem('bodyHeight')),
-          
-          //datatime
-          dias: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
-          meses: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+          clear: 'limpar seleção',
+          search: 'Buscar',
+          all: 'Todos'
+        }
+      },
+      colunas: [
+        {
+          label: 'Vendedor',
+          field: 'vendedor',
+          filter: true,
+          sort: true,
+          type: 'string',
+          width: '120px'
+        },
+        {
+          label: 'Cliente',
+          field: 'cliente',
+          filter: true,
+          sort: true,
+          type: 'string',
+          width: '200px'
+        },
+        {
+          label: 'qtd. Clientes',
+          field: 'qtdClientes',
+          sort: true,
+          filter: true,
+          type: 'number',
+          width: '100px'
+        },
+        {
+          label: 'qtd. Notas',
+          field: 'qtdNotas',
+          sort: true,
+          filter: true,
+          type: 'number',
+          width: '100px'
+        },
+        {
+          label: 'Total',
+          field: 'totalVenda',
+          width: '150px',
+          sort: true,
+          filter: true,
+          type: 'number',
+          format (value) {
+            let x = numberToReal(value);
+            return x
+          }
+        },
 
-      }
+
+
+      ],
+      pagination: (localStorage.getItem('pagination') === 'true'),
+      rowHeight: parseInt(localStorage.getItem('rowHeight')),
+      bodyHeightProp: localStorage.getItem('bodyHeightProp'),
+      bodyHeight: parseInt(localStorage.getItem('bodyHeight')),
+
+      //datatime
+      dias: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
+      meses: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+
+    }
   },
   computed: {
-      listaVendedores(){
-          let a = this.vendedores
-          let lista = []
-          
-          lista = a.map(row => ({
-              label: row.nome, 
-              value: row.codigoIdentificacao
-          }))
-          
-          return lista
-    
+    listaVendedores(){
+      let a = this.vendedores
+      let lista = []
+
+      lista = a.map(row => ({
+          label: row.nome, 
+          value: row.codigoIdentificacao
+      }))
+
+      return lista
+
+    },
+    computedClasses () {
+      let classes = []
+      if (this.misc.includes('bordered')) {
+        classes.push('bordered')
       }
+      if (this.misc.includes('highlight')) {
+        classes.push('highlight')
+      }
+      if (this.separator !== 'none') {
+        classes.push(this.separator + '-separator')
+      }
+      if (this.stripe !== 'none') {
+        classes.push('striped-' + this.stripe)
+      }
+      if (this.type !== 'none') {
+        classes.push(this.type)
+      }
+      if (this.gutter !== 'none') {
+        classes.push(this.gutter)
+      }
+      return classes
+    },
   },
   watch: {
       pagination (value) {
@@ -328,98 +414,111 @@ export default {
       }
   },
   methods:{
-      goBack(){
-        window.history.go(-1)
-      },
-      getVendas(){
-        if(this.dataInicial === ''){
-            Toast.create.negative('Selecione um período antes')
-            return
-        }
-        
-        let v = ''
-        if(this.vendedor !== ''){
-            v = '&codVendedor=' + this.vendedor
-        }
-          
+    goBack(){
+      window.history.go(-1)
+    },
+    getVendas(){
+      if(this.dataInicial === ''){
+          Toast.create.negative('Selecione um período antes')
+          return
+      }
+
+      let v = ''
+      if(this.vendedor !== ''){
+          v = '&codVendedor=' + this.vendedor
+      }
+
+      Loading.show({
+        spinner: FulfillingBouncingCircleSpinner,
+        spinnerSize: 140,
+        message: 'Aguardando Dados...'
+      })
+      axios.get(API + 'relatorio/obterRptPorCliente?' +
+              'dataInicial=' + this.dataInicial +
+              '&dataFinal=' + this.dataFinal + v)
+      .then((res)=>{
+          console.log(res.data)
+          this.vendas = res.data
+          this.totalizadores = this.vendas.shift()
+          this.opened = false
+          Loading.hide()
+      })
+      .catch((e)=>{
+          Loading.hide()
+          console.log(e.response)
+          let error = e.response.data
+          console.log(error)
+          for(var i=0; error.length; i++){
+              Toast.create.negative(error[i].value)
+          }
+
+      })
+    },
+    listarVendedores(){
         Loading.show({
-          spinner: FulfillingBouncingCircleSpinner,
-          spinnerSize: 140,
-          message: 'Aguardando Dados...'
+            spinner: FulfillingBouncingCircleSpinner,
+            spinnerSize: 140,
+            message: 'Aguardando Dados...'
         })
-        axios.get(API + 'relatorio/obterRptPorCliente?' +
-                'dataInicial=' + this.dataInicial +
-                '&dataFinal=' + this.dataFinal + v)
+        axios.get(API + 'usuario/obterUsuario')
         .then((res)=>{
-            //console.log(res.data)
-            this.vendas = res.data
-            this.totalizadores = this.vendas.shift()
-            this.opened = false
-            Loading.hide()
+          Loading.hide()
+          this.vendedores = res.data
+          //console.log(res.data)
         })
         .catch((e)=>{
-            Loading.hide()
-            console.log(e.response)
-            let error = e.response.data
-            console.log(error)
-            for(var i=0; error.length; i++){
-                Toast.create.negative(error[i].value)
-            }
-            
+          Loading.hide()
+          console.log(e)
         })
-      },
-      listarVendedores(){
-          Loading.show({
-              spinner: FulfillingBouncingCircleSpinner,
-              spinnerSize: 140,
-              message: 'Aguardando Dados...'
-          })
-          axios.get(API + 'usuario/obterUsuario')
-          .then((res)=>{
-            Loading.hide()
-            this.vendedores = res.data
-            //console.log(res.data)
-          })
-          .catch((e)=>{
-            Loading.hide()
-            console.log(e)
-          })
-      },
-      collapse(){
-        if(this.opened === true){
-            this.opened = false
-        }
-        else{
-            this.opened = true
-        }
-      },
-      obterPermissoes(){
-        localforage.getItem('usuario')
-        .then((value) => {
-            if(value){
-                //console.log(value)
-                this.permissoes = value
-                if(this.permissoes.funcao === "VENDEDOR"){
-                    this.vendedor = parseInt(localStorage.getItem('codIdUser'))
-                    this.visivel = false
-                }
-            }
-            else{
-                console.log(value)
-                console.log('Não foi possivel obter as permissões')
-            }
-
-        })
-        .catch((err) => {
-                console.log(err)
-                console.log('fail')
-        }) 
+    },
+    collapse(){
+      if(this.opened === true){
+          this.opened = false
       }
+      else{
+          this.opened = true
+      }
+    },
+    obterPermissoes(){
+      localforage.getItem('usuario')
+      .then((value) => {
+          if(value){
+              //console.log(value)
+              this.permissoes = value
+              if(this.permissoes.funcao === "VENDEDOR"){
+                  this.vendedor = parseInt(localStorage.getItem('codIdUser'))
+                  this.visivel = false
+              }
+          }
+          else{
+              console.log(value)
+              console.log('Não foi possivel obter as permissões')
+          }
+
+      })
+      .catch((err) => {
+              console.log(err)
+              console.log('fail')
+      }) 
+    },
+    pdf(){
+      var printContents = document.getElementById('printable').innerHTML
+      var w = window.open();
+      self.focus();
+      w.document.open();
+      w.document.write('<'+'html'+'><'+'body'+'>');
+      w.document.write('<center><h2>Vendas por Cliente</h2></center>');
+      w.document.write(printContents);
+      w.document.write('<'+'/body'+'><'+'/html'+'>');
+      w.document.close();
+      w.print();
+      w.close();
+    },
   },
   mounted(){
-      let t = this
-      t.listarVendedores()
-      t.obterPermissoes()
+    let t = this
+    t.listarVendedores()
+    t.obterPermissoes()
   }
 }
 </script>

@@ -4,12 +4,20 @@
     <h5>Fluxo de Caixa</h5>
     <!-- Botão flutuante -->
     <q-fixed-position class="fixo" corner="bottom-left" :offset="[18, 18]">
-        <q-btn 
-           round
-           color="primary" 
-           @click="goBack">
-           <q-icon name="chevron_left" />
-        </q-btn>
+      <q-btn 
+         round
+         color="primary" 
+         @click="goBack">
+         <q-icon name="chevron_left" />
+      </q-btn>
+    </q-fixed-position>
+    <q-fixed-position class="fixo" corner="bottom-right" :offset="[18, 18]">
+      <q-btn color="primary"
+             rounded
+             @click="pdf"
+             v-if="visivel"
+             >imprimir
+      </q-btn>
     </q-fixed-position>
 
     <div id="lista">
@@ -100,20 +108,10 @@
                  Visualizar</q-btn>  
 
         </q-collapsible>
-        
-        
          
         <br>
       
-        <!--
-        <q-btn color="primary"
-               rounded
-               @click="pdf"
-               v-if="visivel"
-               >imprimir
-        </q-btn>
-        -->
-        <div id="printable" v-if="visivel">
+        <div v-if="visivel">
           
           <center>
             <h4>Fluxo de Caixa</h4>
@@ -149,10 +147,56 @@
 
               </table>
               
-              <div slot="message" class="row justify-center" style="margin-bottom: 50px;">
+              <div slot="message" 
+                   class="row justify-center" 
+                   style="margin-bottom: 50px;"
+                   v-if="showingData.length !== fluxoCaixa.caixas.length"
+                   >
                 <q-spinner-dots :size="40" />
               </div>
             </q-infinite-scroll>
+            
+          </center>
+         
+          
+          <br><br><br><br>
+        
+        </div>
+      
+        <div id="printable" v-show="false">
+          
+          <center>
+            <h4>Fluxo de Caixa</h4>
+            
+            <strong v-if="fluxoCaixa.periodo !== null">Período:</strong> {{fluxoCaixa.periodo}} <br>
+            <strong>Forma de Pagamento:</strong> {{fluxoCaixa.formaPgto}} <br>
+            <strong>Total:</strong> {{fluxoCaixa.total | formatMoney}} <br><br>
+            
+              <table class="q-table responsive">
+                <thead>
+                  <tr>
+                    <th class="text-left">Tipo Op.</th>
+                    <th class="text-left">N. Nota</th>
+                    <th class="text-left">Cliente</th>
+                    <th class="text-left">Data/Hora</th>
+                    <th class="text-left">Valor</th>
+                    <th class="text-left">Saldo</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <tr v-for="fluxo in fluxoCaixa.caixas">
+                    <td data-th="Tipo Op." class="text-left">{{fluxo.tipoOP}}</td>
+                    <td data-th="N. Nota" class="text-left">{{fluxo.nCupom}}</td>
+                    <td data-th="Cliente" class="text-left">{{fluxo.cliente}}</td>
+                    <td data-th="Data/Hora" class="text-left">{{fluxo.dataHora | date}}</td>
+                    <td data-th="Valor" class="text-right">{{fluxo.valor | formatMoney}}</td>
+                    <td data-th="Saldo" class="text-right">{{fluxo.saldo | formatMoney}}</td>
+                  </tr>
+                </tbody>
+
+
+              </table>
             
           </center>
          
@@ -363,7 +407,7 @@ export default {
               '&dataFinal=' + this.dataFinal + 
               opcoes + caixa + operador + forma)
       .then((res)=>{
-          console.log('Fluxo de Caixa:', res.data)
+          console.log('Fluxo de Caixa:', res)
           this.fluxoCaixa = res.data
           if(this.fluxoCaixa.value){
               Toast.create.negative(this.fluxoCaixa.value)
@@ -388,7 +432,16 @@ export default {
       }
     },
     pdf(){
-      window.print()
+      var printContents = document.getElementById('printable').innerHTML
+      var w = window.open();
+      self.focus();
+      w.document.open();
+      w.document.write('<'+'html'+'><'+'body'+'>');
+      w.document.write(printContents);
+      w.document.write('<'+'/body'+'><'+'/html'+'>');
+      w.document.close();
+      w.print();
+      w.close();
     },
 
   },

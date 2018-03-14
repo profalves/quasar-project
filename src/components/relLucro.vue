@@ -11,6 +11,16 @@
            <q-icon name="chevron_left" />
         </q-btn>
     </q-fixed-position>
+    <q-fixed-position class="over" corner="bottom-right" :offset="[18, 24]">
+        <q-btn 
+           rounded
+           color="primary" 
+           @click="pdf"
+           v-if="lucro"    
+           >
+           imprimir
+        </q-btn>
+    </q-fixed-position>
 
     <div id="lista">
         <q-collapsible :opened="opened" 
@@ -96,7 +106,7 @@
          
         <br>
         
-        <div v-if="visivel">
+      <div v-if="visivel">
          
         <center>
             <h4>Totais Gerais</h4>
@@ -196,7 +206,69 @@
         
         <br><br><br><br>
         
-        </div> 
+      </div>
+        
+      
+      <div id="printable" v-show="false">
+         
+        <center>
+            <h4>Totais Gerais</h4>
+            
+            {{lucro.periodo}} <br>
+            
+            <table class="q-table responsive">
+              <thead>
+                <tr>
+                  <th class="text-center">Custo Total</th>
+                  <th class="text-center">Venda Total</th>
+                  <th class="text-center">Lucro</th>
+                  <th class="text-center">ML Média</th>
+                  <th class="text-center">Total Vendido</th>
+                  <th class="text-center">Qtde Vendida</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td data-th="Custo Total" class="text-center">{{lucro.totalCusto | formatMoney}}</td>
+                  <td data-th="Venda Total" class="text-center">{{lucro.totalVendas | formatMoney}}</td>
+                  <td data-th="Lucro" class="text-center">{{lucro.lucroRS | formatMoney}}</td>
+                  <td data-th="ML Média" class="text-center">{{lucro.mlMedia | formatPerc}}</td>
+                  <td data-th="Total Vendido" class="text-center">{{lucro.totalItensVendidos | formatMoney}}</td>
+                  <td data-th="Qtde Vendida" class="text-center">{{lucro.qtdVendida}}</td>
+                </tr>
+              </tbody>
+            </table>
+            
+        </center>
+         
+        <br><br>
+          
+        <table border="1"
+               style="border: 1px solid;
+                      border-collapse: collapse;
+                      width: 100%;">
+          <thead>
+            <tr>
+              <th class="text-center">Cód. Barras</th>
+              <th class="text-center">Nome Produto</th>
+              <th class="text-center">Qtd.</th>
+              <th class="text-center">Preço</th>
+              <th class="text-center">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="item in lucro.vDet">
+              <td class="text-center" style="padding: 5px;">{{item.codBarra}}</td>
+              <td class="text-center" style="padding: 5px;">{{item.nomeProduto}}</td>
+              <td class="text-center" style="padding: 5px;">{{item.qtd}}</td>
+              <td class="text-center" style="padding: 5px;">{{item.venda | formatMoney}}</td>
+              <td class="text-center" style="padding: 5px;">{{item.totalItem | formatMoney}}</td>
+            </tr>
+          </tbody>
+        </table>
+        
+      </div>
+      
     </div>
   </div>
 </template>
@@ -227,7 +299,7 @@ export default {
   data () {
       return {
           canGoBack: window.history.length > 1,
-          lucro: [],
+          lucro: '',
           familias: [],
           vendedores: [],
           dataInicial: moment(dt.startOfDate(hoje, 'month')).format('YYYY-MM-DDTHH:mm:SS'),
@@ -322,7 +394,7 @@ export default {
               }
             },
             {
-              label: 'total',
+              label: 'Total',
               field: 'totalItem',
               filter: true,
               sort: true,
@@ -482,8 +554,21 @@ export default {
         else{
             this.opened = true
         }
-      }
-  },
+      },
+      pdf(){
+        var printContents = document.getElementById('printable').innerHTML
+        var w = window.open();
+        self.focus();
+        w.document.open();
+        w.document.write('<'+'html'+'><'+'body'+'>');
+        w.document.write('<center><h2>Relatório de Lucro</h2></center>');
+        w.document.write(printContents);
+        w.document.write('<'+'/body'+'><'+'/html'+'>');
+        w.document.close();
+        w.print();
+        w.close();
+      },
+    },
   created(){
       let t = this
       t.listarFamilias()

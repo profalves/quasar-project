@@ -11,6 +11,14 @@
            <q-icon name="keyboard_arrow_left" />
         </q-btn>
     </q-fixed-position>
+    <q-fixed-position class="fixo" corner="bottom-right" :offset="[18, 18]" v-if="btnPrint">
+        <q-btn 
+           rounded
+           color="primary" 
+           @click="pdf">
+           imprimir
+        </q-btn>
+    </q-fixed-position>
     
   <div id="filtros">
       
@@ -61,6 +69,8 @@
            >Visualizar</q-btn>
     
   </div>
+  
+  <div id="printable">
     
   <q-collapsible opened label="Exibir gráfico" @open="montarGrafico">
     <div>
@@ -72,7 +82,7 @@
                   { label: 'Despesas', value: 1},
                   { label: 'Receitas', value: 2}
                 ]" />-->
-      <donut :data="data" v-if="visivel"></donut>  <!-- v-if="visivel"-->
+      <donut :data="data" v-if="visivel"></donut> 
       </div>
     </div>
   </q-collapsible>
@@ -90,6 +100,8 @@
         <div class="col">Pagas: {{somaRecPagas | formatMoney}}</div>
     </div>
   </q-collapsible>
+    
+  </div>
   <br><br><br><br>
     
 </div>
@@ -130,6 +142,7 @@ export default {
       somaRecPagar: 0,
       somaRecPagas: 0,
       visivel: false,
+      btnPrint: false,
       syncCount: 0,
         
       //grafico
@@ -437,8 +450,10 @@ export default {
     getContas(){
         let t = this
         t.listar()
-        //t.visivel = true
-        //t.montarGrafico()
+        t.btnPrint = true
+    },
+    pdf(){
+      window.print();
     },
     
     
@@ -462,5 +477,29 @@ export default {
 .over{
     z-index: 5;
 }
-    .btnGet{ margin: 20px 0 }
+.btnGet{ margin: 20px 0 }
+@media print {
+
+  body > * {
+     display:none;
+     max-width: 100%;
+  }
+
+  html {
+     max-width: 100%;
+     border-top: 0;
+  }
+
+  body > #printable {
+      display: block;
+      border: none;
+      max-width: 100%;
+      width: 100%;
+      height: 100%;
+      position: relative;
+      margin: 0; /* I tried to set negative margin/padding eg. here */
+      padding: 0;
+  }
+
+}
 </style>

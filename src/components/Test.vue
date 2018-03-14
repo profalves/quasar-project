@@ -1,6 +1,8 @@
 <template>
   <div id="testes">
     
+    <q-btn color="dark" @click="print(table)">pdf</q-btn><br><br>
+    
     <q-btn color="dark" @click="refresh()">refresh</q-btn><br><br>
       
     <div id="notify">
@@ -28,7 +30,7 @@
          <br><br>
      
      </div>
-     <hr>
+    <hr>
     
     <div id="whatsapp">
      <q-btn icon="fa-whatsapp" 
@@ -52,7 +54,7 @@
     </div> 
     
     <div id="table">
-        <table class="q-table" style="margin-left: 10px">
+        <table class="q-table" :class="computedClasses" style="margin-left: 10px">
           <thead>
             <tr>
               <th class="text-left">Name</th>
@@ -275,13 +277,13 @@ import {
 export default {
   data () {
     return {
-        spinnerColor: '#ff1d5e',
-        table,
-        misc: 'bordered', //[{value: 'bordered'},{value: 'highlight'}]
-        separator: 'cell', // none, horizontal, vertical, cell
-        stripe: 'odd', // none, odd, even
-        type: 'none', // flipped, responsive
-        gutter: 'none', // compact, loose
+      spinnerColor: '#ff1d5e',
+      table,
+      misc: 'bordered', //[{value: 'bordered'},{value: 'highlight'}]
+      separator: 'cell', // none, horizontal, vertical, cell
+      stripe: 'odd', // none, odd, even
+      type: 'none', // flipped, responsive
+      gutter: 'none', // compact, loose
     }
   },
   components: {
@@ -331,84 +333,96 @@ export default {
     },
   },
   methods: {
+    print(){
+      var printContents = document.getElementById('table').innerHTML
+      var w = window.open();
+      self.focus();
+      w.document.open();
+      w.document.write('<'+'html'+'><'+'body'+'>');
+      w.document.write(printContents);
+      w.document.write('<'+'/body'+'><'+'/html'+'>');
+      w.document.close();
+      w.print();
+      w.close();
+    },
     refresh(){
       localStorage.setItem('print', true)
       window.location.reload();
     },
     store(){
-        var teste = this.$setItem('teste', 'localForage')
-        console.log('teste', teste);
+        //var teste = this.$setItem('teste', 'localForage')
+        console.log('teste') //, teste);
     },
     launch (url) {
       openURL(url)
     },
     nvMe(){
-        let options = {
-          tag: '7Virtual', 
-          body: 'Notificando e vibrando',
-          renotify: false,
-          vibrate: [200, 100, 200]
-        }
-        let n = new Notification('Oi!', options)
+      let options = {
+        tag: '7Virtual', 
+        body: 'Notificando e vibrando',
+        renotify: false,
+        vibrate: [200, 100, 200]
+      }
+      let n = new Notification('Oi!', options)
 
-        n()
+      n()
     },
     vibrateMe(){
-        navigator.vibrate([100,30,100,30,100,200,200,30,200,30,200,200,100,30,100,30,100]) // Vibrate 'SOS' in Morse.
-        //console.log('vibrou');
+      navigator.vibrate([100,30,100,30,100,200,200,30,200,30,200,200,100,30,100,30,100]) // Vibrate 'SOS' in Morse.
+      //console.log('vibrou');
     },
     dialog(){
-        function onConfirm(buttonIndex) {
-            alert('You selected button ' + buttonIndex);
-        }
+      function onConfirm(buttonIndex) {
+          alert('You selected button ' + buttonIndex);
+      }
 
-        navigator.notification.confirm(
-            'You are the winner!', // message
-             onConfirm,            // callback to invoke with index of button pressed
-            'Game Over',           // title
-            ['Restart','Exit']     // buttonLabels
-        );
+      navigator.notification.confirm(
+          'You are the winner!', // message
+           onConfirm,            // callback to invoke with index of button pressed
+          'Game Over',           // title
+          ['Restart','Exit']     // buttonLabels
+      );
     },
     pdf(){
-        let doc = new JsPDF('p', 'pt', 'letter')
-        doc.text(10, 10, 'This is a test')
-        //doc.autoPrint() //aciona a impressão automática do documento
-        doc.save('autoprint.pdf')
+      let doc = new JsPDF('p', 'pt', 'letter')
+      doc.text(10, 10, 'This is a test')
+      //doc.autoPrint() //aciona a impressão automática do documento
+      doc.save('autoprint.pdf')
     },
     html() {
-        let doc = new JsPDF('p', 'pt', 'letter')
-        // source can be HTML-formatted string, or a reference
-        // to an actual DOM element from which the text will be scraped.
-        let source = $('#table')[0];
+      let doc = new JsPDF('p', 'pt', 'letter')
+      // source can be HTML-formatted string, or a reference
+      // to an actual DOM element from which the text will be scraped.
+      let source = $('#table')[0];
 
-        // we support special element handlers. Register them with jQuery-style 
-        // ID selector for either ID or node name. ("#iAmID", "div", "span" etc.)
-        // There is no support for any other type of selectors 
-        // (class, of compound) at this time.
-        let specialElementHandlers = {
-            // element with id of "bypass" - jQuery style selector
-            '#bypassme': function (element, renderer) {
-                // true = "handled elsewhere, bypass text extraction"
-                return true
-            }
-        };
-        let margins = {
-            top: 80,
-            bottom: 60,
-            left: 20,
-            width: 900
-        };
-        // all coords and widths are in jsPDF instance's declared units
-        // 'inches' in this case
-        doc.fromHTML(
-            source, // HTML string or DOM elem ref.
-            margins.left, // x coord
-            margins.top, { // y coord
-                'width': margins.width, // max width of content on PDF
-                'elementHandlers': specialElementHandlers
-        })
+      // we support special element handlers. Register them with jQuery-style 
+      // ID selector for either ID or node name. ("#iAmID", "div", "span" etc.)
+      // There is no support for any other type of selectors 
+      // (class, of compound) at this time.
+      let specialElementHandlers = {
+          // element with id of "bypass" - jQuery style selector
+          '#bypassme': function (element, renderer) {
+              // true = "handled elsewhere, bypass text extraction"
+              return true
+          }
+      };
+      let margins = {
+          top: 80,
+          bottom: 60,
+          left: 20,
+          width: 900
+      };
+      // all coords and widths are in jsPDF instance's declared units
+      // 'inches' in this case
+      doc.fromHTML(
+          source, // HTML string or DOM elem ref.
+          margins.left, // x coord
+          margins.top, { // y coord
+              'width': margins.width, // max width of content on PDF
+              'elementHandlers': specialElementHandlers
+      })
 
-        doc.save('Test.pdf');
+      doc.save('Test.pdf');
     },
     
     FulfillingBouncingCircleSpinner(){
@@ -611,9 +625,6 @@ export default {
         Loading.hide()
       }, 5000)
     }
-  },
-  mounted(){
-    this.store()
   }
   
 }

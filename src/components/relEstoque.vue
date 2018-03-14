@@ -11,6 +11,16 @@
            <q-icon name="chevron_left" />
         </q-btn>
     </q-fixed-position>
+    <q-fixed-position class="over" corner="bottom-right" :offset="[18, 8]">
+        <q-btn color="primary"
+               @click="pdf"
+               rounded
+               style="margin-bottom: 20px"
+               v-if="estoque.length > 0"
+               >
+               imprimir
+        </q-btn>
+    </q-fixed-position>
 
     <div id="lista">
       <q-collapsible :opened="opened" 
@@ -116,6 +126,8 @@
       </q-collapsible>
    
     <!--periodo-->
+      
+         
           
         <div v-if="estoque.length > 0">
         
@@ -200,8 +212,8 @@
               </thead>
               <tbody>
                 <tr v-for="item in formas">
-                  <td class="text-left">{{ item.formaPgto }}</td>
-                  <td class="text-left">{{ item.valorPgto | formatMoney }}</td>
+                  <td class="text-left">{{ item.forma_Pgto }}</td>
+                  <td class="text-left">{{ item.valor | formatMoney }}</td>
                 </tr>
               </tbody>
             </table> 
@@ -209,11 +221,65 @@
           </q-card-main>
         </q-card>
         <br><br><br><br>
+          
         
         </div>
         
         {{msg}}
-        
+      
+        <div id="printable" v-show="false">
+          <center><h2>Vendas Por Produtos</h2></center>
+          
+          <table class="q-table" style="margin: 20px">
+            <thead>
+              <tr>
+                <th class="text-left">Cód. Barras</th>
+                <th class="text-left">Nome</th>
+                <th class="text-left">Qtd.</th>
+                <th class="text-left">Preço</th>
+                <th class="text-left">Total</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr v-for="item in itens">
+                <td class="text-left">{{item.codBarra}}</td>
+                <td class="text-left">{{item.produto}}</td>
+                <td class="text-right">{{item.qtd}}</td>
+                <td class="text-right">{{item.valorVenda | formatMoney}}</td>
+                <td class="text-right">{{item.totalItem | formatMoney}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <hr>
+          
+          <q-card style="background-color:white; margin: 20px">
+            <q-card-title>
+              <h3>Formas de Pagamento:</h3>
+            </q-card-title>
+            <hr>
+            <q-card-main>
+
+              <table class="q-table">
+                <thead>
+                  <tr>
+                    <th class="text-left">Pagamento</th>
+                    <th class="text-left">Valor Pago</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="item in formas">
+                    <td class="text-left">{{ item.forma_Pgto }}</td>
+                    <td class="text-left">{{ item.valor | formatMoney }}</td>
+                  </tr>
+                </tbody>
+              </table> 
+
+            </q-card-main>
+          </q-card>
+
+        </div>
+      
     </div>
   </div>
 </template>
@@ -238,185 +304,185 @@ const API = localStorage.getItem('wsAtual')
 
 export default {
   data () {
-      return {
-          canGoBack: window.history.length > 1,
-          estoque: [],
-          familias: [],
-          vendedores: [],
-          dataInicial: moment(dt.startOfDate(hoje, 'month')).format('YYYY-MM-DDTHH:mm:SS'),
-          dataFinal: moment(dt.endOfDate(hoje, 'month')).format('YYYY-MM-DDTHH:mm:SS'),
-          agrup: 'Ordem alfabetica', // agrp: cat, marca, familia, ordem alfab.
-          familia: '',
-          vendedor: '',
-          produto: '',
-          codTipo: '',
-          composicao: false,
-          opened: true,
-          Produtos: [],
-          itens: [],
-          formas: [],
-          permissoes: {},
-          visivel: true,
-          msg: '',
-          
-          //lista
-          config: {
-            title: '',
-            refresh: (localStorage.getItem('refresh') === 'true'),
-            noHeader: (localStorage.getItem('noHeader') === 'true'),
-            columnPicker: (localStorage.getItem('columnPicker') === 'true'),
-            bodyStyle: {
-              maxHeight: '500px'
-            },
-            rowHeight: localStorage.getItem('rowHeight') + 'px',
-            responsive: (localStorage.getItem('responsive') === 'true'),
-            pagination: {
-              rowsPerPage: 15,
-              options: [5, 10, 15, 30, 50, 100]
-            },
-            messages: {
-              noData: '<i class="material-icons">warning</i> Não há dados para exibir.',
-              noDataAfterFiltering: '<i class="material-icons">warning</i> Sem resultados. Por favor, redefina suas buscas.'
-            },
-            // (optional) Override default labels. Useful for I18n.
-            labels: {
-              columns: 'Colunas',
-              allCols: 'Todas',
-              rows: 'Linhas',
-              selected: {
-                singular: 'item selecionado.',
-                plural: 'itens selecionados.'
-              },
-              clear: 'limpar seleção',
-              search: 'Buscar',
-              all: 'Todos'
-            }
-          },
-          colunas: [
-            {
-              label: 'Código',
-              field: 'codEmpresa',
-              filter: true,
-              sort: true,
-              type: 'string',
-              width: '60px'
-            },
-            {
-              label: 'Cód. Barras',
-              field: 'codBarra',
-              sort: true,
-              filter: true,
-              type: 'number',
-              width: '100px'
-            },
-            {
-              label: 'Nome',
-              field: 'produto',
-              width: '150px',
-              sort: true,
-              filter: true,
-              type: 'string',
-              /* sort (a, b) {
-                return (new Date(a)) - (new Date(b))
-              },
-              format (value) {
-                return new Date(value).toLocaleString()
-              }*/
-            },
-            {
-              label: 'Qtd.',
-              field: 'qtd',
-              sort: true,
-              filter: true,
-              type: 'number',
-              width: '80px'
-            },
-            {
-              label: 'Preço',
-              field: 'valorVenda',
-              filter: true,
-              sort: true,
-              type: 'number',
-              width: '80px',
-              format (value) {
-                function numberToReal(numero) {
-                    numero = numero.toFixed(2).split('.');
-                    numero[0] = "R$ " + numero[0].split(/(?=(?:...)*$)/).join('.');
-                    return numero.join(',');
-                }
-                let x = numberToReal(value);
-                return x
-              }
-            },
-            {
-              label: 'total',
-              field: 'totalItem',
-              filter: true,
-              sort: true,
-              type: 'number',
-              width: '80px',
-              format (value) {
-                function numberToReal(numero) {
-                    numero = numero.toFixed(2).split('.');
-                    numero[0] = "R$ " + numero[0].split(/(?=(?:...)*$)/).join('.');
-                    return numero.join(',');
-                }
-                let x = numberToReal(value);
-                return x
-              }
-            },
-            
-            
-          ],
-          pagination: (localStorage.getItem('pagination') === 'true'),
-          rowHeight: parseInt(localStorage.getItem('rowHeight')),
-          bodyHeightProp: localStorage.getItem('bodyHeightProp'),
-          bodyHeight: parseInt(localStorage.getItem('bodyHeight')),
-          
-          //datatime
-          dias: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
-          meses: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+    return {
+      canGoBack: window.history.length > 1,
+      estoque: [],
+      familias: [],
+      vendedores: [],
+      dataInicial: moment(dt.startOfDate(hoje, 'month')).format('YYYY-MM-DDTHH:mm:SS'),
+      dataFinal: moment(dt.endOfDate(hoje, 'month')).format('YYYY-MM-DDTHH:mm:SS'),
+      agrup: 'Ordem alfabetica', // agrp: cat, marca, familia, ordem alfab.
+      familia: '',
+      vendedor: '',
+      produto: '',
+      codTipo: '',
+      composicao: false,
+      opened: true,
+      Produtos: [],
+      itens: [],
+      formas: [],
+      permissoes: {},
+      visivel: true,
+      msg: '',
 
-      }
+      //lista
+      config: {
+        title: '',
+        refresh: (localStorage.getItem('refresh') === 'true'),
+        noHeader: (localStorage.getItem('noHeader') === 'true'),
+        columnPicker: (localStorage.getItem('columnPicker') === 'true'),
+        bodyStyle: {
+          maxHeight: '500px'
+        },
+        rowHeight: localStorage.getItem('rowHeight') + 'px',
+        responsive: (localStorage.getItem('responsive') === 'true'),
+        pagination: {
+          rowsPerPage: 15,
+          options: [5, 10, 15, 30, 50, 100]
+        },
+        messages: {
+          noData: '<i class="material-icons">warning</i> Não há dados para exibir.',
+          noDataAfterFiltering: '<i class="material-icons">warning</i> Sem resultados. Por favor, redefina suas buscas.'
+        },
+        // (optional) Override default labels. Useful for I18n.
+        labels: {
+          columns: 'Colunas',
+          allCols: 'Todas',
+          rows: 'Linhas',
+          selected: {
+            singular: 'item selecionado.',
+            plural: 'itens selecionados.'
+          },
+          clear: 'limpar seleção',
+          search: 'Buscar',
+          all: 'Todos'
+        }
+      },
+      colunas: [
+        {
+          label: 'Código',
+          field: 'codEmpresa',
+          filter: true,
+          sort: true,
+          type: 'string',
+          width: '60px'
+        },
+        {
+          label: 'Cód. Barras',
+          field: 'codBarra',
+          sort: true,
+          filter: true,
+          type: 'number',
+          width: '100px'
+        },
+        {
+          label: 'Nome',
+          field: 'produto',
+          width: '150px',
+          sort: true,
+          filter: true,
+          type: 'string',
+          /* sort (a, b) {
+            return (new Date(a)) - (new Date(b))
+          },
+          format (value) {
+            return new Date(value).toLocaleString()
+          }*/
+        },
+        {
+          label: 'Qtd.',
+          field: 'qtd',
+          sort: true,
+          filter: true,
+          type: 'number',
+          width: '80px'
+        },
+        {
+          label: 'Preço',
+          field: 'valorVenda',
+          filter: true,
+          sort: true,
+          type: 'number',
+          width: '80px',
+          format (value) {
+            function numberToReal(numero) {
+                numero = numero.toFixed(2).split('.');
+                numero[0] = "R$ " + numero[0].split(/(?=(?:...)*$)/).join('.');
+                return numero.join(',');
+            }
+            let x = numberToReal(value);
+            return x
+          }
+        },
+        {
+          label: 'total',
+          field: 'totalItem',
+          filter: true,
+          sort: true,
+          type: 'number',
+          width: '80px',
+          format (value) {
+            function numberToReal(numero) {
+                numero = numero.toFixed(2).split('.');
+                numero[0] = "R$ " + numero[0].split(/(?=(?:...)*$)/).join('.');
+                return numero.join(',');
+            }
+            let x = numberToReal(value);
+            return x
+          }
+        },
+
+
+      ],
+      pagination: (localStorage.getItem('pagination') === 'true'),
+      rowHeight: parseInt(localStorage.getItem('rowHeight')),
+      bodyHeightProp: localStorage.getItem('bodyHeightProp'),
+      bodyHeight: parseInt(localStorage.getItem('bodyHeight')),
+
+      //datatime
+      dias: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
+      meses: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+
+    }
   },
   computed: {
-      listaFamiliasProdutos: function () {
-          let a = this.familias
-          let lista = []
-          
-          lista = a.map(row => ({
-              label: row.nome, 
-              value: row.codigo
-          }))
-          
-          //console.log(lista)
-          return lista
-      },
-      listaProdutos: function () {
-          let a = this.Produtos
-          let lista = []
+    listaFamiliasProdutos() {
+      let a = this.familias
+      let lista = []
 
-          for (let i=0; i < a.length; i++) {
-              let n = a[i].nome
-              let c = a[i].codigo
-              lista.push({label: n, value: c})    
-          }
-          //console.log(lista)
-          return lista
-      },
-      listaVendedores: function () {
-          let a = this.vendedores
-          let lista = []
+      lista = a.map(row => ({
+          label: row.nome, 
+          value: row.codigo
+      }))
 
-          for (let i=0; i < a.length; i++) {
-              let n = a[i].nome
-              let c = a[i].codigoIdentificacao
-              lista.push({label: n, value: c})    
-          }
-          //console.log(lista)
-          return lista
-    
-      }
+      //console.log(lista)
+      return lista
+    },
+    listaProdutos() {
+      let a = this.Produtos
+      let lista = []
+
+      lista = a.map(row => ({
+          label: row.nome, 
+          value: row.codigo
+      }))
+
+      //console.log(lista)
+      return lista
+    },
+    listaVendedores() {
+      let a = this.vendedores
+      let lista = []
+
+      lista = a.map(row => ({
+        label: row.nome, 
+        value: row.codigoIdentificacao
+      }))
+      
+      //console.log(lista)
+      return lista
+
+    }
   },
   watch: {
       pagination (value) {
@@ -446,155 +512,167 @@ export default {
       }
   },
   methods:{
-      goBack(){
-        window.history.go(-1)
-      },
-      getEstoque(){
-        if(this.dataInicial === ''){
-            Toast.create.negative('Selecione um período antes')
-            return
-        }
-        let v = ''
-        if(this.vendedor !== ''){
-            v = '&codVendedor=' + this.vendedor
-        }
-        let tipo = ''
-        if(this.codTipo !== ''){
-            tipo = '&codcodTipo=' + this.codTipo
-        }
-        let fam = ''
-        if(this.familia !== ''){
-            fam = '&codFamilia=' + this.familia
-        }
-        let produto = ''
-        if(this.produto !== ''){
-            produto = '&codProduto=' + this.produto
-        }
-        
+    goBack(){
+      window.history.go(-1)
+    },
+    getEstoque(){
+      if(this.dataInicial === ''){
+          Toast.create.negative('Selecione um período antes')
+          return
+      }
+      let v = ''
+      if(this.vendedor !== ''){
+          v = '&codVendedor=' + this.vendedor
+      }
+      let tipo = ''
+      if(this.codTipo !== ''){
+          tipo = '&codcodTipo=' + this.codTipo
+      }
+      let fam = ''
+      if(this.familia !== ''){
+          fam = '&codFamilia=' + this.familia
+      }
+      let produto = ''
+      if(this.produto !== ''){
+          produto = '&codProduto=' + this.produto
+      }
+
+      Loading.show({
+        spinner: FulfillingBouncingCircleSpinner,
+        spinnerSize: 140,
+        message: 'Aguardando Dados...'
+      })
+      axios.get(API + 'relatorio/obterVendasPorProduto?' +
+              'dataInicial=' + this.dataInicial +
+              '&dataFinal=' + this.dataFinal + 
+              fam + v + tipo + produto +
+              '&agrupamento=' + this.agrup +
+              '&SomenteComposicoes=' + this.composicao)
+      .then((res)=>{
+          console.log(res.data)
+          this.estoque = res.data
+          this.itens = this.estoque[0].itens
+          this.formas = this.estoque[0].formasPgto
+          this.opened = false
+          Loading.hide()
+
+      })
+      .catch((e)=>{
+          Loading.hide()
+          console.log(e.response)
+          let error = e.response.data
+          console.log(error)
+          for(var i=0; error.length; i++){
+              Toast.create.negative(error[i].value)
+          }
+
+      })
+    },
+    listarFamilias(){
         Loading.show({
-          spinner: FulfillingBouncingCircleSpinner,
-          spinnerSize: 140,
-          message: 'Aguardando Dados...'
+            spinner: FulfillingBouncingCircleSpinner,
+            spinnerSize: 140,
+            message: 'Aguardando Dados...'
         })
-        axios.get(API + 'relatorio/obterVendasPorProduto?' +
-                'dataInicial=' + this.dataInicial +
-                '&dataFinal=' + this.dataFinal + 
-                fam + v + tipo + produto +
-                '&agrupamento=' + this.agrup +
-                '&SomenteComposicoes=' + this.composicao)
+        axios.get(API + 'produto/obterProdutosFamilia')
         .then((res)=>{
-            console.log(res.data)
-            this.estoque = res.data
-            this.itens = this.estoque[0].itens
-            this.formas = this.estoque[0].formasPgto
-            this.opened = false
-            Loading.hide()
-            
+          Loading.hide()
+          this.familias = res.data
         })
         .catch((e)=>{
-            Loading.hide()
-            console.log(e.response)
-            let error = e.response.data
-            console.log(error)
-            for(var i=0; error.length; i++){
-                Toast.create.negative(error[i].value)
-            }
-            
+          Loading.hide()
+          console.log(e)
         })
-      },
-      listarFamilias(){
-          Loading.show({
-              spinner: FulfillingBouncingCircleSpinner,
-              spinnerSize: 140,
-              message: 'Aguardando Dados...'
-          })
-          axios.get(API + 'produto/obterProdutosFamilia')
-          .then((res)=>{
+    },
+    todosProdutos(){
+        Loading.show({
+            spinner: FulfillingBouncingCircleSpinner,
+            spinnerSize: 140,
+            message: 'Aguardando Dados...'
+        })
+        axios.get(API + 'produto/obterproduto')
+        .then((res)=>{
             Loading.hide()
-            this.familias = res.data
-          })
-          .catch((e)=>{
-            Loading.hide()
-            console.log(e)
-          })
-      },
-      todosProdutos(){
-          Loading.show({
-              spinner: FulfillingBouncingCircleSpinner,
-              spinnerSize: 140,
-              message: 'Aguardando Dados...'
-          })
-          axios.get(API + 'produto/obterproduto')
-          .then((res)=>{
-              Loading.hide()
-              //console.log(res.data)
-              this.Produtos = res.data 
-          })
-          .catch((e)=>{
-            Loading.hide()
-            console.log(e.response)
-          })
-          
-      },
-      listarVendedores(){
-          Loading.show({
-              spinner: FulfillingBouncingCircleSpinner,
-              spinnerSize: 140,
-              message: 'Aguardando Dados...'
-          })
-          axios.get(API + 'usuario/obterUsuario')
-          .then((res)=>{
-            Loading.hide()
-            this.vendedores = res.data
             //console.log(res.data)
-          })
-          .catch((e)=>{
-            Loading.hide()
-            console.log(e)
-          })
-      },
-      collapse(){
-        if(this.opened === true){
-            this.opened = false
-        }
-        else{
-            this.opened = true
-        }
-      },
-      obterPermissoes(){
-        localforage.getItem('usuario')
-        .then((value) => {
-            if(value){
-                //console.log(value)
-                this.permissoes = value
-                if(this.permissoes.funcao === "VENDEDOR"){
-                    this.vendedor = parseInt(localStorage.getItem('codIdUser'))
-                    this.visivel = false
-                }
-            }
-            else{
-                console.log(value)
-            }
-
+            this.Produtos = res.data 
         })
-        .catch((err) => {
-                console.log(err)
-                console.log('fail')
-        }) 
+        .catch((e)=>{
+          Loading.hide()
+          console.log(e.response)
+        })
+
+    },
+    listarVendedores(){
+        Loading.show({
+            spinner: FulfillingBouncingCircleSpinner,
+            spinnerSize: 140,
+            message: 'Aguardando Dados...'
+        })
+        axios.get(API + 'usuario/obterUsuario')
+        .then((res)=>{
+          Loading.hide()
+          this.vendedores = res.data
+          //console.log(res.data)
+        })
+        .catch((e)=>{
+          Loading.hide()
+          console.log(e)
+        })
+    },
+    collapse(){
+      if(this.opened === true){
+          this.opened = false
       }
+      else{
+          this.opened = true
+      }
+    },
+    obterPermissoes(){
+      localforage.getItem('usuario')
+      .then((value) => {
+          if(value){
+              //console.log(value)
+              this.permissoes = value
+              if(this.permissoes.funcao === "VENDEDOR"){
+                  this.vendedor = parseInt(localStorage.getItem('codIdUser'))
+                  this.visivel = false
+              }
+          }
+          else{
+              console.log(value)
+          }
+
+      })
+      .catch((err) => {
+              console.log(err)
+              console.log('fail')
+      }) 
+    },
+    pdf(){
+      var printContents = document.getElementById('printable').innerHTML
+      var w = window.open();
+      self.focus();
+      w.document.open();
+      w.document.write('<'+'html'+'><'+'body'+'>');
+      w.document.write(printContents);
+      w.document.write('<'+'/body'+'><'+'/html'+'>');
+      w.document.close();
+      w.print();
+      w.close();
+    },
   },
   mounted(){
-      let t = this
-      t.listarVendedores()
-      t.listarFamilias()
-      t.todosProdutos()
-      t.obterPermissoes()
+    let t = this
+    t.listarVendedores()
+    t.listarFamilias()
+    t.todosProdutos()
+    t.obterPermissoes()
   }
 }
 </script>
 
 <style>
-    .over{
-        z-index: 5
-    }
+  .over{
+    z-index: 5
+  }
 </style>

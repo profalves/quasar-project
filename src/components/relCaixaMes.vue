@@ -8,6 +8,14 @@
          <q-icon name="keyboard_arrow_left" />
       </q-btn>
     </q-fixed-position>
+    <q-fixed-position class="fixo" corner="bottom-right" :offset="[18, 18]">
+      <q-btn color="primary"
+             rounded
+             @click="pdf"
+             v-if="caixa.length>0"
+             >imprimir
+      </q-btn>
+    </q-fixed-position>
     
     <div class="row">
       
@@ -33,16 +41,9 @@
     
     </div>
     
-    <q-btn color="primary"
-           rounded
-           @click="pdf"
-           v-if="caixa.length>0"
-           >imprimir
-    </q-btn>
-    
-    <div id="printable" v-if="caixa.length>0">
+    <div v-if="caixa.length>0">
       
-        <table class="q-table" :class="computedClasses" style="margin-left:1px">
+        <table class="q-table" :class="computedClasses" style="margin-left:1px; margin-top: 10px;">
           <thead>
             <tr>
               <th @click="irFechamento(item)">Abertura</th>
@@ -68,6 +69,29 @@
                     abrir
                 </q-btn>
               </td>
+            </tr>
+          </tbody>
+        </table>
+    </div>
+    <br><br><br><br>
+    
+    <div id="printable" v-show="false">
+      
+        <table class="q-table" :class="computedClasses" style="margin:20px">
+          <thead>
+            <tr>
+              <th @click="irFechamento(item)">Abertura</th>
+              <th @click="irFechamento(item)">Fechamento</th>
+              <th @click="irFechamento(item)">Operador</th>
+              <th @click="irFechamento(item)">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="item in caixa">
+              <td data-th="Name">{{ item.abertura | formatDate }}</td>
+              <td data-th="Name">{{ item.fechamento | formatDate }}</td>
+              <td data-th="Name">{{ item.operador }}</td>
+              <td data-th="Name">{{ item.status }}</td>
             </tr>
           </tbody>
         </table>
@@ -219,7 +243,16 @@ export default {
       
     },
     pdf(){
-      window.print()
+      var printContents = document.getElementById('printable').innerHTML
+      var w = window.open();
+      self.focus();
+      w.document.open();
+      w.document.write('<'+'html'+'><'+'body'+'>');
+      w.document.write(printContents);
+      w.document.write('<'+'/body'+'><'+'/html'+'>');
+      w.document.close();
+      w.print();
+      w.close();
     },
   },
   

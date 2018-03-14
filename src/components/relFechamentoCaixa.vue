@@ -10,6 +10,14 @@
            <q-icon name="chevron_left" />
         </q-btn>
     </q-fixed-position>
+    <q-fixed-position class="fixo" corner="bottom-right" :offset="[18, 20]" v-if="!print">
+        <q-btn color="primary"
+               rounded
+               @click="pdf"
+               v-if="relFechamento"
+               >imprimir
+        </q-btn>
+    </q-fixed-position>
     
     <div class="row">
         <div class="col-xl-6">
@@ -40,12 +48,7 @@
                  >fechar este caixa
           </q-btn>
 
-          <q-btn color="primary"
-                 rounded
-                 @click="pdf"
-                 v-if="relFechamento"
-                 >imprimir este caixa
-          </q-btn>
+          
 
         </div>
         <br><br>
