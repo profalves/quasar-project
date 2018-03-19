@@ -791,7 +791,7 @@
       contasPagar(){
         if(this.tipoConta === 'vencidas'){
           this.semana = ''
-          return this.desp.filter(row => row.vencimento <= moment(hoje).format('YYYY-MM-DDTHH:mm:SS'))
+          return this.desp.filter(row => row.vencimento <= moment(hoje).format('YYYY-MM-DD') + 'T23:59:59')
         }
         if(this.tipoConta === 'mes'){
           this.semana = ''
@@ -1100,7 +1100,7 @@
           })
           axios.get(API + 'conta/obterContas?tipo=cp' + periodo)
           .then((res)=>{
-              //console.log(res)
+              console.log(res)
               this.desp = res.data
           })
           .catch((e)=>{
@@ -1109,7 +1109,7 @@
           })
           axios.get(API + 'conta/obterContas?tipo=cr')
           .then((res)=>{
-              //console.log(res)
+              console.log(res)
               this.recs = res.data
           })
           .catch((e)=>{
