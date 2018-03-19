@@ -662,8 +662,9 @@
         vencimento: hoje,
         dataInicial: '',
         dataFinal: '',
-        tipoConta: 'hoje',
+        tipoConta: 'vencidas',
         tipos: [
+          {label: 'Vencidas', value: 'vencidas'},
           {label: 'Hoje', value: 'hoje'},
           {label: 'Esta Semana', value: 'semana'},
           {label: 'Este Mês', value: 'mes'},
@@ -788,6 +789,10 @@
         return 'Aniversariantes Hoje: ' + this.nivers.length    
       },
       contasPagar(){
+        if(this.tipoConta === 'vencidas'){
+          this.semana = ''
+          return this.desp.filter(row => row.vencimento <= moment(hoje).format('YYYY-MM-DDTHH:mm:SS'))
+        }
         if(this.tipoConta === 'mes'){
           this.semana = ''
           let di = moment(dt.startOfDate(hoje, 'month')).format('YYYY-MM-DDTHH:mm:SS')
@@ -813,6 +818,10 @@
         return this.desp.filter(row => row.vencimento.indexOf(data)>=0)
       },
       contasReceber(){
+        if(this.tipoConta === 'vencidas'){
+          this.semana = ''
+          return this.recs.filter(row => row.vencimento <= moment(hoje).format('YYYY-MM-DDTHH:mm:SS'))
+        }
         if(this.tipoConta === 'mes'){
           this.semana = ''
           let di = moment(dt.startOfDate(hoje, 'month')).format('YYYY-MM-DDTHH:mm:SS')
@@ -1069,13 +1078,27 @@
               console.log('fail')
           })     
         }
-        else{
+        else {
+          let periodo = ''
+          switch (this.tipoConta) {
+            case 'hoje':
+            periodo = '&hoje=true'
+            break
+            case 'semana':
+            periodo = '&semana=true'
+            break
+            case 'mes':
+            periodo = '&mes=true'
+            break
+            default:
+            periodo = '&vencidas=true'
+          }
           Loading.show({
               spinner: FulfillingBouncingCircleSpinner,
               spinnerSize: 140,
               message: 'Aguardando Dados...'
           })
-          axios.get(API + 'conta/obterContas?tipo=cp')
+          axios.get(API + 'conta/obterContas?tipo=cp' + periodo)
           .then((res)=>{
               //console.log(res)
               this.desp = res.data
