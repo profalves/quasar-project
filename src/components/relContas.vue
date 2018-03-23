@@ -147,8 +147,6 @@ export default {
         
       //grafico
       tipo: '',
-      width: 100,
-      height: parseInt(localStorage.getItem('alturaGrafico')),
       data: {
           labels: ['Pagas', 'Total'],
           datasets: [

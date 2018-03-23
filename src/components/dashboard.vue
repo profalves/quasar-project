@@ -792,6 +792,7 @@
         if(this.tipoConta === 'vencidas'){
           this.semana = ''
           return this.desp.filter(row => row.vencimento <= moment(hoje).format('YYYY-MM-DD') + 'T23:59:59')
+                          .filter(row => row.pgtoTitulo === false)
         }
         if(this.tipoConta === 'mes'){
           this.semana = ''
