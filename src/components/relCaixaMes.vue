@@ -248,6 +248,7 @@ export default {
       self.focus();
       w.document.open();
       w.document.write('<'+'html'+'><'+'body'+'>');
+      w.document.write('<h3>Relatório Caixa Mês</h3>');
       w.document.write(printContents);
       w.document.write('<'+'/body'+'><'+'/html'+'>');
       w.document.close();

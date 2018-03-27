@@ -119,47 +119,39 @@
             <strong v-if="fluxoCaixa.periodo !== null">Período:</strong> {{fluxoCaixa.periodo}} <br>
             <strong>Forma de Pagamento:</strong> {{fluxoCaixa.formaPgto}} <br>
             <strong>Total:</strong> {{fluxoCaixa.total | formatMoney}} <br><br>
-              
-            <q-infinite-scroll :handler="loadMore">
-              <table class="q-table responsive">
-                <thead>
-                  <tr>
-                    <th class="text-left">Tipo Op.</th>
-                    <th class="text-left">N. Nota</th>
-                    <th class="text-left">Cliente</th>
-                    <th class="text-left">Data/Hora</th>
-                    <th class="text-left">Valor</th>
-                    <th class="text-left">Saldo</th>
-                  </tr>
-                </thead>
+            
+            <table class="q-table responsive">
+              <thead>
+                <tr>
+                  <th class="text-left">Tipo Op.</th>
+                  <th class="text-left">N. Nota</th>
+                  <th class="text-left">Cliente</th>
+                  <th class="text-left">Data/Hora</th>
+                  <th class="text-left">Valor</th>
+                  <th class="text-left">Saldo</th>
+                </tr>
+              </thead>
 
-                <tbody>
-                  <tr v-for="fluxo in showingData">
-                    <td data-th="Tipo Op." class="text-left">{{fluxo.tipoOP}}</td>
-                    <td data-th="N. Nota" class="text-left">{{fluxo.nCupom}}</td>
-                    <td data-th="Cliente" class="text-left">{{fluxo.cliente}}</td>
-                    <td data-th="Data/Hora" class="text-left">{{fluxo.dataHora | date}}</td>
-                    <td data-th="Valor" class="text-right">{{fluxo.valor | formatMoney}}</td>
-                    <td data-th="Saldo" class="text-right">{{fluxo.saldo | formatMoney}}</td>
-                  </tr>
-                </tbody>
+              <tbody>
+                <tr v-for="fluxo in fluxoCaixa.caixas">
+                  <td data-th="Tipo Op." class="text-left">{{fluxo.tipoOP}}</td>
+                  <td data-th="N. Nota" class="text-left">{{fluxo.nCupom}}</td>
+                  <td data-th="Cliente" class="text-left">{{fluxo.cliente}}</td>
+                  <td data-th="Data/Hora" class="text-left">{{fluxo.dataHora | date}}</td>
+                  <td data-th="Valor" class="text-right">{{fluxo.valor | formatMoney}}</td>
+                  <td data-th="Saldo" class="text-right">{{fluxo.saldo | formatMoney}}</td>
+                </tr>
+              </tbody>
 
 
-              </table>
-              
-              <div slot="message" 
-                   class="row justify-center" 
-                   style="margin-bottom: 50px;"
-                   v-if="showingData.length !== fluxoCaixa.caixas.length"
-                   >
-                <q-spinner-dots :size="40" />
-              </div>
-            </q-infinite-scroll>
+            </table>
+            <q-pagination v-model="page" :max="maxPages" @change="getFluxo"/>
             
           </center>
          
           
           <br><br><br><br>
+          
         
         </div>
       
@@ -172,38 +164,40 @@
             <strong>Forma de Pagamento:</strong> {{fluxoCaixa.formaPgto}} <br>
             <strong>Total:</strong> {{fluxoCaixa.total | formatMoney}} <br><br>
             
-              <table class="q-table responsive">
-                <thead>
-                  <tr>
-                    <th class="text-left">Tipo Op.</th>
-                    <th class="text-left">N. Nota</th>
-                    <th class="text-left">Cliente</th>
-                    <th class="text-left">Data/Hora</th>
-                    <th class="text-left">Valor</th>
-                    <th class="text-left">Saldo</th>
-                  </tr>
-                </thead>
+            <table class="q-table responsive">
+              <thead>
+                <tr>
+                  <th class="text-left">Tipo Op.</th>
+                  <th class="text-left">N. Nota</th>
+                  <th class="text-left">Cliente</th>
+                  <th class="text-left">Data/Hora</th>
+                  <th class="text-left">Valor</th>
+                  <th class="text-left">Saldo</th>
+                </tr>
+              </thead>
 
-                <tbody>
-                  <tr v-for="fluxo in fluxoCaixa.caixas">
-                    <td data-th="Tipo Op." class="text-left">{{fluxo.tipoOP}}</td>
-                    <td data-th="N. Nota" class="text-left">{{fluxo.nCupom}}</td>
-                    <td data-th="Cliente" class="text-left">{{fluxo.cliente}}</td>
-                    <td data-th="Data/Hora" class="text-left">{{fluxo.dataHora | date}}</td>
-                    <td data-th="Valor" class="text-right">{{fluxo.valor | formatMoney}}</td>
-                    <td data-th="Saldo" class="text-right">{{fluxo.saldo | formatMoney}}</td>
-                  </tr>
-                </tbody>
+              <tbody>
+                <tr v-for="fluxo in fluxoCaixa.caixas">
+                  <td data-th="Tipo Op." class="text-left">{{fluxo.tipoOP}}</td>
+                  <td data-th="N. Nota" class="text-left">{{fluxo.nCupom}}</td>
+                  <td data-th="Cliente" class="text-left">{{fluxo.cliente}}</td>
+                  <td data-th="Data/Hora" class="text-left">{{fluxo.dataHora | date}}</td>
+                  <td data-th="Valor" class="text-right">{{fluxo.valor | formatMoney}}</td>
+                  <td data-th="Saldo" class="text-right">{{fluxo.saldo | formatMoney}}</td>
+                </tr>
+              </tbody>
 
 
-              </table>
+            </table>
             
           </center>
          
           
           <br><br><br><br>
+          
         
-        </div> 
+        </div>
+      
     </div>
   </div>
 </template>
@@ -248,6 +242,11 @@ export default {
       //datatime
       dias: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
       meses: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+      
+      //pagination
+      page: 1,
+      minPages: 1,
+      maxPages: ''
 
     }
   },
@@ -298,9 +297,6 @@ export default {
 
       return lista
 
-    },
-    showingData(){
-      return this.fluxoCaixa.caixas.slice(0, this.actualMaxPosition)
     }
 
   },
@@ -310,12 +306,6 @@ export default {
     }
   },
   methods:{
-    loadMore(index, done){
-      setTimeout(() => {
-        this.actualMaxPosition += 5
-        done()
-      }, 2500)
-    },
     goBack(){
       window.history.go(-1)
     },
@@ -405,10 +395,12 @@ export default {
       axios.get(API + 'relatorio/obterFluxoCaixa?' +
               'dataInicial=' + this.dataInicial +
               '&dataFinal=' + this.dataFinal + 
-              opcoes + caixa + operador + forma)
+              opcoes + caixa + operador + forma +
+              '&pagina=' + this.page)
       .then((res)=>{
           console.log('Fluxo de Caixa:', res)
           this.fluxoCaixa = res.data
+          this.maxPages = Math.ceil(parseInt(this.fluxoCaixa.qtdRegistros) / 20)
           if(this.fluxoCaixa.value){
               Toast.create.negative(this.fluxoCaixa.value)
               return
@@ -434,7 +426,6 @@ export default {
     pdf(){
       var printContents = document.getElementById('printable').innerHTML
       var w = window.open();
-      self.focus();
       w.document.open();
       w.document.write('<'+'html'+'><'+'body'+'>');
       w.document.write(printContents);
@@ -442,6 +433,7 @@ export default {
       w.document.close();
       w.print();
       w.close();
+      
     },
 
   },

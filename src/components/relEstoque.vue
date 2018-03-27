@@ -138,9 +138,8 @@
           style="background-color:white;"
         >
         </q-data-table>
-
-
-
+        <center><q-pagination v-model="page" :max="maxPages" @change="getEstoque"/></center>
+        
         <!-- Configurações -->
         <q-collapsible
           label="Opções"
@@ -158,7 +157,7 @@
             <div class="column group" style="margin: -5px -7px">
               <q-checkbox v-model="config.refresh" label="Atualizar tabela (refresh)" />
               <q-checkbox v-model="config.columnPicker" label="Selecionar colunas" />
-              <q-checkbox v-model="pagination" label="Paginação" />
+              <!--<q-checkbox v-model="pagination" label="Paginação" />-->
               <q-checkbox v-model="config.responsive" label="Responsiva" />
               <q-checkbox v-model="config.noHeader" label="Sem Cabeçário" />
             </div>
@@ -336,10 +335,6 @@ export default {
         },
         rowHeight: localStorage.getItem('rowHeight') + 'px',
         responsive: (localStorage.getItem('responsive') === 'true'),
-        pagination: {
-          rowsPerPage: 15,
-          options: [5, 10, 15, 30, 50, 100]
-        },
         messages: {
           noData: '<i class="material-icons">warning</i> Não há dados para exibir.',
           noDataAfterFiltering: '<i class="material-icons">warning</i> Sem resultados. Por favor, redefina suas buscas.'
@@ -442,6 +437,11 @@ export default {
       //datatime
       dias: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
       meses: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+      
+      //pagination
+      page: 1,
+      minPages: 1,
+      maxPages: ''
 
     }
   },
@@ -547,24 +547,27 @@ export default {
               '&dataFinal=' + this.dataFinal + 
               fam + v + tipo + produto +
               '&agrupamento=' + this.agrup +
-              '&SomenteComposicoes=' + this.composicao)
+              '&SomenteComposicoes=' + this.composicao +
+              '&pagina=' + this.page)
       .then((res)=>{
-          console.log(res.data)
-          this.estoque = res.data
-          this.itens = this.estoque[0].itens
-          this.formas = this.estoque[0].formasPgto
-          this.opened = false
-          Loading.hide()
+        console.log(res)
+        this.estoque = res.data
+        this.itens = this.estoque[0].itens
+        this.formas = this.estoque[0].formasPgto
+        this.opened = false
+        this.maxPages = Math.ceil(parseInt(this.estoque[0].qtdRegistros) / 20)
+        console.log('maxPages', this.maxPages);
+        Loading.hide()
 
       })
       .catch((e)=>{
-          Loading.hide()
-          console.log(e.response)
-          let error = e.response.data
-          console.log(error)
-          for(var i=0; error.length; i++){
-              Toast.create.negative(error[i].value)
-          }
+        Loading.hide()
+        console.log(e.response)
+        let error = e.response.data
+        console.log(error)
+        for(var i=0; error.length; i++){
+            Toast.create.negative(error[i].value)
+        }
 
       })
     },

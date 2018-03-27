@@ -135,7 +135,7 @@
     
   
       
-  <q-infinite-scroll :handler="loadMore" v-if="notas.length>0" id="printable">
+  <div v-if="notas.length>0" id="printable">
       
     <q-list v-for="item in showingData" 
             :key="item.cab.codigo"
@@ -196,14 +196,12 @@
         </q-item-side>
       </q-item>
       <hr>
-    </q-list> 
-      <div slot="message"
-           v-if="notas.length>0 && notas.length !== showingData.length"
-           class="row justify-center" 
-           style="margin: 50px;">
-        <q-spinner-dots :size="40" />
-      </div>
-  </q-infinite-scroll>
+    </q-list>
+    
+    <center><q-pagination v-model="page" :max="maxPages" @change="getNotas"/></center>
+  </div>
+    
+  
        
     <br><br><br><br>
         
@@ -270,6 +268,11 @@ export default {
       //datatime
       dias: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
       meses: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+      
+      //pagination
+      page: 1,
+      minPages: 1,
+      maxPages: ''
 
     }
   },
@@ -400,11 +403,13 @@ export default {
               '&tipoNotaE=false' + 
               '&NumeroNotaE=false' + 
               */
-              '&ocultarExcluidos=' + this.ocultarCanceladas)
+              '&ocultarExcluidos=' + this.ocultarCanceladas +
+              '&pagina=' + this.page)
       .then((res)=>{
-          console.log(res.data)
+          console.log(res)
           this.notas = res.data
           this.opened = false
+          this.maxPages = Math.ceil(parseInt(this.notas[0].qtdRegistros) / 20)
           Loading.hide()
       })
       .catch((e)=>{
