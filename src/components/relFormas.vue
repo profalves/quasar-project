@@ -125,10 +125,8 @@
           style="background-color:white;"
         >
         </q-data-table>
-
-
-
-        <!-- Configurações -->
+        
+        <!-- itens -->
         <q-collapsible
           label="Itens"
           icon="local_mall"
@@ -276,10 +274,6 @@ export default {
             rowHeight: localStorage.getItem('rowHeight') + 'px',
             responsive: (localStorage.getItem('responsive') === 'true'),
             selection: 'single',
-            pagination: {
-              rowsPerPage: 15,
-              options: [5, 10, 15, 30, 50, 100]
-            },
             messages: {
               noData: '<i class="material-icons">warning</i> Não há dados para exibir.',
               noDataAfterFiltering: '<i class="material-icons">warning</i> Sem resultados. Por favor, redefina suas buscas.'
@@ -345,6 +339,11 @@ export default {
           //datatime
           dias: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
           meses: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+        
+          //pagination
+          page: 1,
+          minPages: 1,
+          maxPages: ''
 
       }
   },
@@ -411,9 +410,10 @@ export default {
         })
         axios.get(API + 'relatorio/obterRptPorFormaPgto?' +
                 'dataInicial=' + this.dataInicial +
-                '&dataFinal=' + this.dataFinal + f)
+                '&dataFinal=' + this.dataFinal + f +
+                '&pagina=' + this.page)
         .then((res)=>{
-            console.log(res.data)
+            console.log(res)
             this.vendas = res.data
             this.totalizadores = this.vendas.shift()
             this.opened = false

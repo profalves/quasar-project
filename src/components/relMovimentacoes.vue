@@ -170,6 +170,7 @@
           style="background-color:white;"
         >
         </q-data-table>
+        <center><q-pagination v-model="page" :max="maxPages" @change="getMD"/></center>
 
 
 
@@ -355,10 +356,6 @@ export default {
         },
         rowHeight: localStorage.getItem('rowHeight') + 'px',
         responsive: (localStorage.getItem('responsive') === 'true'),
-        pagination: {
-          rowsPerPage: 5,
-          options: [5, 10, 15, 30, 50, 100]
-        },
         selection: 'single',
         messages: {
           noData: '<i class="material-icons">warning</i> Não há dados para exibir.',
@@ -561,6 +558,11 @@ export default {
       stripe: 'odd', // none, odd, even
       type: 'none', // flipped, responsive
       gutter: 'none', // compact, loose
+      
+      //pagination
+      page: 1,
+      minPages: 1,
+      maxPages: ''
 
     }
   },
@@ -712,12 +714,14 @@ export default {
                 'dataInicial=' + this.dataInicial +
                 '&dataFinal=' + this.dataFinal + 
                 '&CodTipoMovimentacao=' + this.tipoMov +
-                tipoSai + c + p + excluido)
+                tipoSai + c + p + excluido +
+                '&pagina=' + this.page)
         .then((res)=>{
             Loading.hide()
             console.log(res.data)
             this.relMovs = res.data
             this.pedidos = this.relMovs.pedidos
+            this.maxPages = Math.ceil(parseInt(this.relMovs.qtdRegistros) / 20)
             this.visivel = true
             this.obs = ''
             this.filtroColap = false

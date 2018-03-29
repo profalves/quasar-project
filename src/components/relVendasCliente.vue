@@ -102,9 +102,8 @@
           style="background-color:white;"
         >
         </q-data-table>
-
-
-
+        <center><q-pagination v-model="page" :max="maxPages" @change="getVendas"/></center>
+      
         <!-- Configurações -->
         <q-collapsible
           label="Opções"
@@ -122,7 +121,6 @@
             <div class="column group" style="margin: -5px -7px">
               <q-checkbox v-model="config.refresh" label="Atualizar tabela (refresh)" />
               <q-checkbox v-model="config.columnPicker" label="Selecionar colunas" />
-              <q-checkbox v-model="pagination" label="Paginação" />
               <q-checkbox v-model="config.responsive" label="Responsiva" />
               <q-checkbox v-model="config.noHeader" label="Sem Cabeçário" />
             </div>
@@ -268,10 +266,6 @@ export default {
         },
         rowHeight: localStorage.getItem('rowHeight') + 'px',
         responsive: (localStorage.getItem('responsive') === 'true'),
-        pagination: {
-          rowsPerPage: 15,
-          options: [5, 10, 15, 30, 50, 100]
-        },
         messages: {
           noData: '<i class="material-icons">warning</i> Não há dados para exibir.',
           noDataAfterFiltering: '<i class="material-icons">warning</i> Sem resultados. Por favor, redefina suas buscas.'
@@ -347,6 +341,11 @@ export default {
       //datatime
       dias: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
       meses: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+      
+      //pagination
+      page: 1,
+      minPages: 1,
+      maxPages: ''
 
     }
   },
@@ -435,11 +434,15 @@ export default {
       })
       axios.get(API + 'relatorio/obterRptPorCliente?' +
               'dataInicial=' + this.dataInicial +
-              '&dataFinal=' + this.dataFinal + v)
+              '&dataFinal=' + this.dataFinal + v +
+              '&pagina=' + this.page)
       .then((res)=>{
-          console.log(res.data)
+          console.log(res)
           this.vendas = res.data
           this.totalizadores = this.vendas.shift()
+          console.log('totalizadores:', this.totalizadores);
+          this.maxPages = Math.ceil(parseInt(this.totalizadores.qtdRegistros) / 20)
+          console.log('maxPages:', this.maxPages);
           this.opened = false
           Loading.hide()
       })
