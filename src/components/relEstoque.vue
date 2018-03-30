@@ -323,6 +323,7 @@ export default {
       permissoes: {},
       visivel: true,
       msg: '',
+      URL: '',
 
       //lista
       config: {
@@ -552,6 +553,7 @@ export default {
       .then((res)=>{
         console.log(res)
         this.estoque = res.data
+        this.URL = res.config.url
         this.itens = this.estoque[0].itens
         this.formas = this.estoque[0].formasPgto
         this.opened = false
@@ -652,6 +654,27 @@ export default {
       }) 
     },
     pdf(){
+      var url = this.URL.split('&pagina').shift(), self = this, oldArray = this.estoque
+      
+      async function loadprint(){
+        console.log('url:', url);
+        Loading.show()
+        const apiResponse = await fetch(`${url}`);
+        console.log('apiResponse', apiResponse);
+        self.estoque = await apiResponse.json()
+        console.log('result:', self.estoque)
+      }
+      
+      loadprint().then(() => {
+        self.print()
+        Loading.hide()
+      }).then(()=>{
+        self.fluxoCaixa = oldArray
+      })
+      
+      
+    },
+    print(){
       var printContents = document.getElementById('printable').innerHTML
       var w = window.open();
       self.focus();

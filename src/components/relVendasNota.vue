@@ -198,7 +198,7 @@
       <hr>
     </q-list>
     
-    <center><q-pagination v-model="page" :max="maxPages" @change="getNotas"/></center>
+    <center><q-pagination v-if="!false" v-model="page" :max="maxPages" @change="getNotas"/></center>
   </div>
     
   
@@ -245,7 +245,7 @@ export default {
       permissoes: '',
       visivel: true,
       actualMaxPosition: 5,
-
+      print: false,
       styles: [
         '',
         'bordered',
@@ -264,7 +264,7 @@ export default {
       stripe: 'odd', //none, odd, even
       type: 'none', //none, flipped, responsive
       gutter: 'none', //none, compact, loose
-
+      
       //datatime
       dias: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
       meses: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
@@ -498,6 +498,28 @@ export default {
       }) 
     },
     pdf(){
+      var url = this.URL.split('&pagina').shift(), self = this, oldArray = this.fluxoCaixa
+      self.print = true
+      async function loadprint(){
+        console.log('url:', url);
+        Loading.show()
+        const apiResponse = await fetch(`${url}`);
+        console.log('apiResponse', apiResponse);
+        self.fluxoCaixa = await apiResponse.json()
+        console.log('result:', self.fluxoCaixa)
+      }
+      
+      loadprint().then(() => {
+        self.imprimir()
+        Loading.hide()
+      }).then(()=>{
+        self.print = false
+        self.fluxoCaixa = oldArray
+      })
+      
+      
+    },
+    imprimir(){
       var printContents = document.getElementById('printable').innerHTML
       var w = window.open();
       self.focus();

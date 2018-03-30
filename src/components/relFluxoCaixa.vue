@@ -238,6 +238,7 @@ export default {
       opcoes: 'todas',
       visivel: false,
       actualMaxPosition: 5,
+      URL: '',
 
       //datatime
       dias: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
@@ -398,7 +399,8 @@ export default {
               opcoes + caixa + operador + forma +
               '&pagina=' + this.page)
       .then((res)=>{
-          console.log('Fluxo de Caixa:', res)
+          console.log('Fluxo de Caixa:', res.data)
+          this.URL = res.config.url
           this.fluxoCaixa = res.data
           this.maxPages = Math.ceil(parseInt(this.fluxoCaixa.qtdRegistros) / 20)
           if(this.fluxoCaixa.value){
@@ -424,6 +426,27 @@ export default {
       }
     },
     pdf(){
+      var url = this.URL.split('&pagina').shift(), self = this, oldArray = this.fluxoCaixa
+      
+      async function loadprint(){
+        console.log('url:', url);
+        Loading.show()
+        const apiResponse = await fetch(`${url}`);
+        console.log('apiResponse', apiResponse);
+        self.fluxoCaixa = await apiResponse.json()
+        console.log('result:', self.fluxoCaixa)
+      }
+      
+      loadprint().then(() => {
+        self.print()
+        Loading.hide()
+      }).then(()=>{
+        self.fluxoCaixa = oldArray
+      })
+      
+      
+    },
+    print(){  
       var printContents = document.getElementById('printable').innerHTML
       var w = window.open();
       w.document.open();
