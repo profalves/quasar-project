@@ -10,7 +10,7 @@
       </q-fixed-position>
       
       <div class="row">
-        <div class="col-xl-6">
+        <div class="col"><!--<div class="col-xl-6">-->
           <q-list inset-separator style="background-color: white; margin-bottom: 40px;">
             <q-list-header>Configurações Gerais</q-list-header>
             <!-- DASHBOARD -->

@@ -1,7 +1,5 @@
 <template>
     <div class="scrollbar" id="style-scrollbar">
-      
-      
       <div class="user">
         <img :src="image"
              class="avatar"
@@ -10,36 +8,31 @@
           {{user}} <br>
           {{emp}} <br>
       </div>
-      
-      <!--
-        Use <q-side-link> component
-        instead of <q-item> for
-        internal vue-router navigation
-      -->
         
       <q-list no-border link inset-delimiter>
+        <q-list-header>Menu</q-list-header>
         <q-item to="/home">
           <q-item-side icon="flag" />
           <q-item-main label="Inicio" />
         </q-item>
-        <q-collapsible icon="people" label="Pessoas" sublabel="Listagem e Cadastro de clientes, fornecedores, etc.">
+        <q-collapsible icon="people" label="Pessoas"><!-- sublabel="Listagem e Cadastro de clientes, fornecedores, etc.">-->
           <q-list highlight no-border>
             <q-item @click="novoCliente">
-              <q-item-main label="Novo Cadastro" sublabel="Criar e editar cadastro de Pessoas" />
+              <q-item-main label="Novo Cadastro" /><!--sublabel="Criar e editar cadastro de Pessoas" />-->
             </q-item>
             <q-item>
               <q-side-link to="/clientes">
-                <q-item-main label="Localizar Pessoas" sublabel="Listagem e Busca de Pessoas" />
+                <q-item-main label="Localizar Pessoas" /><!-- sublabel="Listagem e Busca de Pessoas" />-->
               </q-side-link>
             </q-item>
             <q-item>
               <q-side-link to="/promoClientes">
-                <q-item-main label="Promoções para Clientes" sublabel="Cadastro de Promoções de compras acima de um certo valor" />
+                <q-item-main label="Promoções para Clientes" /><!-- sublabel="Cadastro de Promoções de compras acima de um certo valor" />-->
               </q-side-link>
             </q-item>
             <q-item>
               <q-side-link to="/nivers">
-                <q-item-main label="Aniversariantes" sublabel="Lista de Aniversariantes e seus contatos por cada mês" />
+                <q-item-main label="Aniversariantes" /><!-- sublabel="Lista de Aniversariantes e seus contatos por cada mês" />-->
               </q-side-link>
             </q-item>
             <!--<q-item>
@@ -51,36 +44,36 @@
         </q-collapsible>
         <q-item to="/produtos" v-if="!permissoes.pdV_PermitirTransfProduto && !permissoes.ret_AlteraTabPreco">
           <q-item-side icon="assignment_turned_in" />
-          <q-item-main label="Produtos" sublabel="Cadastros e Busca de Produtos" />
+          <q-item-main label="Produtos" /><!-- sublabel="Cadastros e Busca de Produtos" />-->
         </q-item>
-        <q-collapsible icon="assignment_turned_in" label="Produtos" sublabel="Listagem e Cadastro de Produtos" v-if="permissoes.pdV_PermitirTransfProduto || permissoes.ret_AlteraTabPreco">
+        <q-collapsible icon="assignment_turned_in" label="Produtos" v-if="permissoes.pdV_PermitirTransfProduto || permissoes.ret_AlteraTabPreco">
           <q-list highlight no-border>
             <q-item @click="novoProduto">
-              <q-item-main label="Novo Produto" sublabel="Cadastrar e Editar Produtos" />
+              <q-item-main label="Novo Produto" /><!-- sublabel="Cadastrar e Editar Produtos" />-->
             </q-item>
             <q-item>
               <q-side-link to="/produtos">
-                <q-item-main label="Localizar Produtos" sublabel="Listagem e Cadastro de Produtos" />
+                <q-item-main label="Localizar Produtos" /><!-- sublabel="Listagem e Cadastro de Produtos" />-->
               </q-side-link>
             </q-item>
             <q-item>
               <q-side-link to="/promoProdutos">
-                <q-item-main label="Promoções" sublabel="Cadastro de Promoções dos Produtos" />
+                <q-item-main label="Promoções" /><!-- sublabel="Cadastro de Promoções dos Produtos" />-->
               </q-side-link>
             </q-item>
             <q-item>
               <q-side-link to="/ordemCompra">
-                <q-item-main label="Ordem de Compra" sublabel="Geração de ordens de compra para Fornecedores" />
+                <q-item-main label="Ordem de Compra" /><!-- sublabel="Geração de ordens de compra para Fornecedores" />-->
               </q-side-link>
             </q-item>
             <q-item v-if="permissoes.pdV_PermitirTransfProduto">
               <q-side-link to="/transFiliais">
-                <q-item-main label="Transferencias" sublabel="Transferencias entre filiais" />
+                <q-item-main label="Transferencias" /><!-- sublabel="Transferencias entre filiais" />-->
               </q-side-link>
             </q-item>
             <q-item v-if="permissoes.ret_AlteraTabPreco">
               <q-side-link to="/tabprecos">
-                <q-item-main label="Tabelas de Peços" sublabel="Cadastrar tabelas de Preços" />
+                <q-item-main label="Tabelas de Peços" /><!-- sublabel="Cadastrar tabelas de Preços" />-->
               </q-side-link>   
             </q-item>
           </q-list>  
@@ -89,40 +82,40 @@
         <q-item to="/contas" v-if="permissoes.acessaFinanceiro">
           <q-item-side icon="account_balance_wallet"/>
           <q-side-link to="/contas" class="link">
-               <q-item-main label="Contas" sublabel="Cadastros Financeiros" />
+               <q-item-main label="Contas" /><!-- sublabel="Cadastros Financeiros" />-->
           </q-side-link>
           
         </q-item>
         <q-item to="/cadnotas?q=save">
           <q-item-side icon="insert_drive_file" />
           <q-side-link to="/cadnotas?q=save" class="link">
-               <q-item-main label="Entrada de Notas" sublabel="Cadastros de NFe de Compras" />
+               <q-item-main label="Entrada de Notas" /><!-- sublabel="Cadastros de NFe de Compras" />-->
           </q-side-link>
         </q-item>
         <q-item to="/relatorios">
           <q-item-side icon="insert_chart" />
           <q-side-link to="/relatorios" class="link">
-                <q-item-main label="Financeiro" sublabel="Relatórios Gerais" />
+                <q-item-main label="Financeiro" /><!-- sublabel="Relatórios Gerais" />-->
           </q-side-link>
         </q-item>
         <q-item to="/usuarios" v-if="permissoes.cadUsuario">
           <q-item-side icon="person" />
           <q-side-link to="/usuarios" class="link">
-                <q-item-main label="Usuários" sublabel="Cadastros de Usuários, Alteração de Senhas, etc." />
+                <q-item-main label="Usuários" /> <!--sublabel="Cadastros de Usuários, Alteração de Senhas, etc." />-->
           </q-side-link>
           
         </q-item>
         <q-item to="/config">
           <q-item-side icon="settings" />
           <q-side-link to="/config" class="link">
-                <q-item-main label="Configurações" sublabel="Configurações Gerais" />
+                <q-item-main label="Configurações" /><!-- sublabel="Configurações Gerais" />-->
           </q-side-link>
           
         </q-item>
         <q-item to="/suporte">
           <q-item-side icon="fa-life-ring" />
           <q-side-link to="/suporte" class="link">
-                <q-item-main label="Suporte" sublabel="Solicitar Ajuda do Suporte Remoto" />
+                <q-item-main label="Suporte" /><!-- sublabel="Solicitar Ajuda do Suporte Remoto" />-->
           </q-side-link>
           
         </q-item>
@@ -131,21 +124,7 @@
           <q-side-link to="/login" class="link">
                 <q-item-main label="Sair" />
           </q-side-link>
-        </q-item>  
-        <!--<q-item @click="sair">
-          <q-item-side icon="exit_to_app" />
-            <q-item-main label="Fechar" />
-        </q-item>  
-        -->
-        <!-- 
-         
-        <q-item @click="launch('https://github.com/profalves')">
-          
-          <q-item-side class="fa fa-github fa-2x"/>
-          <q-item-main label="Acessar o Github" sublabel="quasar-framework.org" />
         </q-item>
-        
-        -->
         
         
       </q-list>  

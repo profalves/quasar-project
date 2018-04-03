@@ -206,7 +206,7 @@ export default {
           axios.get(API + 'conta/obterContas?tipo=' + this.tipo + '&pagas=' + this.subtipo)
           .then((res)=>{
               console.log(res)
-              this.contas = res.data
+              this.contas = res.data.contas
               Loading.hide()
           })
           .catch((e)=>{
@@ -287,28 +287,28 @@ export default {
       }
     },
     listarDespesasAPagar(){
-          Loading.show({
-              spinner: FulfillingBouncingCircleSpinner,
-              spinnerSize: 140,
-              message: 'Aguardando Dados...'
-          })
-          axios.get(API + 'conta/obterContas?tipo=CP&pagas=false&dataInicial=' + this.dataInicial + '&dataFinal=' + this.dataFinal)
-          .then((res)=>{
-              console.log('despPagar', res)
-              this.despPagar = res.data
-              if(res.data.length === 0){ return 0 }
-              let lista = []
-              lista = this.despPagar.map(row => row.valorTitulo)
-              this.somaDespPagar = lista.reduce(function(a, b) {
-                return a + b;
-              });
-              Loading.hide()
-          })
-          .catch((e)=>{
-            console.log(e)
-            Loading.hide()
-          })  
-        },
+      Loading.show({
+          spinner: FulfillingBouncingCircleSpinner,
+          spinnerSize: 140,
+          message: 'Aguardando Dados...'
+      })
+      axios.get(API + 'conta/obterContas?tipo=CP&pagas=false&dataInicial=' + this.dataInicial + '&dataFinal=' + this.dataFinal)
+      .then((res)=>{
+          console.log('despPagar', res)
+          this.despPagar = res.data.contas
+          if(res.data.length === 0){ return 0 }
+          let lista = []
+          lista = this.despPagar.map(row => row.valorTitulo)
+          this.somaDespPagar = lista.reduce(function(a, b) {
+            return a + b;
+          });
+          Loading.hide()
+      })
+      .catch((e)=>{
+        console.log(e)
+        Loading.hide()
+      })  
+    },
     listarDespesasPagas(){
       Loading.show({
           spinner: FulfillingBouncingCircleSpinner,
@@ -318,7 +318,7 @@ export default {
       axios.get(API + 'conta/obterContas?tipo=CP&pagas=true&dataInicial=' + this.dataInicial + '&dataFinal=' + this.dataFinal)
       .then((res)=>{
           console.log('despPagas', res)
-          this.despPagas = res.data
+          this.despPagas = res.data.contas
           if(this.despPagas.length === 0){ return 0 }
           let lista = []
           lista = this.despPagas.map(row => row.valorPago)
@@ -342,7 +342,7 @@ export default {
       axios.get(API + 'conta/obterContas?tipo=CR&pagas=false&dataInicial=' + this.dataInicial + '&dataFinal=' + this.dataFinal)
       .then((res)=>{
           console.log('recPagar', res)
-          this.recPagar = res.data
+          this.recPagar = res.data.contas
           if(this.recPagar.length === 0){ return 0 }
           let lista = []
           lista = this.recPagar.map(row => row.valorTitulo)
@@ -365,7 +365,7 @@ export default {
       axios.get(API + 'conta/obterContas?tipo=CR&pagas=true&dataInicial=' + this.dataInicial + '&dataFinal=' + this.dataFinal)
       .then((res)=>{
           console.log('recPagas', res)
-          this.recPagas = res.data
+          this.recPagas = res.data.contas
           if(this.recPagas.length === 0){ return 0 }
           let lista = []
           lista = this.recPagas.map(row => row.valorPago)

@@ -550,7 +550,7 @@ export default {
           axios.get(API + 'conta/obterContas?tipo=' + this.tipo + '&pagas=' + this.subtipo)
           .then((res)=>{
               console.log(res)
-              this.contas = res.data
+              this.contas = res.data.contas
               Loading.hide()
           })
           .catch((e)=>{
@@ -871,7 +871,7 @@ export default {
       axios.get(API + 'conta/obterContas?tipo=cp&pagas=false')
       .then((res)=>{
           console.log('DespPagar', res.data)
-          localforage.setItem('DespPagar', res.data)
+          localforage.setItem('DespPagar', res.data.contas)
           c = c+1
           console.log('c', c);
           if(c === 4){ Loading.hide() }
@@ -884,7 +884,7 @@ export default {
       axios.get(API + 'conta/obterContas?tipo=cp&pagas=true')
       .then((res)=>{
           console.log('DespPagas', res.data)
-          localforage.setItem('DespPagas', res.data)
+          localforage.setItem('DespPagas', res.data.contas)
           c = c+1
           console.log('c', c);
           if(c === 4){ Loading.hide() }
@@ -897,7 +897,7 @@ export default {
       axios.get(API + 'conta/obterContas?tipo=cr&pagas=false')
       .then((res)=>{
           console.log('RecPagar', res.data)
-          localforage.setItem('RecPagar', res.data)
+          localforage.setItem('RecPagar', res.data.contas)
           c = c+1
           console.log('c', c);
           if(c === 4){ Loading.hide() }
@@ -910,7 +910,7 @@ export default {
       axios.get(API + 'conta/obterContas?tipo=cr&pagas=true')
       .then((res)=>{
           console.log('RecPagas', res.data)
-          localforage.setItem('RecPagas', res.data)
+          localforage.setItem('RecPagas', res.data.contas)
           c = c+1
           console.log('c', c);
           if(c === 4){ Loading.hide() }

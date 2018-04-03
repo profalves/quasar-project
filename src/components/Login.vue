@@ -1,5 +1,5 @@
 <template>
-<div class="layout-padding row justify-center">
+<div class="row justify-center">
     <div style="width: 500px; 
                 max-width: 90vw;
                 text-align: center;
@@ -20,19 +20,16 @@
       
       <img src="../../img/logo2.png" width="80%" id="logo"/>
       
-      <q-field
-        helper="Empresa"
-      >
+      <q-field>
         <q-select
             align="center"
             v-model="bd"
             :options="listaEmpresas" 
             @change="listarUsuarios"
         />
+        <div class="label-login">Empresa</div>
       </q-field>
-      <q-field
-        helper="Usuário"
-      >
+      <q-field>
         <q-select
             align="center"
             v-model="user"
@@ -41,10 +38,9 @@
             filter-placeholder="Procurar..."
             autofocus-filter
         />
+        <div class="label-login">Usuário</div>
       </q-field>
-      <q-field
-        helper="Senha"
-      >
+      <q-field>
         <q-input
             align="center"
             v-model="pass"
@@ -52,6 +48,7 @@
             @keyup.enter="login"
             clearable
         />
+        <div class="label-login">Senha</div>
       </q-field>
       <q-field>
         <q-btn icon="person" 
@@ -410,7 +407,7 @@ export default {
           axios.get(API + 'conta/obterContas?tipo=cp&pagas=false')
           .then((res)=>{
               //console.log(res.data)
-              localforage.setItem('DespPagar', res.data)
+              localforage.setItem('DespPagar', res.data.contas)
               Loading.hide()
           })
           .catch((e)=>{
@@ -429,7 +426,7 @@ export default {
           axios.get(API + 'conta/obterContas?tipo=cp&pagas=true')
           .then((res)=>{
               //console.log(res.data)
-              localforage.setItem('DespPagas', res.data)
+              localforage.setItem('DespPagas', res.data.contas)
               Loading.hide()
           })
           .catch((e)=>{
@@ -448,7 +445,7 @@ export default {
           axios.get(API + 'conta/obterContas?tipo=cr&pagas=false')
           .then((res)=>{
               //console.log(res.data)
-              localforage.setItem('RecPagar', res.data)
+              localforage.setItem('RecPagar', res.data.contas)
               Loading.hide()
           })
           .catch((e)=>{
@@ -467,7 +464,7 @@ export default {
           axios.get(API + 'conta/obterContas?tipo=cr&pagas=true')
           .then((res)=>{
               //console.log(res.data)
-              localforage.setItem('RecPagas', res.data)
+              localforage.setItem('RecPagas', res.data.contas)
               Loading.hide()
           })
           .catch((e)=>{
@@ -530,12 +527,16 @@ export default {
 </script>
 
 <style scoped>
-    #logo {
-        margin-bottom: 30px;
-    }
-    .login {
-        text-align: center;
-    }
-    
+  #logo {
+    margin-bottom: 30px;
+  }
+  .login {
+    text-align: center;
+  }
+  .label-login{
+    margin: 3px;
+    color: lightslategrey;
+    text-align: center;
+  }
     
 </style>

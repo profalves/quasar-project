@@ -425,28 +425,6 @@ export default {
         select: '',
         checked: false,
         open: false,
-        options: [
-            {
-              label: 'Google',
-              value: 'goog'
-            },
-            {
-              label: 'Facebook',
-              value: 'fb'
-            },
-            {
-              label: 'Twitter',
-              value: 'twtr'
-            },
-            {
-              label: 'Apple Inc.',
-              value: 'appl'
-            },
-            {
-              label: 'Oracle',
-              value: 'ora'
-            }
-        ],
         formasPagto: [
             {
               label: 'Cartão',

@@ -69,7 +69,8 @@ export default {
       visivel: true,
       Empresa: localStorage.getItem('nomeEmpresa'),
       route: '',
-      print: (localStorage.getItem('print') === 'true')
+      print: (localStorage.getItem('print') === 'true'),
+      width: ''
     }
   },
   methods: {
@@ -80,8 +81,9 @@ export default {
       AppFullscreen.toggle()
     },
     onResize (size) {
-      //console.log(size)
-      if(size.width < 430 || size.height < 400){
+      this.width = size.width
+      console.log('width', this.width);
+      if(size.width < 990 || size.height < 400){
         this.visivel = false
       }
       else{
@@ -98,7 +100,13 @@ export default {
     },
     openNav() {
       this.open = true
-      document.getElementById("sidenav").style.width = "85%";
+      if(this.width<460){
+        document.getElementById("sidenav").style.width = "80%";  
+      }
+      else{
+        document.getElementById("sidenav").style.width = "50%";
+      }
+      
     },
     closeNav() {
       this.open = false
