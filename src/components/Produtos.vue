@@ -9,8 +9,7 @@
            @click="novo">
            <q-icon name="add" />
         </q-btn>
-    </q-fixed-position>
-      
+    </q-fixed-position>  
     <!-- Botão voltar -->
     <q-fixed-position class="fixo" corner="bottom-left" :offset="[18, 18]">
         <q-btn 
@@ -20,7 +19,6 @@
            <q-icon name="keyboard_arrow_left" />
         </q-btn>
     </q-fixed-position>
-    
     <!-- Botão sync -->
     <q-fixed-position class="fixo" corner="bottom-left" :offset="[88, 18]">
         <q-btn 
@@ -31,7 +29,6 @@
         </q-btn>
     </q-fixed-position>
     
-   
     <!-- formulário -->
     <div class="toolbar">
         <h5>Buscar Produto</h5>
@@ -66,11 +63,10 @@
                             {label: 'Familia', value: 1},
                             {label: 'Categoria', value: 2},
                             {label: 'Marca', value: 3},
+                            {label: 'Valores', value: 4},
                           ]"
-                          />
-                            
+                          /> 
             </q-field>
-    
         </div>
         <div class="col-md-6 col-xs-12" v-if="agrupar === 1">
             <q-field
@@ -82,9 +78,7 @@
                           :options="familias"
                           @change="modProdutos"
                           />
-    
             </q-field>
-    
         </div>
         <div class="col-md-6 col-xs-12" v-if="agrupar === 2">
             <q-field
@@ -116,7 +110,7 @@
         </div>
     </div>
       
-    <div class="row">
+    <div class="row" v-if="agrupar === 4">
         <div class="col">
             <q-input v-model="menorValor"
                      float-label="Menor Valor"
@@ -220,7 +214,7 @@
       </q-card-title>
       <q-card-main>
         <div class="row">
-            <div class="col-xs-12 col-md-6">
+            <div class="col">
                 <q-field
                   icon="fa-barcode"
                     
@@ -231,7 +225,7 @@
                     
                 </q-field>
             </div>
-            <div class="col-xs-12 col-md-6">
+            <div class="col">
                 <q-field
                   icon="domain"
                 
@@ -240,40 +234,6 @@
                     <strong>Cód. Empresa: </strong>{{ produto.codEmpresa }} 
                  </p>
                 
-                </q-field>
-            </div>
-        </div>
-        <div class="row" v-if="permissoes.ret_VerCusto">
-            <div class="col-xs-12 col-md-6"> <!--permissão ver custo-->
-                <q-field
-                  icon="monetization_on"
-                >
-                 <p class="fields">
-                    <strong>Custo: </strong>{{ produto.custo | formatMoney }} 
-                 </p>
-                
-                </q-field>
-            </div>
-            <div class="col-xs-12 col-md-6">
-                <q-field
-                  icon="fa-percent"
-                >
-                 <p class="fields">
-                    <strong>Margem de Lucro: </strong>{{ produto.percLucro | formatPerc }} 
-                 </p>
-                
-                </q-field>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-xs-12 col-md-6">
-                <q-field
-                  icon="monetization_on"
-                >
-                 <p class="fields">
-                    <strong>Venda: {{ produto.valor | formatMoney }} </strong>
-                 </p>
-                    
                 </q-field>
             </div>
             <div class="col">
@@ -289,7 +249,39 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-xs-12 col-md-6">
+            <div class="col" v-if="permissoes.ret_VerCusto"> <!--permissão ver custo-->
+                <q-field
+                  icon="monetization_on"
+                >
+                 <p class="fields" >
+                    <strong>Custo: </strong>{{ produto.custo | formatMoney }} 
+                 </p>
+                
+                </q-field>
+            </div>
+            <div class="col" v-if="permissoes.ret_VerCusto">
+                <q-field
+                  icon="fa-percent"
+                >
+                 <p class="fields">
+                    <strong>Margem de Lucro: </strong>{{ produto.percLucro | formatPerc }} 
+                 </p>
+                
+                </q-field>
+            </div>
+            <div class="col">
+                <q-field
+                  icon="monetization_on"
+                >
+                 <p class="fields">
+                    <strong>Venda: {{ produto.valor | formatMoney }} </strong>
+                 </p>
+                    
+                </q-field>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-md-4">
                 <q-field
                   icon="fa-th-large"
                     
@@ -311,26 +303,12 @@
 
                 </q-field>
             </div>
-        </div>
-        <div class="row">
             <div class="col">
                 <q-field
                   icon="fa-truck"
-
                 >
                  <p class="fields">
                     <strong>Marca: </strong>{{ produto.marca }} 
-                 </p>
-
-                </q-field>
-            </div>
-            <div class="col-xs-12 col-md-6">
-                <q-field
-                  icon="ion-battery-low"
-
-                >
-                 <p class="fields">
-                    <strong>Estoque Mínimo: </strong>{{ produto.estoqueMinimo }}
                  </p>
 
                 </q-field>
@@ -371,124 +349,108 @@
           <q-icon slot="right" name="clear" class="link" @click="limpar()" v-else />
         </q-card-title>
         <q-card-main>
-          <div class="row">
-              <div class="col-xs-12 col-md-6">
-                  <q-field
-                    icon="fa-barcode"
+        <div class="row">
+            <div class="col-xs-12 col-md-4">
+                <q-field
+                  icon="fa-barcode"
+                    
+                >
+                 <p class="fields">
+                    <strong>Cód. Barras: </strong>{{ produto.codBarra }} 
+                 </p>
+                    
+                </q-field>
+            </div>
+            <div class="col-xs-12 col-md-4">
+                <q-field
+                  icon="domain"
+                
+                >
+                 <p class="fields">
+                    <strong>Cód. Empresa: </strong>{{ produto.codEmpresa }} 
+                 </p>
+                
+                </q-field>
+            </div>
+            <div class="col-xs-12 col-md-4">
+                <q-field
+                  icon="store"
+                    
+                >
+                 <p class="fields">
+                    <strong>Estoque Atual: </strong><span :class="colorsClasses">{{ produto.qtd }}</span> 
+                 </p>
+                    
+                </q-field>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-md-4" v-if="permissoes.ret_VerCusto"> <!--permissão ver custo-->
+                <q-field
+                  icon="monetization_on"
+                >
+                 <p class="fields" >
+                    <strong>Custo: </strong>{{ produto.custo | formatMoney }} 
+                 </p>
+                
+                </q-field>
+            </div>
+            <div class="col-xs-12 col-md-4" v-if="permissoes.ret_VerCusto">
+                <q-field
+                  icon="fa-percent"
+                >
+                 <p class="fields">
+                    <strong>Margem de Lucro: </strong>{{ produto.percLucro | formatPerc }} 
+                 </p>
+                
+                </q-field>
+            </div>
+            <div class="col-xs-12 col-md-4">
+                <q-field
+                  icon="monetization_on"
+                >
+                 <p class="fields">
+                    <strong>Venda: {{ produto.valor | formatMoney }} </strong>
+                 </p>
+                    
+                </q-field>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-md-4">
+                <q-field
+                  icon="fa-th-large"
+                    
+                >
+                 <p class="fields">
+                    <strong>Categoria: </strong>{{ produto.categoria }} 
+                 </p>
+                    
+                </q-field>
+            </div>
+            <div class="col-xs-12 col-md-4">
+                <q-field
+                  icon="local_grocery_store"
+                    
+                >
+                 <p class="fields">
+                    <strong>Família: </strong>{{ produto.familia }} 
+                 </p>
 
-                  >
-                   <p class="fields">
-                      <strong>Cód. Barras: </strong>{{ produto.codBarra }} 
-                   </p>
+                </q-field>
+            </div>
+            <div class="col-xs-12 col-md-4">
+                <q-field
+                  icon="fa-truck"
+                >
+                 <p class="fields">
+                    <strong>Marca: </strong>{{ produto.marca }} 
+                 </p>
 
-                  </q-field>
-              </div>
-              <div class="col-xs-12 col-md-6">
-                  <q-field
-                    icon="domain"
-
-                  >
-                   <p class="fields">
-                      <strong>Cód. Empresa: </strong>{{ produto.codEmpresa }} 
-                   </p>
-
-                  </q-field>
-              </div>
-          </div>
-          <div class="row" v-if="permissoes.ret_VerCusto">
-              <div class="col-xs-12 col-md-6"> <!--permissão ver custo-->
-                  <q-field
-                    icon="monetization_on"
-                  >
-                   <p class="fields">
-                      <strong>Custo: </strong>{{ produto.custo | formatMoney }} 
-                   </p>
-
-                  </q-field>
-              </div>
-              <div class="col-xs-12 col-md-6">
-                  <q-field
-                    icon="fa-percent"
-                  >
-                   <p class="fields">
-                      <strong>Margem de Lucro: </strong>{{ produto.percLucro | formatPerc }} 
-                   </p>
-
-                  </q-field>
-              </div>
-          </div>
-          <div class="row">
-              <div class="col-xs-12 col-md-6">
-                  <q-field
-                    icon="monetization_on"
-                  >
-                   <p class="fields">
-                      <strong>Venda: {{ produto.valor | formatMoney }} </strong>
-                   </p>
-
-                  </q-field>
-              </div>
-              <div class="col">
-                  <q-field
-                    icon="store"
-
-                  >
-                   <p class="fields">
-                      <strong>Estoque Atual: </strong><span :class="colorsClasses">{{ produto.qtd }}</span> 
-                   </p>
-
-                  </q-field>
-              </div>
-          </div>
-          <div class="row">
-              <div class="col-xs-12 col-md-6">
-                  <q-field
-                    icon="fa-th-large"
-
-                  >
-                   <p class="fields">
-                      <strong>Categoria: </strong>{{ produto.categoria }} 
-                   </p>
-
-                  </q-field>
-              </div>
-              <div class="col">
-                  <q-field
-                    icon="local_grocery_store"
-
-                  >
-                   <p class="fields">
-                      <strong>Família: </strong>{{ produto.familia }} 
-                   </p>
-
-                  </q-field>
-              </div>
-          </div>
-          <div class="row">
-              <div class="col">
-                  <q-field
-                    icon="fa-truck"
-
-                  >
-                   <p class="fields">
-                      <strong>Marca: </strong>{{ produto.marca }} 
-                   </p>
-
-                  </q-field>
-              </div>
-              <div class="col-xs-12 col-md-6">
-                  <q-field
-                    icon="ion-battery-low"
-
-                  >
-                   <p class="fields">
-                      <strong>Estoque Mínimo: </strong>{{ produto.estoqueMinimo }}
-                   </p>
-
-                  </q-field>
-              </div>
-          </div>
-        </q-card-main>
+                </q-field>
+            </div>
+        </div>
+      </q-card-main>
        <q-card-separator />
         <!--
         <q-card-actions center>
@@ -649,9 +611,11 @@ export default {
          this.content === '8' ||
          this.content === '9' ){
         this.type = 'number'
+        console.log(this.type)
       }
       else{
         this.type = 'text'
+        console.log(this.type)
       }
       
     },

@@ -42,7 +42,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-12">
+        <div class="col-xs-12 col-md-5">
           <q-btn
             color="primary"
             class="full"
@@ -53,7 +53,21 @@
             Localizar notas
           </q-btn>
         </div>
-    </div><br>
+        <div class="offset-md-2"></div>
+    
+        <div class="col">
+          <q-btn
+            color="primary"
+            class="full"
+            push
+            @click="$router.push('/ordemCompra')"
+          >
+            <i class="material-icons">insert_drive_file</i>
+            Ordem de Compra
+          </q-btn>
+        </div>
+    </div>
+  
     <!--
     <div class="row">
         <div class="col">
@@ -111,7 +125,7 @@
     <span>{{danfe}}</span><br><br>
     -->
     
-    <q-list style="background-color: white;">
+    <q-list style="background-color: white; margin-top: 10px;">
     
       <!--cabeçalho-->
       <q-collapsible :opened="open.cab" icon="explore" label="Cabeçalho">

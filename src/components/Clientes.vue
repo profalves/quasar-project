@@ -164,7 +164,7 @@
              v-model="search" 
              color="none" 
              style="margin-left: 10px"
-             placeholder="Procurar..."
+             placeholder="Procurar nome..."
              @keyup.enter="obterPessoa"
              v-if="autocomplete"
              >

@@ -16,8 +16,6 @@
         </div>
       </div>
       
-      <div class="row">
-        <div class="col-xl-6">
           <q-list inset-separator style="background-color: white;">
             <!-- Cadastrar Tab -->
             <div class="layout-padding">
@@ -105,7 +103,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="(item, index) in tabs">
+                    <tr v-for="(item, index) in tabela">
                       <td data-th="Cód." class="text-left">{{ item.codigo }}</td>
                       <td data-th="Nome" class="text-left">{{ item.nome }}</td>
                       <td data-th="Margem Lucro" class="text-left">{{ item.ml | formatPerc }}</td>
@@ -129,8 +127,7 @@
             </div>
 
           </q-list>
-      </div>
-    </div>
+      
     <br><br><br>
     
   </div>
@@ -215,6 +212,9 @@ export default {
         classes.push(this.gutter)
       }
       return classes
+    },
+    tabela(){
+      return this.tabs.filter(row => row.tabSistema === false)
     }
   },
   methods: {

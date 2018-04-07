@@ -60,33 +60,15 @@
           </div>
         </div>
         
-        <q-search
-             v-model="search" 
-             color="none" 
-             placeholder="Procurar..."
-             >
+        <q-search v-model="search"
+                  color="none" 
+                  placeholder="Procurar..."
+                  @keyup.enter="getPromocoes"
+                  @change="verTipo"
+                  >
         </q-search>
         
-        <div class="row">
-           <q-radio v-model="tipoCod"
-                    class="col"
-                    val="barras"
-                    label="Cód. Barras" 
-                    @focus="search = ''" />
-           <q-radio v-model="tipoCod"
-                    class="col"
-                    val="emp" 
-                    label="Cód. Emp" 
-                    @focus="search = ''" />
-           <q-radio v-model="tipoCod"
-                    class="col"
-                    val="nome"
-                    label="Nome"
-                    @focus="search = ''" />
-        </div>
-        
-        
-        <q-checkbox v-model="promocao" label="Exibir somente itens com promoção" /><br><br>
+        <q-checkbox v-model="promocao" label="Exibir somente itens com promoção" @change="getPromocoes" /><br><br>
         
         <q-btn color="primary"
                @click="getPromocoes"
@@ -180,12 +162,36 @@ export default {
           formas: [],
           permissoes: {},
           visivel: true,
-          msg: ''
+          msg: '',
+          type: '',
+          content: ''
       }
   },
   methods:{
       goBack(){
         window.history.go(-1)
+      },
+      verTipo(){
+        console.log('tipo de pesquisa:', typeof this.search)
+        this.content = this.search.substring(0,1)
+        if(this.content === '0' ||
+           this.content === '1' ||
+           this.content === '2' ||
+           this.content === '3' ||
+           this.content === '4' ||
+           this.content === '5' ||
+           this.content === '6' ||
+           this.content === '7' ||
+           this.content === '8' ||
+           this.content === '9' ){
+          this.type = 'number'
+          console.log('tipo:', this.type)
+        }
+        else{
+          this.type = 'text'
+          console.log('tipo:', this.type)
+        }
+
       },
       getPromocoes(){
         let e = '&'
@@ -214,13 +220,8 @@ export default {
         }
         let produto = ''
         if(this.search){
-          if(this.tipoCod === 'barras'){
+          if(this.type === 'number'){
             produto = 'CodBarra=' + this.search
-            console.log('produto', produto);
-          }
-          else if(this.tipoCod === 'emp'){
-            produto = 'CodEmpresa=' + this.search
-            console.log('produto', produto);
           }
           else{
             produto = 'nomeProduto=' + this.search
@@ -252,6 +253,24 @@ export default {
         .then((res)=>{
           console.log(res)
           this.produtos = res.data
+          if(this.produtos.length === 0 & this.type === 'number'){
+            produto = 'CodEmpresa=' + this.search
+            axios.get(API + 'produto/obterProdutosPromocao?' +
+                  fam + cat + marca + produto + promo)
+            .then((res)=>{
+            console.log(res)
+            this.produtos = res.data
+            })
+            .catch((e)=>{
+              Loading.hide()
+              console.log(e.response)
+              let error = e.response.data
+              console.log(error)
+              for(var i=0; error.length; i++){
+                  Toast.create.negative(error[i].value)
+              }  
+            })
+          }
           this.opened = false
           Loading.hide()
         })

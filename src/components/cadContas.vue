@@ -144,7 +144,7 @@
     <div class="row">
         <div class="col">
             <q-field
-                icon="local_grocery_store"
+                icon="fa-money"
              >
                 <q-select
                     float-label="Forma de Pagamento"
@@ -158,7 +158,7 @@
     <div class="row">
         <div class="col">
           <q-field
-            icon="assignment_turned_in"
+            icon="filter_1"
           >
             <q-input v-model.number="conta.numeroDocumento"
                      float-label="n. Documento" 
@@ -190,8 +190,7 @@
                             clear-label="Limpar" 
                             cancel-label="Cancelar"
                             :day-names="dias"
-                            :month-names="meses"
-                            
+                            :month-names="meses"                            
                 />
 
             </q-field>  
@@ -261,7 +260,7 @@
                 <money v-model="conta.valorPago"
                        v-bind="money"
                        class="mdInput"
-                       style="margin-top:12px"
+                       style="margin-top:20px"
                        :disabled="disable"
                 />
             </q-field> 
@@ -278,90 +277,7 @@
         </div>
     </q-list>
     
-    
-    <!--<div class="row">
-        <div class="col">
-            <q-field
-                icon="store"
-             >
-                <q-select
-                    float-label="Tipo de Documento"
-                    v-model="tipoDoc"
-                    :options="tipoDocumento"
-                />
-            </q-field>   
-        </div>
-        <div class="col-2 btn-plus" >
-            
-            <q-btn 
-               rounded
-               color="primary" 
-               @click="$router.push('/cadcliente')">
-               <q-icon name="add" />
-            </q-btn>
-        </div>
-    </div>-->
-    <!--
-    <q-collapsible icon="monetization_on" 
-                   label="Títulos" 
-                   style="background-color:white;
-                          margin-top:30px;"
-                   :opened="open"
-                   >
-        Data tables HTML
-        <h6 style="margin-top:30px">Parcelas</h6>
-        <div class="row" id="table">
-            <table style="margin-top: 30px;" class="q-table" :class="computedClasses">
-              <thead>
-                <tr>
-                  <th class="text-left">Vencimento</th>
-                  <th class="text-right">Valor Total</th>
-                  <th class="text-left">Data Pagto</th>
-                  <th class="text-right">Valor Pago</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td class="text-left">01/01/2018</td>
-                  <td class="text-right">$10.11</td>
-                  <td class="text-left">01/01/2018</td>
-                  <td class="text-right">$10.11</td>
-                  <td class="text-center">
-                    <q-btn round outline small color="warning" icon="edit"></q-btn>    
-                  </td>
-                  <td class="text-center">
-                    <q-btn round outline small color="negative" icon="delete_forever"></q-btn>  
-                  </td>
-                </tr>
-                <tr>
-                  <td class="text-left">01/01/2018</td>
-                  <td class="text-right">$10.11</td>
-                  <td class="text-left">01/01/2018</td>
-                  <td class="text-right">$10.11</td>
-                  <td class="text-center">
-                    <q-btn round outline small color="warning" icon="edit"></q-btn>    
-                  </td>
-                  <td class="text-center">
-                    <q-btn round outline small color="negative" icon="delete_forever"></q-btn>  
-                  </td>
-                </tr>
-                <tr>
-                  <td class="text-left">01/01/2018</td>
-                  <td class="text-right">$10.11</td>
-                  <td class="text-left">01/01/2018</td>
-                  <td class="text-right">$10.11</td>
-                  <td class="text-center">
-                    <q-btn round outline small color="warning" icon="edit"></q-btn>    
-                  </td>
-                  <td class="text-center">
-                    <q-btn round outline small color="negative" icon="delete_forever"></q-btn>  
-                  </td>
-                </tr>
-              </tbody>
-            </table>  
-
-        </div>
-    </q-collapsible>-->
+    <br><br><br>
     
 </div>
     
@@ -405,7 +321,7 @@ export default {
             contaFixa: false,
             formaPgto: 1,
             numeroDocumento: '',
-            vencimento: '', //não nulo
+            vencimento: new Date().toUTCString(),
             pagamento: '',
             valorTitulo: '',
             valorPago: '',

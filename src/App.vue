@@ -30,6 +30,7 @@
                 class="sidenav"
                 style="z-index: 6"
                 v-if="$route.path !== '/login' && !$route.query.config && !visivel && !print"></mobileLeft>
+    
     <!--
     <q-fixed-position class="fixo" corner="top-left" :offset="[5, 5]" v-if="open">
       <q-btn 
@@ -301,5 +302,8 @@ export default {
       top: 0;
       margin: 20px;
     }
+  }
+  div.q-field-bottom.row.no-wrap.q-field-no-input{
+    margin: 0;
   }
 </style>

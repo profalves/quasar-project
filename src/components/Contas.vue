@@ -34,7 +34,7 @@
   <div id="lista">
       
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-6">
             <q-field>
                 <q-select
                     stack-label="Tipo"
@@ -44,7 +44,7 @@
                 />
             </q-field>
         </div>
-        <div class="col-md-3 col-xs-12 offset-md-1">
+        <div class="col-md-6 col-xs-12">
             <q-field
                 v-if="subDesp"
               >
@@ -72,7 +72,7 @@
                 />
             </q-field>
         </div>  
-        <div class="col-md-4 col-xs-12 offset-md-1">
+        <!--<div class="col-md-4 col-xs-12 offset-md-1">
             <q-field
                 icon="filter_list"
                 >
@@ -87,7 +87,7 @@
                 />
 
             </q-field> 
-        </div>
+        </div>-->
          
     </div>
     <div class="row">
@@ -157,9 +157,9 @@
         
     </div>
     
-    <center>
+    <!--<center>
       <h4>Total: {{totalContas | formatMoney}}</h4>
-    </center>
+    </center>-->
     
     <q-data-table
       ref="dtable"
@@ -205,7 +205,7 @@
    
     
     <!-- Configurações -->
-    <q-collapsible
+    <!--<q-collapsible
       label="Opções"
       icon="settings"
       style="background-color:white;
@@ -219,7 +219,7 @@
         :label-width="4"
       >
         <q-input v-model="config.title" />
-      </q-field>-->
+      </q-field>--
 
         
       <q-field
@@ -279,7 +279,7 @@
             {label: '2', value: 2}
           ]"
         />
-      </q-field>-->
+      </q-field>--
 
       <q-field
         icon="format_line_spacing"
@@ -310,7 +310,8 @@
           <q-slider class="col" v-model="bodyHeight" :min="100" :max="700" label-always :disable="bodyHeightProp === 'auto'" :label-value="`${bodyHeight}px`" />
         </div>
       </q-field>
-    </q-collapsible>
+    </q-collapsible>-->
+    <br><br><br><br>
   </div>
 </div>
 </template>
@@ -323,6 +324,7 @@ import localforage from 'localforage'
 var moment = require('moment');
 require("moment/min/locales.min");
 moment.locale('pt-br');
+const hoje = new Date()
     
 const API = localStorage.getItem('wsAtual')
   
@@ -547,7 +549,7 @@ export default {
               spinnerSize: 140,
               message: 'Aguardando Dados...'
           })
-          axios.get(API + 'conta/obterContas?tipo=' + this.tipo + '&pagas=' + this.subtipo)
+          axios.get(API + 'conta/obterContas?tipo=' + this.tipo + '&vencidas=true')
           .then((res)=>{
               console.log(res)
               this.contas = res.data.contas
@@ -564,7 +566,8 @@ export default {
                 if(value){
                     console.log('localforage get')
                     console.log(value)
-                    this.contas = value;
+                    this.contas = value.filter(row => row.vencimento <= moment(hoje).format('YYYY-MM-DD') + 'T23:59:59')
+                                       .filter(row => row.pgtoTitulo === false)
                 }
                 else{
                     console.log('localforage fail')

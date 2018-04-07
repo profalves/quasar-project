@@ -10,11 +10,12 @@
       </div>
         
       <q-list no-border link inset-delimiter>
+        <q-list-header>Menu</q-list-header>
         <q-item to="/home">
           <q-item-side icon="flag" />
           <q-item-main label="Inicio" />
         </q-item>
-        <q-collapsible icon="people" color="white" label="Pessoas"><!-- sublabel="Listagem e Cadastro de clientes, fornecedores, etc.">-->
+        <q-collapsible icon="people" color="white" label="Pessoas" group="cad"><!-- sublabel="Listagem e Cadastro de clientes, fornecedores, etc.">-->
           <q-list highlight no-border>
             <q-item @click="novoCliente">
               <q-item-main label="Novo Cadastro" /><!-- sublabel="Criar e editar cadastro de Pessoas" />-->
@@ -47,7 +48,7 @@
               <q-item-main label="Produtos" /><!-- sublabel="Cadastros de clientes, fornecedores, etc." />-->
           </q-side-link>
         </q-item>
-        <q-collapsible icon="assignment_turned_in" label="Produtos" v-if="permissoes.pdV_PermitirTransfProduto || permissoes.ret_AlteraTabPreco">
+        <q-collapsible icon="assignment_turned_in" label="Produtos" v-if="permissoes.pdV_PermitirTransfProduto || permissoes.ret_AlteraTabPreco" group="cad">
           <q-list highlight no-border>
             <q-item>
               <q-side-link to="/produtos">

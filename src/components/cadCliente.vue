@@ -134,7 +134,7 @@
         </div>
 
         <div class="row">
-            <div class="col-md-6" style="margin-top: 2px">
+            <div class="col-md-6" style="margin-top: 9px">
               <q-field
                 icon="done"
                 :error="$v.cpf.$error"

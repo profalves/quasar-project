@@ -15,11 +15,11 @@
           <q-item-side icon="flag" />
           <q-item-main label="Inicio" />
         </q-item>
-        <q-collapsible icon="people" label="Pessoas"><!-- sublabel="Listagem e Cadastro de clientes, fornecedores, etc.">-->
+        <q-collapsible icon="people" label="Pessoas" group="cad"><!-- sublabel="Listagem e Cadastro de clientes, fornecedores, etc.">-->
           <q-list highlight no-border>
-            <q-item @click="novoCliente">
-              <q-item-main label="Novo Cadastro" /><!--sublabel="Criar e editar cadastro de Pessoas" />-->
-            </q-item>
+            <!--<q-item @click="novoCliente">
+              <q-item-main label="Novo Cadastro" /><!--sublabel="Criar e editar cadastro de Pessoas" />--
+            </q-item>-->
             <q-item>
               <q-side-link to="/clientes">
                 <q-item-main label="Localizar Pessoas" /><!-- sublabel="Listagem e Busca de Pessoas" />-->
@@ -46,11 +46,11 @@
           <q-item-side icon="assignment_turned_in" />
           <q-item-main label="Produtos" /><!-- sublabel="Cadastros e Busca de Produtos" />-->
         </q-item>
-        <q-collapsible icon="assignment_turned_in" label="Produtos" v-if="permissoes.pdV_PermitirTransfProduto || permissoes.ret_AlteraTabPreco">
+        <q-collapsible icon="assignment_turned_in" label="Produtos" v-if="permissoes.pdV_PermitirTransfProduto || permissoes.ret_AlteraTabPreco" group="cad">
           <q-list highlight no-border>
-            <q-item @click="novoProduto">
-              <q-item-main label="Novo Produto" /><!-- sublabel="Cadastrar e Editar Produtos" />-->
-            </q-item>
+            <!--<q-item @click="novoProduto">
+              <q-item-main label="Novo Produto" /><!-- sublabel="Cadastrar e Editar Produtos" />--
+            </q-item>-->
             <q-item>
               <q-side-link to="/produtos">
                 <q-item-main label="Localizar Produtos" /><!-- sublabel="Listagem e Cadastro de Produtos" />-->
@@ -232,5 +232,8 @@ export default {
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
     background-color: darkgray;
   }
-
+  .menu{
+    background-color: blue;
+    color: aliceblue;
+  }
 </style>
