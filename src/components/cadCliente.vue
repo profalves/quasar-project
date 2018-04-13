@@ -1372,7 +1372,8 @@ export default {
                 this.$router.push('cadnotas')    
             }
             else {
-                this.$router.push('clientes')
+                localStorage.setItem('tela', 'cadPessoa')
+                this.$router.push('clientes') 
             }
             
           })

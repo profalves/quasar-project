@@ -5,7 +5,7 @@
     <div class="text-center">{{today}}, {{currentDate}}</div>
     <div class="text-center clock" v-text="currentTime"></div>
     <div class="row">
-      <div class="col-xl" style="margin-top:30px">
+      <div class="col-lg text-center" style="margin-top:30px">
         <div class="row text-center vertical-middle">
           <div class="col">
             <div class="row">
@@ -45,7 +45,7 @@
           </div>
         </div>
       </div>
-      <div class="col-xl">
+      <div class="col-lg">
         <q-list inset-separator no-border style="width: 100%">
           <q-list-header>Painel {{permissoes.funcao | capitalize}}</q-list-header>
           <!-- Vendas -->
@@ -71,7 +71,7 @@
               </q-item-side> 
             </q-item>
             <div class="row" v-if="permissoes.acessaFinanceiro">
-              <div class="col-6 text-center">
+              <div class="col-sm-6 col-xs-12 text-center">
                  <!-- <q-card>
                     <q-card-title>
                       Dia
@@ -953,9 +953,9 @@
     },
     methods:{
       onResize (size) {
-        if(size.width < 620){
-          this.size = Math.round((size.width - (size.width * 0.65))) + 'px'
-          this.font = 'font-size: ' + Math.round((size.width - (size.width * 0.95))) + 'px'
+        if(size.width < 577){
+          this.size = Math.round((size.width - (size.width * 0.35))) + 'px'
+          this.font = 'font-size: ' + Math.round((size.width - (size.width * 0.92))) + 'px'
           console.log('size', this.size);
           console.log('font', this.font);
         }
@@ -966,7 +966,7 @@
           console.log('font', this.font); 
         }
         else{
-          this.size = Math.round((size.width - (size.width * 0.85))) + 'px'
+          this.size = Math.round((size.width - (size.width * 0.87))) + 'px'
           this.font = 'font-size: ' + Math.round((size.width - (size.width * 0.98))) + 'px'
           console.log('size', this.size); 
           console.log('font', this.font); 

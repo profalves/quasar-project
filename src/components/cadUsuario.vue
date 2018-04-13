@@ -196,7 +196,7 @@
                       </q-card-title>
                       <q-card-separator />
                       <q-card-main class="permissions">
-                        <q-checkbox class="checkbox" v-model="usuario.bloqueiaCancelaProd" label="Bloquear cancelamento de item na venda" /><br>
+                        <q-checkbox class="checkbox" v-model="usuario.bloqueiaCancelaProd" label="Permitir cancelamento de item na venda" /><br>
                         <q-checkbox class="checkbox" v-model="usuario.verQuantiaCaixa" label="Permitir ver saldo no caixa" /><br>
                         <q-checkbox class="checkbox" v-model="usuario.devolverProduto" label="Permitir nota de devolução" /><br>
                         <q-checkbox class="checkbox" v-model="usuario.pdV_PermitirOutrasSaidas" label="Permitir outras saídas" /><br>
@@ -359,11 +359,10 @@ export default {
                 html: 'Sucesso',
                 icon: 'done'
             })
-            //console.log(res)
-            console.log(res.data)
-            console.log(res.response)
+            //console.log(res.data)
             console.log('sucesso')
             this.$router.push('usuarios')
+            localStorage.setItem('tela', 'cadUsuario')
           })
           .catch((e)=>{
             Loading.hide()

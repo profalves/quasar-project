@@ -25,7 +25,7 @@
             align="center"
             v-model="bd"
             :options="listaEmpresas" 
-            @change="listarUsuarios"
+            @change="configEmpresa"
         />
         <div class="label-login">Empresa</div>
       </q-field>
@@ -70,7 +70,36 @@ import localforage from 'localforage'
 let API = localStorage.getItem('wsAtual')
 //debug
 //const API = 'http://192.168.0.200:29755/'
-    
+
+function Encripta(dados){
+  var mensx="";
+  var l;
+  var i;
+  var j=0;
+  var ch;
+  ch = "assbdFbdpdPdpfPdAAdpeoseslsQQEcDDldiVVkadiedkdkLLnm";	
+  for (i=0;i<dados.length; i++){
+      j++;
+      l=(Asc(dados.substr(i,1))+(Asc(ch.substr(j,1))));
+      if (j===50){
+        j=1;
+      }
+      if (l>255){
+        l-=256;
+      }
+      mensx+=(Chr(l));
+  }
+  return mensx;
+}
+
+function Asc(String){
+  return String.charCodeAt(0);
+}
+
+function Chr(AsciiNum){
+  return String.fromCharCode(AsciiNum)
+}
+
 export default {
     data () {
         return {
@@ -113,15 +142,13 @@ export default {
             return lista
         },
         listaUsuarios(){
-          var a = this.usuarios
-          var lista = []
-          for (let i=0; i < a.length; i++) {
-              let n = a[i].nome
-              let v = a[i].nome
-              let c = a[i].codigoIdentificacao
-              lista.push({label: n, value: v, codigo: c})    
-          }
-          
+          let a = this.usuarios
+          let lista = a.map(row => ({
+            label: row.nome, 
+            value: row.nome, 
+            codigo: row.codigoIdentificacao
+          }))
+            
           return lista
         }    
     },
@@ -188,7 +215,7 @@ export default {
                 }
             }
         },*/
-        setBancoAtual(){
+        setWSAtual(){
             if(this.bd === 'none'){
                 this.$router.push({
                     path:'/config', 
@@ -209,7 +236,36 @@ export default {
             localStorage.setItem('wsAtual', 'http://' + sv + port + DB + '/' )
             
             API = localStorage.getItem('wsAtual')
+          
+            
         },
+        setBancoAtual(){
+          const NomeDB = Encripta(localStorage.getItem('bdName' + this.bd))
+          axios({
+            "url": API + "api/token",
+            "method": "POST",
+            "headers": {
+              "Content-Type": "application/x-www-form-urlencoded",
+              "Cache-Control": "no-cache"
+            },
+            "data": "username=" + NomeDB + "&grant_type=password"
+          })
+          .then((res)=>{
+            console.log('BANCO ATUALIZADO:', res)
+            this.response = res.data
+            this.syncStart()
+            this.listarUsuarios()
+          })
+          .catch((error)=>{
+            console.log(error)
+            this.response = error
+          })
+        },
+        configEmpresa(){
+          this.setWSAtual()
+          this.setBancoAtual()
+        },
+        
         loadConfig(){
           if(localStorage.length === 0) {
             Loading.show()
@@ -218,7 +274,7 @@ export default {
             localStorage.setItem('columnPicker', false)
             localStorage.setItem('responsive', false)
             localStorage.setItem('selection', 'multiple')
-            localStorage.setItem('pagination', true)
+            localStorage.setItem('pagination', false)
             localStorage.setItem('rowHeight', 45)
             localStorage.setItem('bodyHeightProp', 'auto')
             localStorage.setItem('bodyHeight', 200)
@@ -249,10 +305,6 @@ export default {
         
         // sincronização: 
         listarUsuarios(){
-          this.setBancoAtual()
-          this.syncStart()
-          
-          if(this.bd === 'none'){ return }
           
           API = localStorage.getItem('wsAtual')
           
@@ -537,6 +589,5 @@ export default {
     margin: 3px;
     color: lightslategrey;
     text-align: center;
-  }
-    
+  }  
 </style>

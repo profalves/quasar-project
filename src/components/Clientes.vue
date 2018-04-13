@@ -25,7 +25,7 @@
       </q-btn>
   </q-fixed-position>
     
-  <!-- Botão limpar -->
+  <!-- Botão limpar --
   <q-fixed-position class="fixo" corner="bottom-left" :offset="[88, 28]" v-if="pessoa.length>0">
       <q-btn 
          rounded
@@ -34,7 +34,7 @@
          <q-icon name="clear" />
          Limpar
       </q-btn>
-  </q-fixed-position>
+  </q-fixed-position> -->
     
   <!-- Botão options -->
   <q-fixed-position class="fixo" corner="top-right" :offset="[18, 18]" v-if="!visivel">
@@ -122,7 +122,7 @@
     <div class="col"></div>
   </div>
 
-  <div class="row">
+  <!--<div class="row">
     <div class="col-xs-6 col-md-3">
      <q-radio v-model="tipoCod" 
               val="cpf"
@@ -151,7 +151,7 @@
               style="margin-left:20px" 
               @focus="search = ''" />
     </div>
-  </div>
+  </div>-->
    
     <!--
     <q-checkbox v-model="autocomplete" 
@@ -164,7 +164,7 @@
              v-model="search" 
              color="none" 
              style="margin-left: 10px"
-             placeholder="Procurar nome..."
+             placeholder="Procurar..."
              @keyup.enter="obterPessoa"
              v-if="autocomplete"
              >
@@ -182,6 +182,7 @@
              style="margin-left: 10px"
              placeholder="Procurar..."
              @keyup.enter="obterPessoa"
+             @change="verTipo"
              v-else
              >
     </q-search>
@@ -309,7 +310,7 @@ import localforage from 'localforage'
 const API = localStorage.getItem('wsAtual')
   
 //debug
-//const API = localStorage.getItem('wsAtual')
+//const API = 'http://192.168.0.200:29755/'
 
 export default { 
   data () {
@@ -344,7 +345,8 @@ export default {
       row: '',
       maxResults: parseInt(localStorage.getItem('maxResults')),
       semCompra: false,
-      
+      content: '',
+      type: '',
       
     }
   },
@@ -383,7 +385,31 @@ export default {
       
     },
   },
-  methods: {
+  methods:{
+    verTipo(){
+      if(this.search === ''){
+        this.pessoa = []
+      }
+      
+      console.log('tipo de pesquisa:', typeof this.search)
+      this.content = this.search.substring(0,1)
+      if(this.content === '0' ||
+         this.content === '1' ||
+         this.content === '2' ||
+         this.content === '3' ||
+         this.content === '4' ||
+         this.content === '5' ||
+         this.content === '6' ||
+         this.content === '7' ||
+         this.content === '8' ||
+         this.content === '9' ){
+        this.type = 'number'
+      }
+      else{
+        this.type = 'text'
+      }
+      
+    },
     goBack(){
         window.history.back()
     },
@@ -400,6 +426,7 @@ export default {
       axios.get(API + 'pessoa/obterpessoa?todos=true')
       .then((res)=>{
           this.pessoas = res.data
+          localforage.setItem('Pessoas', res.data)
           Loading.hide()
       })
       .catch((e)=>{
@@ -437,17 +464,17 @@ export default {
                 this.pessoa = value
                 console.log(this.pessoa)
               }
-              else if(this.tipoCod === 'cpf' && this.search !== ''){
+              else if(this.search.length <= 11 && this.type === 'number'){
                 this.pessoa = value.filter(row => row.cpf.indexOf(this.search) >= 0);
               }
-              else if(this.tipoCod === 'cnpj' && this.search !== ''){
+              else if(this.search.length > 11 && this.type === 'number'){
                 this.pessoa = value.filter(row => { 
                   const cnpj = row.cnpj || ''
                   return cnpj.indexOf(this.search) >= 0
                 })
                 console.log(this.pessoa)
               }
-              else if(this.tipoCod === 'telefone' && this.search !== ''){
+              /*else if(this.tipoCod === 'telefone' && this.search !== ''){
                 this.pessoa = value.filter(row => {
                   if(row.telefones.length > 0){
                     return row.telefones.filter(el => el.numero.indexOf(this.search) >=0)
@@ -455,7 +482,7 @@ export default {
                 
                 });
                 console.log(this.pessoa)
-              }
+              }*/
               else if(this.autocomplete && this.search !== ''){
                 this.pessoa = value.filter(row => row.nome.indexOf(this.search) >= 0);
                 console.log(this.pessoa)
@@ -474,15 +501,15 @@ export default {
       if(this.search === ''){
         URL = API + 'pessoa/obterpessoa?todos=true'
       }
-      else if(this.tipoCod === 'cpf' && this.search !== ''){
+      else if(this.search.length <= 11 && this.type === 'number'){
         URL = API + 'pessoa/obterpessoa?cpf=' + this.search
       }
-      else if(this.tipoCod === 'cnpj' && this.search !== ''){
+      else if(this.search.length > 11 && this.type === 'number'){
         URL = API + 'pessoa/obterpessoa?cnpj=' + this.search
       }
-      else if(this.tipoCod === 'telefone' && this.search !== ''){
+      /*else if(this.tipoCod === 'telefone' && this.search !== ''){
         URL = API + 'pessoa/obterpessoa?telefone=' + this.search
-      }
+      }*/
       else {
           URL = API + 'pessoa/obterpessoa?nome=' + this.search
       }
@@ -838,10 +865,17 @@ export default {
     
   },
   mounted(){
+    if(localStorage.getItem('tela') === 'cadPessoa'){
+        this.sync()
+        localStorage.setItem('tela', 'Pessoas')
+    }
+    
     if(localStorage.getItem('loadPessoas') === 'true'){
         this.listarPessoas()
         return
     }
+      
+    
       
     localforage.getItem('Pessoas').then((value) => {
         if(value){

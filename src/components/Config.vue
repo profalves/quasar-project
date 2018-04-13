@@ -538,7 +538,7 @@
                 </div>
               </div>
               <div class="row">
-                <!--<div class="col">
+                <div class="col-xs-12 col-md">
                   <q-field
                     icon="featured_play_list"
                     helper="Nome do Banco de Dados"
@@ -546,14 +546,14 @@
                     <q-input v-model.trim="bdName" clearable />
                   </q-field>   
                 </div>
-                <div class="col">
+                <div class="col-xs-12 col-md">
                   <q-field
                     icon="vpn_key"
                     helper="Senha do Banco de Dados"
                   >
                     <q-input v-model.trim="senhaBd" type="password" clearable />
                   </q-field>   
-                </div> -->
+                </div> 
                 <div class="col-2" id="btn-save">
                     <q-btn 
                        rounded
@@ -575,6 +575,8 @@
                       <th class="text-left">Web Service</th>
                       <th class="text-left">IP/Host</th>
                       <th class="text-left">Porta</th>
+                      <th class="text-left">Nome Banco</th>
+                      <!--<th class="text-left">Senha</th>-->
                       <th class="text-left">Editar</th>
                       <th class="text-left">Excluir</th>
                     </tr>
@@ -586,6 +588,8 @@
                       <td class="text-left">{{ item.banco }}</td>
                       <td class="text-left">{{ item.ip }}</td>
                       <td class="text-left">{{ item.porta }}</td>
+                      <td class="text-left">{{ item.bdName }}</td>
+                      <!--<td class="text-left">{{ item.senhaBD }}</td>-->
                       <td class="text-center">
                         <a @click="editar(item)" color="info"><i class="material-icons fa-2x" >mode_edit</i></a>   
                       </td>
@@ -1032,7 +1036,7 @@ export default {
         this.config.columnPicker = false
         this.config.responsive = false
         this.config.selection = 'multiple'
-        this.pagination = true
+        this.pagination = false
         this.rowHeight = 45
         this.bodyHeightProp = 'auto'
         this.bodyHeight = 200
@@ -1105,6 +1109,8 @@ export default {
                             ip : localStorage.getItem('ip' + i),
                             porta: localStorage.getItem('porta' + i),
                             banco: localStorage.getItem('banco' + i),
+                            bdName: localStorage.getItem('bdName' + i),
+                            senhaBD: localStorage.getItem('senhaBD' + i),
                             empresa: localStorage.getItem('Empresa' + i)
                         }
             if(lista.IdBanco!==null){
@@ -1121,13 +1127,17 @@ export default {
         if(this.edit === true){ //editar
             localStorage.setItem('Empresa' + this.filtro, this.empresa)
             localStorage.setItem('ip' + this.filtro, this.ip)
-            localStorage.setItem('porta' + this.filtro, this.porta)
+            if(this.porta > 0){
+                localStorage.setItem('porta' + this.filtro, this.porta)
+            }
             localStorage.setItem('banco' + this.filtro, this.banco)
+            localStorage.setItem('bdName' + this.filtro, this.bdName)
             localStorage.setItem('senhaBD' + this.filtro, this.senhaBd)
             this.empresa = ''
             this.ip = ''
             this.porta = ''
             this.banco = ''
+            this.bdName = ''
             this.senhaBd = ''
             this.edit = false
             Toast.create.positive({
@@ -1151,11 +1161,13 @@ export default {
                 localStorage.setItem('porta' + localStorage.getItem('bancoCont'), this.porta)
             }
             localStorage.setItem('banco' + localStorage.getItem('bancoCont'), this.banco)
+            localStorage.setItem('bdName' + localStorage.getItem('bancoCont'), this.bdName)
             localStorage.setItem('senhaBD' + localStorage.getItem('bancoCont'), this.senhaBd)
             this.empresa = ''
             this.ip = ''
             this.porta = ''
             this.banco = ''
+            this.bdName = ''
             this.senhaBd = ''
             Toast.create.positive({
                 html: 'Configurações salvas com sucesso',
@@ -1187,6 +1199,7 @@ export default {
         this.ip = localStorage.getItem('ip' + this.filtro)
         this.porta = localStorage.getItem('porta' + this.filtro)
         this.banco = localStorage.getItem('banco' + this.filtro)
+        this.bdName = localStorage.getItem('bdName' + this.filtro)
         this.senhaBd = localStorage.getItem('senhaBD' + this.filtro)
         
     },
@@ -1203,6 +1216,7 @@ export default {
         localStorage.removeItem('ip' + this.filtro)
         localStorage.removeItem('porta' + this.filtro)
         localStorage.removeItem('banco' + this.filtro)
+        localStorage.removeItem('bdName' + this.filtro)
         localStorage.removeItem('senhaBD' + this.filtro)
         
         this.bancosDados = []

@@ -16,6 +16,7 @@ import router from './router'
 import './themes/index'
 import './themes/spinners'
 import store from './vuex/store'
+//import axios from './http-common'
 
 Vue.config.productionTip = false
 Vue.use(Quasar) // Install Quasar Framework
@@ -54,6 +55,14 @@ localforage.config({
   driver: localforage.INDEXEDDB,
   name: 'localDB'
 })
+
+import axios from 'axios'
+Vue.use(axios)
+axios.create({
+  headers: {'username': 'docemorena2'}
+  
+})
+
 
 // ============= FILTERS ============================
 
@@ -98,6 +107,7 @@ Quasar.start(() => {
     el: '#q-app',
     store,
     router,
+    //axios,
     render: h => h(require('./App'))
   })
 })

@@ -935,6 +935,11 @@ export default {
   mounted(){
     this.obterPermissoes()
     
+    if(localStorage.getItem('tela') === 'cadProduto'){
+        this.sync()
+        localStorage.setItem('tela', 'Produtos')
+    }
+    
     if(localStorage.getItem('loadProdutos') === 'true'){
         this.todosProdutos()
         this.listarFamilias()

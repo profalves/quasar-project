@@ -17,9 +17,9 @@
         </q-item>
         <q-collapsible icon="people" color="white" label="Pessoas" group="cad"><!-- sublabel="Listagem e Cadastro de clientes, fornecedores, etc.">-->
           <q-list highlight no-border>
-            <q-item @click="novoCliente">
-              <q-item-main label="Novo Cadastro" /><!-- sublabel="Criar e editar cadastro de Pessoas" />-->
-            </q-item>
+            <!--<q-item @click="novoCliente">
+              <q-item-main label="Novo Cadastro" /><!-- sublabel="Criar e editar cadastro de Pessoas" />--
+            </q-item>-->
             <q-item>
               <q-side-link to="/clientes">
                 <q-item-main label="Localizar Pessoas" /><!-- sublabel="Listagem e Busca de Pessoas" />-->

@@ -1015,7 +1015,8 @@ export default {
             console.log(res.response)
             console.log('sucesso')
             this.todosProdutos()
-            this.$router.push('produtos')
+            localStorage.setItem('tela', 'cadProduto')
+            this.$router.push('produtos?cadProduto=true')
           })
           .catch((e)=>{
             Loading.hide()

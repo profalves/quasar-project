@@ -75,13 +75,13 @@ export default {
     }
   },
   methods: {
-    launch (url) {
+    launch(url){
       openURL(url)
     },
-    toggleFullscreen () {
+    toggleFullscreen(){
       AppFullscreen.toggle()
     },
-    onResize (size) {
+    onResize(size){
       this.width = size.width
       console.log('width', this.width);
       if(size.width < 990 || size.height < 400){
@@ -99,7 +99,7 @@ export default {
         this.openNav()
       }
     },
-    openNav() {
+    openNav(){
       this.open = true
       if(this.width<460){
         document.getElementById("sidenav").style.width = "80%";  
@@ -109,7 +109,7 @@ export default {
       }
       
     },
-    closeNav() {
+    closeNav(){
       this.open = false
       document.getElementById("sidenav").style.width = "0";
     },

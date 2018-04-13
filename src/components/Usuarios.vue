@@ -53,9 +53,7 @@
       </template>
     </q-data-table>
     
-   
-    
-    <!-- Configurações -->
+    <!-- Configurações --
     <q-collapsible
       label="Opções"
       icon="settings"
@@ -70,7 +68,7 @@
         :label-width="4"
       >
         <q-input v-model="config.title" />
-      </q-field>-->
+      </q-field>--
 
         
       <q-field
@@ -130,7 +128,7 @@
             {label: '2', value: 2}
           ]"
         />
-      </q-field>-->
+      </q-field>--
 
       <q-field
         icon="format_line_spacing"
@@ -161,7 +159,8 @@
           <q-slider class="col" v-model="bodyHeight" :min="100" :max="700" label-always :disable="bodyHeightProp === 'auto'" :label-value="`${bodyHeight}px`" />
         </div>
       </q-field>
-    </q-collapsible>
+    </q-collapsible>-->
+    <br><br><br><br>
   </div>
 </div>
 </template>
@@ -431,8 +430,9 @@ export default {
     }
   },
   mounted(){
-    if(localStorage.getItem('loadUsuarios') === 'true'){
+    if(localStorage.getItem('loadUsuarios') === 'true' || localStorage.getItem('tela') === 'cadUsuario'){
         this.listarUsuarios()
+        localStorage.setItem('tela', 'Usuario')
     }
     else{
         localforage.getItem('Usuários').then((value) => {
