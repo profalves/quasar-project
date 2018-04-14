@@ -1,6 +1,6 @@
 <template>
 <div id="clientes">
-  <h5>Financeiro</h5>
+  <h5>Contas</h5>
   <!-- Botão ADD -->
     <q-fixed-position class="over" corner="bottom-right" :offset="[18, 18]">
         <q-btn 
@@ -203,114 +203,6 @@
     </q-data-table>
     
    
-    
-    <!-- Configurações -->
-    <!--<q-collapsible
-      label="Opções"
-      icon="settings"
-      style="background-color:white;
-             margin-bottom:100px;"
-      class="shadow-2"
-    >
-        
-      <!--<q-field
-        icon="title"
-        label="Nome da Tabela"
-        :label-width="4"
-      >
-        <q-input v-model="config.title" />
-      </q-field>--
-
-        
-      <q-field
-        icon="widgets"
-        label="Recursos"
-        :label-width="4"
-      >
-        <div class="column group" style="margin: -5px -7px">
-          <q-checkbox v-model="config.refresh" label="Atualizar tabela (refresh)" />
-          <q-checkbox v-model="config.columnPicker" label="Selecionar colunas" />
-          <q-checkbox v-model="pagination" label="Paginação" />
-          <q-checkbox v-model="config.responsive" label="Responsiva" />
-          <q-checkbox v-model="config.noHeader" label="Sem Cabeçário" />
-        </div>
-      </q-field>
-
-      <q-field
-        icon="check box"
-        label="Tipo de Seleção"
-        :label-width="4"
-      >
-        <q-select
-          v-model="config.selection"
-          class="col-xs-12 col-sm"
-          float-label="Seleção"
-          :options="[
-            {label: 'Nenhuma', value: false},
-            {label: 'Singular', value: 'single'},
-            {label: 'Multipla', value: 'multiple'}
-          ]"
-        />
-      </q-field>
-
-      <!--<q-field
-        icon="place"
-        label="Sticky Columns"
-        :label-width="4"
-      >
-        <q-select
-          v-model="config.leftStickyColumns"
-          class="col-xs-12 col-sm"
-          float-label="Left Sticky Columns"
-          :options="[
-            {label: 'None', value: 0},
-            {label: '1', value: 1},
-            {label: '2', value: 2}
-          ]"
-        />
-        <br>
-        <q-select
-          v-model="config.rightStickyColumns"
-          class="col-xs-12 col-sm"
-          float-label="Right Sticky Columns"
-          :options="[
-            {label: 'None', value: 0},
-            {label: '1', value: 1},
-            {label: '2', value: 2}
-          ]"
-        />
-      </q-field>--
-
-      <q-field
-        icon="format_line_spacing"
-        label="Altura das linhas"
-        :label-width="4"
-      >
-        <q-slider v-model="rowHeight" :min="38" :max="200" label-always :label-value="`${rowHeight}px` "/>
-      </q-field>
-
-      <q-field
-        icon="content_paste"
-        label="Tamanho"
-        :label-width="4"
-      >
-        <div class="row no-wrap items-center">
-          <div class="col-auto" style="margin-top: 10px">
-            <q-select
-              v-model="bodyHeightProp"
-              float-label="Style"
-              :options="[
-                {label: 'Auto', value: 'auto'},
-                {label: 'Altura', value: 'height'},
-                {label: 'Altura Min', value: 'minHeight'},
-                {label: 'Altura Max', value: 'maxHeight'}
-              ]"
-            />
-          </div>
-          <q-slider class="col" v-model="bodyHeight" :min="100" :max="700" label-always :disable="bodyHeightProp === 'auto'" :label-value="`${bodyHeight}px`" />
-        </div>
-      </q-field>
-    </q-collapsible>-->
     <br><br><br><br>
   </div>
 </div>
@@ -324,7 +216,7 @@ import localforage from 'localforage'
 var moment = require('moment');
 require("moment/min/locales.min");
 moment.locale('pt-br');
-const hoje = new Date()
+//const hoje = new Date()
     
 const API = localStorage.getItem('wsAtual')
   
@@ -335,7 +227,7 @@ export default {
     return {
       contas: [],
       vencimento: '',
-      dataInicial: '',
+      dataInicial:'',
       dataFinal: '',
       tipo: 'cp',
       tipos: [
@@ -516,9 +408,13 @@ export default {
             return this.contas.filter(row => row.vencimento.indexOf(data)>=0)
         }
         else if(this.dataInicial && this.dataFinal){
-            let di = moment(this.dataInicial).format('YYYY-MM-DDTHH:mm:SS')
-            let df = moment(this.dataFinal).format('YYYY-MM-DDTHH:mm:SS')
-            return this.contas.filter(row => row.vencimento > di && row.vencimento < df)
+            let di = moment(this.dataInicial).format('YYYY-MM-DD')
+            console.log('di1', this.dataInicial);
+            console.log('di', di);
+            let df = moment(this.dataFinal).format('YYYY-MM-DD')
+            console.log('df1', this.dataFinal);
+            console.log('df', df);
+            return this.contas.filter(row => moment(row.vencimento).format('YYYY-MM-DD') >= di && moment(row.vencimento).format('YYYY-MM-DD') <= df)
         }
         else{
             return this.contas
@@ -566,8 +462,8 @@ export default {
                 if(value){
                     console.log('localforage get')
                     console.log(value)
-                    this.contas = value.filter(row => row.vencimento <= moment(hoje).format('YYYY-MM-DD') + 'T23:59:59')
-                                       .filter(row => row.pgtoTitulo === false)
+                    this.contas = value//.filter(row => row.vencimento <= moment(hoje).format('YYYY-MM-DD') + 'T23:59:59')
+                                       //.filter(row => row.pgtoTitulo === false)
                 }
                 else{
                     console.log('localforage fail')
@@ -916,7 +812,10 @@ export default {
           localforage.setItem('RecPagas', res.data.contas)
           c = c+1
           console.log('c', c);
-          if(c === 4){ Loading.hide() }
+          if(c === 4){ 
+            Loading.hide()
+            Toast.create('Dados sincronizados com sucesso')
+          }
       })
       .catch((e)=>{
         console.log(e.response)
@@ -976,6 +875,8 @@ export default {
     }
   },
   mounted(){
+    this.dataInicial = new Date().toISOString()
+    this.dataFinal = new Date().toISOString()
     if(localStorage.getItem('loadContas') === 'false'){
         localforage.getItem('DespPagar').then((value) => {
             if(value){

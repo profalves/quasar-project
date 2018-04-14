@@ -2028,7 +2028,7 @@ export default {
     }
     
     #fone {
-        margin-top: 12px
+        margin-top: 20px
     }
     
     #email {

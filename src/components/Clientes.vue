@@ -37,34 +37,16 @@
   </q-fixed-position> -->
     
   <!-- Botão options -->
-  <q-fixed-position class="fixo" corner="top-right" :offset="[18, 18]" v-if="!visivel">
-    <q-fab color="primary" icon="menu" direction="down">
-      <q-fab-action color="purple" 
-                    @click="$router.push('/nivers')" 
-                    icon="cake">
-        <q-tooltip anchor="bottom left" self="top middle">
-          Aniversariantes
-        </q-tooltip>
-      </q-fab-action>
-      <q-fab-action color="warning" 
-                    @click="$router.push('/promoClientes')"
-                    icon="attach_money">
-        <q-tooltip anchor="bottom left" self="top middle">
-          Promoções
-        </q-tooltip>
-      </q-fab-action>
-      <q-fab-action color="info" 
-                    @click="sync" 
-                    icon="sync">
-        <q-tooltip anchor="bottom left" self="top middle">
-          Sincronizar
-        </q-tooltip>
-      </q-fab-action>
-    </q-fab>
-  </q-fixed-position>
   
-  <q-fixed-position class="fixo" corner="top-right" :offset="[18, 18]" v-else>
-    
+  <q-fixed-position class="fixo" corner="top-right" :offset="[18, 18]">
+      <q-btn color="faded"
+             round small
+             @change="listarSemCompra"
+             icon="remove_shopping_cart">
+        <q-tooltip anchor="bottom left" self="top middle">
+          Sem Compra
+        </q-tooltip>
+      </q-btn>
       <q-btn color="purple"
              round small
              @click="$router.push('/nivers')"
@@ -93,8 +75,8 @@
   </q-fixed-position>
   
   <div class="row" style="margin-bottom: 10px">
-        <div class="col">
-            <h5>Buscar Pessoa</h5>
+        <div class="col tile">
+            /Pessoas
         </div>
   </div>
   
@@ -106,7 +88,6 @@
         filter
         filter-placeholder="Procurar..."
         :options="listaCidades"
-        @change="filterbyCidade"
       />
     </div>
     <div class="col-md-6 col-xs-12">
@@ -116,7 +97,6 @@
         filter
         filter-placeholder="Procurar..."
         :options="listaBairros"
-        @change="filterbyBairro"
       />
     </div>
     <div class="col"></div>
@@ -153,13 +133,15 @@
     </div>
   </div>-->
    
-    <!--
+  <!--
     <q-checkbox v-model="autocomplete" 
                 label="Permitir autocompletar a pesquisa"
                 v-if="tipoCod === 'nome'"
                 style="margin-left: 10px"
                 />
     -->
+  
+    <!--
     <q-search  
              v-model="search" 
              color="none" 
@@ -174,7 +156,7 @@
           @selected="obterPessoa"
         />
 
-    </q-search>
+    </q-search>-->
     
      <q-search
              v-model="search" 
@@ -182,15 +164,14 @@
              style="margin-left: 10px"
              placeholder="Procurar..."
              @keyup.enter="obterPessoa"
+             @blur="obterPessoa"
              @change="verTipo"
-             v-else
+             
              >
     </q-search>
     
     <div v-show="pessoa.length===0">Aperte enter para exibir todos os cadastros</div><br>
-  
-    <q-checkbox v-model="semCompra" label="Obter clientes sem compra" @change="listarSemCompra"/>
-  
+    
     <div v-for="(pessoa, index) in pessoa">
         <q-card no-border>
           <q-card-title>
@@ -488,7 +469,15 @@ export default {
                 console.log(this.pessoa)
               }
               else {
-                this.pessoa = value.filter(row => row.nome.toLowerCase().indexOf(this.search) >= 0);
+                if(this.cidade){
+                  this.pessoa = value.filter(row => row.nome.toLowerCase().indexOf(this.search) >= 0)
+                                     .filter(row => row.cidadeindexOf(this.cidade) >= 0)
+                }
+                if(this.bairro){
+                  this.pessoa = value.filter(row => row.nome.toLowerCase().indexOf(this.search) >= 0)
+                                     .filter(row => row.cidadeindexOf(this.bairro) >= 0)
+                }
+                this.pessoa = value.filter(row => row.nome.toLowerCase().indexOf(this.search) >= 0)
                 console.log(this.pessoa)
               }
                 
@@ -902,7 +891,7 @@ export default {
 }
 </script>
 
-<style lang="stylus">
+<style lang="stylus" scoped>
 .my-label
   padding 5px
   border-radius 3px
@@ -912,4 +901,7 @@ export default {
   position fixed
 .right 
   padding-right 3px
+.tile
+  font-size 20px
+  font-style italic
 </style>

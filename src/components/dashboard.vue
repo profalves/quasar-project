@@ -4,7 +4,7 @@
     <h3 class="text-center">{{tempo}} {{user | capitalize}}</h3>
     <div class="text-center">{{today}}, {{currentDate}}</div>
     <div class="text-center clock" v-text="currentTime"></div>
-    <div class="row">
+    <div class="row" style="width: 100%">
       <div class="col-lg text-center" style="margin-top:30px">
         <div class="row text-center vertical-middle">
           <div class="col">
@@ -29,7 +29,7 @@
           </div> 
         </div>
         <div class="row text-center">
-          <div class="col bloco mHover" style="background-color:Chartreuse" @click="$router.push('cadnotas?q=save')">
+          <div class="col bloco mHover" style="background-color:indigo" @click="$router.push('cadnotas?q=save')">
               <i class="fa fa-file-text-o fa-4x text-center text-white"></i><br>
               <p>NF de Entrada</p>
           </div> 
@@ -49,7 +49,7 @@
         <q-list inset-separator no-border style="width: 100%">
           <q-list-header>Painel {{permissoes.funcao | capitalize}}</q-list-header>
           <!-- Vendas -->
-          <q-collapsible :opened="expandVendas" 
+          <q-collapsible opened
                          icon="fa-handshake-o" 
                          label="Vendas" 
                          :sublabel="feedVendas"
@@ -71,40 +71,7 @@
               </q-item-side> 
             </q-item>
             <div class="row" v-if="permissoes.acessaFinanceiro">
-              <div class="col-sm-6 col-xs-12 text-center">
-                 <!-- <q-card>
-                    <q-card-title>
-                      Dia
-                      <q-icon slot="right" name="more_vert">
-                        <q-popover ref="popover">
-                          <q-list link class="no-border">
-                            <q-item @click="lucroDia = false">
-                              <q-item-main label="Total de Vendas" />
-                            </q-item>
-                            <q-item @click="lucroDia = true">
-                              <q-item-main label="Lucro" />
-                            </q-item>
-                          </q-list>
-                        </q-popover>
-                      </q-icon>
-                    </q-card-title>
-                    <q-card-separator />
-                    <q-card-main class="text-center">
-                        <q-knob
-                          v-model="dia"
-                          size="200px"
-                          style="font-size: 1.5rem"
-                          :color="faturaCorDia"
-                          line-width="5px"
-                          :min="min"
-                          :max="maxDia"
-                          :step="1"
-                          readonly
-                        >
-                          {{dia | formatMoney}}
-                        </q-knob>
-                    </q-card-main>
-                  </q-card>-->
+              <div class="col text-center">
                 <q-knob
                   v-model="dia"
                   :size="size"
@@ -121,39 +88,6 @@
                 </q-knob>
               </div>
               <div class="col text-center">
-                <!--  <q-card>
-                    <q-card-title>
-                      Mês
-                      <q-icon slot="right" name="more_vert">
-                        <q-popover ref="popover">
-                          <q-list link class="no-border">
-                            <q-item @click="lucroMes = false">
-                              <q-item-main label="Total de Vendas" />
-                            </q-item>
-                            <q-item @click="lucroMes = true">
-                              <q-item-main label="Lucro" />
-                            </q-item>
-                          </q-list>
-                        </q-popover>
-                      </q-icon>
-                    </q-card-title>
-                    <q-card-separator />
-                    <q-card-main class="text-center">
-                        <q-knob
-                          v-model="mes"
-                          size="200px"
-                          style="font-size: 1.5rem"
-                          :color="faturaCorMes"
-                          line-width="5px"
-                          :min="min"
-                          :max="maxMes"
-                          :step="1"
-                          readonly
-                        >
-                          {{mes | formatMoney}}
-                        </q-knob>
-                    </q-card-main>
-                  </q-card> -->
                 <q-knob
                   v-model="mes"
                   :size="size"
@@ -178,11 +112,11 @@
                   <q-select v-model="mensal"
                             :options="[
                               {
-                                label: 'Meta do Dia',
+                                label: 'Dia',
                                 value: false
                               },
                               {
-                                label: 'Meta do Mês',
+                                label: 'Mês',
                                 value: true
                               },
                             ]" />
@@ -237,8 +171,9 @@
               </q-item>
             </q-list>
           </q-collapsible>
+          
           <!-- Contas -->
-          <q-collapsible :opened="expandContas" 
+          <q-collapsible opened
                          v-if="permissoes.acessaFinanceiro" 
                          icon="insert_chart" label="Contas" 
                          :sublabel="feedContas"
@@ -911,7 +846,8 @@
           vendedores = this.vendasMes.map(row => ({
             vendedor: row.vendedor,
             total: row.totalVendas,
-            porcentagem: parseFloat(((row.totalVendas / this.metaMes)*100).toFixed(2))
+            porcentagem: parseFloat(((row.totalVendas / row.meta)*100).toFixed(2)),
+            meta: row.meta
           }))
         }
         else{
@@ -925,7 +861,8 @@
           vendedores = this.vendas.map(row => ({
             vendedor: row.vendedor,
             total: row.totalVendas,
-            porcentagem: parseFloat(((row.totalVendas / this.metaDia)*100).toFixed(2))
+            porcentagem: parseFloat((row.totalVendas / (Math.ceil(row.meta/26)*100)).toFixed(2)),
+            meta: row.meta
           }))
         }
         return vendedores.sort(function(a,b) {
@@ -954,13 +891,13 @@
     methods:{
       onResize (size) {
         if(size.width < 577){
-          this.size = Math.round((size.width - (size.width * 0.35))) + 'px'
-          this.font = 'font-size: ' + Math.round((size.width - (size.width * 0.92))) + 'px'
+          this.size = Math.round((size.width - (size.width * 0.63))) + 'px'
+          this.font = 'font-size: ' + Math.round((size.width - (size.width * 0.95))) + 'px'
           console.log('size', this.size);
           console.log('font', this.font);
         }
         else if(size.width < 999){
-          this.size = Math.round((size.width - (size.width * 0.75))) + 'px'
+          this.size = Math.round((size.width - (size.width * 0.7))) + 'px'
           this.font = 'font-size: ' + Math.round((size.width - (size.width * 0.97))) + 'px'
           console.log('size', this.size); 
           console.log('font', this.font); 

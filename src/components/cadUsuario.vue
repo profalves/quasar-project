@@ -156,6 +156,19 @@
             </div>
 
             <div class="row">
+                <div class="col-md-6 col-sm-12">
+                  <q-field
+                    icon="fa-line-chart"
+                  >
+                    <q-input float-label="Meta Vendedor"
+                             v-model.number="usuario.meta"
+                             type="number"
+                             />
+                  </q-field>   
+                </div>    
+            </div>
+
+            <div class="row">
                 <div class="col-xs-12 col-md-6">
                     <q-field>
                         <q-select
@@ -203,6 +216,8 @@
                         <q-checkbox class="checkbox" v-model="usuario.pdV_CriarOrcamento" label="Permitir orçamento" /><br>
                         <q-checkbox class="checkbox" v-model="usuario.pdV_CancelarPedido" label="Permitir cancelamento de nota/pedido" /><br>
                         <q-checkbox class="checkbox" v-model="usuario.pdV_ModificarDescontoSistema" label="Alterar desconto dado pelo sistema" /><br>
+                        <q-checkbox class="checkbox" v-model="usuario.pdV_PermitirVendaClienteComTituloAtrasado" label="Permitir Venda para Cliente Com Titulo Atrasado " /><br>
+                        <q-checkbox class="checkbox" v-model="usuario.pdV_PermitirVendaClienteSemLimiteCredito" label="Permitir Venda para Cliente para Sem Limite de Credito" /><br>
                       </q-card-main>
                     </q-card>   
                 </div>
@@ -275,7 +290,10 @@ export default {
             "ret_AlteraTabPreco": false,
             "codigoUsuario": parseInt(localStorage.getItem('codUser')),
             "acessaFinanceiro": false,
-            "alteraProduto": false
+            "alteraProduto": false,
+            "pdV_PermitirVendaClienteComTituloAtrasado": false,
+            "pdV_PermitirVendaClienteSemLimiteCredito": false,
+            "meta": 0  
         },
         nome: '',
         senha: '',
@@ -291,20 +309,14 @@ export default {
   },
     
   computed: {
-    listaPessoas: function () {
-      var a = this.pessoas
-      var lista = []
+    listaPessoas(){
+      let a = this.pessoas
+      let lista = []
       
-      for(let i=0; i<a.length; i++){
-        if(a[i].codTipo === 4){
-            let l = a[i].nome
-            let v = a[i].codigo
-            lista.push({
-                label: l,
-                value: v
-            })
-        }
-      }
+      lista=a.map(row=>({
+        label: row.nome,
+        value: row.codigo
+      }))
       
       return lista
     
@@ -366,9 +378,7 @@ export default {
           })
           .catch((e)=>{
             Loading.hide()
-            //console.log('error')
             console.log(e)
-            console.log(String(e))
             let error = e.response.data
             console.log(error)
             for(var i=0; error.length; i++){

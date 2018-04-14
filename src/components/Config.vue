@@ -16,43 +16,11 @@
             <!-- DASHBOARD -->
             <q-collapsible icon="fa-tachometer" label="Painel de Abertura" sublabel="Configurações de exibição do painel inicial">
               <q-list highlight no-border>
-                <q-list-header>Menu</q-list-header>
-                <q-item>
-                  <q-item-main>
-                    <q-item-tile label>Exibir Icones do Menu Principal</q-item-tile>
-                    <q-item-tile sublabel lines="2">Permitir acessar o menu principal através do painel inicial</q-item-tile>
-                  </q-item-main>
-                  <q-item-side right>
-                    <q-toggle
-                        v-model="menu"
-                        checked-icon="visibility"
-                        unchecked-icon="visibility_off"
-                        style="margin-left: 25px"
-                        @change="menuVisibility"
-                    />
-
-                  </q-item-side>
-                </q-item>
-                <q-item>
-                  <q-item-main>
-                    <q-item-tile label>Exibir botão de configurações no Menu Principal</q-item-tile>
-                  </q-item-main>
-                  <q-item-side right>
-                    <q-toggle
-                        v-model="configBtn"
-                        checked-icon="visibility"
-                        unchecked-icon="visibility_off"
-                        style="margin-left: 25px"
-                        @change="configVisibility"
-                    />
-
-                  </q-item-side>
-                </q-item>
-                <q-item-separator />
+                
                 <q-list-header>Vendas</q-list-header>
-                <q-item>
+                <!--<q-item>
                   <q-checkbox v-model="expandVendas" label="Trazer expandido" @change="expVendas" />
-                </q-item>
+                </q-item>-->
                 <div style="margin-left: 15px">
                   <strong>Configuração da Exibição dos Relógios (Gauges)</strong>
                 </div>
@@ -239,10 +207,11 @@
                   </q-item-side>
                 </q-item>
                 <q-item-separator />
+                <!--
                 <q-list-header>Contas</q-list-header>
                 <q-item>
                   <q-checkbox v-model="expandContas" label="Trazer expandido" @change="expContas" />
-                </q-item>
+                </q-item>-->
                 <q-item-separator />
                 <q-list-header>Estoque Mínimo</q-list-header>
                 <q-item>
@@ -343,7 +312,7 @@
                     </q-item>
                 </q-list>
             </q-collapsible>
-            <!-- GRAFICOS -->
+            <!-- GRAFICOS --
             <q-collapsible icon="insert_chart" label="Configuações de Gráficos" sublabel="Configurações de exibição de gráficos no sistema">
               <div>
                <q-field label="Tipo de Gráfico a Exibir">
@@ -380,7 +349,7 @@
                  <q-slider :label-value="`${height}px`" v-model="height" :min="10" :max="600" :step="10" label-always color="teal" @change="alterarTamGrafico" />
                  
               </div>
-            </q-collapsible>
+            </q-collapsible>-->
             <!-- LISTAS -->
             <q-collapsible icon="view_list" label="Listas" sublabel="Configure globalmente a exibição das listas">
               <div>
@@ -566,8 +535,8 @@
               <br>
               Bancos de Dados salvos: <br><br>
 
-            <div class="row" id="config">    
-                <table class="q-table" :class="computedClasses" style="width: 100%">
+            <div id="config">    
+                <table class="q-table responsive" :class="computedClasses">
                   <thead>
                     <tr>
                       <th class="text-left">ID</th>
@@ -582,13 +551,13 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="(item, index) in bancosDados">
-                      <td class="text-left">{{ item.IdBanco }}</td>
-                      <td class="text-left">{{ item.empresa }}</td>
-                      <td class="text-left">{{ item.banco }}</td>
-                      <td class="text-left">{{ item.ip }}</td>
-                      <td class="text-left">{{ item.porta }}</td>
-                      <td class="text-left">{{ item.bdName }}</td>
+                    <tr v-for="(item, index) in bancosDados" :key="index">
+                      <td data-th="ID" class="text-left">{{ item.IdBanco }}</td>
+                      <td data-th="Empresa" class="text-left">{{ item.empresa }}</td>
+                      <td data-th="Web Service" class="text-left">{{ item.banco }}</td>
+                      <td data-th="IP/Host" class="text-left">{{ item.ip }}</td>
+                      <td data-th="Porta" class="text-left">{{ item.porta }}</td>
+                      <td data-th="Nome Banco" class="text-left">{{ item.bdName }}</td>
                       <!--<td class="text-left">{{ item.senhaBD }}</td>-->
                       <td class="text-center">
                         <a @click="editar(item)" color="info"><i class="material-icons fa-2x" >mode_edit</i></a>   
@@ -818,13 +787,13 @@ export default {
       bdConfig: false,
         
       //tabela
-      misc: 'bordered', //[{value: 'bordered'},{value: 'highlight'}]
+      misc: [{value: 'bordered'},{value: 'highlight'}], // 'bordered'
       separator: 'cell', // none, horizontal, vertical, cell
       stripe: 'odd', // none, odd, even
-      type: 'none', // flipped, responsive
+      type: 'responsive', // flipped, responsive
       gutter: 'none', // compact, loose
       
-      //Armazenamento internoget 
+      //Armazenamento interno 
       localStorage: '',
       dbLocal: '',
         
@@ -1586,7 +1555,8 @@ export default {
 
 <style scoped>
   #config{
-    overflow: scroll;
+    overflow-y: scroll;
+    overflow-x: scroll;
   }
   .low{
     margin-bottom: 50px;

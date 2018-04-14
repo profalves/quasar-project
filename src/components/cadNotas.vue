@@ -129,6 +129,28 @@
     
       <!--cabeçalho-->
       <q-collapsible :opened="open.cab" icon="explore" label="Cabeçalho">
+        
+        <div class="row">
+            <div class="col">
+              <q-field
+                icon="done"
+                :error="$v.chave.$error"
+                helper="Chave de Acesso"
+              >
+                <the-mask v-model="cabecalho.chaveAcesso"
+                          :mask="['####-####-####-####-####-####-####-####-####-####-####']"
+                          @input="$v.chave.$touch()"
+                          class="mdInput"
+                          style="width: 100%"
+                />
+                  
+                
+              </q-field>
+                
+                <!--<span style="color:#878B8F; margin-left:43px" v-if="!$v.cpf.required">Este campo é requerido</span>-->
+                <div class="error" v-if="!$v.chave.minLength">Este campo deve ser conter  caracteres.</div>
+            </div>
+        </div>
           
         <div class="row">
             <div class="col">
@@ -257,27 +279,7 @@
             
         </div>
           
-        <div class="row">
-            <div class="col">
-              <q-field
-                icon="done"
-                :error="$v.chave.$error"
-                helper="Chave de Acesso"
-              >
-                <the-mask v-model="cabecalho.chaveAcesso"
-                          :mask="['####-####-####-####-####-####-####-####-####-####-####']"
-                          @input="$v.chave.$touch()"
-                          class="mdInput"
-                          style="width: 100%"
-                />
-                  
-                
-              </q-field>
-                
-                <!--<span style="color:#878B8F; margin-left:43px" v-if="!$v.cpf.required">Este campo é requerido</span>-->
-                <div class="error" v-if="!$v.chave.minLength">Este campo deve ser conter  caracteres.</div>
-            </div>
-        </div>
+        
           
         <div class="row">
             <div class="col-xs-12 col-md-6" style="margin-top: 10px">
@@ -304,7 +306,7 @@
       </q-collapsible>
         
       <!--Outros-->  
-      <q-collapsible :opened="open.desp" icon="monetization_on" label="Outras Despesas">
+      <q-collapsible opened icon="monetization_on" label="Outras Despesas">
             <div class="row">
                 <div class="col-md-6">
                     <q-field>
@@ -346,7 +348,7 @@
         <div class="col col-md-3">
             <q-btn
                 color="secondary"
-                push
+                push big
                 :key="modal"
                 @click="openModal"
                 
@@ -357,7 +359,7 @@
         
         <br>
         <!--Data tables HTML-->
-        <div class="row" id="table">
+        <div class="row" id="table" v-if="CadNotas.det.length>0">
             <table class="q-table" :class="computedClasses">
               <thead>
                 <tr>
@@ -584,7 +586,6 @@
                        @blur="listarProdutos"
                        >
                   <q-autocomplete
-                    :max-results="maxResults"
                     :static-data="{field: 'label', list: listaItens}"
                     @selected="listarProdutos"
                   />
@@ -656,6 +657,32 @@
             </div>-->
             
             <div class="row">
+                <div class="col-6">
+                    <q-field
+                      helper="Quantidade"
+                      style="margin-top: 16px"
+                    >
+                        <q-input
+                            v-model="detItem.qtd"
+                        />
+                    </q-field>
+                </div>
+                <div class="col-6">
+                    <q-field
+                        helper="Custo"
+                    >
+                        
+                        <money v-model="detItem.custo"
+                               v-bind="money"
+                               class="mdInput"
+                               style="margin-top:10px"
+                        />
+                    </q-field>
+                </div>
+                
+            </div>
+          
+            <div class="row">
                 <div class="col">
                     <q-field
                       helper="Fator de Conversão"         
@@ -679,33 +706,6 @@
                 </div>
             </div>
             
-            
-            
-            <div class="row">
-                <div class="col-6">
-                    <q-field
-                      helper="Quantidade"
-                      style="margin-top: 26px"
-                    >
-                        <q-input
-                            v-model="detItem.qtd"
-                        />
-                    </q-field>
-                </div>
-                <div class="col-6">
-                    <q-field
-                        helper="Custo"
-                    >
-                        
-                        <money v-model="detItem.custo"
-                               v-bind="money"
-                               class="mdInput"
-                               style="margin-top:12px"
-                        />
-                    </q-field>
-                </div>
-                
-            </div>
             
             <div class="row">
                 <div class="col-6">
@@ -779,35 +779,30 @@
                     
                 </div>
             </div>
-    
-        </div>
-        
-        <div class="row">
-            
-            <div class="col">
-                <q-card color="primary" class="col-sm-6">
-                  <center>
-                    <q-card-title>Lucro</q-card-title>
-                        <input v-model="item.desconto"
-                               class="boxInput"
-                               v-money="perc"
-                        />
-                        <br>
-                  </center>
-                </q-card>
-            </div>
-
-            <div class="col">
-                <q-card color="positive" class="col-sm-6">
-                  <center>
-                    <q-card-title>Venda</q-card-title>
+            <div class="row">
+                
+                <div class="col-6">
+                    <q-field helper="Lucro">
+                      <q-input 
+                         v-model="item.desconto"
+                         v-money="perc"
+                      />
+                    </q-field>
+                </div>
+                <div class="col-6">
+                    <q-field
+                        helper="Venda"
+                             >
                         <money v-model="detItem.venda"
                                class="boxInput"
                                :money="money"
+                               style="margin-top: -5px"
                         />
-                  </center>
-                </q-card>
-            </div>  
+                    </q-field>
+                    
+                </div>
+            </div>
+    
         </div>
         
         <div class="row">
@@ -975,7 +970,7 @@ export default {
             desconto: 0.00,    
             venda: 0.00,    
             acrescimo: 0.00,    
-            unMedCom: '',    
+            unMedCom: 'UN',    
             unMedTrib: '',    
             encargos: 0.00,    
             IPI: 0.00,    
@@ -1627,9 +1622,9 @@ export default {
       })  
     },
     listarProdutos(){
-      if(this.search === ''){
+      /*if(this.search === ''){
         this.search = 0
-      }
+      }*/
         
       if(this.tipoCod === 'barras'){
           Loading.show({
@@ -1710,45 +1705,29 @@ export default {
       }
     },
     todosProdutos(){
-        localforage.getItem('Produtos').then((value) => {
-            if(value){
-                console.log('localforage get')
-                //console.log(value)
-                this.produtos = value;
-            }
-            else{
-                console.log('localforage fail')
-                this.todosProdutos()
-            }
-
-        }).catch((err) => {
-            console.log(err)
-            console.log('fail')
-        }) 
         
-        if(localStorage.getItem('loadProdutos') === 'true'){
-            Loading.show({
-              spinner: FulfillingBouncingCircleSpinner,
-              spinnerSize: 140,
-              message: 'Aguardando Dados...'
-            })
-            axios.get(API + 'produto/obterproduto')
-              .then((res)=>{
-                Loading.hide()
-                this.produtos = res.data
-                console.log('Sync Produtos', res)
-              })
-              .catch((e)=>{
-                Loading.hide()
-                console.log(e)
-                Toast.create({
-                    html: 'Sem Conexão',
-                    timeout: 6000,
-                    bgColor: '#f44242',
-                    icon: 'mood_bad'
-                })
-              })
-        }
+      Loading.show({
+        spinner: FulfillingBouncingCircleSpinner,
+        spinnerSize: 140,
+        message: 'Aguardando Dados...'
+      })
+      axios.get(API + 'produto/obterproduto')
+      .then((res)=>{
+        Loading.hide()
+        this.produtos = res.data
+        console.log('Sync Produtos', res)
+      })
+      .catch((e)=>{
+        Loading.hide()
+        console.log(e)
+        Toast.create({
+            html: 'Sem Conexão',
+            timeout: 6000,
+            bgColor: '#f44242',
+            icon: 'mood_bad'
+        })
+      })
+      
     },
     listarUnidadesMedida(){
       axios.get(API + 'produto/obterUnMedidas')

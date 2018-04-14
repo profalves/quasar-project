@@ -173,6 +173,7 @@ export default {
     console.log('route', this.route);
   },
   mounted(){
+    document.getElementById("sidenav").style.width = "0"
     document.addEventListener('click', evt => {
       event.targetElement(evt)
       let a = evt.path.map(row => row.id)
@@ -204,6 +205,7 @@ export default {
     }) 
   },
   created(){
+    document.getElementById("sidenav").style.width = "0"
     if(localStorage.getItem('blockScreen') === 'true'){
       this.blockScreen()
     }
@@ -279,7 +281,7 @@ export default {
   }
   .sidenav {
     height: 100%;
-    width: 0;
+    width: 0px;
     position: fixed;
     z-index: 1;
     top: 0;

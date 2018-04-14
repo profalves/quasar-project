@@ -169,7 +169,7 @@ export default {
       anos: [
         {label: '2017', value: 2017}
       ],
-      ano: '',
+      ano: new Date().getFullYear(),
         
       //tabela
       misc: 'highlight', //[{value: 'bordered'},{value: 'highlight'}]

@@ -436,21 +436,6 @@ export default {
       return value
     },
     somaDiferenca(value){
-      /*if(this.relFechamento.length === 0){ return 0 }
-      let a = this.relFechamento.fechamento
-      console.log('diferencias', a.length);
-      if(a.length === 0){ return 0 }
-      let lista = []
-
-      for (let i=0; i < a.length; i++) {
-          let n = a[i].diferenca
-          lista.push(n)
-      }
-       
-      value = lista.reduce(function(a, b) {
-        return a + b;
-      });
-      return value * -1*/
       
       value = this.somaConferencias - this.somaSaldo
         

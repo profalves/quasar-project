@@ -285,6 +285,7 @@
 
 <script>
 import axios from 'axios'
+import localforage from 'localforage'
 //import VMasker from 'vanilla-masker'
 import { required, minLength } from 'vuelidate/lib/validators'
 import { Dialog, Toast, Loading } from 'quasar'
@@ -556,11 +557,33 @@ export default {
                 html: 'Sucesso',
                 icon: 'done'
             })
+            axios.all([
+              axios.get(API + 'conta/obterContas?tipo=cp&pagas=false')
+              .then((res)=>{
+                localforage.setItem('DespPagar', res.data.contas)
+              }),
+              axios.get(API + 'conta/obterContas?tipo=cp&pagas=true')
+              .then((res)=>{
+                localforage.setItem('DespPagas', res.data.contas)
+              }),
+              axios.get(API + 'conta/obterContas?tipo=cr&pagas=false')
+              .then((res)=>{
+                localforage.setItem('RecsPagar', res.data.contas)
+              }),
+              axios.get(API + 'conta/obterContas?tipo=cr&pagas=true')
+              .then((res)=>{
+                localforage.setItem('RecsPagas', res.data.contas)
+              }),
+            ])
+            .then((res)=>{
+              console.log(res)
+              this.$router.push('contas')
+            })
             //console.log(res)
             console.log(res.data)
             console.log(res.response)
             console.log('sucesso')
-            this.$router.push('contas')
+            //this.$router.push('contas')
           })
           .catch((e)=>{
             Loading.hide()
