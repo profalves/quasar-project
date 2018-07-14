@@ -13,6 +13,121 @@
         <div class="col"><!--<div class="col-xl-6">-->
           <q-list inset-separator style="background-color: white; margin-bottom: 40px;">
             <q-list-header>Configurações Gerais</q-list-header>
+            <!-- BANCOS -->
+            <q-collapsible  icon="device_hub" 
+                            label="Banco de Dados" 
+                            sublabel="Configure a Empresa ao qual deseja conectar"
+                            opened
+                            > <!--:opened="bdConfig"-->
+              <p ref="chip">
+                <q-chip tag closable color="black" @close="$refs.chip.remove()"><i>Para salvar um banco, o mesmo deve ser digitado e depois clicar no botão adicionar(+)</i></q-chip>
+              </p>
+              <div class="row">
+                <div class="col">
+                  <q-field
+                    icon="domain"
+                    helper="Nome da Empresa"
+                  >
+                    <q-input v-model.trim="empresa" clearable />
+                  </q-field>   
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <q-field
+                    icon="pin_drop"
+                    helper="IP/Host"
+                  >
+                    <q-input v-model.trim="ip" clearable/>
+                  </q-field>   
+                </div>
+                <div class="col-md-6">
+                  <q-field
+                    icon="pin_drop"
+                    helper="Porta"
+                  >
+                    <q-input v-model.number="porta" 
+                             type="number"
+                             v-mask="['#####']"
+                             clearable/>
+                  </q-field>   
+                </div>    
+              </div> 
+              <div class="row">
+                <div class="col">
+                  <q-field
+                    icon="fa-server"
+                    helper="Web Service"
+                  >
+                    <q-input v-model.trim="banco" clearable />
+                  </q-field>   
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-12 col-md">
+                  <q-field
+                    icon="featured_play_list"
+                    helper="Nome do Banco de Dados"
+                  >
+                    <q-input v-model.trim="bdName" clearable />
+                  </q-field>   
+                </div>
+                <div class="col-xs-12 col-md">
+                  <q-field
+                    icon="vpn_key"
+                    helper="Senha do Banco de Dados"
+                  >
+                    <q-input v-model.trim="senhaBd" type="password" clearable />
+                  </q-field>   
+                </div> 
+                <div class="col-2" id="btn-save">
+                    <q-btn 
+                       rounded
+                       color="primary" 
+                       @click="salvarBanco">
+                       Salvar
+                    </q-btn>
+                </div>
+              </div>
+              <br>
+              Bancos de Dados salvos: <br><br>
+
+            <div id="config">    
+                <table class="q-table responsive" :class="computedClasses">
+                  <thead>
+                    <tr>
+                      <th class="text-left">ID</th>
+                      <th class="text-left">Empresa</th>
+                      <th class="text-left">Web Service</th>
+                      <th class="text-left">IP/Host</th>
+                      <th class="text-left">Porta</th>
+                      <th class="text-left">Nome Banco</th>
+                      <!--<th class="text-left">Senha</th>-->
+                      <th class="text-left">Editar</th>
+                      <th class="text-left">Excluir</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="(item, index) in bancosDados" :key="index">
+                      <td data-th="ID" class="text-left">{{ item.IdBanco }}</td>
+                      <td data-th="Empresa" class="text-left">{{ item.empresa }}</td>
+                      <td data-th="Web Service" class="text-left">{{ item.banco }}</td>
+                      <td data-th="IP/Host" class="text-left">{{ item.ip }}</td>
+                      <td data-th="Porta" class="text-left">{{ item.porta }}</td>
+                      <td data-th="Nome Banco" class="text-left">{{ item.bdName }}</td>
+                      <!--<td class="text-left">{{ item.senhaBD }}</td>-->
+                      <td class="text-center">
+                        <a @click="editar(item)" color="info"><i class="material-icons fa-2x" >mode_edit</i></a>   
+                      </td>
+                      <td class="text-center">
+                        <i class="material-icons fa-2x mHover text-negative" @click="excluir(item, index)" color="negative">delete_forever</i> 
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+            </div>
+
+            </q-collapsible>
             <!-- DASHBOARD -->
             <q-collapsible icon="fa-tachometer" label="Painel de Abertura" sublabel="Configurações de exibição do painel inicial">
               <q-list highlight no-border>
@@ -213,7 +328,7 @@
                   <q-checkbox v-model="expandContas" label="Trazer expandido" @change="expContas" />
                 </q-item>-->
                 <q-item-separator />
-                <q-list-header>Estoque Mínimo</q-list-header>
+                <!--<q-list-header>Estoque Mínimo</q-list-header>
                 <q-item>
                   <q-checkbox v-model="expandEstoque" label="Trazer expandido" @change="expEstoque" />
                 </q-item>
@@ -221,7 +336,7 @@
                 <q-list-header>Aniversários</q-list-header>
                 <q-item>
                   <q-checkbox v-model="expandNivers" label="Trazer expandido" @change="expNivers" />
-                </q-item>
+                </q-item>-->
               </q-list>
               
             </q-collapsible>
@@ -284,7 +399,7 @@
               </div>
             </q-collapsible>-->
             <!-- BUSCAS -->
-            <q-collapsible icon="search" label="Buscas" sublabel="Configurações de buscas (Pessoas e Produtos)">
+            <!--<q-collapsible icon="search" label="Buscas" sublabel="Configurações de buscas (Pessoas e Produtos)">
                 <q-list link no-border>
                     <q-item multiline tag="label">
                       <q-item-main>
@@ -311,7 +426,7 @@
                       </q-item-side>
                     </q-item>
                 </q-list>
-            </q-collapsible>
+            </q-collapsible>-->
             <!-- GRAFICOS --
             <q-collapsible icon="insert_chart" label="Configuações de Gráficos" sublabel="Configurações de exibição de gráficos no sistema">
               <div>
@@ -351,7 +466,7 @@
               </div>
             </q-collapsible>-->
             <!-- LISTAS -->
-            <q-collapsible icon="view_list" label="Listas" sublabel="Configure globalmente a exibição das listas">
+            <!--<q-collapsible icon="view_list" label="Listas" sublabel="Configure globalmente a exibição das listas">
               <div>
                   <q-field
                     icon="widgets"
@@ -422,7 +537,7 @@
                     </div>
                   </q-field>
 
-                  <!--Salvar-->
+                  <!--Salvar--
                   <div class="row">
                     <q-btn icon="done"
                            color="primary"
@@ -440,11 +555,11 @@
 
 
               </div>
-            </q-collapsible>
+            </q-collapsible>-->
             <!-- WhatsApp --
             <q-collapsible icon="fa-whatsapp" label="WhatsApp" sublabel="Configure as mensagens prontas para enviar para as listas de transmissão cadastradas no celular"></q-collapsible> -->
             <!-- FOTO USUÁRIO -->
-            <q-collapsible ref="foto" icon="fa-id-badge" :opened="configFoto" label="Foto Pessoal" sublabel="Insira sua foto de identificação">
+            <!--<q-collapsible ref="foto" icon="fa-id-badge" :opened="configFoto" label="Foto Pessoal" sublabel="Insira sua foto de identificação">
               <div class="text-center">
                 <div class="fileUpload" v-if="!image">
                     <span>Selecione uma imagem</span>
@@ -455,124 +570,10 @@
                   <q-btn color="primary" rounded @click="removeImage">Remover imagem</q-btn>
                 </div>
               </div>
-            </q-collapsible>
-            <!-- BANCOS -->
-            <q-collapsible  icon="device_hub" 
-                            label="Banco de Dados" 
-                            sublabel="Configure a Empresa ao qual deseja conectar"
-                            :opened="bdConfig"
-                            >
-              <p ref="chip">
-                <q-chip tag closable color="black" @close="$refs.chip.remove()"><i>Para salvar um banco, o mesmo deve ser digitado e depois clicar no botão adicionar(+)</i></q-chip>
-              </p>
-              <div class="row">
-                <div class="col">
-                  <q-field
-                    icon="domain"
-                    helper="Nome da Empresa"
-                  >
-                    <q-input v-model.trim="empresa" clearable />
-                  </q-field>   
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-6">
-                  <q-field
-                    icon="pin_drop"
-                    helper="IP/Host"
-                  >
-                    <q-input v-model.trim="ip" clearable/>
-                  </q-field>   
-                </div>
-                <div class="col-md-6">
-                  <q-field
-                    icon="pin_drop"
-                    helper="Porta"
-                  >
-                    <q-input v-model.number="porta" 
-                             type="number"
-                             v-mask="['#####']"
-                             clearable/>
-                  </q-field>   
-                </div>    
-              </div> 
-              <div class="row">
-                <div class="col">
-                  <q-field
-                    icon="fa-server"
-                    helper="Web Service"
-                  >
-                    <q-input v-model.trim="banco" clearable />
-                  </q-field>   
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-xs-12 col-md">
-                  <q-field
-                    icon="featured_play_list"
-                    helper="Nome do Banco de Dados"
-                  >
-                    <q-input v-model.trim="bdName" clearable />
-                  </q-field>   
-                </div>
-                <div class="col-xs-12 col-md">
-                  <q-field
-                    icon="vpn_key"
-                    helper="Senha do Banco de Dados"
-                  >
-                    <q-input v-model.trim="senhaBd" type="password" clearable />
-                  </q-field>   
-                </div> 
-                <div class="col-2" id="btn-save">
-                    <q-btn 
-                       rounded
-                       color="primary" 
-                       @click="salvarBanco">
-                       Salvar
-                    </q-btn>
-                </div>
-              </div>
-              <br>
-              Bancos de Dados salvos: <br><br>
-
-            <div id="config">    
-                <table class="q-table responsive" :class="computedClasses">
-                  <thead>
-                    <tr>
-                      <th class="text-left">ID</th>
-                      <th class="text-left">Empresa</th>
-                      <th class="text-left">Web Service</th>
-                      <th class="text-left">IP/Host</th>
-                      <th class="text-left">Porta</th>
-                      <th class="text-left">Nome Banco</th>
-                      <!--<th class="text-left">Senha</th>-->
-                      <th class="text-left">Editar</th>
-                      <th class="text-left">Excluir</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="(item, index) in bancosDados" :key="index">
-                      <td data-th="ID" class="text-left">{{ item.IdBanco }}</td>
-                      <td data-th="Empresa" class="text-left">{{ item.empresa }}</td>
-                      <td data-th="Web Service" class="text-left">{{ item.banco }}</td>
-                      <td data-th="IP/Host" class="text-left">{{ item.ip }}</td>
-                      <td data-th="Porta" class="text-left">{{ item.porta }}</td>
-                      <td data-th="Nome Banco" class="text-left">{{ item.bdName }}</td>
-                      <!--<td class="text-left">{{ item.senhaBD }}</td>-->
-                      <td class="text-center">
-                        <a @click="editar(item)" color="info"><i class="material-icons fa-2x" >mode_edit</i></a>   
-                      </td>
-                      <td class="text-center">
-                        <i class="material-icons fa-2x mHover text-negative" @click="excluir(item, index)" color="negative">delete_forever</i> 
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-            </div>
-
-            </q-collapsible>
+            </q-collapsible>-->
+            
             <!-- SYNC -->
-            <q-collapsible icon="sync" label="Sincronizar o Aplicativo" sublabel="Configure a sincronização em tempo real e executar um sincronização agora">
+            <!--<q-collapsible icon="sync" label="Sincronizar o Aplicativo" sublabel="Configure a sincronização em tempo real e executar um sincronização agora">
               <div>
                <q-list link no-border>
                 <q-item multiline tag="label">
@@ -664,9 +665,9 @@
                </q-list>
                  
               </div>
-            </q-collapsible>
+            </q-collapsible>-->
             <!-- ARMAZENAMENTO INTERNO -->
-            <q-collapsible icon="smartphone" label="Armazenamento Interno" sublabel="Visualizar o armazenamento do aplicativo em uso agora">
+            <!--<q-collapsible icon="smartphone" label="Armazenamento Interno" sublabel="Visualizar o armazenamento do aplicativo em uso agora">
                 <q-list link no-border>
                     <q-item multiline tag="label">
                       <q-item-main>
@@ -683,7 +684,7 @@
 
                     </q-item>
                 </q-list>
-            </q-collapsible>
+            </q-collapsible>-->
             <!-- RESET -->
             <q-collapsible  icon="delete_forever" 
                             label="Restaurar Configurações de Fábrica" 

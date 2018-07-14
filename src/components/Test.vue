@@ -35,7 +35,7 @@ function Chr(AsciiNum){
 	return String.fromCharCode(AsciiNum)
 }
 
-const NomeDB = Encripta('docemorena2')
+const NomeDB = Encripta('pedroTestes')
 
 import axios from 'axios'
 
@@ -49,6 +49,7 @@ export default {
   mounted(){
     axios({
       "url": "http://192.168.0.200/WSV3/api/token",
+      //"url": "http://192.168.0.200:29755/api/token",
       "method": "POST",
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded",

@@ -34,9 +34,6 @@
             align="center"
             v-model="user"
             :options="listaUsuarios"
-            filter
-            filter-placeholder="Procurar..."
-            autofocus-filter
         />
         <div class="label-login">Usuário</div>
       </q-field>
@@ -253,6 +250,7 @@ export default {
           .then((res)=>{
             console.log('BANCO ATUALIZADO:', res)
             this.response = res.data
+            localStorage.setItem('AUTH_TOKEN', this.response.access_token)
             this.syncStart()
             this.listarUsuarios()
           })
@@ -404,7 +402,7 @@ export default {
               spinnerSize: 140,
               message: 'Obtendo Produtos...'
           })
-          axios.get(API + 'produto/obterproduto')
+          axios.get(API + 'produto/obterproduto?todos=true')
           .then((res)=>{
             Loading.hide()
             localforage.setItem('Produtos', res.data)

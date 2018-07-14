@@ -58,11 +58,8 @@ localforage.config({
 
 import axios from 'axios'
 Vue.use(axios)
-axios.create({
-  headers: {'username': 'docemorena2'}
-  
-})
-
+axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('AUTH_TOKEN')
+console.log('TOKEN: ', axios.defaults.headers.common);
 
 // ============= FILTERS ============================
 

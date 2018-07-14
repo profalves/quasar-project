@@ -12,17 +12,17 @@
     </q-fixed-position>
     
     <!-- Botão voltar -->
-    <q-fixed-position class="fixo" corner="bottom-left" :offset="[18, 18]">
+    <!--<q-fixed-position class="fixo" corner="bottom-left" :offset="[18, 18]">
         <q-btn 
            round
            color="primary" 
            @click="goBack">
            <q-icon name="keyboard_arrow_left" />
         </q-btn>
-    </q-fixed-position>
+    </q-fixed-position>-->
     
     <!-- Botão sync -->
-    <q-fixed-position class="fixo" corner="bottom-left" :offset="[88, 18]">
+    <q-fixed-position class="fixo" corner="bottom-right" :offset="[88, 18]">
         <q-btn 
            round
            color="primary" 

@@ -11,16 +11,16 @@
         </q-btn>
     </q-fixed-position>  
     <!-- Botão voltar -->
-    <q-fixed-position class="fixo" corner="bottom-left" :offset="[18, 18]">
+    <!--<q-fixed-position class="fixo" corner="bottom-left" :offset="[18, 18]">
         <q-btn 
            round
            color="primary" 
            @click="goBack">
            <q-icon name="keyboard_arrow_left" />
         </q-btn>
-    </q-fixed-position>
+    </q-fixed-position>-->
     <!-- Botão sync -->
-    <q-fixed-position class="fixo" corner="bottom-left" :offset="[88, 18]">
+    <q-fixed-position class="fixo" corner="bottom-right" :offset="[88, 18]">
         <q-btn 
            round
            color="primary" 
@@ -700,7 +700,7 @@ export default {
         spinnerSize: 140,
         message: 'Aguardando Dados...'
       })
-      axios.get(API + 'produto/obterproduto')
+      axios.get(API + 'produto/obterproduto?todos=true')
         .then((res)=>{
           Loading.hide()
           this.produtos = res.data
@@ -898,7 +898,7 @@ export default {
           spinnerSize: 140,
           message: 'Sincronizando Dados...'
       })
-      axios.get(API + 'produto/obterproduto')
+      axios.get(API + 'produto/obterproduto?todos=true')
       .then((res)=>{
           //console.log(res.data)
           localforage.setItem('Produtos', res.data).then((value) => {
